@@ -1,0 +1,1 @@
+include("${CMAKE_INSTALL_PREFIX}/lib/cmake/freeimage/freeimageTargets.cmake")

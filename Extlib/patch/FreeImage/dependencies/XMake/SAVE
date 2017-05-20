@@ -1,0 +1,53 @@
+function(xmake_install_target TARGET_NAME)
+    install(TARGETS ${TARGET_NAME}
+        EXPORT freeimageTargets
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        RUNTIME DESTINATION bin
+    )
+
+    install(EXPORT freeimageTargets
+        FILE freeimageTargets.cmake
+        NAMESPACE freeimage::
+        DESTINATION lib/cmake/freeimage
+    )  
+endfunction(xmake_install_target)
+
+
+
+
+
+
+
+function(xmake_create_executable PROJECT EXECUTABLE_NAME SOURCE_FILE1)
+
+    # Project settings
+    xmake_set(XMAKE_${PROJECT}_TARGET               "${EXECUTABLE_NAME}")
+    xmake_set(XMAKE_${PROJECT}_EXECUTABLE           YES)
+    xmake_set(XMAKE_${PROJECT}_STATIC_LIBRARY       NO)
+    xmake_set(XMAKE_${PROJECT}_DYNAMIC_LIBRARY      NO)
+    xmake_set(XMAKE_${PROJECT}_FRAMEWORK            NO)
+
+    # Create the list of source files
+    set(SOURCE_FILES ${SOURCE_FILE1})
+    foreach(CURRENT_FILE ${ARGN})
+        list(APPEND SOURCE_FILES ${CURRENT_FILE})
+    endforeach()
+
+    # Declaration of the library
+    add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES})
+
+    # Set the RPATH
+    if (APPLE)
+        set_target_properties(${EXECUTABLE_NAME} PROPERTIES LINK_FLAGS "-Wl,-rpath,@loader_path/.")
+    elseif (UNIX)
+        set_target_properties(${EXECUTABLE_NAME} PROPERTIES INSTALL_RPATH ".")
+    endif()
+
+    xmake_install_target(${EXECUTABLE_NAME})
+endfunction()
+
+
+
+
+
