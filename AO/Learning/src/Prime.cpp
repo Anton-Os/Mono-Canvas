@@ -47,7 +47,7 @@ int main(int argc, const char* argv[]){
     glfwMakeContextCurrent(window);
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
-    GLenum result = glGetError();
+    // GLenum result = glGetError();
 
     glewExperimental = GL_TRUE;
     if(glewInit() != GLEW_OK){
@@ -59,15 +59,18 @@ int main(int argc, const char* argv[]){
     std::string parentDir(getParentDirectory(argv[0]));
     GLuint shaderProg = compileShaders(parentDir, "Mono1.vert", "Mono1.frag");
     glUseProgram(shaderProg);
-    result = glGetError();
+    // result = glGetError();
     // GLuint shaderProg = initLoadShaders();
 
     const char* absoluteKTX = "D:\\AntonDocs\\Codex\\Mono-Canvas\\MinGW-64-V3\\AO\\AO-Projects\\Learning\\Textures\\KTX\\Container.KTX";
     // GLuint myTexture = produceTexture2(absoluteKTX);
     GLuint myTexture = createTexture(absoluteKTX);
+    // result = glGetError();
     if(myTexture == 0){
-        std::cout << "Errors occured producing texture" << std::endl;
-        return -1;
+        std::cerr << "Errors occured producing texture" << std::endl;
+        return 1;
+    } else {
+        std::cout << "Texture created successfuly from file " << absoluteKTX << std::endl;
     }
 
     struct Vertex {
@@ -96,7 +99,7 @@ int main(int argc, const char* argv[]){
           {206, 66, 244, 255} }
     };
 
-    GLfloat textureCoord[] = {
+    GLfloat texCoord[] = {
         0.5f, 0.5f,
         0.5f, -0.5f,
         -0.5f, -0.5f
@@ -117,13 +120,14 @@ int main(int argc, const char* argv[]){
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     // glBufferData(GL_ARRAY_BUFFER, sizeof(coord), coord, GL_STATIC_DRAW);
     glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
     glEnableVertexAttribArray(0);
     // Task: Make sure variable at layout (location = ...) exists, otherwise yield error message
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
     glEnableVertexAttribArray(1);
@@ -150,5 +154,6 @@ int main(int argc, const char* argv[]){
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glfwTerminate();
+    system("COLOR 0F");
     return 0;
 }

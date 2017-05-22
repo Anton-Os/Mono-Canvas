@@ -34,6 +34,7 @@ GLchar* readShaderFile(const char* nameOfShader){
 }
 
 GLuint compileShaders(const std::string& rootPath, const char* vertexShaderBaseName, const char* fragmentShaderBaseName){
+    // GLenum result = glGetError();
     GLuint vertex_shader, fragment_shader, shader_program;
     GLint logState;
     GLchar infoLog[512];
@@ -45,9 +46,7 @@ GLuint compileShaders(const std::string& rootPath, const char* vertexShaderBaseN
     std::string fragment_shader_absolute_path((rootPath.length() > 0) ?
                                               rootPath + "\\" + fragmentShaderBaseName :
                                               std::string(fragmentShaderBaseName));
-    GLenum result = glGetError();
     const GLchar* vertex_shader_source = readShaderFile(vertex_shader_absolute_path.c_str());
-    result = glGetError();
     const GLchar* fragment_shader_source = readShaderFile(fragment_shader_absolute_path.c_str());
     vertex_shader_absolute_path;
     fragment_shader_absolute_path;
@@ -58,7 +57,9 @@ GLuint compileShaders(const std::string& rootPath, const char* vertexShaderBaseN
     vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shader, 1, &vertex_shader_source, NULL);
     glCompileShader(vertex_shader);
+    // result = glGetError(); // CHECKING OCCURENCE
     glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &logState);
+    // result = glGetError(); // CHECKING OCCURENCE
     if(!logState){
         glGetShaderInfoLog(vertex_shader, 512, NULL, infoLog);
         std::cerr << vertexShaderBaseName << " failed to compile...\n\n" 
@@ -73,7 +74,9 @@ GLuint compileShaders(const std::string& rootPath, const char* vertexShaderBaseN
     fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment_shader, 1, &fragment_shader_source, NULL);
     glCompileShader(fragment_shader);
+    // result = glGetError(); // CHECKING OCCURENCE
     glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &logState);
+    // result = glGetError(); // CHECKING OCCURENCE
     if(!logState){
         glGetShaderInfoLog(fragment_shader, 512, NULL, infoLog);
         std::cerr << fragmentShaderBaseName << " failed to compile...\n\n" 
