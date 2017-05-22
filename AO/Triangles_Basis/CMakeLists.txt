@@ -20,10 +20,12 @@ target_link_libraries(Basis-Triangles
 # message("Install Prefix inside Triangles_Basis - - - - - > ${CMAKE_INSTALL_PREFIX}")
 # message("Source Directory inside Triangles_Basis - - - - - > ${CMAKE_SOURCE_DIR}")
 
+#[[ 
 file(COPY "${CMAKE_INSTALL_PREFIX}/bin/freeglutd.dll"
           "${CMAKE_SOURCE_DIR}/Triangles_Basis/Shaders/triangles.vert"
           "${CMAKE_SOURCE_DIR}/Triangles_Basis/Shaders/triangles.frag"
      DESTINATION "${EXECUTABLE_OUTPUT_PATH}/Debug"
 )
+]]#
 
 # file(COPY "${CMAKE_INSTALL_PREFIX}")

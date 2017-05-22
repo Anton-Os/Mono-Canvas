@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(OpenGL_Dimentions_Reserve)
+project(OpenGL_Mono_CanvasSSS)
 
 if(NOT EXTLIB_BUILD_PATH)
     set(EXTLIB_BUILD_PATH "${CMAKE_BINARY_DIR}/Extlib-Build" CACHE PATH "Route Exlib Build here")
@@ -43,6 +43,7 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
 
     add_subdirectory("AO/Learning")
     add_subdirectory("AO/Dimentions")
+    add_subdirectory("AO/Triangles_Basis")
     # add_subdirectory("AO-Projects/Triangles_Basis")
 else ()
     include("cmake/BuildExtlibs.cmake")

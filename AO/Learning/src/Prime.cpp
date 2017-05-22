@@ -7,7 +7,7 @@
 #include <GLFW/glfw3.h>
 
 #include "LoadShaders.h"
-#include "TexturesGL.h"
+#include "LoadTextures.h"
 
 /* Handles main OpenGL functionality */
 
@@ -47,6 +47,7 @@ int main(int argc, const char* argv[]){
     glfwMakeContextCurrent(window);
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
+    GLenum result = glGetError();
 
     glewExperimental = GL_TRUE;
     if(glewInit() != GLEW_OK){
@@ -58,11 +59,9 @@ int main(int argc, const char* argv[]){
     std::string parentDir(getParentDirectory(argv[0]));
     GLuint shaderProg = compileShaders(parentDir, "Mono1.vert", "Mono1.frag");
     glUseProgram(shaderProg);
+    result = glGetError();
     // GLuint shaderProg = initLoadShaders();
 
-    // const char* absoluteKTX = "D:/AntonDocs/Codex/Mono-Canvas/MinGW-64-V2/MyDev/AO-Projects/Learning/Metal1/Metal1.ktx";
-    // const char* absoluteKTX = "D:\\AntonDocs\\Codex\\Mono-Canvas\\MinGW-64-V2\\MyDev\\AO-Projects\\Learning\\Textures\\KTX\\Metal\\Metal1.ktx";
-    // const char* absoluteKTX_bug = "D:\\AntonDocs\\Codex\\Mono-Canvas\\MinGW-64-V3\\MyDev\\AO-Projects\\Learning\\Textures\\KTX\\Container\\Container.KTX";
     const char* absoluteKTX = "D:\\AntonDocs\\Codex\\Mono-Canvas\\MinGW-64-V3\\AO\\AO-Projects\\Learning\\Textures\\KTX\\Container.KTX";
     // GLuint myTexture = produceTexture2(absoluteKTX);
     GLuint myTexture = createTexture(absoluteKTX);
@@ -71,12 +70,12 @@ int main(int argc, const char* argv[]){
         return -1;
     }
 
-    struct MyVert {
+    struct Vertex {
         GLfloat pos[3];
         GLubyte color[4];
     };
 
-    MyVert verts[] = {
+    Vertex verts[] = {
         { {0.5f, 0.5f, 0},
           {255, 0, 0, 255} },
         { {0.5f, -0.5f, 0},
@@ -122,11 +121,11 @@ int main(int argc, const char* argv[]){
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MyVert), (GLvoid*)offsetof(MyVert, pos));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
     glEnableVertexAttribArray(0);
     // Task: Make sure variable at layout (location = ...) exists, otherwise yield error message
 
-    glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(MyVert), (GLvoid*)offsetof(MyVert, color));
+    glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
     glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbinding

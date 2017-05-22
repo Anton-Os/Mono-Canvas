@@ -45,7 +45,9 @@ GLuint compileShaders(const std::string& rootPath, const char* vertexShaderBaseN
     std::string fragment_shader_absolute_path((rootPath.length() > 0) ?
                                               rootPath + "\\" + fragmentShaderBaseName :
                                               std::string(fragmentShaderBaseName));
+    GLenum result = glGetError();
     const GLchar* vertex_shader_source = readShaderFile(vertex_shader_absolute_path.c_str());
+    result = glGetError();
     const GLchar* fragment_shader_source = readShaderFile(fragment_shader_absolute_path.c_str());
     vertex_shader_absolute_path;
     fragment_shader_absolute_path;

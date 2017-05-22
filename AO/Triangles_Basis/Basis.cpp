@@ -3,6 +3,10 @@
 #include <GL/freeglut.h>
 using namespace std;
 
+#ifndef GLEW_STATIC
+#define GLEW_STATIC
+#endif
+
 #include "LoadShaders.h"
 
 enum VAO_IDs { Triangles, NumVAOs };
