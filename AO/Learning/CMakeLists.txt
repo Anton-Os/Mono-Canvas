@@ -15,10 +15,13 @@ target_link_libraries(MonoCanvas
 
 add_custom_target(MonoShaders
     COMMENT "Edit shader files"
-    SOURCES "shaders/Mono1.vert" "shaders/Mono1.frag" 
+    SOURCES "shaders/AO-1.vert" "shaders/AO-1.frag" 
+            "shaders/AO-2.vert" "shaders/AO-2.frag" 
 )
 
-foreach(current_shader "Mono1.vert" "Mono1.frag")
+foreach(current_shader "AO-1.vert" "AO-1.frag" 
+                       "AO-2.vert" "AO-2.frag"
+)
     add_custom_command(TARGET MonoCanvas
         PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy

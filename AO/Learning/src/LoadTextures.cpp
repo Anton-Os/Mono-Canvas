@@ -6,7 +6,7 @@
 #include <glm/glm.hpp>
 
 GLuint createTexture(const char* Filename){
-    GLenum result;
+    // GLenum result;
 
     gli::texture texture = gli::load(Filename);
     if(texture.empty()){
@@ -24,38 +24,40 @@ GLuint createTexture(const char* Filename){
 
     // GLuint textureName = 0;
     GLuint textureName;
-    result = glGetError();
+    // result = glGetError();
     glGenTextures(1, &textureName);
     // GLuint textureNames[100];
     // glGenTextures(100, textureNames)
-    result = glGetError();
+    // result = glGetError();
     glBindTexture(target, textureName);
-    result = glGetError();
-    if(result != GL_NO_ERROR){
+    // result = glGetError();
+    /* if(result != GL_NO_ERROR){
         std::cout << "Error on bind is " << result << std::endl;
         glDeleteTextures(1, &textureName);
         return 0;
-    }
+    . */
     glTexParameteri(target, GL_TEXTURE_BASE_LEVEL, 0);
     glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, static_cast<GLint>(texture.levels() - 1));
     glTexParameteriv(target, GL_TEXTURE_SWIZZLE_RGBA, &textureFormat.Swizzles[0]);
+    glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glm::tvec3<GLsizei> Extent(texture.extent()); // Because it begins at level zero
     glTexStorage2D(target, static_cast<GLint>(texture.levels()), textureFormat.Internal, Extent.x, Extent.y);
-    if(result != GL_NO_ERROR){
+    /* if(result != GL_NO_ERROR){
         std::cout << "Error is " << result << std::endl;
         glDeleteTextures(1, &textureName);
         return 0;
-    }
+    . */
     for(std::size_t Level = 0; Level < texture.levels(); ++Level) {
         Extent = texture.extent(Level);
 		glCompressedTexSubImage2D(
             target, static_cast<GLint>(Level), 0, 0, Extent.x, Extent.y,
             textureFormat.Internal, static_cast<GLsizei>(texture.size(Level)), texture.data(0, 0, Level));
-        if(result != GL_NO_ERROR){
+        /* if(result != GL_NO_ERROR){
             std::cout << "Error is " << result << std::endl;
             glDeleteTextures(1, &textureName);
             return 0;
-        }
+        } */
 	}
 
     return textureName;
