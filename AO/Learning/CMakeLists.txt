@@ -29,20 +29,29 @@ target_link_libraries(MonoCanvas-B
 add_custom_target(MonoShaders
     COMMENT "Edit shader files"
     SOURCES "shaders/AO-1.vert" "shaders/AO-1.frag" 
-            "shaders/AO-2.vert" "shaders/AO-2.frag" 
+            "shaders/AO-2.vert" "shaders/AO-2.frag"
+            "shaders/AO-3.vert" "shaders/AO-3.frag" 
 )
 
+set(OUTPUT_SHADER_LIST)
 foreach(current_shader "AO-1.vert" "AO-1.frag" 
                        "AO-2.vert" "AO-2.frag"
+                       "AO-3.vert" "AO-3.frag"
 )
-    add_custom_command(TARGET MonoCanvas-B
-        PRE_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-            "${CMAKE_CURRENT_LIST_DIR}/Shaders/${current_shader}"
-            "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}"
-        DEPENDS "${CMAKE_CURRENT_LIST_DIR}/Shaders/${current_shader}"
-    )
+add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}"
+    DEPENDS "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"
+    COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}"
+)
+list(APPEND OUTPUT_SHADER_LIST "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}")
+    #add_dependencies(MonoCanvas-B "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}")
 endforeach(current_shader)
+add_custom_target(Shaders
+    DEPENDS ${OUTPUT_SHADER_LIST}
+)
+add_dependencies(MonoCanvas-B Shaders)
+
 
 # WORK WITH TEXTURE/IMAGE FILES
 
