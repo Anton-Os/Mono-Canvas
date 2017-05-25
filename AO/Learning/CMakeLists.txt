@@ -1,10 +1,23 @@
-add_executable(MonoCanvas src/LoadTextures.cpp src/LoadShaders.cpp src/Prime.cpp)
+add_executable(MonoCanvas-A src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-Texturize.cpp)
+add_executable(MonoCanvas-B src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-Transform.cpp)
 
-target_include_directories(MonoCanvas
+
+target_include_directories(MonoCanvas-A
     PUBLIC include
 )
 
-target_link_libraries(MonoCanvas
+target_link_libraries(MonoCanvas-A
+    GLEW::glew_s
+    glfw
+    gli
+    glm
+)
+
+target_include_directories(MonoCanvas-B
+    PUBLIC include
+)
+
+target_link_libraries(MonoCanvas-B
     GLEW::glew_s
     glfw
     gli
@@ -22,7 +35,7 @@ add_custom_target(MonoShaders
 foreach(current_shader "AO-1.vert" "AO-1.frag" 
                        "AO-2.vert" "AO-2.frag"
 )
-    add_custom_command(TARGET MonoCanvas
+    add_custom_command(TARGET MonoCanvas-B
         PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
             "${CMAKE_CURRENT_LIST_DIR}/Shaders/${current_shader}"
@@ -37,10 +50,10 @@ set(TEXTURES_JPG)
 set(TEXTURES_KTX)
 set(TEXTURES_KTX_DIR "data/ktx")
 list(APPEND TEXTURES_JPG "Concrete-1.jpg" "Concrete-2.jpg" "Concrete-3.jpg" "Ice-1.jpg" "Metal-1.jpg")
-list(APPEND TEXTURES_KTX "Metal-1.ktx" "Container-1.KTX")
+list(APPEND TEXTURES_KTX "Metal-1.ktx" "Container-1.KTX" "Texture8_PNG_BC7_1.KTX")
 
 foreach(current_texture ${TEXTURES_KTX})
-    add_custom_command(TARGET MonoCanvas
+    add_custom_command(TARGET MonoCanvas-B
         PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
             "${CMAKE_CURRENT_LIST_DIR}/${TEXTURES_KTX_DIR}/${current_texture}"

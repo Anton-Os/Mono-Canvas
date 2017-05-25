@@ -67,7 +67,7 @@ int main(int argc, const char* argv[]){
     // const char* absoluteKTX1 = "D:\\AntonDocs\\Codex\\Mono-Canvas\\MinGW-64-V3\\AO\\AO-Projects\\Learning\\Textures\\KTX\\Container.KTX";
     // const char* absoluteKTX2 = "D:\\AntonDocs\\Codex\\Mono-Canvas\\Git-Mingw-64\\AO\\AO\\Learning\\data\\ktx\\Metal-1.ktx";
     // GLuint myTexture = produceTexture2(absoluteKTX);
-    std::string fileKTX = "\\data\\ktx\\Metal-1.ktx";
+    std::string fileKTX = "\\data\\ktx\\Texture8_PNG_BC7_1.KTX";
     std::string pathKTX = parentDir + fileKTX;
     const char* c_pathKTX = pathKTX.c_str();
     std::cout << "Relative path to KTX file is " << pathKTX << std::endl;
@@ -160,9 +160,9 @@ int main(int argc, const char* argv[]){
     };
 
     GLfloat texCoord2[] = {
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        0.0f, 1.0f
+        1.0f * 3, 1.0f * 3,
+        1.0f * 3, 0.0f * 3,
+        0.0f * 3, 1.0f * 3
     };
 
     GLuint indices[] = {
