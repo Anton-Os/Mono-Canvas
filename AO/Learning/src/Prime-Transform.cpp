@@ -147,7 +147,7 @@ int main(int argc, const char* argv[]){
 
     GLuint indices3[] = {
         0, 5 + 3, 10,
-        // 1, 6, 11,
+        // 1, 6, 11,l
         5, 7, 8,
         // 3, 4, 9
     };
@@ -158,6 +158,12 @@ int main(int argc, const char* argv[]){
         0 + 1, 4 + 1, 8 + 1,
         0 + 2, 4 + 2, 8 + 2,
         0 + 3, 4 + 3, 8 + 3
+    };
+
+    GLuint indices5[] = {
+        0, 1, 3,
+        2, 1, 3,
+        // 11, 6, 8
     };
 
     std::cout << "result: " << glGetError() << std::endl;
@@ -182,11 +188,10 @@ int main(int argc, const char* argv[]){
     glEnableVertexAttribArray(1); // h
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices4), indices4, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices5), indices5, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbinding
     glBindVertexArray(0); // Unbinding
-    int cnt = 0;
     while (!glfwWindowShouldClose(window)) {
 
         glfwPollEvents();
@@ -197,7 +202,7 @@ int main(int argc, const char* argv[]){
         glBindVertexArray(VAO);
         // glDrawArrays(GL_TRIANGLES, 0, 9);
         // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glDrawElements(GL_TRIANGLES, sizeof(indices4) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, sizeof(indices5) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
         glfwSwapBuffers(window);

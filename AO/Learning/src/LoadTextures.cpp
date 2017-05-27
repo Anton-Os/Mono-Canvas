@@ -14,7 +14,7 @@ GLuint createTexture(const char* Filename){
         return 1;
     }
 
-	gli::gl GL(gli::gl::PROFILE_GL33);
+    gli::gl GL(gli::gl::PROFILE_GL33);
     gli::gl::format const textureFormat = GL.translate(texture.format(), texture.swizzles());
     GLenum target = GL.translate(texture.target());
     //assert(gli::is_compressed(texture.format()) && Target == gli::TARGET_2D);
@@ -50,7 +50,7 @@ GLuint createTexture(const char* Filename){
     . */
     for(std::size_t Level = 0; Level < texture.levels(); ++Level) {
         Extent = texture.extent(Level);
-		glCompressedTexSubImage2D(
+        glCompressedTexSubImage2D(
             target, static_cast<GLint>(Level), 0, 0, Extent.x, Extent.y,
             textureFormat.Internal, static_cast<GLsizei>(texture.size(Level)), texture.data(0, 0, Level));
         /* if(result != GL_NO_ERROR){
@@ -58,7 +58,7 @@ GLuint createTexture(const char* Filename){
             glDeleteTextures(1, &textureName);
             return 0;
         } */
-	}
+    }
 
     return textureName;
 }
@@ -81,4 +81,3 @@ GLuint createTexture2(const char* Filename){
     // glTexStorage2D(Target, 1, );
     return textureName;
 }
-
