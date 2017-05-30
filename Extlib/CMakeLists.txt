@@ -37,6 +37,7 @@ set(FREEIMAGE_PROJECT_DIR "${ALL_PROJECT_DIR}/FreeImage")
 set(GLI_PROJECT_DIR "${ALL_PROJECT_DIR}/GLI")
 set(GLM_PROJECT_DIR "${ALL_PROJECT_DIR}/GLM")
 set(KTXTOOL_PROJECT_DIR "${ALL_PROJECT_DIR}/KTXtool")
+set(PROGSCHJ_EXAMPLES_PROJECT_DIR "${ALL_PROJECT_DIR}/ProgschjExamples")
 # set(GLO_PROJECT_DIR "${ALL_PROJECT_DIR}/GLO")
 
 set(LOCAL_PROJECT_DIR "${CMAKE_BINARY_DIR}/Local")
@@ -123,6 +124,20 @@ ExternalProject_Add(GLEW
 )
 
 list(APPEND EXTLIB_TARGETS GLEW)
+
+ExternalProject_Add(ProgschjExamples
+    GIT_REPOSITORY "https://github.com/progschj/OpenGL-Examples.git"
+    GIT_TAG "dd74a51ec081ad8584bdba023f367f33b5add66a"
+
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+
+    PREFIX ${PROGSCHJ_EXAMPLES_PROJECT_DIR}
+    BINARY_DIR "${PROGSCHJ_EXAMPLES_PROJECT_DIR}/build"
+    TMP_DIR "${PROGSCHJ_EXAMPLES_PROJECT_DIR}/temp"
+    STAMP_DIR "${PROGSCHJ_EXAMPLES_PROJECT_DIR}/stamp"
+)
+
+list(APPEND EXTLIB_TARGETS ProgschjExamples)
 
 ExternalProject_Add(GLFW
     GIT_REPOSITORY "https://github.com/glfw/glfw.git"
@@ -243,6 +258,8 @@ ExternalProject_Add(KTXtool
     TMP_DIR "${KTXTOOL_PROJECT_DIR}/temp"
     STAMP_DIR "${KTXTOOL_PROJECT_DIR}/stamp"
 )
+
+list(APPEND EXTLIB_TARGETS KTXtool)
 
 #[[ ExternalProject_Add(GLO
     GIT_REPOSITORY "https://github.com/g-truc/glo.git"

@@ -7,6 +7,11 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#define GLM_SWIZZLE 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "Common.h"
 // #include "LoadTextures.h"
 
@@ -60,26 +65,10 @@ int main(int argc, const char* argv[]){
     std::string parentDir(getParentDirectory(argv[0]));
     GLuint shaderProg1 = compileShaders(parentDir, "AO-1.vert", "AO-1.frag");
     GLuint shaderProg2 = compileShaders(parentDir, "AO-2.vert", "AO-2.frag");
-    GLuint shaderProg3 = compileShaders(parentDir, "AO-3.vert", "AO-3.frag");
+    GLuint shaderProg3 = compileShaders(parentDir, "AO-4.vert", "AO-3.frag");
     glUseProgram(shaderProg3);
-    // result = glGetError();
-    // GLuint shaderProg = initLoadShaders();
 
-    // const char* absoluteKTX1 = "D:\\AntonDocs\\Codex\\Mono-Canvas\\MinGW-64-V3\\AO\\AO-Projects\\Learning\\Textures\\KTX\\Container.KTX";
-    // const char* absoluteKTX2 = "D:\\AntonDocs\\Codex\\Mono-Canvas\\Git-Mingw-64\\AO\\AO\\Learning\\data\\ktx\\Metal-1.ktx";
-    // GLuint myTexture = produceTexture2(absoluteKTX);
-    /* std::string fileKTX = "\\data\\ktx\\Texture8_PNG_BC7_1.KTX";
-    std::string pathKTX = parentDir + fileKTX;
-    const char* c_pathKTX = pathKTX.c_str();
-    std::cout << "Relative path to KTX file is " << pathKTX << std::endl;
-    GLuint myTexture = createTexture(c_pathKTX);
-    // result = glGetError();
-    if(myTexture == 0){
-        std::cerr << "Errors occured producing texture" << std::endl;
-        return 1;
-    } else {
-        std::cout << "Texture created successfuly from file: \n" << c_pathKTX << std::endl;
-    } */
+    GLint ViewProjection_loc = glGetUniformLocation(shaderProg3, "ViewProjection");
 
     struct Vertex {
         GLfloat pos[3];
@@ -135,6 +124,63 @@ int main(int argc, const char* argv[]){
         { {-0.9f, -0.5f, 0}, {178, 137, 204, 255} }, // INDEX 3
     };
 
+    /* Vertex verts3[] = {
+        {{ 1.0f, 1.0f, 1.0f }, { 255, 0, 0, 255 }},
+        {{ -1.0f, 1.0f, 1.0f }, { 255, 0, 0, 255 }},
+        {{ 1.0f,-1.0f, 1.0f }, { 255, 0, 0, 255 }},
+        {{ -1.0f,-1.0f, 1.0f }, { 255, 0, 0, 255 }},
+
+        {{ 1.0f, 1.0f, 1.0f }, { 255, 0, 0, 255 }},
+        {{ -1.0f, 1.0f, 1.0f }, { 255, 0, 0, 255 }},
+        {{ 1.0f,-1.0f, 1.0f }, { 255, 0, 0, 255 }},
+        {{ -1.0f,-1.0f, 1.0f }, { 255, 0, 0, 255 }},
+
+        {{ 1.0f, 1.0f, 1.0f }, { 255, 0, 0, 255 }},
+        {{ -1.0f, 1.0f, 1.0f }, { 255, 0, 0, 255 }},
+        {{ 1.0f,-1.0f, 1.0f }, { 255, 0, 0, 255 }},
+        {{ -1.0f,-1.0f, 1.0f }, { 255, 0, 0, 255 }},
+
+        {{ 1.0f, 1.0f, 1.0f }, { 255, 0, 0, 255 }},
+        {{ -1.0f, 1.0f, 1.0f }, { 255, 0, 0, 255 }},
+        {{ 1.0f,-1.0f, 1.0f }, { 255, 0, 0, 255 }},
+        {{ -1.0f,-1.0f, 1.0f }, { 255, 0, 0, 255 }},
+
+        {{ 1.0f, 1.0f, 1.0f }, { 255, 0, 0, 255 }},
+        {{ -1.0f, 1.0f, 1.0f }, { 255, 0, 0, 255 }},
+        {{ 1.0f,-1.0f, 1.0f }, { 255, 0, 0, 255 }},
+        {{ -1.0f,-1.0f, 1.0f }, { 255, 0, 0, 255 }},
+
+        {{ 1.0f, 1.0f, 1.0f }, { 255, 0, 0, 255 }},
+        {{ -1.0f, 1.0f, 1.0f }, { 255, 0, 0, 255 }},
+        {{ 1.0f,-1.0f, 1.0f }, { 255, 0, 0, 255 }},
+        {{ -1.0f,-1.0f, 1.0f }, { 255, 0, 0, 255 }},
+
+           1.0f, 1.0f, 1.0f,       0.0f, 1.0f, 0.0f, // vertex 0
+           1.0f,-1.0f, 1.0f,       0.0f, 1.0f, 0.0f, // vertex 1
+           1.0f, 1.0f,-1.0f,       0.0f, 1.0f, 0.0f, // vertex 2
+           1.0f,-1.0f,-1.0f,       0.0f, 1.0f, 0.0f, // vertex 3
+
+           1.0f, 1.0f, 1.0f,       0.0f, 0.0f, 1.0f, // vertex 0
+           1.0f, 1.0f,-1.0f,       0.0f, 0.0f, 1.0f, // vertex 1
+          -1.0f, 1.0f, 1.0f,       0.0f, 0.0f, 1.0f, // vertex 2
+          -1.0f, 1.0f,-1.0f,       0.0f, 0.0f, 1.0f, // vertex 3
+
+           1.0f, 1.0f,-1.0f,       1.0f, 1.0f, 0.0f, // vertex 0
+           1.0f,-1.0f,-1.0f,       1.0f, 1.0f, 0.0f, // vertex 1
+          -1.0f, 1.0f,-1.0f,       1.0f, 1.0f, 0.0f, // vertex 2
+          -1.0f,-1.0f,-1.0f,       1.0f, 1.0f, 0.0f, // vertex 3
+
+          -1.0f, 1.0f, 1.0f,       0.0f, 1.0f, 1.0f, // vertex 0
+          -1.0f, 1.0f,-1.0f,       0.0f, 1.0f, 1.0f, // vertex 1
+          -1.0f,-1.0f, 1.0f,       0.0f, 1.0f, 1.0f, // vertex 2
+          -1.0f,-1.0f,-1.0f,       0.0f, 1.0f, 1.0f, // vertex 3
+
+           1.0f,-1.0f, 1.0f,       1.0f, 0.0f, 1.0f, // vertex 0
+          -1.0f,-1.0f, 1.0f,       1.0f, 0.0f, 1.0f, // vertex 1
+           1.0f,-1.0f,-1.0f,       1.0f, 0.0f, 1.0f, // vertex 2
+          -1.0f,-1.0f,-1.0f,       1.0f, 0.0f, 1.0f, // vertex 3
+    }; */
+
     GLuint indices[] = {
         0, 1, 3,
         4, 5, 0
@@ -176,7 +222,6 @@ int main(int argc, const char* argv[]){
     glGenBuffers(2, VBOs);
     glBindVertexArray(VAO);
 
-
     glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(verts3), verts3, GL_STATIC_DRAW);
     // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat)  , (GLvoid*)0);
@@ -197,11 +242,19 @@ int main(int argc, const char* argv[]){
         glfwPollEvents();
 
         glClearColor(1.0f, 1.0f, 0.88, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glBindVertexArray(VAO);
         // glDrawArrays(GL_TRIANGLES, 0, 9);
         // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        float t = glfwGetTime();
+        glm::mat4 Projection = glm::perspective(90.0f, 4.0f / 3.0f, 0.1f, 100.f);
+        glm::mat4 View = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
+        View = glm::rotate(View, 90.0f*t, glm::vec3(1.0f, 1.0f, 1.0f));
+        glm::mat4 ViewProjection = Projection*View;
+        glUniformMatrix4fv(ViewProjection_loc, 1, GL_FALSE, glm::value_ptr(ViewProjection));
+
         glDrawElements(GL_TRIANGLES, sizeof(indices5) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 

@@ -31,12 +31,14 @@ add_custom_target(MonoShaders
     SOURCES "shaders/AO-1.vert" "shaders/AO-1.frag" 
             "shaders/AO-2.vert" "shaders/AO-2.frag"
             "shaders/AO-3.vert" "shaders/AO-3.frag" 
+            "shaders/AO-4.vert" 
 )
 
 set(OUTPUT_SHADER_LIST)
 foreach(current_shader "AO-1.vert" "AO-1.frag" 
                        "AO-2.vert" "AO-2.frag"
                        "AO-3.vert" "AO-3.frag"
+                       "AO-4.vert"
 )
 add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}"
     DEPENDS "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"
