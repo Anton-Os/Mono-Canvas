@@ -35,6 +35,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 int main(int argc, const char* argv[]){
 
     system("COLOR 0A");
+    glEnable(GL_DEPTH_TEST);
     int width, height;
 
     glfwInit();
@@ -67,8 +68,6 @@ int main(int argc, const char* argv[]){
     GLuint shaderProg2 = compileShaders(parentDir, "AO-2.vert", "AO-2.frag");
     GLuint shaderProg3 = compileShaders(parentDir, "AO-4.vert", "AO-3.frag");
     glUseProgram(shaderProg3);
-
-    GLint ViewProjection_loc = glGetUniformLocation(shaderProg3, "ViewProjection");
 
     struct Vertex {
         GLfloat pos[3];
@@ -237,6 +236,9 @@ int main(int argc, const char* argv[]){
 
     glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbinding
     glBindVertexArray(0); // Unbinding
+
+    GLint Projection_loc = glGetUniformLocation(shaderProg3, "Projection");
+
     while (!glfwWindowShouldClose(window)) {
 
         glfwPollEvents();
@@ -249,11 +251,18 @@ int main(int argc, const char* argv[]){
         // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         float t = glfwGetTime();
-        glm::mat4 Projection = glm::perspective(90.0f, 4.0f / 3.0f, 0.1f, 100.f);
-        glm::mat4 View = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
-        View = glm::rotate(View, 90.0f*t, glm::vec3(1.0f, 1.0f, 1.0f));
+
+        /* glm::mat4 Projection = glm::perspective(90.0f, 4.0f / 3.0f, 0.1f, 100.f);
+        glm::mat4 View = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1.5f));
+        View = glm::rotate(View, 5.0f*t, glm::vec3(1.0f, 1.0f, 1.0f));
         glm::mat4 ViewProjection = Projection*View;
-        glUniformMatrix4fv(ViewProjection_loc, 1, GL_FALSE, glm::value_ptr(ViewProjection));
+        glUniformMatrix4fv(ViewProjection_loc, 1, GL_FALSE, glm::value_ptr(ViewProjection)); */
+
+        glm::mat4 Projection;
+        Projection = glm::translate(Projection, glm::vec3(0.2f, -0.2f, 0.0f));
+        Projection = glm::scale(Projection, glm::vec3(-0.4, -0.4, 0.0f));
+        Projection = glm::rotate(Projection, (float)glfwGetTime(), glm::vec3(0.0, 0.0, 1.0));
+        glUniformMatrix4fv(Projection_loc, 1, GL_FALSE, glm::value_ptr(Projection));
 
         glDrawElements(GL_TRIANGLES, sizeof(indices5) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
