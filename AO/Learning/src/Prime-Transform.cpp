@@ -7,15 +7,17 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#define GLM_SWIZZLE 
+#define GLM_SWIZZLE
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Common.h"
-// #include "LoadTextures.h"
 
-/* Handles main OpenGL functionality */
+GLfloat scaleX = 0.4f;
+GLfloat scaleY = 0.4f;
+GLfloat moveX = 0;
+GLfloat moveY = 0;
 
 const std::string getParentDirectory(const char* path) {
     const char* ptr = path + strlen(path);
@@ -29,6 +31,34 @@ const std::string getParentDirectory(const char* path) {
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
         glfwSetWindowShouldClose(window, GL_TRUE);
+    }
+    if(key == GLFW_KEY_Q && action == GLFW_REPEAT){
+        scaleX += 0.1;
+        scaleY += 0.1;
+        std::cout << "scaleX set to: " << scaleX << std::endl;
+        std::cout << "scaleX set to: " << scaleY << std::endl;
+    }
+    if(key == GLFW_KEY_E && action == GLFW_REPEAT){
+        scaleX -= 0.1;
+        scaleY -= 0.1;
+        std::cout << "scaleX set to: " << scaleX << std::endl;
+        std::cout << "scaleX set to: " << scaleY << std::endl;
+    }
+    if(key == GLFW_KEY_W && action == GLFW_REPEAT){
+        moveY += 0.1;
+        std::cout << "moveY set to: " << moveY << std::endl;
+    }
+    if(key == GLFW_KEY_S && action == GLFW_REPEAT){
+        moveY -= 0.1;
+        std::cout << "moveY set to: " << moveY << std::endl;
+    }
+    if(key == GLFW_KEY_D && action == GLFW_REPEAT){
+        moveX += 0.1;
+        std::cout << "moveX set to: " << moveX << std::endl;
+    }
+    if(key == GLFW_KEY_A && action == GLFW_REPEAT){
+        moveX -= 0.1;
+        std::cout << "moveX set to: " << moveX << std::endl;
     }
 }
 
@@ -180,6 +210,31 @@ int main(int argc, const char* argv[]){
           -1.0f,-1.0f,-1.0f,       1.0f, 0.0f, 1.0f, // vertex 3
     }; */
 
+    Vertex boxishShape[] = {
+        // REFERENCE
+        { {0.0f, 0.0, 0.0}, {40, 40, 40, 255} },
+        { {0.5f, 0.5f, 0.0}, {40, 40, 40, 255} },
+        { {-0.5f, 0.5f, 0.0}, {40, 40, 40, 255} },
+        { {0.5f, -0.5f, 0.0}, {40, 40, 40, 255} },
+        { {-0.5f, -0.5f, 0.0}, {40, 40, 40, 255} },
+        // TOP TRIANGLE
+        { {0.0f, 0.0f + 0.02f, 0.0}, {63, 127, 191, 255} },
+        { {0.5f, 0.5f + 0.02f, 0.0}, {63, 127, 191, 255} },
+        { {-0.5f, 0.5f + 0.02f, 0.0}, {63, 127, 191, 255} },
+        // RIGHT TRIANGLE
+        { {0.0f + 0.02f, 0.0, 0.0}, {219, 97, 99, 255} },
+        { {0.5f + 0.02f, 0.5f, 0.0}, {219, 97, 99, 255} },
+        { {0.5f + 0.02f, -0.5f, 0.0}, {219, 97, 99, 255} },
+        // BOTTOM TRIANGLE
+        { {0.0f, 0.0 - 0.02f, 0.0}, {126, 251, 138, 255} },
+        { {0.5f, -0.5f - 0.02f, 0.0}, {126, 251, 138, 255} },
+        { {-0.5f, -0.5f - 0.02f, 0.0}, {126, 251, 138, 255} },
+        // LEFT TRIANGLE
+        { {0.0f - 0.02f, 0.0}, {178, 137, 204, 255} },
+        { {-0.5f - 0.02f, 0.5f, 0.0}, {178, 137, 204, 255} },
+        { {-0.5f - 0.02f, -0.5f, 0.0}, {178, 137, 204, 255} },
+    };
+
     GLuint indices[] = {
         0, 1, 3,
         4, 5, 0
@@ -211,6 +266,13 @@ int main(int argc, const char* argv[]){
         // 11, 6, 8
     };
 
+    GLuint boxishIndices[] = {
+        5, 6, 7,
+        8, 9, 10,
+        11, 12, 13,
+        14, 15, 16
+    };
+
     std::cout << "result: " << glGetError() << std::endl;
 
     GLuint VBO, VAO, EBO;
@@ -222,7 +284,8 @@ int main(int argc, const char* argv[]){
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verts3), verts3, GL_STATIC_DRAW);
+    // glBufferData(GL_ARRAY_BUFFER, sizeof(verts3), verts3, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(boxishShape), boxishShape, GL_STATIC_DRAW);
     // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat)  , (GLvoid*)0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
     glEnableVertexAttribArray(0);
@@ -232,7 +295,8 @@ int main(int argc, const char* argv[]){
     glEnableVertexAttribArray(1); // h
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices5), indices5, GL_STATIC_DRAW);
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices5), indices5, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(boxishIndices), boxishIndices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbinding
     glBindVertexArray(0); // Unbinding
@@ -259,12 +323,14 @@ int main(int argc, const char* argv[]){
         glUniformMatrix4fv(ViewProjection_loc, 1, GL_FALSE, glm::value_ptr(ViewProjection)); */
 
         glm::mat4 Projection;
-        Projection = glm::translate(Projection, glm::vec3(0.2f, -0.2f, 0.0f));
-        Projection = glm::scale(Projection, glm::vec3(-0.4, -0.4, 0.0f));
-        Projection = glm::rotate(Projection, (float)glfwGetTime(), glm::vec3(0.0, 0.0, 1.0));
+        // Projection = glm::translate(Projection, glm::vec3(0.2f, -0.2f, 0.0f));
+        // Projection = glm::scale(Projection, glm::vec3(-0.4, -0.4, 0.0f));
+        Projection = glm::translate(Projection, glm::vec3(moveX, moveY, 0.0f));
+        Projection = glm::scale(Projection, glm::vec3(scaleX, scaleY, 0.0f));
+        Projection = glm::rotate(Projection, (float)glfwGetTime() * 2, glm::vec3(0.0, 0.0, 1.0));
         glUniformMatrix4fv(Projection_loc, 1, GL_FALSE, glm::value_ptr(Projection));
 
-        glDrawElements(GL_TRIANGLES, sizeof(indices5) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, sizeof(boxishIndices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
         glfwSwapBuffers(window);
