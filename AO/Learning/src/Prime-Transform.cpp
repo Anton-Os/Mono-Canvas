@@ -18,6 +18,10 @@ GLfloat scaleX = 0.4f;
 GLfloat scaleY = 0.4f;
 GLfloat moveX = 0;
 GLfloat moveY = 0;
+GLfloat timeAngle = 4.0f;
+GLfloat rotateX = 0;
+GLfloat rotateY = 0;
+GLfloat rotateZ = -1.0f;
 
 const std::string getParentDirectory(const char* path) {
     const char* ptr = path + strlen(path);
@@ -28,7 +32,7 @@ const std::string getParentDirectory(const char* path) {
     return result;
 }
 
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
+/* void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
         glfwSetWindowShouldClose(window, GL_TRUE);
     }
@@ -60,18 +64,120 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         moveX -= 0.1;
         std::cout << "moveX set to: " << moveX << std::endl;
     }
+    if(key == GLFW_KEY_F && action == GLFW_REPEAT){
+        timeAngle += 0.1;
+        std::cout << "timeAngle set to: " << timeAngle << std::endl;
+    }
+    if(key == GLFW_KEY_R && action == GLFW_REPEAT){
+        if(timeAngle == 0){
+            std::cout << "timeAngle is at zero and cannot decrease further" << timeAngle << std::endl;
+        } else {
+            timeAngle -= 0.1;
+        }
+        std::cout << "timeAngle set to: " << timeAngle << std::endl;
+    }
+    if(key == GLFW_KEY_Y && action == GLFW_REPEAT){
+        rotateX += 0.1;
+        std::cout << "rotateX set to: " << rotateX << std::endl;
+    }
+    if(key == GLFW_KEY_U && action == GLFW_REPEAT){
+        rotateX -= 0.1;
+        std::cout << "rotateX set to: " << rotateX << std::endl;
+    }
+    if(key == GLFW_KEY_H && action == GLFW_REPEAT){
+        rotateY += 0.1;
+        std::cout << "rotateY set to: " << rotateY << std::endl;
+    }
+    if(key == GLFW_KEY_J && action == GLFW_REPEAT){
+        rotateY -= 0.1;
+        std::cout << "rotateY set to: " << rotateY << std::endl;
+    }
+    if(key == GLFW_KEY_N && action == GLFW_REPEAT){
+        rotateZ += 0.1;
+        std::cout << "rotateZ set to: " << rotateZ << std::endl;
+    }
+    if(key == GLFW_KEY_M && action == GLFW_REPEAT){
+        rotateZ -= 0.1;
+        std::cout << "rotateZ set to: " << rotateZ << std::endl;
+    }
+    if(key == GLFW_KEY_P && action == GLFW_REPEAT){
+        timeAngle = 1;
+        rotateX = 0;
+        rotateY = 0;
+        rotateZ = 0;
+    }
+} */
+
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
+    if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
+        glfwSetWindowShouldClose(window, GL_TRUE);
+    }
+    if(key == GLFW_KEY_Q && action == GLFW_REPEAT){
+        scaleX += 0.1;
+        scaleY += 0.1;
+    }
+    if(key == GLFW_KEY_E && action == GLFW_REPEAT){
+        scaleX -= 0.1;
+        scaleY -= 0.1;
+    }
+    if(key == GLFW_KEY_W && action == GLFW_REPEAT){
+        moveY += 0.1;
+    }
+    if(key == GLFW_KEY_S && action == GLFW_REPEAT){
+        moveY -= 0.1;
+    }
+    if(key == GLFW_KEY_D && action == GLFW_REPEAT){
+        moveX += 0.1;
+    }
+    if(key == GLFW_KEY_A && action == GLFW_REPEAT){
+        moveX -= 0.1;
+    }
+    if(key == GLFW_KEY_F && action == GLFW_REPEAT){
+        timeAngle += 0.1;
+    }
+    if(key == GLFW_KEY_R && action == GLFW_REPEAT){
+        if(timeAngle == 0){
+            std::cout << "timeAngle is at zero and cannot decrease further" << timeAngle << std::endl;
+        } else {
+            timeAngle -= 0.1;
+        }
+    }
+    if(key == GLFW_KEY_Y && action == GLFW_REPEAT){
+        rotateX += 0.1;
+    }
+    if(key == GLFW_KEY_U && action == GLFW_REPEAT){
+        rotateX -= 0.1;
+    }
+    if(key == GLFW_KEY_H && action == GLFW_REPEAT){
+        rotateY += 0.1;
+    }
+    if(key == GLFW_KEY_J && action == GLFW_REPEAT){
+        rotateY -= 0.1;
+    }
+    if(key == GLFW_KEY_N && action == GLFW_REPEAT){
+        rotateZ += 0.1;
+    }
+    if(key == GLFW_KEY_M && action == GLFW_REPEAT){
+        rotateZ -= 0.1;
+    }
+    if(key == GLFW_KEY_P && action == GLFW_REPEAT){
+        timeAngle = 1;
+        rotateX = 0;
+        rotateY = 0;
+        rotateZ = 0;
+    }
 }
 
 int main(int argc, const char* argv[]){
 
     system("COLOR 0A");
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glEnable(GL_DEPTH_TEST);
     int width, height;
 
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
     GLFWwindow* window = glfwCreateWindow(800, 600, "Mono-Canvas", nullptr, nullptr);
@@ -284,18 +390,14 @@ int main(int argc, const char* argv[]){
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(verts3), verts3, GL_STATIC_DRAW);
     glBufferData(GL_ARRAY_BUFFER, sizeof(boxishShape), boxishShape, GL_STATIC_DRAW);
-    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat)  , (GLvoid*)0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
     glEnableVertexAttribArray(0);
-    // Task: Make sure variable at layout (location = ...) exists, otherwise yield error message
+    
     glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
-    // glVertexAttribIPointer(1, 4, GL_UNSIGNED_BYTE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
-    glEnableVertexAttribArray(1); // h
+    glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices5), indices5, GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(boxishIndices), boxishIndices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbinding
@@ -323,11 +425,10 @@ int main(int argc, const char* argv[]){
         glUniformMatrix4fv(ViewProjection_loc, 1, GL_FALSE, glm::value_ptr(ViewProjection)); */
 
         glm::mat4 Projection;
-        // Projection = glm::translate(Projection, glm::vec3(0.2f, -0.2f, 0.0f));
-        // Projection = glm::scale(Projection, glm::vec3(-0.4, -0.4, 0.0f));
         Projection = glm::translate(Projection, glm::vec3(moveX, moveY, 0.0f));
         Projection = glm::scale(Projection, glm::vec3(scaleX, scaleY, 0.0f));
-        Projection = glm::rotate(Projection, (float)glfwGetTime() * 2, glm::vec3(0.0, 0.0, 1.0));
+        Projection = glm::rotate(Projection, (float)glfwGetTime() * timeAngle, glm::vec3(rotateX, rotateY, rotateZ));
+        // Projection = glm::rotate(Projection, (float)glfwGetTime() * 2, -0.5f, 0.0f, 0.0f);
         glUniformMatrix4fv(Projection_loc, 1, GL_FALSE, glm::value_ptr(Projection));
 
         glDrawElements(GL_TRIANGLES, sizeof(boxishIndices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
