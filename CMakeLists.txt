@@ -41,7 +41,7 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
     # find_package(PicoPixelClient QUIET CONFIG)
     # find_package(FreeImage REQUIRED CONFIG)
 
-    add_subdirectory("AO/Learning")
+    add_subdirectory("AO/MonoCanvas")
     add_subdirectory("AO/Dimentions")
     add_subdirectory("AO/Triangles_Basis")
     # add_subdirectory("AO-Projects/Triangles_Basis")
