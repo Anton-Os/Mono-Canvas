@@ -27,6 +27,8 @@ if (NOT CMAKE_CONFIGURATION_TYPES)
     # message("ASDFSDFSDFSDFSDFSDFSDFSDFSDFSDFSDFSDF")
 endif()
 
+option(BUILD_PROGSCHJ "Build progschj examples" OFF)
+
 set(ALL_PROJECT_DIR "${CMAKE_BINARY_DIR}/Projects")
 set(FREEGLUT_PROJECT_DIR "${ALL_PROJECT_DIR}/FreeGLUT")
 set(GLEW_PROJECT_DIR "${ALL_PROJECT_DIR}/GLEW")
@@ -125,19 +127,21 @@ ExternalProject_Add(GLEW
 
 list(APPEND EXTLIB_TARGETS GLEW)
 
-ExternalProject_Add(ProgschjExamples
-    GIT_REPOSITORY "https://github.com/progschj/OpenGL-Examples.git"
-    GIT_TAG "dd74a51ec081ad8584bdba023f367f33b5add66a"
+if(BUILD_PROGSCHJ)
+    ExternalProject_Add(ProgschjExamples
+        GIT_REPOSITORY "https://github.com/progschj/OpenGL-Examples.git"
+        GIT_TAG "dd74a51ec081ad8584bdba023f367f33b5add66a"
 
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
 
-    PREFIX ${PROGSCHJ_EXAMPLES_PROJECT_DIR}
-    BINARY_DIR "${PROGSCHJ_EXAMPLES_PROJECT_DIR}/build"
-    TMP_DIR "${PROGSCHJ_EXAMPLES_PROJECT_DIR}/temp"
-    STAMP_DIR "${PROGSCHJ_EXAMPLES_PROJECT_DIR}/stamp"
-)
+        PREFIX ${PROGSCHJ_EXAMPLES_PROJECT_DIR}
+        BINARY_DIR "${PROGSCHJ_EXAMPLES_PROJECT_DIR}/build"
+        TMP_DIR "${PROGSCHJ_EXAMPLES_PROJECT_DIR}/temp"
+        STAMP_DIR "${PROGSCHJ_EXAMPLES_PROJECT_DIR}/stamp"
+    )
 
-list(APPEND EXTLIB_TARGETS ProgschjExamples)
+    list(APPEND EXTLIB_TARGETS ProgschjExamples)
+endif(BUILD_PROGSCHJ)
 
 ExternalProject_Add(GLFW
     GIT_REPOSITORY "https://github.com/glfw/glfw.git"
@@ -246,20 +250,6 @@ ExternalProject_Add(GLM
 )
 
 list(APPEND EXTLIB_TARGETS GLM)
-
-ExternalProject_Add(KTXtool
-    GIT_REPOSITORY "https://github.com/kvbits/ktxtool.git"
-    GIT_TAG "4af798131c9c4fb992c4c8903de5c0b96ba88a6f"
-
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-
-    PREFIX ${KTXTOOL_PROJECT_DIR}
-    BINARY_DIR "${KTXTOOL_PROJECT_DIR}/build"
-    TMP_DIR "${KTXTOOL_PROJECT_DIR}/temp"
-    STAMP_DIR "${KTXTOOL_PROJECT_DIR}/stamp"
-)
-
-list(APPEND EXTLIB_TARGETS KTXtool)
 
 #[[ ExternalProject_Add(GLO
     GIT_REPOSITORY "https://github.com/g-truc/glo.git"

@@ -6,6 +6,8 @@ layout (location = 1) in vec4 color;
 layout (location = 2) in vec2 texCoord;
 layout (location = 3) in vec3 boxishShape;
 
+uniform mat4 Projection;
+
 out vec4 color_vert;
 out vec2 texCoord_vert;
 
@@ -14,5 +16,5 @@ void main() {
     color_vert = color;
     texCoord_vert = texCoord;
 
-    gl_Position = vec4(positionFinal.x, positionFinal.y, positionFinal.z, 1.0f);
+    gl_Position = Projection * vec4(positionFinal.x, positionFinal.y, positionFinal.z, 1.0f);
 }

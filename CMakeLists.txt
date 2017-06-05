@@ -23,6 +23,8 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
         PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelwithDebInfo" )
 endif()
 
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
+
 message("Extlib Cache: ${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
 message("Current Generator is ${CMAKE_GENERATOR}")
 if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")

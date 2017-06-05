@@ -14,14 +14,14 @@
 
 #include "Common.h"
 
-GLfloat scaleX = 0.4f;
-GLfloat scaleY = 0.4f;
+GLfloat scaleX = 1.0f;
+GLfloat scaleY = 1.0f;
 GLfloat moveX = 0;
 GLfloat moveY = 0;
-GLfloat timeAngle = 4.0f;
+GLfloat timeAngle = 0.0f;
 GLfloat rotateX = 0;
 GLfloat rotateY = 0;
-GLfloat rotateZ = -1.0f;
+GLfloat rotateZ = 0;
 
 const std::string getParentDirectory(const char* path) {
     const char* ptr = path + strlen(path);

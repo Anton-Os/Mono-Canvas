@@ -7,6 +7,10 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <Common.h>
 
 /* Handles main OpenGL functionality */
@@ -15,10 +19,14 @@ GLfloat scaleX = 0.4f;
 GLfloat scaleY = 0.4f;
 GLfloat moveX = 0;
 GLfloat moveY = 0;
-GLfloat timeAngle = 4.0f;
-GLfloat rotateX = 0;
-GLfloat rotateY = 0;
-GLfloat rotateZ = -1.0f;
+GLfloat timeAngle = 1.0;
+GLfloat rotateX = 0.0;
+GLfloat rotateY = 0.0;
+GLfloat rotateZ = 0.1;
+
+GLboolean Q, W, E, R, Y, U, P, A, S, D, F, H, J, N, M = false;
+
+GLuint shaderProg;
 
 const std::string getParentDirectory(const char* path) {
     const char* ptr = path + strlen(path);
@@ -30,70 +38,64 @@ const std::string getParentDirectory(const char* path) {
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
-    if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
-        glfwSetWindowShouldClose(window, GL_TRUE);
+    
+    if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) glfwSetWindowShouldClose(window, GL_TRUE);
+
+    if(key == GLFW_KEY_Q && action == GLFW_PRESS) Q = true;
+    if(key == GLFW_KEY_E && action == GLFW_PRESS) E = true;
+    if(key == GLFW_KEY_W && action == GLFW_PRESS) W = true;
+    if(key == GLFW_KEY_S && action == GLFW_PRESS) S = true;
+    if(key == GLFW_KEY_D && action == GLFW_PRESS) D = true;
+    if(key == GLFW_KEY_A && action == GLFW_PRESS) A = true;
+    if(key == GLFW_KEY_F && action == GLFW_PRESS) F = true;
+    if(key == GLFW_KEY_R && action == GLFW_PRESS) R = true;
+    if(key == GLFW_KEY_Y && action == GLFW_PRESS) Y = true;
+    if(key == GLFW_KEY_U && action == GLFW_PRESS) U = true;
+    if(key == GLFW_KEY_H && action == GLFW_PRESS) H = true;
+    if(key == GLFW_KEY_J && action == GLFW_PRESS) J = true;
+    if(key == GLFW_KEY_N && action == GLFW_PRESS) N = true;
+    if(key == GLFW_KEY_M && action == GLFW_PRESS) M = true;
+    if(key == GLFW_KEY_P && action == GLFW_PRESS) P = true;
+
+    if(key == GLFW_KEY_Q && action == GLFW_RELEASE) Q = false;
+    if(key == GLFW_KEY_E && action == GLFW_RELEASE) E = false;
+    if(key == GLFW_KEY_W && action == GLFW_RELEASE) W = false;
+    if(key == GLFW_KEY_S && action == GLFW_RELEASE) S = false;
+    if(key == GLFW_KEY_D && action == GLFW_RELEASE) D = false;
+    if(key == GLFW_KEY_A && action == GLFW_RELEASE) A = false;
+    if(key == GLFW_KEY_F && action == GLFW_RELEASE) F = false;
+    if(key == GLFW_KEY_R && action == GLFW_RELEASE) R = false;
+    if(key == GLFW_KEY_Y && action == GLFW_RELEASE) Y = false;
+    if(key == GLFW_KEY_U && action == GLFW_RELEASE) U = false;
+    if(key == GLFW_KEY_H && action == GLFW_RELEASE) H = false;
+    if(key == GLFW_KEY_J && action == GLFW_RELEASE) J = false;
+    if(key == GLFW_KEY_N && action == GLFW_RELEASE) N = false;
+    if(key == GLFW_KEY_M && action == GLFW_RELEASE) M = false;
+    if(key == GLFW_KEY_P && action == GLFW_RELEASE) P = false;
+
+    if(Q){ scaleX += 0.03; scaleY += 0.03; }
+    if(E){ scaleX -= 0.03; scaleY -= 0.03; }
+    if(W){ moveY += 0.03; }
+    if(S){ moveY -= 0.03; }
+    if(D){ moveX += 0.03; }
+    if(A){ moveX -= 0.03; }
+    if(F){ timeAngle += 0.03; }
+    if(R){ 
+        if(timeAngle > 0){ timeAngle -= 0.03; } 
     }
-    if(key == GLFW_KEY_Q && action == GLFW_REPEAT){
-        scaleX += 0.1;
-        scaleY += 0.1;
-    }
-    if(key == GLFW_KEY_E && action == GLFW_REPEAT){
-        scaleX -= 0.1;
-        scaleY -= 0.1;
-    }
-    if(key == GLFW_KEY_W && action == GLFW_REPEAT){
-        moveY += 0.1;
-    }
-    if(key == GLFW_KEY_S && action == GLFW_REPEAT){
-        moveY -= 0.1;
-    }
-    if(key == GLFW_KEY_D && action == GLFW_REPEAT){
-        moveX += 0.1;
-    }
-    if(key == GLFW_KEY_A && action == GLFW_REPEAT){
-        moveX -= 0.1;
-    }
-    if(key == GLFW_KEY_F && action == GLFW_REPEAT){
-        timeAngle += 0.1;
-    }
-    if(key == GLFW_KEY_R && action == GLFW_REPEAT){
-        if(timeAngle == 0){
-            std::cout << "timeAngle is at zero and cannot decrease further" << timeAngle << std::endl;
-        } else {
-            timeAngle -= 0.1;
-        }
-    }
-    if(key == GLFW_KEY_Y && action == GLFW_REPEAT){
-        rotateX += 0.1;
-    }
-    if(key == GLFW_KEY_U && action == GLFW_REPEAT){
-        rotateX -= 0.1;
-    }
-    if(key == GLFW_KEY_H && action == GLFW_REPEAT){
-        rotateY += 0.1;
-    }
-    if(key == GLFW_KEY_J && action == GLFW_REPEAT){
-        rotateY -= 0.1;
-    }
-    if(key == GLFW_KEY_N && action == GLFW_REPEAT){
-        rotateZ += 0.1;
-    }
-    if(key == GLFW_KEY_M && action == GLFW_REPEAT){
-        rotateZ -= 0.1;
-    }
-    if(key == GLFW_KEY_P && action == GLFW_REPEAT){
+    if(Y){ rotateX += 0.03; }
+    if(U){ rotateX -= 0.03; }
+    if(H){ rotateY += 0.03; }
+    if(J){ rotateY -= 0.03; }
+    if(N){ rotateZ += 0.03; }
+    if(M){ rotateZ -= 0.03; }
+    if(P){
         timeAngle = 1;
         rotateX = 0;
         rotateY = 0;
         rotateZ = 0;
     }
-}
-
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
-    if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
-        glfwSetWindowShouldClose(window, GL_TRUE);
-    }
-}
+} 
 
 int main(int argc, const char* argv[]){
 
@@ -128,7 +130,7 @@ int main(int argc, const char* argv[]){
 
     glfwSetKeyCallback(window, &keyCallback);
     std::string parentDir(getParentDirectory(argv[0]));
-    GLuint shaderProg = compileShaders(parentDir, "AO-5.vert", "AO-5.frag");
+    shaderProg = compileShaders(parentDir, "AO-5.vert", "AO-5.frag");
     glUseProgram(shaderProg);
     // result = glGetError();
 
@@ -264,6 +266,8 @@ int main(int argc, const char* argv[]){
     glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbinding
     glBindVertexArray(0); // Unbinding
 
+    GLint Projection_loc = glGetUniformLocation(shaderProg, "Projection");
+
     while (!glfwWindowShouldClose(window)) {
 
         glfwPollEvents();
@@ -272,8 +276,13 @@ int main(int argc, const char* argv[]){
         glClear(GL_COLOR_BUFFER_BIT);
 
         glBindVertexArray(VAO);
-        // glDrawArrays(GL_TRIANGLES, 0, 9);
-        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glm::mat4 Projection;
+
+        Projection = glm::translate(Projection, glm::vec3(moveX, moveY, 0.0f));
+        Projection = glm::scale(Projection, glm::vec3(scaleX, scaleY, 0.0f));
+        Projection = glm::rotate(Projection, (float)glfwGetTime() * timeAngle, glm::vec3(rotateX, rotateY, rotateZ));
+
+        glUniformMatrix4fv(Projection_loc, 1, GL_FALSE, glm::value_ptr(Projection));
         glDrawElements(GL_TRIANGLES, sizeof(boxishIndices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
