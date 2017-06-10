@@ -7,26 +7,23 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#define GLM_SWIZZLE
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <Common.h>
+#include "Common.h"
 
-/* Handles main OpenGL functionality */
-
-GLfloat scaleX = 0.4f;
-GLfloat scaleY = 0.4f;
+GLfloat scaleX = 1.0f;
+GLfloat scaleY = 1.0f;
 GLfloat moveX = 0;
 GLfloat moveY = 0;
-GLfloat timeAngle = 1.0;
-GLfloat rotateX = 0.0;
-GLfloat rotateY = 0.0;
-GLfloat rotateZ = 0.1;
+GLfloat timeAngle = 0.0f;
+GLfloat rotateX = 0;
+GLfloat rotateY = 0;
+GLfloat rotateZ = 1.0;
 
 GLboolean Q, W, E, R, Y, U, P, A, S, D, F, H, J, N, M = false;
-
-GLuint shaderProg;
 
 const std::string getParentDirectory(const char* path) {
     const char* ptr = path + strlen(path);
@@ -99,18 +96,17 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 int main(int argc, const char* argv[]){
 
-    system("COLOR F0");
+    system("COLOR 0A");
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glEnable(GL_DEPTH_TEST);
     int width, height;
 
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    // glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-    glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    // GLFWwindow* window = glfwCreateWindow(800, 600, "Mono-Canvas", nullptr, nullptr);
-    GLFWwindow* window = glfwCreateWindow(800 * 2, 600 * 2, "Mono-Canvas", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(800, 600, "Mono-Canvas", nullptr, nullptr);
     if(nullptr == window){
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -130,7 +126,7 @@ int main(int argc, const char* argv[]){
 
     glfwSetKeyCallback(window, &keyCallback);
     std::string parentDir(getParentDirectory(argv[0]));
-    shaderProg = compileShaders(parentDir, "AO-5.vert", "AO-5.frag");
+    GLuint shaderProg = compileShaders(parentDir, "AO-6.vert", "AO-6.frag");
     glUseProgram(shaderProg);
     // result = glGetError();
 
@@ -259,6 +255,8 @@ int main(int argc, const char* argv[]){
 
     glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
     glEnableVertexAttribArray(3);
+    glVertexAttribPointer(4, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
+    glEnableVertexAttribArray(4);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(boxishIndices), boxishIndices, GL_STATIC_DRAW);
@@ -266,30 +264,37 @@ int main(int argc, const char* argv[]){
     glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbinding
     glBindVertexArray(0); // Unbinding
 
-    glm::mat4 Projection;
-    glm::mat4 View;
-
     GLint Projection_loc = glGetUniformLocation(shaderProg, "Projection");
     GLint View_loc = glGetUniformLocation(shaderProg, "View");
+
+    glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.f);
 
     while (!glfwWindowShouldClose(window)) {
 
         glfwPollEvents();
 
         glClearColor(1.0f, 1.0f, 0.88, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glBindVertexArray(VAO);
+        // glDrawArrays(GL_TRIANGLES, 0, 9);
+        // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-        // Projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f);
-        Projection = glm::perspective(glm::radians(45.0f), GLfloat(width / height), 0.1f, 100.f);
-        // View = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0, 0.0));
-        View = glm::translate(View, glm::vec3(moveX, moveY, 0.0f));
+        float t = glfwGetTime();
+
+        // glm::mat4 Projection(1);
+        // glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.f);
+        glm::mat4 View(1);
+
+        // Projection = glm::perspective(45.0f, (float)width/(float)height, 0.0f, 100.0f);
+        View = glm::translate(View, glm::vec3(moveX, moveY, -3.0f));
         View = glm::scale(View, glm::vec3(scaleX, scaleY, 0.0f));
-        View = glm::rotate(View, (float)glfwGetTime() * timeAngle, glm::vec3(rotateX, rotateY, rotateZ));
+        View = glm::rotate(View, t * timeAngle, glm::vec3(rotateX, rotateY, rotateZ));
 
+        // Projection = glm::rotate(Projection, (float)glfwGetTime() * 2, -0.5f, 0.0f, 0.0f);
         glUniformMatrix4fv(Projection_loc, 1, GL_FALSE, glm::value_ptr(Projection));
         glUniformMatrix4fv(View_loc, 1, GL_FALSE, glm::value_ptr(View));
+
         glDrawElements(GL_TRIANGLES, sizeof(boxishIndices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 

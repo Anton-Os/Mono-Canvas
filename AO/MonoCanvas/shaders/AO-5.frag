@@ -8,4 +8,5 @@ out vec4 color_frag;
 
 void main() {
     color_frag = texture(container, texCoord_vert);
+    // color_frag = color_vert;
 }

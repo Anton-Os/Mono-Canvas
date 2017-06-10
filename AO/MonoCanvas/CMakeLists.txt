@@ -1,39 +1,64 @@
-add_executable(MonoCanvas-A src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-A.cpp)
-add_executable(MonoCanvas-B src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-B.cpp)
-add_executable(MonoCanvas-C src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-C.cpp)
+add_executable(TextureTrial src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-A.cpp)
+add_executable(SpinningShape src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-B.cpp)
+add_executable(ProjetionDraft src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-C.cpp)
+add_executable(MatrixViews src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-D.cpp)
+add_executable(ProjectionCopied src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-E.cpp)
 
-target_include_directories(MonoCanvas-A
+target_include_directories(TextureTrial
     PUBLIC include
 )
 
-target_link_libraries(MonoCanvas-A
+target_link_libraries(TextureTrial
     GLEW::glew_s
     glfw
     gli
     glm
 )
 
-target_include_directories(MonoCanvas-B
+target_include_directories(SpinningShape
     PUBLIC include
 )
 
-target_link_libraries(MonoCanvas-B
+target_link_libraries(SpinningShape
     GLEW::glew_s
     glfw
     gli
     glm
 )
 
-target_include_directories(MonoCanvas-C
+target_include_directories(ProjetionDraft
     PUBLIC include
 )
 
-target_link_libraries(MonoCanvas-C
+target_link_libraries(ProjetionDraft
     GLEW::glew_s
     glfw
     gli
     glm
 )
+
+target_include_directories(MatrixViews
+    PUBLIC include
+)
+
+target_link_libraries(MatrixViews
+    GLEW::glew_s
+    glfw
+    gli
+    glm
+)
+
+target_include_directories(ProjectionCopied
+    PUBLIC include
+)
+
+target_link_libraries(ProjectionCopied
+    GLEW::glew_s
+    glfw
+    gli
+    glm
+)
+
 
 # WORK WITH SHADER FILES
 
@@ -43,7 +68,9 @@ add_custom_target(MonoShaders
             "shaders/AO-2.vert" "shaders/AO-2.frag"
             "shaders/AO-3.vert" "shaders/AO-3.frag" 
             "shaders/AO-4.vert" "shaders/AO-4.frag" 
-            "shaders/AO-5.vert" "shaders/AO-5.frag" 
+            "shaders/AO-5.vert" "shaders/AO-5.frag"
+            "shaders/AO-6.vert" "shaders/AO-6.frag"
+            "shaders/AO-7.vert" "shaders/AO-7.frag" 
 )
 
 set(OUTPUT_SHADER_LIST)
@@ -52,6 +79,8 @@ foreach(current_shader "AO-1.vert" "AO-1.frag"
                        "AO-3.vert" "AO-3.frag"
                        "AO-4.vert" "AO-4.frag"
                        "AO-5.vert" "AO-5.frag"
+                       "AO-6.vert" "AO-6.frag"
+                       "AO-7.vert" "AO-7.frag"
 )
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}"
         DEPENDS "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"
@@ -65,8 +94,12 @@ endforeach(current_shader)
 add_custom_target(Shaders
     DEPENDS ${OUTPUT_SHADER_LIST}
 )
-add_dependencies(MonoCanvas-C Shaders)
 
+add_dependencies(TextureTrial Shaders)
+add_dependencies(SpinningShape Shaders)
+add_dependencies(ProjetionDraft Shaders)
+add_dependencies(MatrixViews Shaders)
+add_dependencies(ProjectionCopied Shaders)
 
 # WORK WITH TEXTURE/IMAGE FILES
 
@@ -81,7 +114,7 @@ list(APPEND TEXTURES_KTX "Texture8_PNG_BC7_1.KTX"
 )
 
 foreach(current_texture ${TEXTURES_KTX})
-    add_custom_command(TARGET MonoCanvas-C
+    add_custom_command(TARGET MatrixViews
         PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
             "${CMAKE_CURRENT_LIST_DIR}/${TEXTURES_KTX_DIR}/${current_texture}"
