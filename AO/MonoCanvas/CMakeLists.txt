@@ -2,7 +2,7 @@ add_executable(TextureTrial src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-A
 add_executable(SpinningShape src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-B.cpp)
 add_executable(ProjetionDraft src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-C.cpp)
 add_executable(MatrixViews src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-D.cpp)
-add_executable(ProjectionCopied src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-E.cpp)
+add_executable(PerspectiveCopy src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-E.cpp)
 
 target_include_directories(TextureTrial
     PUBLIC include
@@ -48,11 +48,11 @@ target_link_libraries(MatrixViews
     glm
 )
 
-target_include_directories(ProjectionCopied
+target_include_directories(PerspectiveCopy
     PUBLIC include
 )
 
-target_link_libraries(ProjectionCopied
+target_link_libraries(PerspectiveCopy
     GLEW::glew_s
     glfw
     gli
@@ -99,7 +99,7 @@ add_dependencies(TextureTrial Shaders)
 add_dependencies(SpinningShape Shaders)
 add_dependencies(ProjetionDraft Shaders)
 add_dependencies(MatrixViews Shaders)
-add_dependencies(ProjectionCopied Shaders)
+add_dependencies(PerspectiveCopy Shaders)
 
 # WORK WITH TEXTURE/IMAGE FILES
 

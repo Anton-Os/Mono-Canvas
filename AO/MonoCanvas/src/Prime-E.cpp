@@ -28,36 +28,6 @@ const std::string getParentDirectory(const char* path) {
     return result;
 }
 
-// helper to check and display for shader compiler errors
-bool check_shader_compile_status(GLuint obj) {
-    GLint status;
-    glGetShaderiv(obj, GL_COMPILE_STATUS, &status);
-    if(status == GL_FALSE) {
-        GLint length;
-        glGetShaderiv(obj, GL_INFO_LOG_LENGTH, &length);
-        std::vector<char> log(length);
-        glGetShaderInfoLog(obj, length, &length, &log[0]);
-        std::cerr << &log[0];
-        return false;
-    }
-    return true;
-}
-
-// helper to check and display for shader linker error
-bool check_program_link_status(GLuint obj) {
-    GLint status;
-    glGetProgramiv(obj, GL_LINK_STATUS, &status);
-    if(status == GL_FALSE) {
-        GLint length;
-        glGetProgramiv(obj, GL_INFO_LOG_LENGTH, &length);
-        std::vector<char> log(length);
-        glGetProgramInfoLog(obj, length, &length, &log[0]);
-        std::cerr << &log[0];
-        return false;
-    }
-    return true;
-}
-
 int main(int argc, const char* argv[]) {
     int width = 640;
     int height = 480;
@@ -67,12 +37,10 @@ int main(int argc, const char* argv[]) {
         return 1;
     }
 
-    // select opengl version
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
-    // create a window
     GLFWwindow *window;
     if((window = glfwCreateWindow(width, height, "04perspective", 0, 0)) == 0) {
         std::cerr << "failed to open window" << std::endl;
@@ -82,8 +50,6 @@ int main(int argc, const char* argv[]) {
 
     glfwMakeContextCurrent(window);
 
-
-
     glewExperimental = GL_TRUE;
     if(glewInit() != GLEW_OK){
         std::cerr << "Failed to initialize GLEW" << std::endl;
@@ -91,74 +57,7 @@ int main(int argc, const char* argv[]) {
     }
 
     std::string parentDir(getParentDirectory(argv[0]));
-    // std::string parentDir = "D:\\AntonDocs\\Codex\\Mono-Canvas\\Git-Mingw-64\\AO\\AO\\MonoCanvas\\";
     GLuint shaderProg = compileShaders(parentDir, "AO-7.vert", "AO-7.frag");
-    // glUseProgram(shaderProg);
-
-    // shader source code
-    /* std::string vertex_source =
-        "#version 330\n"
-        "uniform mat4 ViewProjection;\n" // the projection matrix uniform
-        "layout(location = 0) in vec4 vposition;\n"
-        "layout(location = 1) in vec4 vcolor;\n"
-        "out vec4 fcolor;\n"
-        "void main() {\n"
-        "   fcolor = vcolor;\n"
-        "   gl_Position = ViewProjection*vposition;\n"
-        "}\n";
-
-    std::string fragment_source =
-        "#version 330\n"
-        "in vec4 fcolor;\n"
-        "layout(location = 0) out vec4 FragColor;\n"
-        "void main() {\n"
-        "   FragColor = fcolor;\n"
-        "}\n"; */
-
-    /*
-    // program and shader handles
-    GLuint shader_program, vertex_shader, fragment_shader;
-
-    // we need these to properly pass the strings
-    const char *source;
-    int length;
-
-    // create and compiler vertex shader
-    vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    source = vertex_source.c_str();
-    length = vertex_source.size();
-    glShaderSource(vertex_shader, 1, &source, &length);
-    glCompileShader(vertex_shader);
-    if(!check_shader_compile_status(vertex_shader)) {
-        glfwDestroyWindow(window);
-        glfwTerminate();
-        return 1;
-    }
-
-    // create and compiler fragment shader
-    fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    source = fragment_source.c_str();
-    length = fragment_source.size();
-    glShaderSource(fragment_shader, 1, &source, &length);
-    glCompileShader(fragment_shader);
-    if(!check_shader_compile_status(fragment_shader)) {
-        glfwDestroyWindow(window);
-        glfwTerminate();
-        return 1;
-    }
-
-    // create program
-    shader_program = glCreateProgram();
-
-    // attach shaders
-    glAttachShader(shader_program, vertex_shader);
-    glAttachShader(shader_program, fragment_shader);
-
-    // link the program and check for errors
-    glLinkProgram(shader_program);
-    check_program_link_status(shader_program); */
-
-    // obtain location of projection uniform
     GLint ViewProjection_location = glGetUniformLocation(shaderProg, "ViewProjection");
 
 

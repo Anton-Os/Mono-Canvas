@@ -98,13 +98,13 @@ int main(int argc, const char* argv[]){
 
     system("COLOR 0A");
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glEnable(GL_DEPTH_TEST);
     int width, height;
 
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    glViewport(0, 0, width, height);
 
     GLFWwindow* window = glfwCreateWindow(800, 600, "Mono-Canvas", nullptr, nullptr);
     if(nullptr == window){
@@ -115,7 +115,6 @@ int main(int argc, const char* argv[]){
 
     glfwMakeContextCurrent(window);
     glfwGetFramebufferSize(window, &width, &height);
-    glViewport(0, 0, width, height);
     // GLenum result = glGetError();
 
     glewExperimental = GL_TRUE;
@@ -123,6 +122,10 @@ int main(int argc, const char* argv[]){
         std::cerr << "Failed to initialize GLEW" << std::endl;
         return -1;
     }
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glDepthMask(GL_TRUE);
 
     glfwSetKeyCallback(window, &keyCallback);
     std::string parentDir(getParentDirectory(argv[0]));
@@ -190,6 +193,38 @@ int main(int argc, const char* argv[]){
         { {-0.5f - 0.02f, -0.5f, 0.0}, {178, 137, 204, 255} },
     };
 
+    Vertex sixFaceCube[] = {
+        {{ 1.0f, 1.0f, 1.0f }, { 63, 127, 191, 255 }},
+        {{ -1.0f, 1.0f, 1.0f }, { 63, 127, 191, 255 }},
+        {{ 1.0f, -1.0f, 1.0f }, { 63, 127, 191, 255 }},
+        {{ -1.0f, -1.0f, 1.0f }, { 63, 127, 191, 255 }},
+
+        {{ 1.0f, 1.0f, 1.0f }, { 219, 97, 99, 255 }},
+        {{ 1.0f, -1.0f, 1.0f }, { 219, 97, 99, 255 }},
+        {{ 1.0f, 1.0f, -1.0f }, { 219, 97, 99, 255 }},
+        {{ 1.0f, -1.0f, -1.0f }, { 219, 97, 99, 255 }},
+
+        {{ 1.0f, 1.0f, 1.0f }, { 126, 251, 138, 255 }},
+        {{ 1.0f, 1.0f, -1.0f }, { 126, 251, 138, 255 }},
+        {{ -1.0f, 1.0f, 1.0f }, { 126, 251, 138, 255 }},
+        {{ -1.0f, 1.0f, -1.0f }, { 126, 251, 138, 255 }},
+
+        {{ 1.0f, -1.0f, 1.0f }, { 0, 255, 204, 255 }},
+        {{ -1.0f, -1.0f, 1.0f }, { 0, 255, 204, 255 }},
+        {{ 1.0f, -1.0, -1.0f }, { 0, 255, 204, 255 }},
+        {{ -1.0f, -1.0f, -1.0f }, {  0, 255, 204, 255 }},
+
+        {{ 1.0f, 1.0f, -1.0f }, { 178, 137, 204, 255 }},
+        {{ 1.0f, -1.0f, -1.0f }, { 178, 137, 204, 255 }},
+        {{ -1.0f, 1.0f, -1.0f }, { 178, 137, 204, 255 }},
+        {{ -1.0f, -1.0f, -1.0f }, { 178, 137, 204, 255 }},
+
+        {{ -1.0f, 1.0f, 1.0f }, { 235, 163, 137, 255 }},
+        {{ -1.0f, 1.0f,-1.0f }, { 235, 163, 137, 255 }},
+        {{ -1.0f,-1.0f, 1.0f }, { 235, 163, 137, 255 }},
+        {{ -1.0f,-1.0f,-1.0f }, { 235, 163, 137, 255 }}
+    };
+
     GLfloat texCoord[] = {
         1.0f, 1.0f,
         1.0f, 0.0f,
@@ -228,12 +263,29 @@ int main(int argc, const char* argv[]){
         14, 15, 16
     };
 
+    GLuint cubeIndices[] = {
+        0,1,2,
+        2,1,3,
+        4,5,6,
+        6,5,7,
+        8,9,10,
+        10,9,11,
+        12,13,14,
+        14,13,15,
+        16,17,18,
+        18,17,19,
+        20,21,22,
+        22,21,23,
+    };
+
     GLuint VBO, VAO, EBO;
     GLuint VBOs[100];
+    GLuint EBOs[10];
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
     glGenBuffers(100, VBOs);
+    glGenBuffers(10, EBOs);
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
@@ -258,8 +310,19 @@ int main(int argc, const char* argv[]){
     glVertexAttribPointer(4, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
     glEnableVertexAttribArray(4);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBOs[3]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(sixFaceCube), sixFaceCube, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
+    glEnableVertexAttribArray(5);
+    glVertexAttribPointer(6, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
+    glEnableVertexAttribArray(6);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(boxishIndices), boxishIndices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[1]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbinding
     glBindVertexArray(0); // Unbinding
@@ -267,35 +330,26 @@ int main(int argc, const char* argv[]){
     GLint Projection_loc = glGetUniformLocation(shaderProg, "Projection");
     GLint View_loc = glGetUniformLocation(shaderProg, "View");
 
-    glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.f);
-
     while (!glfwWindowShouldClose(window)) {
-
         glfwPollEvents();
-
         glClearColor(1.0f, 1.0f, 0.88, 1.0f);
+        glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        glUseProgram(shaderProg);
         glBindVertexArray(VAO);
-        // glDrawArrays(GL_TRIANGLES, 0, 9);
-        // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
         float t = glfwGetTime();
-
-        // glm::mat4 Projection(1);
-        // glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.f);
+        glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.f);
         glm::mat4 View(1);
 
-        // Projection = glm::perspective(45.0f, (float)width/(float)height, 0.0f, 100.0f);
-        View = glm::translate(View, glm::vec3(moveX, moveY, -3.0f));
+        View = glm::translate(glm::mat4(1), glm::vec3(moveX, moveY, -4.0f));
         View = glm::scale(View, glm::vec3(scaleX, scaleY, 0.0f));
         View = glm::rotate(View, t * timeAngle, glm::vec3(rotateX, rotateY, rotateZ));
 
-        // Projection = glm::rotate(Projection, (float)glfwGetTime() * 2, -0.5f, 0.0f, 0.0f);
         glUniformMatrix4fv(Projection_loc, 1, GL_FALSE, glm::value_ptr(Projection));
         glUniformMatrix4fv(View_loc, 1, GL_FALSE, glm::value_ptr(View));
 
-        glDrawElements(GL_TRIANGLES, sizeof(boxishIndices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, sizeof(cubeIndices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
         glfwSwapBuffers(window);

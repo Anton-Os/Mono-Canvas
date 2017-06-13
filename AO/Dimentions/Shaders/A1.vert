@@ -9,7 +9,7 @@ layout(location = 3) in vec4 fColor;
 
 out vec4 fColor_VERT;
 out vec4 fColor2_VERT;
-out vec4 allVectors = vPosition + vPosition1 + vPosition2;1
+out vec4 allVectors = vPosition + vPosition1 + vPosition2;
 
 void main() {
     fColor_VERT = fColor;
