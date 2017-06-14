@@ -3,6 +3,7 @@ add_executable(SpinningShape src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-
 add_executable(ProjetionDraft src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-C.cpp)
 add_executable(MatrixViews src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-D.cpp)
 add_executable(PerspectiveCopy src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-E.cpp)
+add_executable(ManyCubes src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-F.cpp)
 
 target_include_directories(TextureTrial
     PUBLIC include
@@ -59,6 +60,16 @@ target_link_libraries(PerspectiveCopy
     glm
 )
 
+target_include_directories(ManyCubes
+    PUBLIC include
+)
+
+target_link_libraries(ManyCubes
+    GLEW::glew_s
+    glfw
+    gli
+    glm
+)
 
 # WORK WITH SHADER FILES
 
@@ -70,7 +81,8 @@ add_custom_target(MonoShaders
             "shaders/AO-4.vert" "shaders/AO-4.frag" 
             "shaders/AO-5.vert" "shaders/AO-5.frag"
             "shaders/AO-6.vert" "shaders/AO-6.frag"
-            "shaders/AO-7.vert" "shaders/AO-7.frag" 
+            "shaders/AO-7.vert" "shaders/AO-7.frag"
+            "shaders/AO-8.vert" "shaders/AO-8.frag" 
 )
 
 set(OUTPUT_SHADER_LIST)
@@ -81,6 +93,7 @@ foreach(current_shader "AO-1.vert" "AO-1.frag"
                        "AO-5.vert" "AO-5.frag"
                        "AO-6.vert" "AO-6.frag"
                        "AO-7.vert" "AO-7.frag"
+                       "AO-8.vert" "AO-8.frag"
 )
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}"
         DEPENDS "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"
@@ -100,6 +113,7 @@ add_dependencies(SpinningShape Shaders)
 add_dependencies(ProjetionDraft Shaders)
 add_dependencies(MatrixViews Shaders)
 add_dependencies(PerspectiveCopy Shaders)
+add_dependencies(ManyCubes Shaders)
 
 # WORK WITH TEXTURE/IMAGE FILES
 
@@ -114,7 +128,7 @@ list(APPEND TEXTURES_KTX "Texture8_PNG_BC7_1.KTX"
 )
 
 foreach(current_texture ${TEXTURES_KTX})
-    add_custom_command(TARGET MatrixViews
+    add_custom_command(TARGET ManyCubes
         PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
             "${CMAKE_CURRENT_LIST_DIR}/${TEXTURES_KTX_DIR}/${current_texture}"

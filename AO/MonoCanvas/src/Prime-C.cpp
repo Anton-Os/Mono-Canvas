@@ -100,7 +100,11 @@ int main(int argc, const char* argv[]){
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     int width, height;
 
-    glfwInit();
+    if(glfwInit() == GL_FALSE){
+        std::cerr << "failed to initialize GLFW" << std::endl;
+        return -1;
+    }
+
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
@@ -124,8 +128,8 @@ int main(int argc, const char* argv[]){
     }
 
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LEQUAL);
+    // glDepthMask(GL_TRUE);
 
     glfwSetKeyCallback(window, &keyCallback);
     std::string parentDir(getParentDirectory(argv[0]));
@@ -333,7 +337,7 @@ int main(int argc, const char* argv[]){
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
         glClearColor(1.0f, 1.0f, 0.88, 1.0f);
-        glClearDepth(1.0f);
+        // glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(shaderProg);

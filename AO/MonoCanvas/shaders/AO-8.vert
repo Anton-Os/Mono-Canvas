@@ -6,6 +6,7 @@ layout (location = 1) in vec4 color;
 layout (location = 2) in vec2 texCoord;
 layout (location = 3) in vec3 boxishVerts;
 layout (location = 4) in vec4 boxishColors;
+
 layout (location = 5) in vec3 cubeVerts;
 layout (location = 6) in vec4 cubeColors;
 
@@ -24,7 +25,7 @@ void main() {
 
     color_vert = color;
     boxishColors_vert = boxishColors;
-    cubeColors_vert = cubeColors;
+    cubeColors1_vert = cubeColors;
     texCoord_vert = texCoord;
 
     gl_Position = matrixFinal * vec4(positionFinal.x, positionFinal.y, positionFinal.z, 1.0f);
