@@ -403,6 +403,14 @@ int main(int argc, const char* argv[]){
     glEnableVertexAttribArray(5);
     glVertexAttribPointer(6, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
     glEnableVertexAttribArray(6);
+    glVertexAttribPointer(7, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
+    glEnableVertexAttribArray(5);
+    glVertexAttribPointer(8, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
+    glEnableVertexAttribArray(6);
+    glVertexAttribPointer(9, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
+    glEnableVertexAttribArray(5);
+    glVertexAttribPointer(10, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
+    glEnableVertexAttribArray(6);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(boxishIndices), boxishIndices, GL_STATIC_DRAW);
@@ -435,7 +443,7 @@ int main(int argc, const char* argv[]){
 
         ProjectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.f);
 
-        ViewMatrix = glm::translate(ViewMatrix, glm::vec3(moveX, moveY, -4.0f));
+        ViewMatrix = glm::translate(ViewMatrix, glm::vec3(moveX, moveY, -6.0f));
         ViewMatrix = glm::scale(ViewMatrix, glm::vec3(scaleX, scaleY, 0.0f));
         ViewMatrix = glm::rotate(ViewMatrix, t * timeAngle, glm::vec3(rotateX, rotateY, rotateZ));
         
