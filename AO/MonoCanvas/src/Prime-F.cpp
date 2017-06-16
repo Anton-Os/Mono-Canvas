@@ -14,16 +14,9 @@
 
 #include "Common.h"
 
-GLfloat scaleX = 1.0f;
-GLfloat scaleY = 1.0f;
-GLfloat moveX = 0;
-GLfloat moveY = 0;
-GLfloat rotateDegrees = 0.05f;
-GLfloat rotateX = 0;
-GLfloat rotateY = 0;
-GLfloat rotateZ = 0.01f;
-GLfloat revolveX = 0.0f;
-GLfloat revolveZ = 0.0f;
+GLfloat cameraX = 0.0f;
+GLfloat cameraY = 0.0f;
+GLfloat cameraZ = -10.0f;
 
 // GLboolean Q, W, E, R, Y, U, P, A, S, D, F, H, J, N, M = false;
 GLboolean Q, W, E, R, T, Y, U, I, O, P, A, S, D, F, G, H, J, K, L, Z, X, C, V, B, N, M = false;
@@ -37,7 +30,7 @@ const std::string getParentDirectory(const char* path) {
     return result;
 }
 
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
+/* void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
 
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) glfwSetWindowShouldClose(window, GL_TRUE);
 
@@ -109,7 +102,30 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     std::cout << "scaleX: " << scaleX << " scaleY: " << scaleY << " moveX: " << moveX << " moveY: " << moveY << " rotateDegrees: " << rotateDegrees
               << " rotateX: " << rotateX << " rotateY: " << " rotateZ: " << rotateZ << " revolveX: " << revolveX << " revolveZ: " << revolveZ
               << std::endl;
+} */
+
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
+
+    if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) glfwSetWindowShouldClose(window, GL_TRUE);
+
+    if(key == GLFW_KEY_W && action == GLFW_PRESS) W = true;
+    if(key == GLFW_KEY_A && action == GLFW_PRESS) A = true;
+    if(key == GLFW_KEY_S && action == GLFW_PRESS) S = true;
+    if(key == GLFW_KEY_D && action == GLFW_PRESS) D = true;
+    
+    if(key == GLFW_KEY_W && action == GLFW_RELEASE) W = false;
+    if(key == GLFW_KEY_A && action == GLFW_RELEASE) A = false;
+    if(key == GLFW_KEY_S && action == GLFW_RELEASE) S = false;
+    if(key == GLFW_KEY_D && action == GLFW_RELEASE) D = false;
+
+    if(W){ cameraZ += 0.2f; }
+    if(A){ cameraX += 0.2f; }
+    if(S){ cameraZ -= 0.2f; }
+    if(D){ cameraX -= 0.2f; }
+
+    std::cout << "X Position: " << cameraX << " Y Position: " << cameraY << " Z Position: " << cameraZ << std::endl;
 }
+
 
 /* int main(int argc, const char* argv[]){
     system("COLOR 0A");
@@ -458,6 +474,7 @@ int main(int argc, const char* argv[]){
 
     glfwMakeContextCurrent(mainWindow);
     glfwGetFramebufferSize(mainWindow, &WindowWidth, &WindowHeight);
+    glfwSetKeyCallback(mainWindow, keyCallback);
 
     if(glewInit() != GLEW_OK){
         std::cerr << "Failed to initialize GLEW" << std::endl;
@@ -470,24 +487,115 @@ int main(int argc, const char* argv[]){
     GLuint viewer3D_glsl = compileShaders(parentDir, "Viewer3D.vert", "Viewer3D.frag");
     glUseProgram(viewer3D_glsl);
 
+    glEnable(GL_DEPTH_TEST);
+
+    struct Vertex {
+        GLfloat pos[3];
+        GLubyte color[4];
+    };
+
+    Vertex cube[] = {
+        {{ 1.0f, 1.0f, 1.0f }, { 84, 157, 234, 255 }},
+        {{ -1.0f, 1.0f, 1.0f }, { 84, 157, 234, 255 }},
+        {{ 1.0f, -1.0f, 1.0f }, { 84, 157, 234, 255 }},
+        {{ -1.0f, -1.0f, 1.0f }, { 84, 157, 234, 255 }},
+
+        {{ 1.0f, 1.0f, 1.0f }, { 251, 133, 133, 255 }},
+        {{ 1.0f, -1.0f, 1.0f }, { 234, 84, 84, 255 }},
+        {{ 1.0f, 1.0f, -1.0f }, { 234, 84, 84, 255 }},
+        {{ 1.0f, -1.0f, -1.0f }, { 234, 84, 84, 255 }},
+
+        {{ 1.0f, 1.0f, 1.0f }, { 138, 255, 177, 255 }},
+        {{ 1.0f, 1.0f, -1.0f }, { 138, 255, 177, 255 }},
+        {{ -1.0f, 1.0f, 1.0f }, { 138, 255, 177, 255 }},
+        {{ -1.0f, 1.0f, -1.0f }, { 138, 255, 177, 255 }},
+
+        {{ 1.0f, -1.0f, 1.0f }, { 255, 255, 159 , 255 }},
+        {{ -1.0f, -1.0f, 1.0f }, { 255, 255, 159, 255 }},
+        {{ 1.0f, -1.0, -1.0f }, { 255, 255, 159, 255 }},
+        {{ -1.0f, -1.0f, -1.0f }, { 255, 255, 159, 255 }},
+
+        {{ 1.0f, 1.0f, -1.0f }, { 178, 137, 204, 255 }},
+        {{ 1.0f, -1.0f, -1.0f }, { 178, 137, 204, 255 }},
+        {{ -1.0f, 1.0f, -1.0f }, { 178, 137, 204, 255 }},
+        {{ -1.0f, -1.0f, -1.0f }, { 178, 137, 204, 255 }},
+
+        {{ -1.0f, 1.0f, 1.0f }, { 255, 185, 95, 255 }},
+        {{ -1.0f, 1.0f, -1.0f }, { 255, 185, 95, 255 }},
+        {{ -1.0f, -1.0f, 1.0f }, { 255, 185, 95, 255 }},
+        {{ -1.0f, -1.0f,-1.0f }, { 255, 185, 95, 255 }}
+    };
+
+    GLuint cubeIndices[] = {
+        0, 1, 2,
+        2, 1, 3,
+        4, 5, 6,
+        6, 5, 7,
+        8, 9, 10,
+        10, 9, 11,
+        12, 13, 14,
+        14, 13, 15,
+        16, 17, 18,
+        18, 17, 19,
+        20, 21, 22,
+        22, 21, 23,
+    };
     GLuint VAO;
     GLuint VBOs[20];
     GLuint EBOs[20];
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(20, VBOs);
-    glGenBuffers(20, EBOs);
     glBindVertexArray(VAO);
 
-    // Main Code
+    glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
+    glEnableVertexAttribArray(1);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
 
     glBindVertexArray(0);
+
+    GLint Projection = glGetUniformLocation(viewer3D_glsl, "Projection");
+    GLint View = glGetUniformLocation(viewer3D_glsl, "View");
+    GLint Model = glGetUniformLocation(viewer3D_glsl, "Model");
+
+    glm::mat4 identity(1);
+    glm::mat4 projectionMatrix(1);
+    glm::mat4 viewMatrix(1);
+    // glm::mat4 shapeMatrix(1);
+
+    glm::mat4 cubeMatrix1 = glm::translate(identity, glm::vec3(0.0, 0.0, 0.0));
+    glm::mat4 cubeMatrix2 = glm::translate(identity, glm::vec3(6.0f, 6.0f, -20.0f));
+
+    glm::mat4 cubeMatrixArray[] = { cubeMatrix1, cubeMatrix2 };
+
+    projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
+    // viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -5.0f));
+    viewMatrix = glm::translate(identity, glm::vec3(cameraX, cameraY, cameraZ));
 
     while(!glfwWindowShouldClose(mainWindow)){
         glfwPollEvents();
         glClearColor(0.35f, 0.4f, 0.6f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glBindVertexArray(VAO);
 
+        for(int cubeInstance = 0; cubeInstance < 2; cubeInstance++){
+
+            viewMatrix = glm::translate(identity, glm::vec3(cameraX, cameraY, cameraZ));
+
+            glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+            glUniformMatrix4fv(View, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+            glUniformMatrix4fv(Model, 1, GL_FALSE, glm::value_ptr(cubeMatrixArray[cubeInstance]));
+
+            glDrawElements(GL_TRIANGLES, sizeof(cubeIndices) / sizeof(GLubyte), GL_UNSIGNED_INT, 0);
+        }
+
+        glBindVertexArray(0);
         glfwSwapBuffers(mainWindow);
     }
 
