@@ -571,8 +571,11 @@ int main(int argc, const char* argv[]){
 
     glm::mat4 cubeMatrix1 = glm::translate(identity, glm::vec3(0.0, 0.0, 0.0));
     glm::mat4 cubeMatrix2 = glm::translate(identity, glm::vec3(6.0f, 6.0f, -20.0f));
+    glm::mat4 cubeMatrix3 = glm::translate(identity, glm::vec3(-12.0f, 12.0f, -40.0f));
+    glm::mat4 cubeMatrix4 = glm::translate(identity, glm::vec3(-18.0f, -18.0f, -60.0f));
+    glm::mat4 cubeMatrix5 = glm::translate(identity, glm::vec3(24.0f, -24.0f, -80.0f));
 
-    glm::mat4 cubeMatrixArray[] = { cubeMatrix1, cubeMatrix2 };
+    glm::mat4 cubeMatrixArray[] = { cubeMatrix1, cubeMatrix2, cubeMatrix3, cubeMatrix4, cubeMatrix5 };
 
     projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
     // viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -5.0f));
@@ -584,7 +587,7 @@ int main(int argc, const char* argv[]){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glBindVertexArray(VAO);
 
-        for(int cubeInstance = 0; cubeInstance < 2; cubeInstance++){
+        for(int cubeInstance = 0; cubeInstance < 5; cubeInstance++){
 
             viewMatrix = glm::translate(identity, glm::vec3(cameraX, cameraY, cameraZ));
 

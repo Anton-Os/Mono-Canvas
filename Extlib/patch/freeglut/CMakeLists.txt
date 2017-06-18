@@ -343,6 +343,7 @@ IF(FREEGLUT_BUILD_SHARED_LIBS)
 ENDIF()
 IF(FREEGLUT_BUILD_STATIC_LIBS)
     ADD_LIBRARY(freeglut_static STATIC ${FREEGLUT_SRCS})
+    target_compile_definitions(freeglut_static PUBLIC FREEGLUT_STATIC)
 ENDIF()
 
 
@@ -536,7 +537,7 @@ configure_file(freeglutConfig.cmake.in
 file(RELATIVE_PATH REL_INCLUDE_DIR "/lib/cmake/FreeGLUT" "/include")
 set(CONF_INCLUDE_DIRS "\${FREEGLUT_CMAKE_DIR}/${REL_INCLUDE_DIR}")
 configure_file(freeglutConfig.cmake.in
-    "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/FreeGLUTConfig.cmake" @ONLY)
+    "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/freeglutConfig.cmake" @ONLY)
 
 
 # Install the FooBarConfig.cmake and FooBarConfigVersion.cmake

@@ -10,6 +10,10 @@ target_include_directories(SQLite PUBLIC
     $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>
 )
 
+if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+        set_target_properties(SQLite PROPERTIES DEFINE_SYMBOL "SQLITE_API=__declspec(dllexport)")
+endif()
+
 target_include_directories(SQLite_static PUBLIC 
     $<BUILD_INTERFACE:${SQLITE_PROJECT_DIR}>
     $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>

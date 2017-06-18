@@ -4,6 +4,7 @@ add_executable(ProjetionDraft src/LoadTextures.cpp src/LoadShaders.cpp src/Prime
 add_executable(MatrixViews src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-D.cpp)
 add_executable(PerspectiveCopy src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-E.cpp)
 add_executable(ManyCubes src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-F.cpp)
+add_executable(LitCubes src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-G.cpp)
 
 target_include_directories(TextureTrial
     PUBLIC include
@@ -71,6 +72,17 @@ target_link_libraries(ManyCubes
     glm
 )
 
+target_include_directories(LitCubes
+    PUBLIC include
+)
+
+target_link_libraries(LitCubes
+    GLEW::glew_s
+    glfw
+    gli
+    glm
+)
+
 # WORK WITH SHADER FILES
 
 add_custom_target(MonoShaders
@@ -116,6 +128,7 @@ add_dependencies(ProjetionDraft Shaders)
 add_dependencies(MatrixViews Shaders)
 add_dependencies(PerspectiveCopy Shaders)
 add_dependencies(ManyCubes Shaders)
+add_dependencies(LitCubes Shaders)
 
 # WORK WITH TEXTURE/IMAGE FILES
 
