@@ -156,35 +156,78 @@ int main(int argc, const char* argv[]){
         22, 21, 23,
     };
 
-    GLuint VAO;
+   /* GLuint VAO;
+	GLuint VAOs[20];
     GLuint VBOs[20];
     GLuint EBOs[20];
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(20, VBOs);
-    glBindVertexArray(VAO);
+	glGenBuffers(20, VAOs);
+	glGenBuffers(20, EBOs);
+	glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(platform), platform, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
+    
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
+	glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
     glEnableVertexAttribArray(1);
 
-    /* glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
-    glEnableVertexAttribArray(1); */
-
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(platformIndices), platformIndices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[1]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
 
-    /* glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW); */
 
-    glBindVertexArray(0);
+	GLuint VertexArrayObjs[100];
+	GLuint BufferObjs[100];
+	GLuint usedBufferIndex = 0;
+
+	glGenVertexArrays(100, VertexArrayObjs);
+	glGenBuffers(100, BufferObjs);
+
+	glBindVertexArray(VertexArrayObjs[0]);
+
+	glBindBuffer(GL_ARRAY_BUFFER, BufferObjs[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(platform), platform, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
+	glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
+
+	// glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(1);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, BufferObjs[1]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(platformIndices), platformIndices, GL_STATIC_DRAW);
+
+	glBindVertexArray(VertexArrayObjs[1]);
+
+	glBindBuffer(GL_ARRAY_BUFFER, BufferObjs[2]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
+	glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, BufferObjs[3]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
+	
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     GLint Projection = glGetUniformLocation(viewer3D_glsl, "Projection");
     GLint View = glGetUniformLocation(viewer3D_glsl, "View");
@@ -200,17 +243,23 @@ int main(int argc, const char* argv[]){
     // platformMatrix = identity;
 
     glm::mat4 cubeMatrix1(1);
+	glm::mat4 cubeMatrix2(1);
+	glm::mat4 cubeMatrix3(1);
+	glm::mat4 cubeMatrix4(1);
+	glm::mat4 cubeMatrix5(1);
+
     cubeMatrix1 = glm::translate(identity, glm::vec3(0.0, 0.0, 0.0));
-    glm::mat4 cubeMatrix2(1);
     cubeMatrix2 = glm::translate(identity, glm::vec3(6.0f, 6.0f, -40.0f));
-    glm::mat4 cubeMatrix3(1);
     cubeMatrix3 = glm::translate(identity, glm::vec3(-6.0f, 6.0f, -40.0f));
-    glm::mat4 cubeMatrix4(1);
     cubeMatrix4 = glm::translate(identity, glm::vec3(18.0f, 18.0f, -80.0f));
-    glm::mat4 cubeMatrix5(1);
     cubeMatrix5 = glm::translate(identity, glm::vec3(-18.0f, 18.0f, -80.0f));
 
-    glm::mat4 cubeMatrixArray[] = { cubeMatrix1, cubeMatrix2, cubeMatrix3, cubeMatrix4, cubeMatrix5 };
+    glm::mat4 cubeMatrixArray[] = { cubeMatrix1,
+									cubeMatrix2,
+									cubeMatrix3,
+									cubeMatrix4,
+									cubeMatrix5 
+	};
 
     projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
     viewMatrix = glm::translate(identity, glm::vec3(cameraX, cameraY, cameraZ));
@@ -219,7 +268,6 @@ int main(int argc, const char* argv[]){
         glfwPollEvents();
         glClearColor(0.1294f, 0.1843f, 0.2352f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glBindVertexArray(VAO);
 
         viewMatrix = glm::translate(identity, glm::vec3(cameraX, cameraY, cameraZ));
 
@@ -227,19 +275,36 @@ int main(int argc, const char* argv[]){
         glUniformMatrix4fv(View, 1, GL_FALSE, glm::value_ptr(viewMatrix));
         glUniformMatrix4fv(Model, 1, GL_FALSE, glm::value_ptr(platformMatrix));
 
-        // glDrawArrays(GL_TRIANGLES, 0, sizeof(platform) / sizeof(Vertex));
+		glBindVertexArray(VertexArrayObjs[0]);
+
+		/* glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
+		glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color)); */
+
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
         glDrawElements(GL_TRIANGLES, sizeof(platformIndices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
 
-        /* for(int cubeInstance = 0; cubeInstance < 5; cubeInstance++){
+		/* glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1); */
 
-            viewMatrix = glm::translate(identity, glm::vec3(cameraX, cameraY, cameraZ));
+		glBindVertexArray(VertexArrayObjs[1]);
 
-            glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-            glUniformMatrix4fv(View, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-            glUniformMatrix4fv(Model, 1, GL_FALSE, glm::value_ptr(cubeMatrixArray[cubeInstance]));
+		for (int cubeInstance = 0; cubeInstance < 5; cubeInstance++) {
+			viewMatrix = glm::translate(identity, glm::vec3(cameraX, cameraY, cameraZ));
 
-            glDrawElements(GL_TRIANGLES, sizeof(cubeIndices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
-        } */
+			glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+			glUniformMatrix4fv(View, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+			glUniformMatrix4fv(Model, 1, GL_FALSE, glm::value_ptr(cubeMatrixArray[cubeInstance]));
+
+			glEnableVertexAttribArray(0);
+			glEnableVertexAttribArray(1);
+			glDrawElements(GL_TRIANGLES, sizeof(cubeIndices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
+			glDisableVertexAttribArray(0);
+			glDisableVertexAttribArray(1);
+		}
 
         glBindVertexArray(0);
         glfwSwapBuffers(mainWindow);

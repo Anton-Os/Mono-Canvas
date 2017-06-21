@@ -463,6 +463,6 @@ int main(int argc, const char* argv[]){
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glfwTerminate();
-    system("COLOR 0F");
+	system("COLOR 0F");
     return 0;
 }
