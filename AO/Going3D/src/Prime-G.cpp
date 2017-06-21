@@ -17,6 +17,8 @@
 GLfloat cameraX = 0.0f;
 GLfloat cameraY = 0.0f;
 GLfloat cameraZ = -10.0f;
+GLfloat inverseCameraX = cameraX - cameraX * 2;
+GLfloat inverseCameraZ = cameraZ - cameraZ * 2;
 
 // GLboolean Q, W, E, R, Y, U, P, A, S, D, F, H, J, N, M = false;
 GLboolean Q, W, E, R, T, Y, U, I, O, P, A, S, D, F, G, H, J, K, L, Z, X, C, V, B, N, M = false;
@@ -44,10 +46,22 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     if(key == GLFW_KEY_S && action == GLFW_RELEASE) S = false;
     if(key == GLFW_KEY_D && action == GLFW_RELEASE) D = false;
 
-    if(W){ cameraZ += 0.2f; }
-    if(A){ cameraX += 0.2f; }
-    if(S){ cameraZ -= 0.2f; }
-    if(D){ cameraX -= 0.2f; }
+    if(W){ 
+		cameraZ += 0.35f; 
+		inverseCameraZ = cameraZ - cameraZ * 2;
+	}
+    if(A){ 
+		cameraX += 0.35f; 
+		inverseCameraX = cameraX - cameraX * 2;
+	}
+    if(S){ 
+		cameraZ -= 0.35f;
+	    inverseCameraZ = cameraZ - cameraZ * 2;
+	}
+    if(D){ 
+		cameraX -= 0.35f;
+		inverseCameraX = cameraX - cameraX * 2;
+	}
 
     std::cout << "X Position: " << cameraX << " Y Position: " << cameraY << " Z Position: " << cameraZ << std::endl;
 }
@@ -98,10 +112,10 @@ int main(int argc, const char* argv[]){
     };
 
     Vertex platform[] = {
-        {{5.0f, 0.0, 5.0f}, {93, 109, 126, 255}},
-        {{-5.0f, 0.0, 5.0f}, {93, 109, 126, 255}},
-        {{5.0f, 0.0, -5.0f}, {93, 109, 126, 255}},
-        {{-5.0f, 0.0, -5.0f}, {93, 109, 126, 255}}
+        {{45.0f, 0.0, 45.0f}, {93, 109, 126, 255}},
+        {{-45.0f, 0.0, 45.0f}, {93, 109, 126, 255}},
+        {{45.0f, 0.0, -45.0f}, {93, 109, 126, 255}},
+        {{-45.0f, 0.0, -45.0f}, {93, 109, 126, 255}}
     };
 
     Vertex cube[] = {
@@ -156,43 +170,6 @@ int main(int argc, const char* argv[]){
         22, 21, 23,
     };
 
-   /* GLuint VAO;
-	GLuint VAOs[20];
-    GLuint VBOs[20];
-    GLuint EBOs[20];
-
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(20, VBOs);
-	glGenBuffers(20, VAOs);
-	glGenBuffers(20, EBOs);
-	glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(platform), platform, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
-    
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
-	glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
-
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
-    glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(platformIndices), platformIndices, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[1]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW); */
-
 	GLuint VertexArrayObjs[100];
 	GLuint BufferObjs[100];
 	GLuint usedBufferIndex = 0;
@@ -217,13 +194,13 @@ int main(int argc, const char* argv[]){
 	glBindVertexArray(VertexArrayObjs[1]);
 
 	glBindBuffer(GL_ARRAY_BUFFER, BufferObjs[2]);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, BufferObjs[3]);
+	
 	glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
 	glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, BufferObjs[3]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
 	
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -233,14 +210,13 @@ int main(int argc, const char* argv[]){
     GLint View = glGetUniformLocation(viewer3D_glsl, "View");
     GLint Model = glGetUniformLocation(viewer3D_glsl, "Model");
 
-    glm::mat4 identity(1);
+	glm::mat4 identityMatrix(1);
     glm::mat4 projectionMatrix(1);
-    glm::mat4 viewMatrix(1);
+	glm::mat4 lookAtMatrix(1);
+	glm::mat4 viewMatrix(1);
 
     glm::mat4 platformMatrix(1);
-    // platformMatrix = glm::scale(identity, glm::vec3(10.0f, 0.0, 10.0f));
-    platformMatrix = glm::translate(identity, glm::vec3(0.0, -4.0f, 0.0));
-    // platformMatrix = identity;
+    platformMatrix = glm::translate(identityMatrix, glm::vec3(0.0, -1.0f, 0.0));
 
     glm::mat4 cubeMatrix1(1);
 	glm::mat4 cubeMatrix2(1);
@@ -248,11 +224,11 @@ int main(int argc, const char* argv[]){
 	glm::mat4 cubeMatrix4(1);
 	glm::mat4 cubeMatrix5(1);
 
-    cubeMatrix1 = glm::translate(identity, glm::vec3(0.0, 0.0, 0.0));
-    cubeMatrix2 = glm::translate(identity, glm::vec3(6.0f, 6.0f, -40.0f));
-    cubeMatrix3 = glm::translate(identity, glm::vec3(-6.0f, 6.0f, -40.0f));
-    cubeMatrix4 = glm::translate(identity, glm::vec3(18.0f, 18.0f, -80.0f));
-    cubeMatrix5 = glm::translate(identity, glm::vec3(-18.0f, 18.0f, -80.0f));
+    cubeMatrix1 = glm::translate(identityMatrix, glm::vec3(0.0, 0.0, 0.0));
+    cubeMatrix2 = glm::translate(identityMatrix, glm::vec3(6.0f, 6.0f, -20.0f));
+    cubeMatrix3 = glm::translate(identityMatrix, glm::vec3(-6.0f, 6.0f, -20.0f));
+    cubeMatrix4 = glm::translate(identityMatrix, glm::vec3(12.0f, 12.0f, -40.0f));
+    cubeMatrix5 = glm::translate(identityMatrix, glm::vec3(-12.0f, 12.0f, -40.0f));
 
     glm::mat4 cubeMatrixArray[] = { cubeMatrix1,
 									cubeMatrix2,
@@ -262,14 +238,20 @@ int main(int argc, const char* argv[]){
 	};
 
     projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
-    viewMatrix = glm::translate(identity, glm::vec3(cameraX, cameraY, cameraZ));
+	lookAtMatrix = glm::lookAt(
+		glm::vec3(0.0, 0.0, 1.0f),
+		glm::vec3(0.0, 0.0, 0.0),
+		glm::vec3(0.0, 1.0, 0.0)
+	);
+	viewMatrix = glm::translate(identityMatrix, glm::vec3(cameraX, cameraY, cameraZ));
 
     while(!glfwWindowShouldClose(mainWindow)){
         glfwPollEvents();
         glClearColor(0.1294f, 0.1843f, 0.2352f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        viewMatrix = glm::translate(identity, glm::vec3(cameraX, cameraY, cameraZ));
+        viewMatrix = glm::translate(identityMatrix, glm::vec3(cameraX, cameraY, cameraZ));
+		viewMatrix = viewMatrix * lookAtMatrix;
 
         glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
         glUniformMatrix4fv(View, 1, GL_FALSE, glm::value_ptr(viewMatrix));
@@ -277,23 +259,18 @@ int main(int argc, const char* argv[]){
 
 		glBindVertexArray(VertexArrayObjs[0]);
 
-		/* glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
-		glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color)); */
-
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
         glDrawElements(GL_TRIANGLES, sizeof(platformIndices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
 
-		/* glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1); */
-
 		glBindVertexArray(VertexArrayObjs[1]);
 
 		for (int cubeInstance = 0; cubeInstance < 5; cubeInstance++) {
-			viewMatrix = glm::translate(identity, glm::vec3(cameraX, cameraY, cameraZ));
+			viewMatrix = glm::translate(identityMatrix, glm::vec3(cameraX, cameraY, cameraZ));
+			viewMatrix = viewMatrix * lookAtMatrix;
+
 
 			glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 			glUniformMatrix4fv(View, 1, GL_FALSE, glm::value_ptr(viewMatrix));
