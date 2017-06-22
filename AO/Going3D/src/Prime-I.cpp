@@ -14,13 +14,89 @@
 
 #include "Common.h"
 
+#include <iostream>
+#include <cmath>
+#include <string>
+#include <cstring>
+
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
+#define GLM_SWIZZLE
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "Common.h"
+
+GLboolean cursorOn = true;
+// GLboolean zAdd = false;
+GLboolean pointPassX = false;
+GLboolean pointPassZ = false;
+GLboolean increasedX;
+GLdouble cursorFirstX;
+GLdouble cursorFirstY;
+
+GLint currentLook = 0;
+
 GLfloat cameraX = 0.0f;
 GLfloat cameraY = 0.0f;
 GLfloat cameraZ = -10.0f;
-GLfloat inverseCameraX = cameraX - cameraX * 2;
-GLfloat inverseCameraZ = cameraZ - cameraZ * 2;
 
-// GLboolean Q, W, E, R, Y, U, P, A, S, D, F, H, J, N, M = false;
+GLfloat lookX = 0.0;
+GLfloat lookY = 0.0;
+GLfloat lookZ = -1.0;
+
+glm::vec3 lookDirection(1);
+
+struct possibleXZ {
+	GLfloat x;
+	GLfloat z;
+};
+
+possibleXZ lookAroundXZ[]{
+	{0, 1.0f}, // X increase Z decrease
+	{0.1f, 0.9f},
+	{0.2f, 0.8f},
+	{0.3f, 0.7f},
+	{0.4f, 0.6f},
+	{0.5f, 0.5f},
+	{0.6f, 0.4f},
+	{0.7f, 0.3f},
+	{0.8f, 0.2f},
+	{0.9f, 0.1f},
+	{1.0f, 0.0f}, // X decrease Z decrease
+	{0.9f, -0.1f},
+	{0.8f, -0.2f},
+	{0.7f, -0.3f},
+	{0.6f, -0.4f},
+	{0.5f, -0.5f},
+	{0.4f, -0.6f},
+	{0.3f, -0.7f},
+	{0.2f, -0.8f},
+	{0.1f, -0.9f},
+	{-0.0f, -1.0f}, // X decrease Z increase
+	{-0.1f, -0.9f},
+	{-0.2f, -0.8f},
+	{-0.3f, -0.7f},
+	{-0.4f, -0.6f},
+	{-0.5f, -0.5f},
+	{-0.6f, -0.4f},
+	{-0.7f, -0.3f},
+	{-0.8f, -0.2f},
+	{-0.9f, -0.1f},
+	{-1.0f, 0.0f}, // X increase Z increase
+	{-0.9f, 0.1f},
+	{-0.8f, 0.2f},
+	{-0.7f, 0.3f},
+	{-0.6f, 0.4f},
+	{-0.5f, 0.5f},
+	{-0.4f, 0.6f},
+	{-0.3f, 0.7f},
+	{-0.2f, 0.8f},
+	{-0.1f, 0.9f},
+};
+
 GLboolean Q, W, E, R, T, Y, U, I, O, P, A, S, D, F, G, H, J, K, L, Z, X, C, V, B, N, M = false;
 
 const std::string getParentDirectory(const char* path) {
@@ -48,22 +124,154 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 	if (W) {
 		cameraZ += 0.35f;
-		inverseCameraZ = cameraZ - cameraZ * 2;
 	}
 	if (A) {
 		cameraX += 0.35f;
-		inverseCameraX = cameraX - cameraX * 2;
 	}
 	if (S) {
 		cameraZ -= 0.35f;
-		inverseCameraZ = cameraZ - cameraZ * 2;
 	}
 	if (D) {
 		cameraX -= 0.35f;
-		inverseCameraX = cameraX - cameraX * 2;
 	}
 
 	std::cout << "X Position: " << cameraX << " Y Position: " << cameraY << " Z Position: " << cameraZ << std::endl;
+	return;
+}
+
+/* void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
+	if (cursorOn) {
+		cursorFirstX = xpos;
+		cursorFirstY = ypos;
+		cursorOn = false;
+	}
+
+	// if (xpos > cursorFirstX) {
+	//	lookX += 0.1f;
+	//	cursorFirstX = xpos;
+	// }
+	// else if (xpos < cursorFirstX) {
+	//	lookX -= 0.1f;
+	//	cursorFirstX = xpos;
+	// }
+
+	if(xpos > cursorFirstX){
+		currentLook++;
+		if (currentLook >= sizeof(lookAroundXZ) / sizeof(possibleXZ)) {
+			currentLook = 0;
+		}
+		cursorFirstX = xpos;
+	}
+	else if (xpos < cursorFirstX) {
+		currentLook--;
+		if(currentLook < 0){
+			currentLook = sizeof(lookAroundXZ) / sizeof(possibleXZ) - 1;
+		}
+		cursorFirstX = xpos;
+	}
+
+	lookX = lookAroundXZ[currentLook].x;
+	lookZ = lookAroundXZ[currentLook].z;
+
+	return;
+} */
+
+/* void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
+	if (cursorOn) {
+		cursorFirstX = xpos;
+		cursorFirstY = ypos;
+		cursorOn = false;
+	}
+
+	if (xpos > cursorFirstX) {
+		// lookX += (GLfloat)ypos / 4000;
+		lookX += 0.2f;
+		if(!increasedX){ zAdd = true; } else { zAdd = false; }
+		increasedX = true;
+	}
+	else if (xpos < cursorFirstX) {
+		lookX -= 0.2f;
+		if(increasedX){	zAdd = true; } else { zAdd = false; }
+		increasedX = false;
+	}
+
+	if(lookZ <= -1.0f){
+		zAdd = true;
+	}
+
+	if(zAdd){
+		lookZ += 0.2f;
+	}
+	else if (!zAdd) {
+		lookZ -= 0.2f;
+	}
+
+	cursorFirstX = xpos;
+
+	std::cout << "lookX is " << lookX << std::endl;
+	std::cout << "Cursor initial X position was " << cursorFirstX << "and Cursor initial Y position was " << cursorFirstY << std::endl;
+	std::cout << "Cursor current X position is " << xpos << " and Cursor current Y position is " << ypos << std::endl;
+
+	return;
+} */
+
+/* void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
+	if (cursorOn) {
+		cursorFirstX = xpos;
+		cursorFirstY = ypos;
+		cursorOn = false;
+	}
+
+	if(pointPassX){
+		if(lookX > 1.0f || lookX < -1.0f) pointPassX = false;
+	} else {
+		if(lookX > 1.0f || lookX < -1.0f) pointPassX = true;
+	}
+
+	if (pointPassZ) {
+		if (lookZ > 1.0f || lookZ < -1.0f) pointPassZ = false;
+	} else {
+		if (lookZ > 1.0f || lookZ < -1.0f) pointPassZ = true;
+	}
+
+	if (xpos > cursorFirstX) {
+		if(pointPassX) lookX -= 0.05f;
+		else lookX += 0.05f;
+
+		if(pointPassZ) lookZ -= 0.05f;
+		else lookZ += 0.05f;
+	}
+	else if (xpos < cursorFirstX) {
+		if(pointPassX) lookX += 0.05f;
+		else lookX -= 0.05f;
+
+		if (pointPassZ) lookZ += 0.05f;
+		else lookZ -= 0.05f;
+	}
+	
+	return;
+} */
+
+void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
+	if (cursorOn) {
+		cursorFirstX = xpos;
+		cursorFirstY = ypos;
+		cursorOn = false;
+	}
+
+	if (xpos > cursorFirstX) {
+		lookX += 0.1f;
+		lookZ += 0.1f;
+	}
+	else if (xpos < cursorFirstX) {
+		lookX -= 0.1f;
+		lookZ -= 0.1f;
+	}
+
+	std::cout << "lookDirection X: " << lookDirection.x << " Y: " << lookDirection.y << " Z: " << lookDirection.z << std::endl;
+
+	cursorFirstX = xpos;
+	return;
 }
 
 int main(int argc, const char* argv[]) {
@@ -93,6 +301,8 @@ int main(int argc, const char* argv[]) {
 	glfwMakeContextCurrent(mainWindow);
 	glfwGetFramebufferSize(mainWindow, &WindowWidth, &WindowHeight);
 	glfwSetKeyCallback(mainWindow, keyCallback);
+	glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(mainWindow, cursorCallback);
 
 	if (glewInit() != GLEW_OK) {
 		std::cerr << "Failed to initialize GLEW" << std::endl;
@@ -213,8 +423,8 @@ int main(int argc, const char* argv[]) {
 
 	glm::mat4 identityMatrix(1);
 	glm::mat4 projectionMatrix(1);
-	glm::mat4 lookAtMatrix(1);
 	glm::mat4 viewMatrix(1);
+	glm::mat4 lookAtMatrix(1);
 
 	glm::mat4 platformMatrix(1);
 	platformMatrix = glm::translate(identityMatrix, glm::vec3(0.0, -1.0f, 0.0));
@@ -239,11 +449,6 @@ int main(int argc, const char* argv[]) {
 	};
 
 	projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
-	lookAtMatrix = glm::lookAt(
-		glm::vec3(0.0, 0.0, 1.0f),
-		glm::vec3(0.0, 0.0, 0.0),
-		glm::vec3(0.0, 1.0, 0.0)
-	);
 	viewMatrix = glm::translate(identityMatrix, glm::vec3(cameraX, cameraY, cameraZ));
 
 	while (!glfwWindowShouldClose(mainWindow)) {
@@ -253,8 +458,11 @@ int main(int argc, const char* argv[]) {
 
 		glUseProgram(viewer3D_glsl);
 
-		viewMatrix = glm::translate(identityMatrix, glm::vec3(cameraX, cameraY, cameraZ));
-		viewMatrix = viewMatrix * lookAtMatrix;
+		glm::vec3 cameraPos(cameraX, cameraY, cameraZ);
+		// glm::vec3 lookDirection(glm::normalize(glm::vec3(lookX, lookY, lookZ)));
+		lookDirection = glm::vec3(std::sin(lookX), lookY, std::sin(lookZ));
+
+		viewMatrix = glm::lookAt(cameraPos, glm::vec3(cameraX + lookDirection.x, cameraY + lookDirection.y, cameraZ + lookDirection.z), glm::vec3(0.0, 1.0f, 0.0));
 
 		glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 		glUniformMatrix4fv(View, 1, GL_FALSE, glm::value_ptr(viewMatrix));
@@ -271,8 +479,8 @@ int main(int argc, const char* argv[]) {
 		glBindVertexArray(VertexArrayObjs[1]);
 
 		for (int cubeInstance = 0; cubeInstance < 5; cubeInstance++) {
-			viewMatrix = glm::translate(identityMatrix, glm::vec3(cameraX, cameraY, cameraZ));
-			viewMatrix = viewMatrix * lookAtMatrix;
+
+			viewMatrix = glm::lookAt(cameraPos, glm::vec3(cameraX + lookDirection.x, cameraY + lookDirection.y, cameraZ + lookDirection.z), glm::vec3(0.0, 1.0f, 0.0));
 
 			glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 			glUniformMatrix4fv(View, 1, GL_FALSE, glm::value_ptr(viewMatrix));
@@ -292,3 +500,4 @@ int main(int argc, const char* argv[]) {
 	glfwTerminate();
 	return 0;
 }
+

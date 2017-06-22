@@ -4,7 +4,8 @@ add_executable(ProjetionDraft src/LoadTextures.cpp src/LoadShaders.cpp src/Prime
 add_executable(MatrixViews src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-D.cpp)
 add_executable(PerspectiveCopy src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-E.cpp)
 add_executable(ManyCubes src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-F.cpp)
-add_executable(LitCubes src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-G.cpp)
+add_executable(LookAhead src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-G.cpp)
+add_executable(Scene360 src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-I.cpp)
 
 target_include_directories(TextureTrial
     PUBLIC include
@@ -72,11 +73,22 @@ target_link_libraries(ManyCubes
     glm
 )
 
-target_include_directories(LitCubes
+target_include_directories(LookAhead
     PUBLIC include
 )
 
-target_link_libraries(LitCubes
+target_link_libraries(LookAhead
+    GLEW::glew_s
+    glfw
+    gli
+    glm
+)
+
+target_include_directories(Scene360
+    PUBLIC include
+)
+
+target_link_libraries(Scene360
     GLEW::glew_s
     glfw
     gli
@@ -128,7 +140,8 @@ add_dependencies(ProjetionDraft Shaders)
 add_dependencies(MatrixViews Shaders)
 add_dependencies(PerspectiveCopy Shaders)
 add_dependencies(ManyCubes Shaders)
-add_dependencies(LitCubes Shaders)
+add_dependencies(LookAhead Shaders)
+add_dependencies(Scene360 Shaders)
 
 # WORK WITH TEXTURE/IMAGE FILES
 
