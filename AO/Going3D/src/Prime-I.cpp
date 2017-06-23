@@ -41,7 +41,7 @@ GLint currentLook = 0;
 
 GLfloat cameraX = 0.0f;
 GLfloat cameraY = 0.0f;
-GLfloat cameraZ = -10.0f;
+GLfloat cameraZ = 10.0f;
 
 GLfloat lookX = 0.0;
 GLfloat lookY = 0.0;
@@ -123,134 +123,21 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_D && action == GLFW_RELEASE) D = false;
 
 	if (W) {
-		cameraZ += 0.35f;
-	}
-	if (A) {
-		cameraX += 0.35f;
-	}
-	if (S) {
 		cameraZ -= 0.35f;
 	}
-	if (D) {
+	if (A) {
 		cameraX -= 0.35f;
+	}
+	if (S) {
+		cameraZ += 0.35f;
+	}
+	if (D) {
+		cameraX += 0.35f;
 	}
 
 	std::cout << "X Position: " << cameraX << " Y Position: " << cameraY << " Z Position: " << cameraZ << std::endl;
 	return;
 }
-
-/* void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
-	if (cursorOn) {
-		cursorFirstX = xpos;
-		cursorFirstY = ypos;
-		cursorOn = false;
-	}
-
-	// if (xpos > cursorFirstX) {
-	//	lookX += 0.1f;
-	//	cursorFirstX = xpos;
-	// }
-	// else if (xpos < cursorFirstX) {
-	//	lookX -= 0.1f;
-	//	cursorFirstX = xpos;
-	// }
-
-	if(xpos > cursorFirstX){
-		currentLook++;
-		if (currentLook >= sizeof(lookAroundXZ) / sizeof(possibleXZ)) {
-			currentLook = 0;
-		}
-		cursorFirstX = xpos;
-	}
-	else if (xpos < cursorFirstX) {
-		currentLook--;
-		if(currentLook < 0){
-			currentLook = sizeof(lookAroundXZ) / sizeof(possibleXZ) - 1;
-		}
-		cursorFirstX = xpos;
-	}
-
-	lookX = lookAroundXZ[currentLook].x;
-	lookZ = lookAroundXZ[currentLook].z;
-
-	return;
-} */
-
-/* void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
-	if (cursorOn) {
-		cursorFirstX = xpos;
-		cursorFirstY = ypos;
-		cursorOn = false;
-	}
-
-	if (xpos > cursorFirstX) {
-		// lookX += (GLfloat)ypos / 4000;
-		lookX += 0.2f;
-		if(!increasedX){ zAdd = true; } else { zAdd = false; }
-		increasedX = true;
-	}
-	else if (xpos < cursorFirstX) {
-		lookX -= 0.2f;
-		if(increasedX){	zAdd = true; } else { zAdd = false; }
-		increasedX = false;
-	}
-
-	if(lookZ <= -1.0f){
-		zAdd = true;
-	}
-
-	if(zAdd){
-		lookZ += 0.2f;
-	}
-	else if (!zAdd) {
-		lookZ -= 0.2f;
-	}
-
-	cursorFirstX = xpos;
-
-	std::cout << "lookX is " << lookX << std::endl;
-	std::cout << "Cursor initial X position was " << cursorFirstX << "and Cursor initial Y position was " << cursorFirstY << std::endl;
-	std::cout << "Cursor current X position is " << xpos << " and Cursor current Y position is " << ypos << std::endl;
-
-	return;
-} */
-
-/* void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
-	if (cursorOn) {
-		cursorFirstX = xpos;
-		cursorFirstY = ypos;
-		cursorOn = false;
-	}
-
-	if(pointPassX){
-		if(lookX > 1.0f || lookX < -1.0f) pointPassX = false;
-	} else {
-		if(lookX > 1.0f || lookX < -1.0f) pointPassX = true;
-	}
-
-	if (pointPassZ) {
-		if (lookZ > 1.0f || lookZ < -1.0f) pointPassZ = false;
-	} else {
-		if (lookZ > 1.0f || lookZ < -1.0f) pointPassZ = true;
-	}
-
-	if (xpos > cursorFirstX) {
-		if(pointPassX) lookX -= 0.05f;
-		else lookX += 0.05f;
-
-		if(pointPassZ) lookZ -= 0.05f;
-		else lookZ += 0.05f;
-	}
-	else if (xpos < cursorFirstX) {
-		if(pointPassX) lookX += 0.05f;
-		else lookX -= 0.05f;
-
-		if (pointPassZ) lookZ += 0.05f;
-		else lookZ -= 0.05f;
-	}
-	
-	return;
-} */
 
 void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
 	if (cursorOn) {
@@ -259,18 +146,23 @@ void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
 		cursorOn = false;
 	}
 
-	if (xpos > cursorFirstX) {
-		lookX += 0.1f;
-		lookZ += 0.1f;
+	if(xpos > cursorFirstX) lookX += 0.02f;
+	else if(xpos < cursorFirstX) lookX -= 0.02f;
+
+	/* if(ypos > cursorFirstY) {
+		lookY -= 0.015f;
 	}
-	else if (xpos < cursorFirstX) {
-		lookX -= 0.1f;
-		lookZ -= 0.1f;
-	}
+	else if(ypos < cursorFirstY) {
+		lookY += 0.015f;
+	} */
+
+	if (xpos > cursorFirstX || ypos > cursorFirstY) lookZ += 0.02f;
+	if (xpos < cursorFirstX || ypos < cursorFirstY) lookZ -= 0.02f;
 
 	std::cout << "lookDirection X: " << lookDirection.x << " Y: " << lookDirection.y << " Z: " << lookDirection.z << std::endl;
 
 	cursorFirstX = xpos;
+	cursorFirstY = ypos;
 	return;
 }
 
@@ -312,6 +204,29 @@ int main(int argc, const char* argv[]) {
 	}
 
 	std::string parentDir(getParentDirectory(argv[0]));
+    // std::cout << "parentDir: " << parentDir << std::endl;
+
+	std::string fileKTX1 = "\\data\\ktx\\Texture8_PNG_BC7_1.KTX";
+	std::string fileKTX2 = "\\data\\ktx\\800px-Birnam_wood_macbeth_PNG_BC7_1.KTX";
+	std::string fileKTX3 = "\\data\\ktx\\spotted-steel_PNG_BC7_3.KTX";
+	std::string fileKTX4 = "\\data\\ktx\\wildtextures-creased-white-paper-texture_PNG_BC7_1.KTX";
+	
+	std::string pathKTX1 = parentDir + fileKTX1;
+	std::string pathKTX2 = parentDir + fileKTX2;
+	std::string pathKTX3 = parentDir + fileKTX3;
+	std::string pathKTX4 = parentDir + fileKTX4;
+
+	GLuint texture1 = createTexture(pathKTX1.c_str());
+	textureCheck(texture1, pathKTX1);
+	GLuint texture2 = createTexture(pathKTX2.c_str());
+	textureCheck(texture2, pathKTX2);
+    GLuint texture3 = createTexture(pathKTX3.c_str());
+	textureCheck(texture3, pathKTX3);
+	GLuint texture4 = createTexture(pathKTX4.c_str());
+	textureCheck(texture4, pathKTX4);
+
+    // glActiveTexture(texture2);
+
 	GLuint default_glsl = compileShaders(parentDir, "AO-8.vert", "AO-8.frag");
 	GLuint viewer3D_glsl = compileShaders(parentDir, "Viewer3D.vert", "Viewer3D.frag");
 
@@ -327,6 +242,13 @@ int main(int argc, const char* argv[]) {
 		{ { -45.0f, 0.0, 45.0f },{ 93, 109, 126, 255 } },
 		{ { 45.0f, 0.0, -45.0f },{ 93, 109, 126, 255 } },
 		{ { -45.0f, 0.0, -45.0f },{ 93, 109, 126, 255 } }
+	};
+
+	GLfloat platformTexCoord[] = {
+		1.0f, 1.0f,
+		0.0, 1.0f,
+		1.0f, 0.0,
+		0.0, 0.0
 	};
 
 	Vertex cube[] = {
@@ -392,7 +314,6 @@ int main(int argc, const char* argv[]) {
 
 	glBindBuffer(GL_ARRAY_BUFFER, BufferObjs[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(platform), platform, GL_STATIC_DRAW);
-
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
 	glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
 
@@ -402,16 +323,20 @@ int main(int argc, const char* argv[]) {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, BufferObjs[1]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(platformIndices), platformIndices, GL_STATIC_DRAW);
 
+	glBindBuffer(GL_ARRAY_BUFFER, BufferObjs[2]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(platformTexCoord), platformTexCoord, GL_STATIC_DRAW);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+
 	glBindVertexArray(VertexArrayObjs[1]);
 
-	glBindBuffer(GL_ARRAY_BUFFER, BufferObjs[2]);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, BufferObjs[3]);
-
+	glBindBuffer(GL_ARRAY_BUFFER, BufferObjs[3]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
 	glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, BufferObjs[4]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -420,6 +345,7 @@ int main(int argc, const char* argv[]) {
 	GLint Projection = glGetUniformLocation(viewer3D_glsl, "Projection");
 	GLint View = glGetUniformLocation(viewer3D_glsl, "View");
 	GLint Model = glGetUniformLocation(viewer3D_glsl, "Model");
+    GLint surfaceRenderMode = glGetUniformLocation(viewer3D_glsl, "surfaceRenderMode");
 
 	glm::mat4 identityMatrix(1);
 	glm::mat4 projectionMatrix(1);
@@ -434,18 +360,30 @@ int main(int argc, const char* argv[]) {
 	glm::mat4 cubeMatrix3(1);
 	glm::mat4 cubeMatrix4(1);
 	glm::mat4 cubeMatrix5(1);
+	glm::mat4 cubeMatrix6(1);
+	glm::mat4 cubeMatrix7(1);
+	glm::mat4 cubeMatrix8(1);
+	glm::mat4 cubeMatrix9(1);
 
 	cubeMatrix1 = glm::translate(identityMatrix, glm::vec3(0.0, 0.0, 0.0));
 	cubeMatrix2 = glm::translate(identityMatrix, glm::vec3(6.0f, 6.0f, -20.0f));
 	cubeMatrix3 = glm::translate(identityMatrix, glm::vec3(-6.0f, 6.0f, -20.0f));
 	cubeMatrix4 = glm::translate(identityMatrix, glm::vec3(12.0f, 12.0f, -40.0f));
 	cubeMatrix5 = glm::translate(identityMatrix, glm::vec3(-12.0f, 12.0f, -40.0f));
+	cubeMatrix6 = glm::translate(identityMatrix, glm::vec3(6.0f, 6.0f, 20.0f));
+	cubeMatrix7 = glm::translate(identityMatrix, glm::vec3(-6.0f, 6.0f, 20.0f));
+	cubeMatrix8 = glm::translate(identityMatrix, glm::vec3(12.0f, 12.0f, 40.0f));
+	cubeMatrix9 = glm::translate(identityMatrix, glm::vec3(-12.0f, 12.0f, 40.0f));
 
 	glm::mat4 cubeMatrixArray[] = { cubeMatrix1,
 		cubeMatrix2,
 		cubeMatrix3,
 		cubeMatrix4,
-		cubeMatrix5
+		cubeMatrix5,
+		cubeMatrix6,
+		cubeMatrix7,
+		cubeMatrix8,
+		cubeMatrix9
 	};
 
 	projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
@@ -457,34 +395,43 @@ int main(int argc, const char* argv[]) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(viewer3D_glsl);
+        // glBindTextureUnit(0, texture2);
 
 		glm::vec3 cameraPos(cameraX, cameraY, cameraZ);
 		// glm::vec3 lookDirection(glm::normalize(glm::vec3(lookX, lookY, lookZ)));
-		lookDirection = glm::vec3(std::sin(lookX), lookY, std::sin(lookZ));
+		lookDirection = glm::vec3(std::sin(lookX), std::sin(lookY), std::sin(lookZ));
 
+		// lookAtMatrix = glm::lookAt(cameraPos, glm::vec3(cameraX + lookDirection.x, cameraY + lookDirection.y, cameraZ + lookDirection.z), glm::vec3(0.0, 1.0f, 0.0));
+		// viewMatrix = glm::translate(lookAtMatrix, cameraPos);
 		viewMatrix = glm::lookAt(cameraPos, glm::vec3(cameraX + lookDirection.x, cameraY + lookDirection.y, cameraZ + lookDirection.z), glm::vec3(0.0, 1.0f, 0.0));
 
 		glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 		glUniformMatrix4fv(View, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 		glUniformMatrix4fv(Model, 1, GL_FALSE, glm::value_ptr(platformMatrix));
+        glUniform1i(surfaceRenderMode, 0);
 
 		glBindVertexArray(VertexArrayObjs[0]);
 
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
 		glDrawElements(GL_TRIANGLES, sizeof(platformIndices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
 
 		glBindVertexArray(VertexArrayObjs[1]);
 
-		for (int cubeInstance = 0; cubeInstance < 5; cubeInstance++) {
+		for (int cubeInstance = 0; cubeInstance < 9; cubeInstance++) {
 
+			// lookAtMatrix = glm::lookAt(cameraPos, glm::vec3(cameraX + lookDirection.x, cameraY + lookDirection.y, cameraZ + lookDirection.z), glm::vec3(0.0, 1.0f, 0.0));
+			// viewMatrix = glm::translate(lookAtMatrix, cameraPos);
 			viewMatrix = glm::lookAt(cameraPos, glm::vec3(cameraX + lookDirection.x, cameraY + lookDirection.y, cameraZ + lookDirection.z), glm::vec3(0.0, 1.0f, 0.0));
 
 			glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 			glUniformMatrix4fv(View, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 			glUniformMatrix4fv(Model, 1, GL_FALSE, glm::value_ptr(cubeMatrixArray[cubeInstance]));
+            glUniform1i(surfaceRenderMode, 2);
 
 			glEnableVertexAttribArray(0);
 			glEnableVertexAttribArray(1);
