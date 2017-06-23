@@ -47,7 +47,7 @@ list(APPEND TEXTURES_KTX "Illusions.KTX"
 )
 
 foreach(current_texture ${TEXTURES_KTX})
-    add_custom_command(TARGET ManyCubes
+    add_custom_command(TARGET Scene360
         PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
             "${CMAKE_CURRENT_LIST_DIR}/${TEXTURES_KTX_DIR}/${current_texture}"

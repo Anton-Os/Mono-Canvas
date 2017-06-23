@@ -250,6 +250,13 @@ int main(int argc, const char* argv[]) {
 		1.0f, 0.0,
 		0.0, 0.0
 	};
+	
+	/* GLfloat platformTexCoord[] = {
+		1.0f, 0.0, 1.0f,
+		0.0, 0.0, 1.0f,
+		1.0f, 0.0, 1.0f,
+		0.0, 0.0, 0.0
+	} */
 
 	Vertex cube[] = {
 		{ { 1.0f, 1.0f, 1.0f },{ 84, 157, 234, 255 } },
@@ -394,15 +401,18 @@ int main(int argc, const char* argv[]) {
         // glBindTextureUnit(0, texture2);
 
 		glm::vec3 cameraPos(cameraX, cameraY, cameraZ);
-		lookDirection = glm::vec3(std::sin(lookX), std::sin(lookY), std::sin(lookZ));
+		// lookDirection = glm::vec3(std::sin(lookX), std::sin(lookY), std::sin(lookZ));
+		lookDirection = glm::vec3(lookX, lookY, lookZ);
 		viewMatrix = glm::lookAt(cameraPos, glm::vec3(cameraX + lookDirection.x, cameraY + lookDirection.y, cameraZ + lookDirection.z), glm::vec3(0.0, 1.0f, 0.0));
 
 		glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 		glUniformMatrix4fv(View, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-		glUniformMatrix4fv(Model, 1, GL_FALSE, glm::value_ptr(platformMatrix));
-        glUniform1i(surfaceRenderMode, 0);
 
 		glBindVertexArray(VertexArrayObjs[0]);
+
+		glUniformMatrix4fv(Model, 1, GL_FALSE, glm::value_ptr(platformMatrix));
+		glUniform1i(surfaceRenderMode, 3);
+		glBindTextureUnit(0, texture1);
 
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
@@ -417,8 +427,8 @@ int main(int argc, const char* argv[]) {
 		for (int cubeInstance = 0; cubeInstance < 9; cubeInstance++) {
 			viewMatrix = glm::lookAt(cameraPos, glm::vec3(cameraX + lookDirection.x, cameraY + lookDirection.y, cameraZ + lookDirection.z), glm::vec3(0.0, 1.0f, 0.0));
 
-			glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-			glUniformMatrix4fv(View, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+			// glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+			// glUniformMatrix4fv(View, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 			glUniformMatrix4fv(Model, 1, GL_FALSE, glm::value_ptr(cubeMatrixArray[cubeInstance]));
             glUniform1i(surfaceRenderMode, 2);
 
