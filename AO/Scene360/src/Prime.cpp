@@ -28,9 +28,11 @@ GLfloat cameraX = 0.0f;
 GLfloat cameraY = 0.0f;
 GLfloat cameraZ = 10.0f;
 
-GLfloat lookX = 0.0;
+GLfloat lookAngle = 0.0;
+
+GLfloat lookX = std::cos(lookAngle);
 GLfloat lookY = 0.0;
-GLfloat lookZ = -1.0;
+GLfloat lookZ = std::sin(lookAngle);
 
 glm::vec3 lookDirection(1);
 
@@ -147,7 +149,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	return;
 } */
 
-void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
+/* void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
 	if (cursorOn) {
 		cursorFirstX = xpos;
 		cursorFirstY = ypos;
@@ -172,6 +174,22 @@ void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
 	lookX = lookAroundXZ[currentLook].x;
 	lookZ = lookAroundXZ[currentLook].z;
 
+	return;
+} */ 
+
+void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
+	if (cursorOn) {
+		cursorFirstX = xpos;
+		cursorFirstY = ypos;
+		cursorOn = false;
+	}
+
+	lookAngle += (xpos - cursorFirstX) / 100;
+
+	std::cout << "lookDirection X: " << lookDirection.x << " Y: " << lookDirection.y << " Z: " << lookDirection.z << std::endl;
+
+	cursorFirstX = xpos;
+	cursorFirstY = ypos;
 	return;
 }
 
@@ -402,8 +420,11 @@ int main(int argc, const char* argv[]) {
 
 		glm::vec3 cameraPos(cameraX, cameraY, cameraZ);
 		// lookDirection = glm::vec3(std::sin(lookX), std::sin(lookY), std::sin(lookZ));
-		lookDirection = glm::vec3(lookX, lookY, lookZ);
-		viewMatrix = glm::lookAt(cameraPos, glm::vec3(cameraX + lookDirection.x, cameraY + lookDirection.y, cameraZ + lookDirection.z), glm::vec3(0.0, 1.0f, 0.0));
+		// lookDirection = glm::vec3(lookX, lookY, lookZ);
+		GLfloat lookX = std::cos(lookAngle);
+		GLfloat lookY = 0.0;
+		GLfloat lookZ = std::sin(lookAngle);
+		viewMatrix = glm::lookAt(cameraPos, glm::vec3(cameraX + lookX, cameraY + lookY, cameraZ + lookZ), glm::vec3(0.0, 1.0f, 0.0));
 
 		glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 		glUniformMatrix4fv(View, 1, GL_FALSE, glm::value_ptr(viewMatrix));
@@ -412,7 +433,7 @@ int main(int argc, const char* argv[]) {
 
 		glUniformMatrix4fv(Model, 1, GL_FALSE, glm::value_ptr(platformMatrix));
 		glUniform1i(surfaceRenderMode, 3);
-		glBindTextureUnit(0, texture1);
+		glBindTextureUnit(0, texture2);
 
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
@@ -427,8 +448,6 @@ int main(int argc, const char* argv[]) {
 		for (int cubeInstance = 0; cubeInstance < 9; cubeInstance++) {
 			viewMatrix = glm::lookAt(cameraPos, glm::vec3(cameraX + lookDirection.x, cameraY + lookDirection.y, cameraZ + lookDirection.z), glm::vec3(0.0, 1.0f, 0.0));
 
-			// glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-			// glUniformMatrix4fv(View, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 			glUniformMatrix4fv(Model, 1, GL_FALSE, glm::value_ptr(cubeMatrixArray[cubeInstance]));
             glUniform1i(surfaceRenderMode, 2);
 
