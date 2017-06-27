@@ -50,11 +50,11 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
     get_target_property(freeglut_ImportLoc freeglut_static IMPORTED_LOCATION_DEBUG)
     # message(STATUS "FreeGLUT target file ${freeglut_ImportLoc}")
 
-    # add_subdirectory("AO/Going3D")
-    add_subdirectory("AO/Scene360")
+    add_subdirectory("AO/Going3D")
+    # add_subdirectory("AO/LevelTwo")
     add_subdirectory("AO/Dimentions")
     add_subdirectory("AO/Triangles_Basis")
-    # add_subdirectory("AO-Projects/Triangles_Basis")
+
 else ()
     include("cmake/BuildExtlibs.cmake")
     add_custom_target(BuildExtlibHelp ALL
