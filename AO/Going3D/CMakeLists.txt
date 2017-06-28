@@ -1,14 +1,14 @@
-add_executable(TextureTrial V1/src/LoadTextures.cpp V1/src/LoadShaders.cpp V1/src/Prime-A.cpp)
-add_executable(SpinningShape V1/src/LoadTextures.cpp V1/src/LoadShaders.cpp V1/src/Prime-B.cpp)
-add_executable(ProjetionDraft V1/src/LoadTextures.cpp V1/src/LoadShaders.cpp V1/src/Prime-C.cpp)
-add_executable(MatrixViews V1/src/LoadTextures.cpp V1/src/LoadShaders.cpp V1/src/Prime-D.cpp)
-add_executable(PerspectiveCopy V1/src/LoadTextures.cpp V1/src/LoadShaders.cpp V1/src/Prime-E.cpp)
-add_executable(ManyCubes V1/src/LoadTextures.cpp V1/src/LoadShaders.cpp V1/src/Prime-F.cpp)
-add_executable(LookAhead V1/src/LoadTextures.cpp V1/src/LoadShaders.cpp V1/src/Prime-G.cpp)
-add_executable(Scene360 V1/src/LoadTextures.cpp V1/src/LoadShaders.cpp V1/src/Prime-I.cpp)
+add_executable(TextureTrial src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-A.cpp)
+add_executable(SpinningShape src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-B.cpp)
+add_executable(ProjetionDraft src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-C.cpp)
+add_executable(MatrixViews src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-D.cpp)
+add_executable(PerspectiveCopy src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-E.cpp)
+add_executable(ManyCubes src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-F.cpp)
+add_executable(LookAhead src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-G.cpp)
+add_executable(Scene360 src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-I.cpp)
 
 target_include_directories(TextureTrial
-    PUBLIC V1/include
+    PUBLIC include
 )
 
 target_link_libraries(TextureTrial
@@ -19,7 +19,7 @@ target_link_libraries(TextureTrial
 )
 
 target_include_directories(SpinningShape
-    PUBLIC V1/include
+    PUBLIC include
 )
 
 target_link_libraries(SpinningShape
@@ -30,7 +30,7 @@ target_link_libraries(SpinningShape
 )
 
 target_include_directories(ProjetionDraft
-    PUBLIC V1/include
+    PUBLIC include
 )
 
 target_link_libraries(ProjetionDraft
@@ -41,7 +41,7 @@ target_link_libraries(ProjetionDraft
 )
 
 target_include_directories(MatrixViews
-    PUBLIC V1/include
+    PUBLIC include
 )
 
 target_link_libraries(MatrixViews
@@ -52,7 +52,7 @@ target_link_libraries(MatrixViews
 )
 
 target_include_directories(PerspectiveCopy
-    PUBLIC V1/include
+    PUBLIC include
 )
 
 target_link_libraries(PerspectiveCopy
@@ -63,7 +63,7 @@ target_link_libraries(PerspectiveCopy
 )
 
 target_include_directories(ManyCubes
-    PUBLIC V1/include
+    PUBLIC include
 )
 
 target_link_libraries(ManyCubes
@@ -74,7 +74,7 @@ target_link_libraries(ManyCubes
 )
 
 target_include_directories(LookAhead
-    PUBLIC V1/include
+    PUBLIC include
 )
 
 target_link_libraries(LookAhead
@@ -85,7 +85,7 @@ target_link_libraries(LookAhead
 )
 
 target_include_directories(Scene360
-    PUBLIC V1/include
+    PUBLIC include
 )
 
 target_link_libraries(Scene360
@@ -124,9 +124,9 @@ foreach(current_shader "AO-1.vert" "AO-1.frag"
                        "Viewer3D.vert" "Viewer3D.frag"
 )
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}"
-        DEPENDS "${CMAKE_CURRENT_LIST_DIR}/V1/shaders/${current_shader}"
+        DEPENDS "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"
         COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_CURRENT_LIST_DIR}/V1/shaders/${current_shader}"
+        "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"
         "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}"
     )
     list(APPEND OUTPUT_SHADER_LIST "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}")
@@ -148,11 +148,16 @@ add_dependencies(Scene360 Shaders)
 # WORK WITH TEXTURE/IMAGE FILES
 
 set(TEXTURES_KTX)
-set(TEXTURES_KTX_DIR "V1/data/ktx")
+set(TEXTURES_KTX_DIR "data/ktx")
 list(APPEND TEXTURES_KTX "Texture8_PNG_BC7_1.KTX" 
                          "800px-Birnam_wood_macbeth_PNG_BC7_1.KTX"
                          "spotted-steel_PNG_BC7_3.KTX"
                          "wildtextures-creased-white-paper-texture_PNG_BC7_1.KTX"
+                         "Concrete.ktx"
+                         "SpottedSteel.KTX"
+                         "CreasedWhitePaper.KTX"
+                         "Wood.KTX"
+                         "Illusions.KTX"
 )
 
 foreach(current_texture ${TEXTURES_KTX})
