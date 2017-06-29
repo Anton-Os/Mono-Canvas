@@ -1,8 +1,4 @@
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <fstream>
-#include <cstring> 
+#include "Common.h"
 
 #include <GL/glew.h>
 

@@ -1,9 +1,6 @@
-#include <iostream>
-#include <string>
+#include "Common.h"
 
-#include <GL/glew.h>
 #include <gli/gli.hpp>
-#include <glm/glm.hpp>
 
 GLuint textureCheck(GLuint texture, std::string pathToFile){
     if(texture == 0){
@@ -49,24 +46,5 @@ GLuint createTexture(const char* Filename){
             textureFormat.Internal, static_cast<GLsizei>(texture.size(Level)), texture.data(0, 0, Level));
     }
 
-    return textureName;
-}
-
-GLuint createTexture2(const char* Filename){
-    gli::texture Texture = gli::load_ktx(Filename);
-    if(Texture.empty()){
-        std::cout << "Texture provided is empty or path provided is invalid" << std::endl;
-        return 1;
-    }
-
-    gli::gl GL(gli::gl::PROFILE_GL33);
-    // GL33 looks like the furthest supported version
-    gli::gl::format const Format = GL.translate(Texture.format(), Texture.swizzles());
-    GLenum Target = GL.translate(Texture.target());
-
-    GLuint textureName;
-    glGenTextures(1, &textureName);
-    glBindTexture(Target, textureName);
-    // glTexStorage2D(Target, 1, );
     return textureName;
 }

@@ -1,3 +1,10 @@
+#include <cmath>
+#include <string>
+#include <cstring>
+#include <iostream>
+
+#include <GL/glew.h>
+#include <glm/glm.hpp>
 
 // From LoadShaders.cpp
 
