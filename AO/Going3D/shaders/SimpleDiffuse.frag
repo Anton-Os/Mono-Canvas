@@ -13,11 +13,12 @@ uniform vec3 lightSourcePos;
 out vec4 output_frag;
 
 void main(){
-    vec4 colorFinal = color;
-    colorFinal = vec4(84.0 / 255.0, 157.0 / 255.0, 234.0 / 255.0, 1.0); // override original
+    // vec4 colorFinal = color;
+    vec4 colorFinal = vec4(84.0 / 255.0, 157.0 / 255.0, 234.0 / 255.0, 1.0); // override original
 
     vec3 diffuseLightDirection = normalize(lightSourcePos - vec3(worldPos.x, worldPos.y, worldPos.z));
     float diffuseLightStrength = max(dot(normals, diffuseLightDirection), 1.0);
+	// float diffuseLightStrength = dot(normals, diffuseLightDirection); // override original
 
     vec4 ambientLight = vec4(worldLightColor.r * ambientLightStrength,
                              worldLightColor.g * ambientLightStrength,

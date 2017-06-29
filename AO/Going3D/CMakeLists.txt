@@ -184,6 +184,7 @@ add_dependencies(LookAhead Shaders)
 add_dependencies(Scene360 Shaders)
 add_dependencies(GoodCamera Shaders)
 add_dependencies(PlatformTexture Shaders)
+add_dependencies(Redesign Shaders)
 
 # WORK WITH TEXTURE/IMAGE FILES
 
