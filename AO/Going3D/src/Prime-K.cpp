@@ -14,15 +14,9 @@
 
 #include "Common.h"
 
-GLboolean cursorOn = true;
-// GLboolean zAdd = false;
-GLboolean pointPassX = false;
-GLboolean pointPassZ = false;
-GLboolean increasedX;
+GLboolean firstCursorCallback = true;
 GLdouble cursorFirstX;
 GLdouble cursorFirstY;
-
-GLint currentLook = 0;
 
 GLfloat cameraX = 0.0f;
 GLfloat cameraY = 0.0f;
@@ -35,57 +29,6 @@ GLfloat lookY = 0.0;
 GLfloat lookZ = std::sin(lookAngle);
 
 glm::vec3 lookDirection(1);
-
-struct possibleXZ {
-	GLfloat x;
-	GLfloat z;
-};
-
-possibleXZ lookAroundXZ[]{
-	{0, 1.0f},
-	{0.1f, 0.9f},
-	{0.2f, 0.8f},
-	{0.3f, 0.7f},
-	{0.4f, 0.6f},
-	{0.5f, 0.5f},
-	{0.6f, 0.4f},
-	{0.7f, 0.3f},
-	{0.8f, 0.2f},
-	{0.9f, 0.1f},
-	{1.0f, 0.0f},
-
-	{0.9f, -0.1f},
-	{0.8f, -0.2f},
-	{0.7f, -0.3f},
-	{0.6f, -0.4f},
-	{0.5f, -0.5f},
-	{0.4f, -0.6f},
-	{0.3f, -0.7f},
-	{0.2f, -0.8f},
-	{0.1f, -0.9f},
-
-	{-0.0f, -1.0f},
-	{-0.1f, -0.9f},
-	{-0.2f, -0.8f},
-	{-0.3f, -0.7f},
-	{-0.4f, -0.6f},
-	{-0.5f, -0.5f},
-	{-0.6f, -0.4f},
-	{-0.7f, -0.3f},
-	{-0.8f, -0.2f},
-	{-0.9f, -0.1f},
-
-	{-1.0f, 0.0f},
-	{-0.9f, 0.1f},
-	{-0.8f, 0.2f},
-	{-0.7f, 0.3f},
-	{-0.6f, 0.4f},
-	{-0.5f, 0.5f},
-	{-0.4f, 0.6f},
-	{-0.3f, 0.7f},
-	{-0.2f, 0.8f},
-	{-0.1f, 0.9f},
-};
 
 GLboolean Q, W, E, R, T, Y, U, I, O, P, A, S, D, F, G, H, J, K, L, Z, X, C, V, B, N, M = false;
 
@@ -130,10 +73,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 }
 
 void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
-	if (cursorOn) {
+	if (firstCursorCallback) {
 		cursorFirstX = xpos;
 		cursorFirstY = ypos;
-		cursorOn = false;
+		firstCursorCallback = false;
 	}
 
 	lookAngle += (xpos - cursorFirstX) / 100;
@@ -220,13 +163,6 @@ int main(int argc, const char* argv[]) {
 		1.0f, 0.0,
 		0.0, 0.0
 	};
-	
-	/* GLfloat platformTexCoord[] = {
-		1.0f, 0.0, 1.0f,
-		0.0, 0.0, 1.0f,
-		1.0f, 0.0, 1.0f,
-		0.0, 0.0, 0.0
-	} */
 
 	Vertex cube[] = {
 		{ { 1.0f, 1.0f, 1.0f },{ 84, 157, 234, 255 } },
@@ -358,12 +294,13 @@ int main(int argc, const char* argv[]) {
 		glUseProgram(viewer3D_glsl);
         // glBindTextureUnit(0, texture2);
 
-		glm::vec3 cameraPos(cameraX, cameraY, cameraZ);
-		// lookDirection = glm::vec3(std::sin(lookX), std::sin(lookY), std::sin(lookZ));
-		// lookDirection = glm::vec3(lookX, lookY, lookZ);
 		GLfloat lookX = std::cos(lookAngle);
 		GLfloat lookY = 0.0;
 		GLfloat lookZ = std::sin(lookAngle);
+
+		glm::vec3 cameraPos(cameraX, cameraY, cameraZ);
+		lookDirection = glm::vec3(lookX, lookY, lookZ);
+
 		viewMatrix = glm::lookAt(cameraPos, glm::vec3(cameraX + lookX, cameraY + lookY, cameraZ + lookZ), glm::vec3(0.0, 1.0f, 0.0));
 
 		glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));

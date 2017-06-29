@@ -15,6 +15,7 @@ out vec2 texCoord_vert;
 void main(){
     mat4 matrixFinal = Projection * View * Model;
     vec3 positionFinal = pos;
+	texCoord_vert = texCoord;
     color_vert = color;
 
     gl_Position = matrixFinal * vec4(positionFinal.x, positionFinal.y, positionFinal.z, 1.0f);

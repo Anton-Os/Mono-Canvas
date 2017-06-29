@@ -14,15 +14,9 @@
 
 #include "Common.h"
 
-GLboolean cursorOn = true;
-// GLboolean zAdd = false;
-GLboolean pointPassX = false;
-GLboolean pointPassZ = false;
-GLboolean increasedX;
+GLboolean firstCursorCallback = true;
 GLdouble cursorFirstX;
 GLdouble cursorFirstY;
-
-GLint currentLook = 0;
 
 GLfloat cameraX = 0.0f;
 GLfloat cameraY = 0.0f;
@@ -36,58 +30,10 @@ GLfloat lookZ = std::sin(lookAngle);
 
 glm::vec3 lookDirection(1);
 
-struct possibleXZ {
-	GLfloat x;
-	GLfloat z;
-};
-
-possibleXZ lookAroundXZ[]{
-	{0, 1.0f},
-	{0.1f, 0.9f},
-	{0.2f, 0.8f},
-	{0.3f, 0.7f},
-	{0.4f, 0.6f},
-	{0.5f, 0.5f},
-	{0.6f, 0.4f},
-	{0.7f, 0.3f},
-	{0.8f, 0.2f},
-	{0.9f, 0.1f},
-	{1.0f, 0.0f},
-
-	{0.9f, -0.1f},
-	{0.8f, -0.2f},
-	{0.7f, -0.3f},
-	{0.6f, -0.4f},
-	{0.5f, -0.5f},
-	{0.4f, -0.6f},
-	{0.3f, -0.7f},
-	{0.2f, -0.8f},
-	{0.1f, -0.9f},
-
-	{-0.0f, -1.0f},
-	{-0.1f, -0.9f},
-	{-0.2f, -0.8f},
-	{-0.3f, -0.7f},
-	{-0.4f, -0.6f},
-	{-0.5f, -0.5f},
-	{-0.6f, -0.4f},
-	{-0.7f, -0.3f},
-	{-0.8f, -0.2f},
-	{-0.9f, -0.1f},
-
-	{-1.0f, 0.0f},
-	{-0.9f, 0.1f},
-	{-0.8f, 0.2f},
-	{-0.7f, 0.3f},
-	{-0.6f, 0.4f},
-	{-0.5f, 0.5f},
-	{-0.4f, 0.6f},
-	{-0.3f, 0.7f},
-	{-0.2f, 0.8f},
-	{-0.1f, 0.9f},
-};
+GLfloat ambientLightStrength = 0.9f;
 
 GLboolean Q, W, E, R, T, Y, U, I, O, P, A, S, D, F, G, H, J, K, L, Z, X, C, V, B, N, M = false;
+GLboolean key1, key2 = false;
 
 const std::string getParentDirectory(const char* path) {
 	const char* ptr = path + strlen(path);
@@ -106,11 +52,15 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_A && action == GLFW_PRESS) A = true;
 	if (key == GLFW_KEY_S && action == GLFW_PRESS) S = true;
 	if (key == GLFW_KEY_D && action == GLFW_PRESS) D = true;
+	if (key == GLFW_KEY_1 && action == GLFW_PRESS) key1 = true;
+	if (key == GLFW_KEY_2 && action == GLFW_PRESS) key2 = true;
 
 	if (key == GLFW_KEY_W && action == GLFW_RELEASE) W = false;
 	if (key == GLFW_KEY_A && action == GLFW_RELEASE) A = false;
 	if (key == GLFW_KEY_S && action == GLFW_RELEASE) S = false;
 	if (key == GLFW_KEY_D && action == GLFW_RELEASE) D = false;
+	if (key == GLFW_KEY_1 && action == GLFW_RELEASE) key1 = false;
+	if (key == GLFW_KEY_2 && action == GLFW_RELEASE) key2 = false;
 
 	if (W) {
 		cameraZ -= 0.35f;
@@ -124,69 +74,32 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (D) {
 		cameraX += 0.35f;
 	}
-
+	if (key1) {
+		ambientLightStrength += 0.03f;
+	} 
+	if (key2) {
+		ambientLightStrength -= 0.03f;
+	}
 	std::cout << "X Position: " << cameraX << " Y Position: " << cameraY << " Z Position: " << cameraZ << std::endl;
 	return;
 }
 
-/* void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
-	if (cursorOn) {
-		cursorFirstX = xpos;
-		cursorFirstY = ypos;
-		cursorOn = false;
-	}
-
-	if(xpos > cursorFirstX) lookX += 0.02f;
-	else if(xpos < cursorFirstX) lookX -= 0.02f;
-
-	if (xpos > cursorFirstX || ypos > cursorFirstY) lookZ += 0.02f;
-	if (xpos < cursorFirstX || ypos < cursorFirstY) lookZ -= 0.02f;
-
-	std::cout << "lookDirection X: " << lookDirection.x << " Y: " << lookDirection.y << " Z: " << lookDirection.z << std::endl;
-
-	cursorFirstX = xpos;
-	cursorFirstY = ypos;
-	return;
-} */
-
-/* void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
-	if (cursorOn) {
-		cursorFirstX = xpos;
-		cursorFirstY = ypos;
-		cursorOn = false;
-	}
-
-	if(xpos < cursorFirstX){
-		currentLook++;
-		if (currentLook >= sizeof(lookAroundXZ) / sizeof(possibleXZ)) {
-			currentLook = 0;
-		}
-		cursorFirstX = xpos;
-	}
-	else if (xpos > cursorFirstX) {
-		currentLook--;
-		if(currentLook < 0){
-			currentLook = sizeof(lookAroundXZ) / sizeof(possibleXZ) - 1;
-		}
-		cursorFirstX = xpos;
-	}
-
-	lookX = lookAroundXZ[currentLook].x;
-	lookZ = lookAroundXZ[currentLook].z;
-
-	return;
-} */ 
-
 void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
-	if (cursorOn) {
+	if (firstCursorCallback) {
 		cursorFirstX = xpos;
 		cursorFirstY = ypos;
-		cursorOn = false;
+		firstCursorCallback = false;
 	}
 
 	lookAngle += (xpos - cursorFirstX) / 100;
 
-	std::cout << "lookDirection X: " << lookDirection.x << " Y: " << lookDirection.y << " Z: " << lookDirection.z << std::endl;
+	if (lookAngle >= 6.3f) {
+		lookAngle = 0;
+	} else if (lookAngle <= -6.3f) {
+		lookAngle = 0;
+	}
+
+	std::cout << "lookAngle: " << lookAngle << " looklookDirection X: " << lookDirection.x << " Y: " << lookDirection.y << " Z: " << lookDirection.z << std::endl;
 
 	cursorFirstX = xpos;
 	cursorFirstY = ypos;
@@ -246,7 +159,7 @@ int main(int argc, const char* argv[]) {
 	GLuint texture4 = createTexture(pathKTX4.c_str());
 	textureCheck(texture4, pathKTX4);
 
-	GLuint viewer3D_glsl = compileShaders(parentDir, "Viewer3D.vert", "Viewer3D.frag");
+	GLuint viewer3D_glsl = compileShaders(parentDir, "Viewer3D.vert", "AmbientLight.frag");
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -268,13 +181,6 @@ int main(int argc, const char* argv[]) {
 		1.0f, 0.0,
 		0.0, 0.0
 	};
-	
-	/* GLfloat platformTexCoord[] = {
-		1.0f, 0.0, 1.0f,
-		0.0, 0.0, 1.0f,
-		1.0f, 0.0, 1.0f,
-		0.0, 0.0, 0.0
-	} */
 
 	Vertex cube[] = {
 		{ { 1.0f, 1.0f, 1.0f },{ 84, 157, 234, 255 } },
@@ -368,6 +274,7 @@ int main(int argc, const char* argv[]) {
 	GLint View = glGetUniformLocation(viewer3D_glsl, "View");
 	GLint Model = glGetUniformLocation(viewer3D_glsl, "Model");
     GLint surfaceRenderMode = glGetUniformLocation(viewer3D_glsl, "surfaceRenderMode");
+	GLint ambientStrength = glGetUniformLocation(viewer3D_glsl, "ambientStrength");
 
 	glm::mat4 identityMatrix(1);
 	glm::mat4 projectionMatrix(1);
@@ -380,10 +287,6 @@ int main(int argc, const char* argv[]) {
 	glm::mat4 cubeMatrix3(1);
 	glm::mat4 cubeMatrix4(1);
 	glm::mat4 cubeMatrix5(1);
-	glm::mat4 cubeMatrix6(1);
-	glm::mat4 cubeMatrix7(1);
-	glm::mat4 cubeMatrix8(1);
-	glm::mat4 cubeMatrix9(1);
 
     projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
     viewMatrix = glm::translate(identityMatrix, glm::vec3(cameraX, cameraY, cameraZ));
@@ -394,40 +297,34 @@ int main(int argc, const char* argv[]) {
 	cubeMatrix3 = glm::translate(identityMatrix, glm::vec3(-6.0f, 6.0f, -20.0f));
 	cubeMatrix4 = glm::translate(identityMatrix, glm::vec3(12.0f, 12.0f, -40.0f));
 	cubeMatrix5 = glm::translate(identityMatrix, glm::vec3(-12.0f, 12.0f, -40.0f));
-	cubeMatrix6 = glm::translate(identityMatrix, glm::vec3(6.0f, 6.0f, 20.0f));
-	cubeMatrix7 = glm::translate(identityMatrix, glm::vec3(-6.0f, 6.0f, 20.0f));
-	cubeMatrix8 = glm::translate(identityMatrix, glm::vec3(12.0f, 12.0f, 40.0f));
-	cubeMatrix9 = glm::translate(identityMatrix, glm::vec3(-12.0f, 12.0f, 40.0f));
 
 	glm::mat4 cubeMatrixArray[] = { cubeMatrix1,
 		cubeMatrix2,
 		cubeMatrix3,
 		cubeMatrix4,
-		cubeMatrix5,
-		cubeMatrix6,
-		cubeMatrix7,
-		cubeMatrix8,
-		cubeMatrix9
+		cubeMatrix5
 	};
 
 	while (!glfwWindowShouldClose(mainWindow)) {
 		glfwPollEvents();
-		glClearColor(0.1294f, 0.1843f, 0.2352f, 1.0f);
+		glClearColor(0.1294f * ambientLightStrength, 0.1843f * ambientLightStrength, 0.2352f * ambientLightStrength, 1.0f);
+		// glClearColor(0.7019f * ambientLightStrength, 0.9019f * ambientLightStrength, 1.0f * ambientLightStrength, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(viewer3D_glsl);
-        // glBindTextureUnit(0, texture2);
 
-		glm::vec3 cameraPos(cameraX, cameraY, cameraZ);
-		// lookDirection = glm::vec3(std::sin(lookX), std::sin(lookY), std::sin(lookZ));
-		// lookDirection = glm::vec3(lookX, lookY, lookZ);
 		GLfloat lookX = std::cos(lookAngle);
 		GLfloat lookY = 0.0;
 		GLfloat lookZ = std::sin(lookAngle);
+
+		glm::vec3 cameraPos(cameraX, cameraY, cameraZ);
+		lookDirection = glm::vec3(lookX, lookY, lookZ);
+
 		viewMatrix = glm::lookAt(cameraPos, glm::vec3(cameraX + lookX, cameraY + lookY, cameraZ + lookZ), glm::vec3(0.0, 1.0f, 0.0));
 
 		glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 		glUniformMatrix4fv(View, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+		glUniform1fv(ambientStrength, 1, &ambientLightStrength);
 
 		glBindVertexArray(VertexArrayObjs[0]);
 
@@ -445,11 +342,11 @@ int main(int argc, const char* argv[]) {
 
 		glBindVertexArray(VertexArrayObjs[1]);
 
-		for (int cubeInstance = 0; cubeInstance < 9; cubeInstance++) {
+		for (int cubeInstance = 0; cubeInstance < 5; cubeInstance++) {
 			viewMatrix = glm::lookAt(cameraPos, glm::vec3(cameraX + lookDirection.x, cameraY + lookDirection.y, cameraZ + lookDirection.z), glm::vec3(0.0, 1.0f, 0.0));
 
 			glUniformMatrix4fv(Model, 1, GL_FALSE, glm::value_ptr(cubeMatrixArray[cubeInstance]));
-            glUniform1i(surfaceRenderMode, 2);
+            glUniform1i(surfaceRenderMode, 0);
 
 			glEnableVertexAttribArray(0);
 			glEnableVertexAttribArray(1);
