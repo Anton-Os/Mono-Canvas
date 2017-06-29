@@ -76,7 +76,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	}
 	if (key1) {
 		ambientLightStrength += 0.03f;
-	} 
+	}
 	if (key2) {
 		ambientLightStrength -= 0.03f;
 	}
@@ -95,7 +95,8 @@ void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
 
 	if (lookAngle >= 6.3f) {
 		lookAngle = 0;
-	} else if (lookAngle <= -6.3f) {
+	}
+	else if (lookAngle <= -6.3f) {
 		lookAngle = 0;
 	}
 
@@ -144,28 +145,39 @@ int main(int argc, const char* argv[]) {
 	std::string fileKTX2 = "\\data\\ktx\\SpottedSteel.KTX";
 	std::string fileKTX3 = "\\data\\ktx\\CreasedWhitePaper.KTX";
 	std::string fileKTX4 = "\\data\\ktx\\Concrete.KTX";
-	
+	std::string fileKTX5 = "\\data\\ktx\\Wood_2.ktx";
+
 	std::string pathKTX1 = parentDir + fileKTX1;
 	std::string pathKTX2 = parentDir + fileKTX2;
 	std::string pathKTX3 = parentDir + fileKTX3;
 	std::string pathKTX4 = parentDir + fileKTX4;
+	std::string pathKTX5 = parentDir + fileKTX5;
 
 	GLuint texture1 = createTexture(pathKTX1.c_str());
 	textureCheck(texture1, pathKTX1);
 	GLuint texture2 = createTexture(pathKTX2.c_str());
 	textureCheck(texture2, pathKTX2);
-    GLuint texture3 = createTexture(pathKTX3.c_str());
+	GLuint texture3 = createTexture(pathKTX3.c_str());
 	textureCheck(texture3, pathKTX3);
 	GLuint texture4 = createTexture(pathKTX4.c_str());
 	textureCheck(texture4, pathKTX4);
+	GLuint texture5 = createTexture(pathKTX5.c_str());
+	textureCheck(texture4, pathKTX5);
 
-	GLuint viewer3D_glsl = compileShaders(parentDir, "Viewer3D.vert", "AmbientLight.frag");
+	GLuint viewer3d_glsl = compileShaders(parentDir, "Viewer3D.vert", "Viewer3D.frag");
+	GLuint litenv_glsl = compileShaders(parentDir, "LitEnv.vert", "LitEnv.frag");
 
 	glEnable(GL_DEPTH_TEST);
 
 	struct Vertex {
 		GLfloat pos[3];
 		GLubyte color[4];
+	};
+
+	struct N_Vertex {
+		GLfloat pos[3];
+		GLubyte color[4];
+		GLfloat normal[3];
 	};
 
 	Vertex platform[] = {
@@ -214,6 +226,38 @@ int main(int argc, const char* argv[]) {
 		{ { -1.0f, -1.0f,-1.0f },{ 255, 185, 95, 255 } }
 	};
 
+	GLfloat cubeNormals[] = {
+		0, 0, 1.0f,
+		0, 0, 1.0f,
+		0, 0, 1.0f,
+		0, 0, 1.0f,
+
+		1.0f, 0, 0,
+		1.0f, 0, 0,
+		1.0f, 0, 0,
+		1.0f, 0, 0,
+
+		0, 1.0f, 0,
+		0, 1.0f, 0,
+		0, 1.0f, 0,
+		0, 1.0f, 0,
+
+		0, -1.0f, 0,
+		0, -1.0f, 0,
+		0, -1.0f, 0,
+		0, -1.0f, 0,
+
+		0, 0, -1.0f,
+		0, 0, -1.0f,
+		0, 0, -1.0f,
+		0, 0, -1.0f,
+
+		-1.0f, 0, 0,
+		-1.0f, 0, 0,
+		-1.0f, 0, 0,
+		-1.0f, 0, 0,
+	};
+
 	GLuint platformIndices[] = {
 		0, 1, 2,
 		3, 1, 2
@@ -233,6 +277,8 @@ int main(int argc, const char* argv[]) {
 		20, 21, 22,
 		22, 21, 23,
 	};
+
+	GLfloat lightPosition[] = { 0, 100.0f, 0 };
 
 	GLuint VertexArrayObjs[100];
 	GLuint BufferObjs[100];
@@ -259,28 +305,32 @@ int main(int argc, const char* argv[]) {
 
 	glBindBuffer(GL_ARRAY_BUFFER, BufferObjs[3]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
-
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
 	glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, BufferObjs[4]);
+	glBindBuffer(GL_ARRAY_BUFFER, BufferObjs[4]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeNormals), cubeNormals, GL_STATIC_DRAW);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, BufferObjs[5]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	GLint Projection = glGetUniformLocation(viewer3D_glsl, "Projection");
-	GLint View = glGetUniformLocation(viewer3D_glsl, "View");
-	GLint Model = glGetUniformLocation(viewer3D_glsl, "Model");
-    GLint surfaceRenderMode = glGetUniformLocation(viewer3D_glsl, "surfaceRenderMode");
-	GLint ambientStrength = glGetUniformLocation(viewer3D_glsl, "ambientStrength");
+	GLint Projection = glGetUniformLocation(litenv_glsl, "Projection");
+	GLint View = glGetUniformLocation(litenv_glsl, "View");
+	GLint Model = glGetUniformLocation(litenv_glsl, "Model");
+	GLint surfaceRenderMode = glGetUniformLocation(litenv_glsl, "surfaceRenderMode");
+	GLint ambientStrength = glGetUniformLocation(litenv_glsl, "ambientStrength");
+	GLint lightSourceLoc = glGetUniformLocation(litenv_glsl, "lightSourceLoc");
 
 	glm::mat4 identityMatrix(1);
 	glm::mat4 projectionMatrix(1);
 	glm::mat4 viewMatrix(1);
 	glm::mat4 lookAtMatrix(1);
-
+	 
 	glm::mat4 platformMatrix(1);
 	glm::mat4 cubeMatrix1(1);
 	glm::mat4 cubeMatrix2(1);
@@ -288,10 +338,10 @@ int main(int argc, const char* argv[]) {
 	glm::mat4 cubeMatrix4(1);
 	glm::mat4 cubeMatrix5(1);
 
-    projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
-    viewMatrix = glm::translate(identityMatrix, glm::vec3(cameraX, cameraY, cameraZ));
+	projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
+	viewMatrix = glm::translate(identityMatrix, glm::vec3(cameraX, cameraY, cameraZ));
 
-    platformMatrix = glm::translate(identityMatrix, glm::vec3(0.0, -1.0f, 0.0));
+	platformMatrix = glm::translate(identityMatrix, glm::vec3(0.0, -1.0f, 0.0));
 	cubeMatrix1 = glm::translate(identityMatrix, glm::vec3(0.0, 0.0, 0.0));
 	cubeMatrix2 = glm::translate(identityMatrix, glm::vec3(6.0f, 6.0f, -20.0f));
 	cubeMatrix3 = glm::translate(identityMatrix, glm::vec3(-6.0f, 6.0f, -20.0f));
@@ -311,7 +361,7 @@ int main(int argc, const char* argv[]) {
 		// glClearColor(0.7019f * ambientLightStrength, 0.9019f * ambientLightStrength, 1.0f * ambientLightStrength, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glUseProgram(viewer3D_glsl);
+		glUseProgram(litenv_glsl);
 
 		GLfloat lookX = std::cos(lookAngle);
 		GLfloat lookY = 0.0;
@@ -325,6 +375,7 @@ int main(int argc, const char* argv[]) {
 		glUniformMatrix4fv(Projection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 		glUniformMatrix4fv(View, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 		glUniform1fv(ambientStrength, 1, &ambientLightStrength);
+		glUniform3fv(lightSourceLoc, 1, lightPosition);
 
 		glBindVertexArray(VertexArrayObjs[0]);
 
@@ -346,13 +397,15 @@ int main(int argc, const char* argv[]) {
 			viewMatrix = glm::lookAt(cameraPos, glm::vec3(cameraX + lookDirection.x, cameraY + lookDirection.y, cameraZ + lookDirection.z), glm::vec3(0.0, 1.0f, 0.0));
 
 			glUniformMatrix4fv(Model, 1, GL_FALSE, glm::value_ptr(cubeMatrixArray[cubeInstance]));
-            glUniform1i(surfaceRenderMode, 0);
+			glUniform1i(surfaceRenderMode, 0);
 
 			glEnableVertexAttribArray(0);
 			glEnableVertexAttribArray(1);
+			glEnableVertexAttribArray(3);
 			glDrawElements(GL_TRIANGLES, sizeof(cubeIndices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
 			glDisableVertexAttribArray(0);
 			glDisableVertexAttribArray(1);
+			glDisableVertexAttribArray(3);
 		}
 
 		glBindVertexArray(0);

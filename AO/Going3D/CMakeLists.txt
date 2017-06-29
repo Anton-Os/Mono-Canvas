@@ -132,7 +132,7 @@ add_custom_target(MonoShaders
             "shaders/AO-7.vert" "shaders/AO-7.frag"
             "shaders/AO-8.vert" "shaders/AO-8.frag"
             "shaders/Viewer3D.vert" "shaders/Viewer3D.frag"
-            "shaders/AmbientLight.frag"
+            "shaders/LitEnv.vert" "shaders/LitEnv.frag"
 )
 
 set(OUTPUT_SHADER_LIST)
@@ -145,7 +145,7 @@ foreach(current_shader "AO-1.vert" "AO-1.frag"
                        "AO-7.vert" "AO-7.frag"
                        "AO-8.vert" "AO-8.frag"
                        "Viewer3D.vert" "Viewer3D.frag"
-                       "AmbientLight.frag"
+                       "LitEnv.vert" "LitEnv.frag"
 )
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}"
         DEPENDS "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"
@@ -183,11 +183,12 @@ list(APPEND TEXTURES_KTX "Texture8_PNG_BC7_1.KTX"
                          "SpottedSteel.KTX"
                          "CreasedWhitePaper.KTX"
                          "Wood.KTX"
+                         "Wood_2.KTX"
                          "Illusions.KTX"
 )
 
 foreach(current_texture ${TEXTURES_KTX})
-    add_custom_command(TARGET Scene360
+    add_custom_command(TARGET GoodCamera
         PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
             "${CMAKE_CURRENT_LIST_DIR}/${TEXTURES_KTX_DIR}/${current_texture}"
