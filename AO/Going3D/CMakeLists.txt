@@ -9,6 +9,7 @@ add_executable(Scene360 src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-I.cpp
 add_executable(GoodCamera src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-J.cpp)
 add_executable(PlatformTexture src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-K.cpp)
 add_executable(Redesign src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-L.cpp)
+add_executable(LightFix src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-M.cpp)
 
 target_include_directories(TextureTrial
     PUBLIC include
@@ -131,6 +132,18 @@ target_link_libraries(Redesign
     glm
 )
 
+target_include_directories(LightFix
+    PUBLIC include
+)
+
+target_link_libraries(LightFix
+    GLEW::glew_s
+    glfw
+    gli
+    glm
+)
+
+
 # WORK WITH SHADER FILES
 
 add_custom_target(MonoShaders
@@ -185,6 +198,7 @@ add_dependencies(Scene360 Shaders)
 add_dependencies(GoodCamera Shaders)
 add_dependencies(PlatformTexture Shaders)
 add_dependencies(Redesign Shaders)
+add_dependencies(LightFix Shaders)
 
 # WORK WITH TEXTURE/IMAGE FILES
 

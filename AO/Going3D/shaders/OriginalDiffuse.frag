@@ -14,20 +14,20 @@ out vec4 output_frag;
 
 void main(){
     // vec4 colorFinal = color;
-	float diffuseIntensity = 0.55;
     vec4 colorFinal = vec4(84.0 / 255.0, 157.0 / 255.0, 234.0 / 255.0, 1.0); // override original
 
     vec3 diffuseLightDirection = normalize(lightSourcePos - vec3(worldPos.x, worldPos.y, worldPos.z));
-    float diffuseLightStrength = min(dot(normals, diffuseLightDirection), 1.0);
-	// float diffuseLightStrength = dot(normals, diffuseLightDirection); // override original
+    // float diffuseLightStrength = max(dot(normals, diffuseLightDirection), ambientLightStrength);
+	float diffuseLightStrength = dot(normals, diffuseLightDirection); // override original
 
     vec4 ambientLight = vec4(worldLightColor.r * ambientLightStrength,
                              worldLightColor.g * ambientLightStrength,
                              worldLightColor.b * ambientLightStrength,
                              1.0);
-    vec4 diffuseLight = vec4(worldLightColor.r * diffuseLightStrength * diffuseIntensity,
-                             worldLightColor.g * diffuseLightStrength * diffuseIntensity,
-                             worldLightColor.b * diffuseLightStrength * diffuseIntensity,
+    vec4 diffuseLight = vec4(worldLightColor.r * diffuseLightStrength,
+                             worldLightColor.g * diffuseLightStrength,
+                             worldLightColor.b * diffuseLightStrength,
                              1.0);
+    // output_frag = colorFinal * (ambientLight + diffuseLight);
 	output_frag = colorFinal * (ambientLight + diffuseLight);
 }
