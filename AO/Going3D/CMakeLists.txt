@@ -9,7 +9,8 @@ add_executable(Scene360 src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-I.cpp
 add_executable(GoodCamera src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-J.cpp)
 add_executable(PlatformTexture src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-K.cpp)
 add_executable(Redesign src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-L.cpp)
-add_executable(LightFix src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-M.cpp)
+
+add_executable(LightFix src/LoadTextures.cpp src/LoadShaders.cpp src/Model3D.cpp src/Prime-M.cpp)
 
 target_include_directories(TextureTrial
     PUBLIC include

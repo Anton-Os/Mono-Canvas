@@ -35,10 +35,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_S && action == GLFW_RELEASE) S = false;
 	if (key == GLFW_KEY_D && action == GLFW_RELEASE) D = false;
 
-	if (W) cube1_Y += 1.0f;
-	if (A) cube1_X -= 1.0f;
-	if (S) cube1_Y -= 1.0f;
-	if (D) cube1_X += 1.0f;
+	if (W) cube1_Y += 3.0f;
+	if (A) cube1_X -= 3.0f;
+	if (S) cube1_Y -= 3.0f;
+	if (D) cube1_X += 3.0f;
 }
 
 int main(int argc, char** argv){
@@ -199,7 +199,8 @@ int main(int argc, char** argv){
     GLint simpleDiffuseGLSL_Local = glGetUniformLocation(simpleDiffuseGLSL, "Local");
         // Fragment Shader Uniforms
     GLint simpleDiffuseGLSL_ambientLightStrength = glGetUniformLocation(simpleDiffuseGLSL, "ambientLightStrength");
-    GLint simpleDiffuseGLSL_worldLightColor = glGetUniformLocation(simpleDiffuseGLSL, "worldLightColor");
+    GLint simpleDiffuseGLSL_cameraPos = glGetUniformLocation(simpleDiffuseGLSL, "cameraPos");
+	GLint simpleDiffuseGLSL_worldLightColor = glGetUniformLocation(simpleDiffuseGLSL, "worldLightColor");
     GLint simpleDiffuseGLSL_lightSourcePos = glGetUniformLocation(simpleDiffuseGLSL, "lightSourcePos");
 
     GLenum errorCheck3_OpenGL = glGetError();
@@ -218,7 +219,7 @@ int main(int argc, char** argv){
 
     projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
 
-    GLfloat ambientLightStrength = 0.5f;
+    GLfloat ambientLightStrength = 1.01f;
     GLfloat worldLightColor[3] = { 1.0f, 1.0f, 1.0f };
     GLfloat lightSourcePos[3] = { 0, 10.0f, 0 };
 
@@ -243,6 +244,7 @@ int main(int argc, char** argv){
         glUniformMatrix4fv(simpleDiffuseGLSL_World, 1, GL_FALSE, glm::value_ptr(worldMatrix));
 
         glUniform1f(simpleDiffuseGLSL_ambientLightStrength, ambientLightStrength);
+        glUniform3fv(simpleDiffuseGLSL_cameraPos, 1, glm::value_ptr(cameraPos));
         glUniform3fv(simpleDiffuseGLSL_worldLightColor, 1, worldLightColor);
         glUniform3fv(simpleDiffuseGLSL_lightSourcePos, 1, lightSourcePos);
 
