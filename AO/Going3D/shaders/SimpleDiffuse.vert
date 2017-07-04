@@ -6,10 +6,6 @@ layout (location = 1) in vec4 color;
 layout (location = 2) in vec2 texCoord;
 layout (location = 3) in vec3 normals;
 
-/*  uniform mat4 Projection;
-uniform mat4 View;
-uniform mat4 Model; */
-
 uniform mat4 World;
 uniform mat4 Local;
 
@@ -21,7 +17,7 @@ layout (location = 3) out vec4 worldPos_out;
 void main(){
     color_out = color;
     texCoord_out = texCoord;
-    normals_out = normals;
+    normals_out = mat3(transpose(inverse(Local))) * normals;
     worldPos_out = Local * vec4(pos, 1.0);
 
     vec3 posFinal = pos;

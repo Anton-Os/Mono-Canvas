@@ -1,7 +1,3 @@
-/* #include <cmath>
-#include <string>
-#include <cstring>
-#include <iostream> */
 
 #include "Common.h"
 
@@ -78,6 +74,7 @@ int main(int argc, char** argv){
 	std::string parentDir = getParentDirectory(argv[0]);
 	
 	GLuint litEnvGLSL = compileShaders(parentDir, "LitEnv.vert", "LitEnv.frag");
+	GLuint originalDiffuseGLSL = compileShaders(parentDir, "OriginalDiffuse.vert", "OriginalDiffuse.frag");
     GLuint simpleDiffuseGLSL = compileShaders(parentDir, "SimpleDiffuse.vert", "SimpleDiffuse.frag");
     
 	glEnable(GL_DEPTH_TEST);
@@ -167,6 +164,25 @@ int main(int argc, char** argv){
 		20, 21, 22,
 		22, 21, 23,
 	};
+
+	Vertex platform[] = {
+		{ { 45.0f, 0.0, 45.0f },{ 93, 109, 126, 255 } },
+		{ { -45.0f, 0.0, 45.0f },{ 93, 109, 126, 255 } },
+		{ { 45.0f, 0.0, -45.0f },{ 93, 109, 126, 255 } },
+		{ { -45.0f, 0.0, -45.0f },{ 93, 109, 126, 255 } }
+	};
+
+	GLfloat platformNormals[] = {
+		0.0, 1.0f, 0.0,
+		0.0, 1.0f, 0.0,
+		0.0, 1.0f, 0.0,
+		0.0, 1.0f, 0.0,
+	};
+
+	GLuint platformIndices[] = {
+		0, 1, 2, 3
+	};
+
     /* -- -- -- Populating OpenGL Buffers -- -- -- */
     GLuint VAOs[100];
     GLuint VBOs[100];
@@ -188,6 +204,20 @@ int main(int argc, char** argv){
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOs[2]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
 
+	glBindVertexArray(VAOs[1]);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBOs[3]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(platform), platform, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
+	glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBOs[4]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(platformNormals), platformNormals, GL_STATIC_DRAW);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOs[5]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(platformIndices), platformIndices, GL_STATIC_DRAW);
+
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -207,6 +237,7 @@ int main(int argc, char** argv){
     /* -- -- -- Specifying uniform data -- -- -- */
     glm::vec3 cameraPos(1);
     glm::vec3 cube1_Origin(1);
+	glm::vec3 platformOrigin(1);
 
     glm::mat4 projectionMatrix(1);
     glm::mat4 viewMatrix(1);
@@ -214,14 +245,18 @@ int main(int argc, char** argv){
 	
     glm::mat4 localMatrix(1); // To handle changes specific to model
     glm::mat4 cube1_Matrix(1);
+	glm::mat4 platformMatrix(1);
 
     cameraPos = glm::vec3(0, 0, 0);
 
     projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
 
-    GLfloat ambientLightStrength = 1.01f;
+    GLfloat ambientLightStrength = 0.7f;
     GLfloat worldLightColor[3] = { 1.0f, 1.0f, 1.0f };
-    GLfloat lightSourcePos[3] = { 0, 10.0f, 0 };
+    GLfloat lightSourcePos[3] = { 0, 10.0f, -10.0f };
+
+	platformOrigin = glm::vec3(0.0, -2.0f, 0.0);
+	platformMatrix = glm::translate(glm::mat4(1), platformOrigin);
 
     /* -- -- -- Executing infinite game loop -- -- -- */
     while (!glfwWindowShouldClose(window)) {
@@ -253,19 +288,31 @@ int main(int argc, char** argv){
 
 		cube1_Matrix = glm::translate(glm::mat4(1), cube1_Origin);
         localMatrix = cube1_Matrix;
-
         glUniformMatrix4fv(simpleDiffuseGLSL_Local, 1, GL_FALSE, glm::value_ptr(localMatrix));
 
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(3);
-        glDrawElements(GL_TRIANGLES, sizeof(cubeIndices) / sizeof(GLubyte), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, sizeof(cubeIndices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(3);
 
+		glBindVertexArray(VAOs[1]);
+
+		localMatrix = platformMatrix;
+		glUniformMatrix4fv(simpleDiffuseGLSL_Local, 1, GL_FALSE, glm::value_ptr(localMatrix));
+
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(3);
+		glDrawElements(GL_TRIANGLES, sizeof(platformIndices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(3);
+
         glBindVertexArray(0);
-        glfwSwapBuffers(window);    
+        glfwSwapBuffers(window);
     }
     /* -- -- -- Deallocation and deletion of resources -- -- -- */
     glDeleteProgram(simpleDiffuseGLSL);

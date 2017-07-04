@@ -13,18 +13,23 @@ uniform vec3 lightSourcePos;
 
 out vec4 output_frag;
 
+vec3 computeReflection(vec3 l, vec3 n){
+	vec3 reflection = (2 * dot(l, n)) * n - l;
+	return reflection;
+}
+
 void main(){
-    float diffuseIntensity = 0.9;
-    float specularIntensity = 0.9;
-    vec4 colorFinal = vec4(84.0 / 255.0, 157.0 / 255.0, 234.0 / 255.0, 1.0); // override original
+    float diffuseIntensity = 1.0;
+    float specularIntensity = 0.3;
+    vec4 colorFinal = vec4(84.0 / 255.0, 157.0 / 255.0, 234.0 / 255.0, 1.0);
 
     vec3 diffuseLightDirection = normalize(lightSourcePos - vec3(worldPos.x, worldPos.y, worldPos.z));
-    float diffuseLightStrength = min(dot(normals, diffuseLightDirection), 1.0);
+    float diffuseLightStrength = max(0.25, min(dot(normals, diffuseLightDirection), 1.0));
 
-    vec3 viewerDirection = normalize(cameraPos - vec3(worldPos.x, worldPos.y, worldPos.z));
-    vec3 reflectDirection = reflect(lightSourcePos, normals);
-    float specularLightStrength = pow(max(dot(viewerDirection, reflectDirection), 0), 32);
-    vec3 specular = specularIntensity * specularLightStrength * worldLightColor;
+    // Compute Specular Light Here
+	vec3 viewerDirection = normalize(cameraPos - vec3(worldPos.x, worldPos.y, worldPos.z));
+	vec3 specularLightDirection = normalize(computeReflection(diffuseLightDirection, normals));
+	float specularLightStrength = min(dot(viewerDirection, specularLightDirection), 1.0);
 
     vec4 ambientLight = vec4(worldLightColor.r * ambientLightStrength,
                              worldLightColor.g * ambientLightStrength,
@@ -34,7 +39,10 @@ void main(){
                              worldLightColor.g * diffuseLightStrength * diffuseIntensity,
                              worldLightColor.b * diffuseLightStrength * diffuseIntensity,
                              1.0);
-    vec4 specularLight = vec4(specular.r, specular.g, specular.b, 1.0);
-    // output_frag = colorFinal * (ambientLight * diffuseLight * specularLight);
-    output_frag = colorFinal * ambientLight * diffuseLight;
+    vec4 specularLight = vec4(worldLightColor.r * specularLightStrength * specularIntensity,
+                              worldLightColor.g * specularLightStrength * specularIntensity,
+                              worldLightColor.b * specularLightStrength * specularIntensity,
+                              1.0);
+
+    output_frag = colorFinal * (ambientLight + specularLight);
 }
