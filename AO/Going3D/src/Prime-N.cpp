@@ -270,7 +270,7 @@ int main(int argc, char** argv){
 	platformMatrix = glm::translate(glm::mat4(1), platformOrigin);
 
     /* -- -- -- Executing infinite game loop -- -- -- */
-    while (!glfwWindowShouldClose(window)) {
+    /* while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
         glClearColor(worldLightColor[0] * ambientLightStrength,
                      worldLightColor[1] * ambientLightStrength,
@@ -323,10 +323,8 @@ int main(int argc, char** argv){
 
         glBindVertexArray(0);
         glfwSwapBuffers(window);
-    }
-    
-    
-    
+    } */
+
     /* -- -- -- Deallocation and deletion of resources -- -- -- */
     glDeleteProgram(simpleDiffuseGLSL);
     glDeleteVertexArrays(100, VAOs);

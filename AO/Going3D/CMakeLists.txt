@@ -11,6 +11,7 @@ add_executable(PlatformTexture src/LoadTextures.cpp src/LoadShaders.cpp src/Prim
 add_executable(Redesign src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-L.cpp)
 
 add_executable(LightFix src/LoadTextures.cpp src/LoadShaders.cpp src/Model3D.cpp src/Prime-M.cpp)
+add_executable(AssimpModels src/LoadTextures.cpp src/LoadShaders.cpp src/Model3D.cpp src/Prime-N.cpp)
 
 target_include_directories(TextureTrial
     PUBLIC include
@@ -144,6 +145,17 @@ target_link_libraries(LightFix
     glm
 )
 
+target_include_directories(AssimpModels
+    PUBLIC include
+)
+
+target_link_libraries(AssimpModels
+    GLEW::glew_s
+    glfw
+    gli
+    glm
+    assimp
+)
 
 # WORK WITH SHADER FILES
 
@@ -159,6 +171,7 @@ add_custom_target(MonoShaders
             "shaders/AO-8.vert" "shaders/AO-8.frag"
             "shaders/Viewer3D.vert" "shaders/Viewer3D.frag"
             "shaders/LitEnv.vert" "shaders/LitEnv.frag"
+            "shaders/OriginalDiffuse.vert" "shaders/OriginalDiffuse.frag"
             "shaders/SimpleDiffuse.vert" "shaders/SimpleDiffuse.frag"
 )
 
@@ -173,6 +186,7 @@ foreach(current_shader "AO-1.vert" "AO-1.frag"
                        "AO-8.vert" "AO-8.frag"
                        "Viewer3D.vert" "Viewer3D.frag"
                        "LitEnv.vert" "LitEnv.frag"
+                       "OriginalDiffuse.vert" "OriginalDiffuse.frag"
                        "SimpleDiffuse.vert" "SimpleDiffuse.frag"
 )
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}"

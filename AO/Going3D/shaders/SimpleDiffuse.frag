@@ -44,5 +44,5 @@ void main(){
                               worldLightColor.b * specularLightStrength * specularIntensity,
                               1.0);
 
-    output_frag = colorFinal * (ambientLight + specularLight);
+    output_frag = colorFinal * (ambientLight + diffuseLight);
 }

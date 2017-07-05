@@ -1,0 +1,34 @@
+set( IrrXML_SRCS
+  CXMLReaderImpl.h
+  heapsort.h
+  irrArray.h
+  irrString.h
+  irrTypes.h
+  irrXML.cpp
+  irrXML.h
+)
+
+add_library(IrrXML STATIC ${IrrXML_SRCS})
+
+set(IRRXML_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" CACHE INTERNAL "IrrXML_Include" )
+set(IRRXML_LIBRARY "IrrXML" CACHE INTERNAL "IrrXML" )
+
+INSTALL( TARGETS IrrXML EXPORT irrxmlTargets
+  LIBRARY DESTINATION ${ASSIMP_LIB_INSTALL_DIR}
+  ARCHIVE DESTINATION ${ASSIMP_LIB_INSTALL_DIR}
+  RUNTIME DESTINATION ${ASSIMP_BIN_INSTALL_DIR}
+  COMPONENT ${LIBASSIMP_COMPONENT}
+)
+
+install(EXPORT irrxmlTargets
+    FILE irrxmlTargets.cmake
+    DESTINATION "${ASSIMP_LIB_INSTALL_DIR}/cmake/assimp-${ASSIMP_VERSION_MAJOR}.${ASSIMP_VERSION_MINOR}"
+)
+ 
+export(EXPORT irrxmlTargets
+    FILE irrxmlTargets.cmake
+)
+
+install(FILES "${CMAKE_SOURCE_DIR}/irrxml-config.cmake"
+    DESTINATION "${ASSIMP_LIB_INSTALL_DIR}/cmake/assimp-${ASSIMP_VERSION_MAJOR}.${ASSIMP_VERSION_MINOR}"
+)

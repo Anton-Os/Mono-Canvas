@@ -8,7 +8,6 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
         set(EXTLIB_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/Install")
     endif()    
     set(CMAKE_INSTALL_PREFIX "${EXTLIB_INSTALL_PREFIX}" CACHE PATH "Install Path" FORCE)
-    # message("ZZZZZZZZZZZZZZZZZZZ")
 endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 if (NOT CMAKE_CONFIGURATION_TYPES)
@@ -24,7 +23,6 @@ if (NOT CMAKE_CONFIGURATION_TYPES)
         # set(EXTLIB_BUILD_TYPE ${CMAKE_BUILD_TYPE})
         message("CMake already set build type ${CMAKE_BUILD_TYPE}")
     endif()
-    # message("ASDFSDFSDFSDFSDFSDFSDFSDFSDFSDFSDFSDF")
 endif()
 
 option(BUILD_PROGSCHJ "Build progschj examples" OFF)
@@ -39,7 +37,6 @@ set(FREEIMAGE_PROJECT_DIR "${ALL_PROJECT_DIR}/FreeImage")
 set(GLI_PROJECT_DIR "${ALL_PROJECT_DIR}/GLI")
 set(GLM_PROJECT_DIR "${ALL_PROJECT_DIR}/GLM")
 set(ASSIMP_PROJECT_DIR "${ALL_PROJECT_DIR}/ASSIMP")
-set(KTXTOOL_PROJECT_DIR "${ALL_PROJECT_DIR}/KTXtool")
 set(PROGSCHJ_EXAMPLES_PROJECT_DIR "${ALL_PROJECT_DIR}/ProgschjExamples")
 # set(GLO_PROJECT_DIR "${ALL_PROJECT_DIR}/GLO")
 
@@ -252,11 +249,30 @@ ExternalProject_Add(GLM
 
 list(APPEND EXTLIB_TARGETS GLM)
 
-#[[ ExternalProject_Add(ASSIMP
+ExternalProject_Add(ASSIMP
     GIT_REPOSITORY "https://github.com/assimp/assimp.git"
-    GIT_TAG "51520cb5f1adcb588a2533d450aace480c7cc3d4"
+    GIT_TAG "b38ba233f530fdb103d3ede3df5126121af78b10"
 
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/Assimp/code/CMakeLists.txt"
+        "<SOURCE_DIR>/code/CMakeLists.txt"
+    COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/Assimp/assimp-config.cmake"
+        "<SOURCE_DIR>/assimp-config.cmake"
+    COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/Assimp/contrib/zlib/CMakeLists.txt"
+        "<SOURCE_DIR>/contrib/zlib/CMakeLists.txt"
+    COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/Assimp/contrib/zlib/zlib-config.cmake"
+        "<SOURCE_DIR>/zlib-config.cmake"
+    COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/Assimp/contrib/irrXML/CMakeLists.txt"
+        "<SOURCE_DIR>/contrib/irrXML/CMakeLists.txt"
+    COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/Assimp/contrib/irrXML/irrxml-config.cmake"
+        "<SOURCE_DIR>/irrxml-config.cmake"
 
     PREFIX ${ASSIMP_PROJECT_DIR}
     BINARY_DIR "${ASSIMP_PROJECT_DIR}/build"
@@ -264,7 +280,7 @@ list(APPEND EXTLIB_TARGETS GLM)
     STAMP_DIR "${ASSIMP_PROJECT_DIR}/stamp"
 ) 
 
-list(APPEND EXTLIB_TARGETS ASSIMP) #]]
+list(APPEND EXTLIB_TARGETS ASSIMP)
 
 #[[ ExternalProject_Add(GLO
     GIT_REPOSITORY "https://github.com/g-truc/glo.git"
@@ -333,6 +349,7 @@ ExtlibWriteConfig(
         -DSQLite_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/SQLite
         -DGLI_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/gli
         -DGLM_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/glm
+        -DASSIMP_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/assimp-3.3
 
 #        -DTEST_ABC:PATH=${ABC}
 )

@@ -42,10 +42,9 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
     find_package(SQLite REQUIRED CONFIG)
     find_package(GLI REQUIRED CONFIG)
     find_package(GLM REQUIRED CONFIG)
+    find_package(ASSIMP REQUIRED CONFIG)
     # find_package(PicoPixelClient QUIET CONFIG)
     # find_package(FreeImage REQUIRED CONFIG)
-
-    # message(STATUS "FreeGLUT directory ${FREEGLUT_DIR}")
 
     get_target_property(freeglut_ImportLoc freeglut_static IMPORTED_LOCATION_DEBUG)
     # message(STATUS "FreeGLUT target file ${freeglut_ImportLoc}")
