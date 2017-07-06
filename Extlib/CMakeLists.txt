@@ -27,6 +27,8 @@ endif()
 
 option(BUILD_PROGSCHJ "Build progschj examples" OFF)
 
+set(PYTHON_EMBEDDED_DIR "${CMAKE_SOURCE_DIR}/python-3.6.1-embed")
+
 set(ALL_PROJECT_DIR "${CMAKE_BINARY_DIR}/Projects")
 set(FREEGLUT_PROJECT_DIR "${ALL_PROJECT_DIR}/FreeGLUT")
 set(GLEW_PROJECT_DIR "${ALL_PROJECT_DIR}/GLEW")
@@ -38,11 +40,17 @@ set(GLI_PROJECT_DIR "${ALL_PROJECT_DIR}/GLI")
 set(GLM_PROJECT_DIR "${ALL_PROJECT_DIR}/GLM")
 set(ASSIMP_PROJECT_DIR "${ALL_PROJECT_DIR}/ASSIMP")
 set(PROGSCHJ_EXAMPLES_PROJECT_DIR "${ALL_PROJECT_DIR}/ProgschjExamples")
+set(GOOGLETEST_PROJECT_DIR "${ALL_PROJECT_DIR}/GoogleTest")
+set(GLSLANG_PROJECT_DIR "${ALL_PROJECT_DIR}/GLSLang")
+set(SPIRVTOOLS_PROJECT_DIR "${ALL_PROJECT_DIR}/SPIRV_Tools")
+set(SPIRVHEADERS_PROJECT_DIR "${ALL_PROJECT_DIR}/SPIRV_Headers")
+set(SHADERC_PROJECT_DIR "${ALL_PROJECT_DIR}/ShaderC")
 # set(GLO_PROJECT_DIR "${ALL_PROJECT_DIR}/GLO")
 
 set(LOCAL_PROJECT_DIR "${CMAKE_BINARY_DIR}/Local")
 set(SQLITE_LOCAL_DIR "${CMAKE_SOURCE_DIR}/sqlite-amalgamation-3180000")
 set(SQLITE_PROJECT_DIR "${LOCAL_PROJECT_DIR}/SQLite")
+
 #[[ if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
     set(PICOPIXELCLIENT_LOCAL_DIR "${CMAKE_SOURCE_DIR}/pico-pixel-client-sdk-master")
     set(PICOPIXELCLIENT_PROJECT_DIR "${LOCAL_PROJECT_DIR}/PicoPixelClient")
@@ -282,6 +290,118 @@ ExternalProject_Add(ASSIMP
 
 list(APPEND EXTLIB_TARGETS ASSIMP)
 
+ExternalProject_Add(GoogleTest
+    GIT_REPOSITORY "https://github.com/google/googletest.git"
+    GIT_TAG "4bab34d2084259cba67f3bfb51217c10d606e175"
+
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND ""
+
+    PREFIX ${GOOGLETEST_PROJECT_DIR}
+    BINARY_DIR "${GOOGLETEST_PROJECT_DIR}/build"
+    TMP_DIR "${GOOGLETEST_PROJECT_DIR}/temp"
+    STAMP_DIR "${GOOGLETEST_PROJECT_DIR}/stamp"
+)
+
+list(APPEND EXTLIB_TARGETS GoogleTest)
+
+ExternalProject_Add(Glslang
+    GIT_REPOSITORY "https://github.com/KhronosGroup/glslang.git"
+    GIT_TAG "9645f78293a59780b06ba93938bc46850b2c5b3c"
+
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND ""
+
+    PREFIX ${GLSLANG_PROJECT_DIR}
+    BINARY_DIR "${GLSLANG_PROJECT_DIR}/build"
+    TMP_DIR "${GLSLANG_PROJECT_DIR}/temp"
+    STAMP_DIR "${GLSLANG_PROJECT_DIR}/stamp"
+)
+
+list(APPEND EXTLIB_TARGETS Glslang)
+
+ExternalProject_Add(SPIRV_Tools
+    GIT_REPOSITORY "https://github.com/KhronosGroup/SPIRV-Tools.git"
+    GIT_TAG "35a06958441b68a74c9a817b33bba110b385d5f4"
+
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/SPIRV_Tools/CMakeLists.txt"
+        "<SOURCE_DIR>/CMakeLists.txt"
+
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND ""
+
+    PREFIX ${SPIRVTOOLS_PROJECT_DIR}
+    BINARY_DIR "${SPIRVTOOLS_PROJECT_DIR}/build"
+    TMP_DIR "${SPIRVTOOLS_PROJECT_DIR}/temp"
+    STAMP_DIR "${SPIRVTOOLS_PROJECT_DIR}/stamp"
+)
+
+ExternalProject_Get_Property(SPIRV_Tools SOURCE_DIR)
+set(SHADERC_SPIRVTOOLS_DIR ${SOURCE_DIR})
+set(SHADERC_SPIRVTOOLS_INCLUDE_DIR "${SHADERC_SPIRVTOOLS_DIR}/include")
+
+ExternalProject_Add(SPIRV_Headers
+    GIT_REPOSITORY "https://github.com/KhronosGroup/SPIRV-Headers.git"
+    GIT_TAG "661ad91124e6af2272afd00f804d8aa276e17107"
+
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND ""
+
+    PREFIX ${SPIRVHEADERS_PROJECT_DIR}
+    BINARY_DIR "${SPIRVHEADERS_PROJECT_DIR}/build"
+    TMP_DIR "${SPIRVHEADERS_PROJECT_DIR}/temp"
+    STAMP_DIR "${SPIRVHEADERS_PROJECT_DIR}/stamp"
+
+    SOURCE_DIR "${SHADERC_SPIRVTOOLS_DIR}/external/spirv-headers"
+    DEPENDS SPIRV_Tools
+)
+
+list(APPEND EXTLIB_TARGETS SPIRV_Tools)
+
+ExternalProject_Get_Property(GoogleTest SOURCE_DIR)
+set(SHADERC_GOOGLETEST_DIR ${SOURCE_DIR})
+
+ExternalProject_Get_Property(Glslang SOURCE_DIR)
+set(SHADERC_GLSLANG_DIR ${SOURCE_DIR})
+
+ExternalProject_Add(ShaderC
+    GIT_REPOSITORY "https://github.com/google/shaderc.git"
+    GIT_TAG "41ce8e69e12b3fe8370e9d49e1760ea711d5e61b"
+
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+               -DSHADERC_GOOGLE_TEST_DIR:PATH=${SHADERC_GOOGLETEST_DIR}
+               -DSHADERC_GLSLANG_DIR:PATH=${SHADERC_GLSLANG_DIR}
+               -DSHADERC_SPIRV_TOOLS_DIR:PATH=${SHADERC_SPIRVTOOLS_DIR}
+               -DPYTHON_EXE:FILEPATH=${PYTHON_EMBEDDED_DIR}/python.exe
+
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/ShaderC/third_party/CMakeLists.txt"
+        "<SOURCE_DIR>/third_party/CMakeLists.txt"
+    COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/ShaderC/CMakeLists.txt"
+        "<SOURCE_DIR>/CMakeLists.txt"
+
+    PREFIX ${SHADERC_PROJECT_DIR}
+    BINARY_DIR "${SHADERC_PROJECT_DIR}/build"
+    TMP_DIR "${SHADERC_PROJECT_DIR}/temp"
+    STAMP_DIR "${SHADERC_PROJECT_DIR}/stamp"
+
+    DEPENDS GoogleTest Glslang SPIRV_Tools SPIRV_Headers
+)
+
+list(APPEND EXTLIB_TARGETS ShaderC)
+
 #[[ ExternalProject_Add(GLO
     GIT_REPOSITORY "https://github.com/g-truc/glo.git"
     GIT_TAG "e5736d57b8a5caad8647360f6efe0ddfb62de2ae"
@@ -315,7 +435,7 @@ list(APPEND EXTLIB_TARGETS ASSIMP)
     STAMP_DIR "${GLAD_PROJECT_DIR}/stamp"
 ) #]]
 
-ExternalProject_Get_Property(GLEW SOURCE_DIR)
+#[[ ExternalProject_Get_Property(GLEW SOURCE_DIR)
 set(GLEW_INCLUDE_DIR "${SOURCE_DIR}/include")
 
 ExternalProject_Get_Property(FreeGLUT BINARY_DIR)
@@ -325,7 +445,7 @@ ExternalProject_Get_Property(FLTK BINARY_DIR)
 set(FLTK_DIR ${BINARY_DIR})
 
 ExternalProject_Get_Property(GLFW BINARY_DIR)
-set(GLFW_DIR ${BINARY_DIR})
+set(GLFW_DIR ${BINARY_DIR}) #]]
 
 include("cmake/CompilerSettings.cmake")
 include("cmake/WriteInitialCache.cmake")
