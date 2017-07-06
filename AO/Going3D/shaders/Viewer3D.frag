@@ -3,13 +3,13 @@
 
 // Earlier Versions do not support the layout "binding" qualifier
 
-in vec4 color_vert;
-in vec2 texCoord_vert;
+layout (location = 0) in vec4 color_vert;
+layout (location = 1) in vec2 texCoord_vert;
 
 uniform int surfaceRenderMode;
 layout(binding = 0) uniform sampler2D texture;
 
-out vec4 output_frag;
+layout (location = 0) out vec4 output_frag;
 
 /* void main(){
     if(surfaceRenderMode == 1){

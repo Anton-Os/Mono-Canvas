@@ -20,7 +20,6 @@ if (NOT CMAKE_CONFIGURATION_TYPES)
             PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelwithDebInfo" )
         message("CMake hasnt set build type")
     else()
-        # set(EXTLIB_BUILD_TYPE ${CMAKE_BUILD_TYPE})
         message("CMake already set build type ${CMAKE_BUILD_TYPE}")
     endif()
 endif()
@@ -346,6 +345,8 @@ ExternalProject_Add(SPIRV_Tools
     STAMP_DIR "${SPIRVTOOLS_PROJECT_DIR}/stamp"
 )
 
+list(APPEND EXTLIB_TARGETS SPIRV_Tools)
+
 ExternalProject_Get_Property(SPIRV_Tools SOURCE_DIR)
 set(SHADERC_SPIRVTOOLS_DIR ${SOURCE_DIR})
 set(SHADERC_SPIRVTOOLS_INCLUDE_DIR "${SHADERC_SPIRVTOOLS_DIR}/include")
@@ -367,7 +368,7 @@ ExternalProject_Add(SPIRV_Headers
     DEPENDS SPIRV_Tools
 )
 
-list(APPEND EXTLIB_TARGETS SPIRV_Tools)
+list(APPEND EXTLIB_TARGETS SPIRV_Headers)
 
 ExternalProject_Get_Property(GoogleTest SOURCE_DIR)
 set(SHADERC_GOOGLETEST_DIR ${SOURCE_DIR})
@@ -435,22 +436,9 @@ list(APPEND EXTLIB_TARGETS ShaderC)
     STAMP_DIR "${GLAD_PROJECT_DIR}/stamp"
 ) #]]
 
-#[[ ExternalProject_Get_Property(GLEW SOURCE_DIR)
-set(GLEW_INCLUDE_DIR "${SOURCE_DIR}/include")
-
-ExternalProject_Get_Property(FreeGLUT BINARY_DIR)
-set(FreeGLUT_DIR ${BINARY_DIR})
-
-ExternalProject_Get_Property(FLTK BINARY_DIR)
-set(FLTK_DIR ${BINARY_DIR})
-
-ExternalProject_Get_Property(GLFW BINARY_DIR)
-set(GLFW_DIR ${BINARY_DIR}) #]]
-
 include("cmake/CompilerSettings.cmake")
 include("cmake/WriteInitialCache.cmake")
 
-# SET(ABC "C:/Program Files (x86)")
 ExtlibWriteConfig(
     OUTPUT_FILE "${CMAKE_BINARY_DIR}/TempCache.txt"
     CMAKE_CACHE_ARGS
@@ -462,7 +450,6 @@ ExtlibWriteConfig(
         -DEXTLIB_GENERATOR:STRING=${CMAKE_GENERATOR}
 
         -Dfreeglut_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/FreeGLUT
-        # -DGLEW_INCLUDE_DIR:PATH=${GLEW_INCLUDE_DIR}
         -DGLEW_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/glew
         -Dglfw3_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/glfw3
         -DFLTK_DIR:PATH=${CMAKE_INSTALL_PREFIX}/CMake
@@ -471,7 +458,6 @@ ExtlibWriteConfig(
         -DGLM_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/glm
         -DASSIMP_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/assimp-3.3
 
-#        -DTEST_ABC:PATH=${ABC}
 )
 
 add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/ExtlibCache.txt"
@@ -481,9 +467,7 @@ add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/ExtlibCache.txt"
 )
 
 add_custom_target(ExtlibCache ALL
-    # COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/ExtlibCache.txt"
-    # COMMAND ${CMAKE_COMMAND} -E rename "${CMAKE_BINARY_DIR}/TempCache.txt" "${CMAKE_BINARY_DIR}/ExtlibCache.txt"
-    DEPENDS ${EXTLIB_TARGETS} "${CMAKE_BINARY_DIR}/ExtlibCache.txt"
+        DEPENDS ${EXTLIB_TARGETS} "${CMAKE_BINARY_DIR}/ExtlibCache.txt"
 )
 
 message("Current Generator is ${CMAKE_GENERATOR}")

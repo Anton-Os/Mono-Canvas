@@ -9,8 +9,8 @@ uniform mat4 Projection;
 uniform mat4 View;
 uniform mat4 Model;
 
-out vec4 color_vert;
-out vec2 texCoord_vert;
+layout (location = 0) out vec4 color_vert;
+layout (location = 1) out vec2 texCoord_vert;
 
 void main(){
     mat4 matrixFinal = Projection * View * Model;

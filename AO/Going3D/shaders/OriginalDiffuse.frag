@@ -10,7 +10,7 @@ uniform float ambientLightStrength;
 uniform vec3 worldLightColor;
 uniform vec3 lightSourcePos;
 
-out vec4 output_frag;
+layout (location = 0) out vec4 output_frag;
 
 void main(){
     // vec4 colorFinal = color;

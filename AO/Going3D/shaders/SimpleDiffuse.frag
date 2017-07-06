@@ -11,7 +11,7 @@ uniform vec3 cameraPos;
 uniform vec3 worldLightColor;
 uniform vec3 lightSourcePos;
 
-out vec4 output_frag;
+layout (location = 0) out vec4 output_frag;
 
 vec3 computeReflection(vec3 l, vec3 n){
 	vec3 reflection = (2 * dot(l, n)) * n - l;

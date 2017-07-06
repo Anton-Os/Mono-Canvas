@@ -13,7 +13,7 @@ uniform int surfaceRenderMode;
 uniform float ambientStrength;
 uniform vec3 lightSourceLoc;
 
-out vec4 output_frag;
+layout (location = 0) out vec4 output_frag;
 
 void main(){
     vec3 worldLightColor = ambientStrength * vec3(1.0, 1.0, 1.0);

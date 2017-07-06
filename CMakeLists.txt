@@ -23,7 +23,9 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
         PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelwithDebInfo" )
 endif()
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
+set(INSTALL_PREFIX_RUNTIME_DIR "${CMAKE_INSTALL_PREFIX}/bin")
+set(GLSLC_EXE "${INSTALL_PREFIX_RUNTIME_DIR}/glslc.exe")
 
 message("Extlib Cache: ${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
 message("Current Generator is ${CMAKE_GENERATOR}")
