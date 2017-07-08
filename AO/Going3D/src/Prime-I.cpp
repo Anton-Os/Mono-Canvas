@@ -227,7 +227,6 @@ int main(int argc, const char* argv[]) {
 
     // glActiveTexture(texture2);
 
-	GLuint default_glsl = compileShaders(parentDir, "AO-8.vert", "AO-8.frag");
 	GLuint viewer3D_glsl = compileShaders(parentDir, "Viewer3D.vert", "Viewer3D.frag");
 
 	glEnable(GL_DEPTH_TEST);

@@ -29,13 +29,35 @@ GLchar* readShaderFile(const char* nameOfShader){
     return shaderSource;
 }
 
+GLbyte* readShaderBytes(const char* nameOfShader){
+    FILE* shaderFile = fopen(nameOfShader, "r");
+    if (nullptr == shaderFile) {
+        std::cerr << "Failed to open shader file: " << nameOfShader << std::endl;
+        return nullptr;
+    }
+    fseek(shaderFile, 0, SEEK_END);
+    int shaderLength = ftell(shaderFile);
+    fseek(shaderFile, 0, SEEK_SET);
+
+    GLchar* shaderSource = new GLchar[shaderLength + 1];
+    // second argument specifies size in bytes
+    std::size_t n = fread(shaderSource, 1, shaderLength, shaderFile);
+    if (n <= 0) {
+        std::cerr << "Failed to read shader file (got " << n
+                  << " bytes, expected " << shaderLength << " bytes)" << std::endl;
+        return nullptr;
+    }
+    fclose(shaderFile);
+    shaderSource[n] = '\0';
+    
+    // cast to constant NOW because earlier fread cannot use shaderSource
+    return (GLbyte*)shaderSource;
+}
+
 GLuint compileShaders(const std::string& rootPath, const char* vertexShaderBaseName, const char* fragmentShaderBaseName){
-    // GLenum result = glGetError();
     GLuint vertex_shader, fragment_shader, shader_program;
     GLint logState;
     GLchar infoLog[512];
-    // const char* vertex_shader_base_name = "B1.vert";
-    // const char* fragment_shader_base_name = "B1.frag";
     std::string vertex_shader_absolute_path((rootPath.length() > 0) ?
                                             rootPath + "\\" + vertexShaderBaseName :
                                             std::string(vertexShaderBaseName));
@@ -47,15 +69,10 @@ GLuint compileShaders(const std::string& rootPath, const char* vertexShaderBaseN
     vertex_shader_absolute_path;
     fragment_shader_absolute_path;
 
-    // std::cout << std::endl << vertex_shader_source << std::endl;
-    // std::cout << std::endl << fragment_shader_source << std::endl;
-
     vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shader, 1, &vertex_shader_source, NULL);
     glCompileShader(vertex_shader);
-    // result = glGetError(); // CHECKING OCCURENCE
     glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &logState);
-    // result = glGetError(); // CHECKING OCCURENCE
     if(!logState){
         glGetShaderInfoLog(vertex_shader, 512, NULL, infoLog);
         std::cerr << vertexShaderBaseName << " failed to compile...\n\n" 
@@ -70,9 +87,7 @@ GLuint compileShaders(const std::string& rootPath, const char* vertexShaderBaseN
     fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment_shader, 1, &fragment_shader_source, NULL);
     glCompileShader(fragment_shader);
-    // result = glGetError(); // CHECKING OCCURENCE
     glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &logState);
-    // result = glGetError(); // CHECKING OCCURENCE
     if(!logState){
         glGetShaderInfoLog(fragment_shader, 512, NULL, infoLog);
         std::cerr << fragmentShaderBaseName << " failed to compile...\n\n" 
@@ -102,3 +117,19 @@ GLuint compileShaders(const std::string& rootPath, const char* vertexShaderBaseN
 
     return shader_program;
 }
+
+/* GLuint spirvProgram(const std::string& rootPath, const char* vertexBinaryName, const char* fragmentBinaryName){
+    GLuint vertexBinary;
+    GLuint fragmentBinary;
+
+    std::string vertexBinaryAbsolutePath((rootPath.length() > 0) ?
+                                          rootPath + "\\" + vertexBinaryName :
+                                          std::string(vertexBinaryName));
+    std::string fragmentBinaryAbsolutePath((rootPath.length() > 0) ?
+                                            rootPath + "\\" + fragmentBinaryName :
+                                            std::string(fragmentBinaryName));
+    GLbyte* vertexBinarySource = readShaderBytes(vertexBinaryAbsolutePath.c_str());
+    GLbyte* fragmentBinarySource = readShaderBytes(fragmentBinaryAbsolutePath.c_str());
+
+    glShaderBinary(1, &vertexBinary, GL_SHADER_BINARY_FORMAT_SPIR_V_ARB, sizeof(vertexBinarySource));
+} */

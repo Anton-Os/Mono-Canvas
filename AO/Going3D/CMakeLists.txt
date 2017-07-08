@@ -115,12 +115,6 @@ add_custom_target(Shaders
     DEPENDS ${OUTPUT_SHADER_LIST}
 )
 
-add_dependencies(TextureTrial Shaders)
-add_dependencies(SpinningShape Shaders)
-add_dependencies(ProjetionDraft Shaders)
-add_dependencies(MatrixViews Shaders)
-add_dependencies(PerspectiveCopy Shaders)
-add_dependencies(ManyCubes Shaders)
 add_dependencies(LookAhead Shaders)
 add_dependencies(Scene360 Shaders)
 add_dependencies(GoodCamera Shaders)

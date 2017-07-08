@@ -74,6 +74,11 @@ int main(int argc, char** argv){
 		std::cerr << "GLEW failed to initialize" << std::endl;
 		return -1;
 	}
+
+    if(glewGetExtension("GL_ARB_gl_spirv") == GL_TRUE) std::cout << "SPIRV extension was fetched" << std::endl;
+    else {
+        std::cout << "SPIRV failed you idiot" << std::endl;
+    }
     
     /* -- -- -- Reference to other local .cpp files, creating/loading data to be used in the game loop -- -- -- */
 	std::string parentDir = getParentDirectory(argv[0]);
@@ -81,6 +86,7 @@ int main(int argc, char** argv){
 	GLuint litEnvGLSL = compileShaders(parentDir, "LitEnv.vert", "LitEnv.frag");
 	GLuint originalDiffuseGLSL = compileShaders(parentDir, "OriginalDiffuse.vert", "OriginalDiffuse.frag");
     GLuint simpleDiffuseGLSL = compileShaders(parentDir, "SimpleDiffuse.vert", "SimpleDiffuse.frag");
+	
     
 	glEnable(GL_DEPTH_TEST);
 	// glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);

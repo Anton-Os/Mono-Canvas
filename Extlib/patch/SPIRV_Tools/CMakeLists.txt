@@ -24,21 +24,6 @@ project(spirv-tools)
 enable_testing()
 set(SPIRV_TOOLS "SPIRV-Tools")
 
-include(ExternalProject)
-
-ExternalProject_Add(SPIRV_Headers
-    GIT_REPOSITORY "https://github.com/KhronosGroup/SPIRV-Headers.git"
-    GIT_TAG "661ad91124e6af2272afd00f804d8aa276e17107"
-
-    CONFIGURE_COMMAND ""
-    BUILD_COMMAND ""
-    INSTALL_COMMAND ""
-
-    PREFIX "${CMAKE_SOURCE_DIR}"
-    SOURCE_DIR "${CMAKE_SOURCE_DIR}/external/spirv-headers"
-
-)
-
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
