@@ -69,28 +69,20 @@ Mesh Model3D::processMesh(aiMesh *mesh, const aiScene *scene){
     for(unsigned int i = 0; i < mesh->mNumVertices; i++){
         Point myPoint;
         std::array<GLfloat, 3> currentVertexPos;
-        // GLubyte currentVertexColor[4];
         std::array<GLubyte, 4> currentVertexColor = {255, 255, 255, 255};
         std::array<GLfloat, 2> currentVertexUV;
         std::array<GLfloat, 3> currentVertexNorm;
-        
-        currentVertexPos[0] = mesh->mVertices[i].x;
-        currentVertexPos[1] = mesh->mVertices[i].y;
-        currentVertexPos[2] = mesh->mVertices[i].z;
 
-        currentVertexNorm[0] = mesh->mNormals[i].x;
-        currentVertexNorm[1] = mesh->mNormals[i].y;
-        currentVertexNorm[2] = mesh->mNormals[i].z;
+        currentVertexPos = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
+        currentVertexNorm = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
 
         // Assimp allows up to 8 texture coordinates per vertex but we need first 2
         if(mesh->mTextureCoords[0]){ // Do they even exist?
-            currentVertexNorm[0] = mesh->mTextureCoords[0][i].x;
-            currentVertexNorm[1] = mesh->mTextureCoords[0][i].y;
-            surfaceRenderMode = 0;
+            currentVertexUV = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].x }
+            surfaceRenderMode = 0; // No textures applied
         } else {
-            currentVertexUV[0] = 0.0f;
-            currentVertexUV[1] = 0.0f;
-            surfaceRenderMode = 1;
+            currentVertexUV = {0.0f, 0.0f};
+            surfaceRenderMode = 1; // No textures applied
         }
 
         myPoint.pos = currentVertexPos;

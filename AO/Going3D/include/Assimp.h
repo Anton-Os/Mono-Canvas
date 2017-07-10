@@ -8,13 +8,6 @@
 
 // From Mesh.cpp
 
-/* struct Point {
-    GLfloat pos[3];
-    GLubyte color[4];
-    GLfloat texCoord[2];
-    GLfloat normal[3];
-}; */
-
 struct Point {
     std::array<GLfloat, 3> pos;
     std::array<GLubyte, 4> color;
@@ -62,7 +55,7 @@ private:
         aiTextureType materialType, 
         std::string materialTypeName
     );
-    GLuint shaderProgId;
+    GLuint shaderProgId; // MUST BE INHERITED FROM CURRENT MESH
     GLuint surfaceRenderMode; // AO
     GLubyte genRandomColorAttrib();// AO
 };
