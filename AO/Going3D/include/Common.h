@@ -1,7 +1,9 @@
 #include <cmath>
 #include <string>
 #include <cstring>
+#include <cstdlib>
 #include <iostream>
+#include <array>
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>

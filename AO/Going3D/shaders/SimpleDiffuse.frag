@@ -6,6 +6,8 @@ layout (location = 1) in vec2 texCoord;
 layout (location = 2) in vec3 normals;
 layout (location = 3) in vec4 worldPos;
 
+layout (binding = 0) uniform sampler2D currentTexture;
+
 uniform float ambientLightStrength;
 uniform vec3 cameraPos;
 uniform vec3 worldLightColor;

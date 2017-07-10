@@ -276,62 +276,6 @@ int main(int argc, char** argv){
     platformOrigin = glm::vec3(0.0, -10.0f, 0.0);
 	platformMatrix = glm::translate(glm::mat4(1), platformOrigin);
 
-    /* -- -- -- Executing infinite game loop -- -- -- */
-    /* while (!glfwWindowShouldClose(window)) {
-        glfwPollEvents();
-        glClearColor(worldLightColor[0] * ambientLightStrength,
-                     worldLightColor[1] * ambientLightStrength,
-                     worldLightColor[2] * ambientLightStrength,
-                     1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        glUseProgram(simpleDiffuseGLSL);
-
-		cube1_Origin = glm::vec3(cube1_X, cube1_Y, cube1_Z);
-
-        // viewMatrix is recomputed on every iteration of while loop
-        viewMatrix = glm::lookAt(cameraPos, cube1_Origin, glm::vec3(0.0, 1.0f, 0.0));
-        // worldMatrix = projectionMatrix * glm::translate(glm::mat4(1), cameraPos);
-        worldMatrix = projectionMatrix * viewMatrix;
-
-        glUniformMatrix4fv(simpleDiffuseGLSL_World, 1, GL_FALSE, glm::value_ptr(worldMatrix));
-
-        glUniform1f(simpleDiffuseGLSL_ambientLightStrength, ambientLightStrength);
-        glUniform3fv(simpleDiffuseGLSL_cameraPos, 1, glm::value_ptr(cameraPos));
-        glUniform3fv(simpleDiffuseGLSL_worldLightColor, 1, worldLightColor);
-        glUniform3fv(simpleDiffuseGLSL_lightSourcePos, 1, lightSourcePos);
-
-        glBindVertexArray(VAOs[0]);
-
-		cube1_Matrix = glm::translate(glm::mat4(1), cube1_Origin);
-        localMatrix = cube1_Matrix;
-        glUniformMatrix4fv(simpleDiffuseGLSL_Local, 1, GL_FALSE, glm::value_ptr(localMatrix));
-
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(3);
-        glDrawElements(GL_TRIANGLES, sizeof(cubeIndices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(3);
-
-		glBindVertexArray(VAOs[1]);
-
-		localMatrix = platformMatrix;
-		glUniformMatrix4fv(simpleDiffuseGLSL_Local, 1, GL_FALSE, glm::value_ptr(localMatrix));
-
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(3);
-		glDrawElements(GL_TRIANGLES, sizeof(platformIndices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glDisableVertexAttribArray(3);
-
-        glBindVertexArray(0);
-        glfwSwapBuffers(window);
-    } */
-
     /* -- -- -- Deallocation and deletion of resources -- -- -- */
     glDeleteProgram(simpleDiffuseGLSL);
     glDeleteVertexArrays(100, VAOs);

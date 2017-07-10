@@ -44,6 +44,7 @@ set(GLSLANG_PROJECT_DIR "${ALL_PROJECT_DIR}/GLSLang")
 set(SPIRVTOOLS_PROJECT_DIR "${ALL_PROJECT_DIR}/SPIRV_Tools")
 set(SPIRVHEADERS_PROJECT_DIR "${ALL_PROJECT_DIR}/SPIRV_Headers")
 set(SHADERC_PROJECT_DIR "${ALL_PROJECT_DIR}/ShaderC")
+set(EIGEN_PROJECT_DIR "${ALL_PROJECT_DIR}/Eigen")
 # set(GLO_PROJECT_DIR "${ALL_PROJECT_DIR}/GLO")
 
 set(LOCAL_PROJECT_DIR "${CMAKE_BINARY_DIR}/Local")
@@ -403,6 +404,22 @@ ExternalProject_Add(ShaderC
 
 list(APPEND EXTLIB_TARGETS ShaderC)
 
+#[[ ExternalProject_Add(Eigen
+    GIT_REPOSITORY "https://github.com/PX4/eigen.git"
+    GIT_TAG "e7850ed81f9c469e02df496ef09ae32ec0379b71"
+
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+
+    PREFIX ${EIGEN_PROJECT_DIR}
+    BINARY_DIR "${EIGEN_PROJECT_DIR}/build"
+    TMP_DIR "${EIGEN_PROJECT_DIR}/temp"
+    STAMP_DIR "${EIGEN_PROJECT_DIR}/stamp"
+
+    DEPENDS GoogleTest Glslang SPIRV_Tools SPIRV_Headers
+)
+
+list(APPEND EXTLIB_TARGETS Eigen) #]]
+
 #[[ ExternalProject_Add(GLO
     GIT_REPOSITORY "https://github.com/g-truc/glo.git"
     GIT_TAG "e5736d57b8a5caad8647360f6efe0ddfb62de2ae"
@@ -471,3 +488,9 @@ add_custom_target(ExtlibCache ALL
 )
 
 message("Current Generator is ${CMAKE_GENERATOR}")
+
+if(IS_DIRECTORY "${CMAKE_BINARY_DIR}/SPIRV_Headers-prefix")
+    file(REMOVE
+        "${CMAKE_BINARY_DIR}/SPIRV_Headers-prefix"
+    )
+endif()

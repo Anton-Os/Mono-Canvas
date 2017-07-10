@@ -4,8 +4,14 @@ add_executable(GoodCamera src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-J.c
 add_executable(PlatformTexture src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-K.cpp)
 add_executable(Redesign src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-L.cpp)
 
-add_executable(LightFix src/LoadTextures.cpp src/LoadShaders.cpp src/Model3D.cpp src/Prime-M.cpp)
-add_executable(AssimpModels src/LoadTextures.cpp src/LoadShaders.cpp src/Model3D.cpp src/Prime-N.cpp)
+add_executable(LightFix src/LoadTextures.cpp src/LoadShaders.cpp src/Mesh.cpp src/Prime-M.cpp)
+add_executable(AssimpModels
+    src/Prime-N.cpp 
+    src/LoadTextures.cpp
+    src/LoadShaders.cpp
+    src/Mesh.cpp
+    src/Model3D.cpp
+)
 
 target_include_directories(LookAhead
     PUBLIC include
