@@ -45,16 +45,14 @@ set(SPIRVTOOLS_PROJECT_DIR "${ALL_PROJECT_DIR}/SPIRV_Tools")
 set(SPIRVHEADERS_PROJECT_DIR "${ALL_PROJECT_DIR}/SPIRV_Headers")
 set(SHADERC_PROJECT_DIR "${ALL_PROJECT_DIR}/ShaderC")
 set(EIGEN_PROJECT_DIR "${ALL_PROJECT_DIR}/Eigen")
+set(VULKAN_PROJECT_DIR "${ALL_PROJECT_DIR}/VulkanSDK")
 # set(GLO_PROJECT_DIR "${ALL_PROJECT_DIR}/GLO")
 
 set(LOCAL_PROJECT_DIR "${CMAKE_BINARY_DIR}/Local")
 set(SQLITE_LOCAL_DIR "${CMAKE_SOURCE_DIR}/sqlite-amalgamation-3180000")
 set(SQLITE_PROJECT_DIR "${LOCAL_PROJECT_DIR}/SQLite")
-
-#[[ if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
-    set(PICOPIXELCLIENT_LOCAL_DIR "${CMAKE_SOURCE_DIR}/pico-pixel-client-sdk-master")
-    set(PICOPIXELCLIENT_PROJECT_DIR "${LOCAL_PROJECT_DIR}/PicoPixelClient")
-endif() #]]
+set(IMG2KTX_LOCAL_DIR "${CMAKE_SOURCE_DIR}/img2ktx-master")
+set(IMG2KTX_PROJECT_DIR "${LOCAL_PROJECT_DIR}/Img2KTX")
 
 set(EXTLIB_TARGETS)
 
@@ -68,6 +66,19 @@ ExternalProject_Add(SQLite
     BINARY_DIR "${SQLITE_PROJECT_DIR}/build"
     TMP_DIR "${SQLITE_PROJECT_DIR}/temp"
     STAMP_DIR "${SQLITE_PROJECT_DIR}/stamp"
+)
+
+ExternalProject_Add(Img2KTX
+    DOWNLOAD_COMMAND ""
+    BUILD_COMMAND ""
+
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+
+    PREFIX "${IMG2KTX_PROJECT_DIR}"
+    SOURCE_DIR "${IMG2KTX_LOCAL_DIR}"
+    BINARY_DIR "${IMG2KTX_PROJECT_DIR}/build"
+    TMP_DIR "${IMG2KTX_PROJECT_DIR}/temp"
+    STAMP_DIR "${IMG2KTX_PROJECT_DIR}/stamp"
 )
 
 list(APPEND EXTLIB_TARGETS SQLite)
@@ -404,6 +415,29 @@ ExternalProject_Add(ShaderC
 
 list(APPEND EXTLIB_TARGETS ShaderC)
 
+#[[ ExternalProject_Add(VulkanSDK
+    GIT_REPOSITORY "https://github.com/ARM-software/vulkan-sdk.git"
+    GIT_TAG " 820bfeb60204394c04f0da55effa8e3fe8f8f005"
+
+    # BUILD_COMMAND ""
+
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+
+    PATCH_COMMAND  ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/VulkanSDK/CMakeLists.txt"
+        "<SOURCE_DIR>/CMakeLists.txt"
+    COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/VulkanSDK/vulkansdk-config.cmake"
+        "<SOURCE_DIR>/vulkansdk-config.cmake"
+
+    PREFIX ${VULKAN_PROJECT_DIR}
+    BINARY_DIR "${VULKAN_PROJECT_DIR}/build"
+    TMP_DIR "${VULKAN_PROJECT_DIR}/temp"
+    STAMP_DIR "${VULKAN_PROJECT_DIR}/stamp"
+) #]]
+
+# list(APPEND EXTLIB_TARGETS VulkanSDK)
+
 #[[ ExternalProject_Add(Eigen
     GIT_REPOSITORY "https://github.com/PX4/eigen.git"
     GIT_TAG "e7850ed81f9c469e02df496ef09ae32ec0379b71"
@@ -474,6 +508,7 @@ ExtlibWriteConfig(
         -DGLI_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/gli
         -DGLM_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/glm
         -DASSIMP_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/assimp-3.3
+        # -DVULKANSDK_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/VulkanSDK
 
 )
 
@@ -493,4 +528,5 @@ if(IS_DIRECTORY "${CMAKE_BINARY_DIR}/SPIRV_Headers-prefix")
     file(REMOVE
         "${CMAKE_BINARY_DIR}/SPIRV_Headers-prefix"
     )
+
 endif()

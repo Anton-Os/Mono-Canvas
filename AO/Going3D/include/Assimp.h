@@ -17,7 +17,7 @@ struct Point {
 
 struct Texture {
     GLuint texId;
-    std::string type;
+    const char* texFile;
 };
 
 class Mesh {
@@ -40,14 +40,15 @@ private:
 class Model3D{
 
 public:
+    std::string parentDir;
     std::string modelPath;
     const aiScene* currentScene;
-    Model3D(std::string &modelPath);
+    Model3D(GLuint shaderProgId, std::string &parentDir, std::string &modelPath);
     void renderScene();
 
 private:
     std::vector<Mesh> existingMeshes;
-    void loadModel();
+    void loadModel(std::string &fullModelPath);
     void processNode(aiNode *node, const aiScene *scene);
     Mesh processMesh(aiMesh *mesh, const aiScene *scene);
     std::vector<Texture> loadMaterialTextures(

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(OpenGL_Mono_Canvas)
+project(Mono_Canvas)
 
 if(NOT EXTLIB_BUILD_PATH)
     set(EXTLIB_BUILD_PATH "${CMAKE_BINARY_DIR}/Extlib-Build" CACHE PATH "Route Exlib Build here")
@@ -26,6 +26,7 @@ endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
 set(INSTALL_PREFIX_RUNTIME_DIR "${CMAKE_INSTALL_PREFIX}/bin")
 set(GLSLC_EXE "${INSTALL_PREFIX_RUNTIME_DIR}/glslc.exe")
+set(IMG2KTX_EXE "${INSTALL_PREFIX_RUNTIME_DIR}/img2ktx.exe")
 
 message("Extlib Cache: ${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
 message("Current Generator is ${CMAKE_GENERATOR}")
@@ -35,8 +36,6 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
         message(FATAL_ERROR "Generators are incompatible")
     endif()
 
-    # message(STATUS "Finding Packages")
-
     find_package(freeglut REQUIRED CONFIG)
     find_package(GLEW REQUIRED CONFIG)
     find_package(glfw3 REQUIRED CONFIG)
@@ -45,14 +44,10 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
     find_package(GLI REQUIRED CONFIG)
     find_package(GLM REQUIRED CONFIG)
     find_package(ASSIMP REQUIRED CONFIG)
-    # find_package(PicoPixelClient QUIET CONFIG)
-    # find_package(FreeImage REQUIRED CONFIG)
 
     get_target_property(freeglut_ImportLoc freeglut_static IMPORTED_LOCATION_DEBUG)
-    # message(STATUS "FreeGLUT target file ${freeglut_ImportLoc}")
 
     add_subdirectory("AO/Going3D")
-    # add_subdirectory("AO/LevelTwo")
     add_subdirectory("AO/Dimentions")
     add_subdirectory("AO/Triangles_Basis")
 

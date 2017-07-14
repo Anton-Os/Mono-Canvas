@@ -1,26 +1,14 @@
 #include "Assimp.h"
 
-/* class Model3D{
+Model3D::Model3D(GLuint shaderProgIdArg, std::string &parentDirArg, std::string &modelPathArg){
+    parentDir = parentDirArg;
+    modelPath = modelPathArg;
+    shaderProgId = shaderProgIdArg;
 
-class Model3D{
+    std::string fullModelPath = parentDir + modelPath;
 
-public:
-    const aiScene* currentScene;
-    Model3D(std::string &modelPath);
-    void renderScene(GLuint shaderId);
-
-private:
-    std::vector<Mesh> existingMeshes;
-    void loadModel(std::string &modelPath);
-    void processNode(aiNode *node, const aiScene* scene);
-    Mesh processMesh(aiMesh *mesh, const aiScene *scene);
-    std::vector<Texture> loadMaterialTextures(
-        aiMaterial* material, 
-        aiTextureType materialType, 
-        std::string materialTypeName
-    );
-
-}; */
+    loadModel(fullModelPath);
+}
 
 void Model3D::renderScene(){
     for(unsigned int i = 0; i < existingMeshes.size(); i++){
@@ -28,10 +16,10 @@ void Model3D::renderScene(){
     }
 }
 
-void Model3D::loadModel(){
+void Model3D::loadModel(std::string &fullModelPath){
     Assimp::Importer modelImporter;
     const aiScene* currentScene = modelImporter.ReadFile(
-        modelPath,
+        fullModelPath.c_str(),
         aiProcess_Triangulate | // Converts to triangles if not done so
         aiProcess_FlipUVs | // Flips texture coordinates on Y axis
         aiProcess_GenNormals // Creates normals if model data does not contain
@@ -78,8 +66,8 @@ Mesh Model3D::processMesh(aiMesh *mesh, const aiScene *scene){
 
         // Assimp allows up to 8 texture coordinates per vertex but we need first 2
         if(mesh->mTextureCoords[0]){ // Do they even exist?
-            currentVertexUV = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].x }
-            surfaceRenderMode = 0; // No textures applied
+            currentVertexUV = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].x };
+            surfaceRenderMode = 0; // Textures applied
         } else {
             currentVertexUV = {0.0f, 0.0f};
             surfaceRenderMode = 1; // No textures applied
@@ -91,10 +79,19 @@ Mesh Model3D::processMesh(aiMesh *mesh, const aiScene *scene){
         myPoint.normal = currentVertexNorm;
         
         meshPoints.push_back(myPoint);
-    } // LEFT OFF HERE
+    }
+
+    for(unsigned int i = 0; i < mesh->mNumFaces; i++){
+        aiFace currentFace = mesh->mFaces[i];
+        for(unsigned int f = 0; f < currentFace.mNumIndices; f++) meshIndices.push_back(currentFace.mIndices[f]);
+    }
 
     if(mesh->mMaterialIndex >= 0){
-
+        aiMaterial* activeMaterial = scene->mMaterials[mesh->mMaterialIndex];
+        std::vector<Texture> diffuseMaps = loadMaterialTextures(activeMaterial, aiTextureType_DIFFUSE, "texture_diffuse");
+        meshTextures.insert(meshTextures.end(), diffuseMaps.begin(), diffuseMaps.end());
+        std::vector<Texture> specularMaps = loadMaterialTextures(activeMaterial, aiTextureType_SPECULAR, "texture_specular");
+        meshTextures.insert(meshTextures.end(), specularMaps.begin(), specularMaps.end());
     }
 
     return Mesh(shaderProgId, meshPoints, meshIndices, meshTextures);
@@ -103,6 +100,20 @@ Mesh Model3D::processMesh(aiMesh *mesh, const aiScene *scene){
 GLubyte genRandomColorAttrib(){
     int colorAttrib = std::rand() % 255;
     return GLubyte(colorAttrib);
+}
+
+std::vector<Texture> Model3D::loadMaterialTextures(aiMaterial* material, aiTextureType materialType, std::string materialTypeName){
+    std::vector<Texture> allTextures;
+    for(unsigned int i = 0; i < material->GetTextureCount(materialType); i++){
+        aiString texFilePath;
+        material -> GetTexture(materialType, i, &texFilePath);
+        Texture currentTexture;
+        currentTexture.texId = i;
+        currentTexture.texFile = (texFilePath.C_Str());
+        std::cout << currentTexture.texFile;
+        allTextures.push_back(currentTexture);
+    }
+    return allTextures;
 }
 
 

@@ -9,9 +9,12 @@ layout (location = 3) in vec4 worldPos;
 layout (binding = 0) uniform sampler2D currentTexture;
 
 uniform float ambientLightStrength;
+
 uniform vec3 cameraPos;
 uniform vec3 worldLightColor;
 uniform vec3 lightSourcePos;
+
+uniform int surfaceRenderMode;
 
 layout (location = 0) out vec4 output_frag;
 

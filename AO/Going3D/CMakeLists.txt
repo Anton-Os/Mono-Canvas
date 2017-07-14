@@ -1,16 +1,32 @@
-add_executable(LookAhead src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-G.cpp)
-add_executable(Scene360 src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-I.cpp)
-add_executable(GoodCamera src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-J.cpp)
-add_executable(PlatformTexture src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-K.cpp)
-add_executable(Redesign src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-L.cpp)
+add_executable(LookAhead src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-A.cpp)
+add_executable(Scene360 src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-B.cpp)
+add_executable(GoodCamera src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-C.cpp)
+add_executable(PlatformTexture src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-D.cpp)
+add_executable(Redesign src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-E.cpp)
 
-add_executable(LightFix src/LoadTextures.cpp src/LoadShaders.cpp src/Mesh.cpp src/Prime-M.cpp)
+add_executable(LightFix src/LoadTextures.cpp src/LoadShaders.cpp src/Mesh.cpp src/Prime-F.cpp)
 add_executable(AssimpModels
-    src/Prime-N.cpp 
     src/LoadTextures.cpp
     src/LoadShaders.cpp
     src/Mesh.cpp
     src/Model3D.cpp
+    src/Prime-G.cpp
+)
+
+add_executable(LightFix src/LoadTextures.cpp src/LoadShaders.cpp src/Mesh.cpp src/Prime-F.cpp)
+add_executable(AssimpModels
+    src/LoadTextures.cpp
+    src/LoadShaders.cpp
+    src/Mesh.cpp
+    src/Model3D.cpp
+    src/Prime-G.cpp
+)
+
+add_executable(LhAssimpModels
+    src/LoadTextures.cpp
+    src/LoadShaders.cpp
+    src/Lh-Model3D.cpp
+    src/Prime-H.cpp
 )
 
 target_include_directories(LookAhead
@@ -131,7 +147,9 @@ add_dependencies(LightFix Shaders)
 # WORK WITH TEXTURE/IMAGE FILES
 
 set(TEXTURES_KTX)
+set(MODELS_3D)
 set(TEXTURES_KTX_DIR "data/ktx")
+set(MODELS_3D_DIR "data/3D")
 list(APPEND TEXTURES_KTX "Texture8_PNG_BC7_1.KTX" 
                          "800px-Birnam_wood_macbeth_PNG_BC7_1.KTX"
                          "spotted-steel_PNG_BC7_3.KTX"
@@ -143,9 +161,12 @@ list(APPEND TEXTURES_KTX "Texture8_PNG_BC7_1.KTX"
                          "Wood_2.KTX"
                          "Illusions.KTX"
 )
+list(APPEND MODELS_3D"CP92-Aston-Martin.stp"
+                       "DIE-CASTED-1.stp"
+)
 
 foreach(current_texture ${TEXTURES_KTX})
-    add_custom_command(TARGET GoodCamera
+    add_custom_command(TARGET AssimpModels
         PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
             "${CMAKE_CURRENT_LIST_DIR}/${TEXTURES_KTX_DIR}/${current_texture}"
@@ -153,3 +174,13 @@ foreach(current_texture ${TEXTURES_KTX})
         DEPENDS "${CMAKE_CURRENT_LIST_DIR}/${TEXTURES_KTX_DIR}/${current_texture}"    
     )
 endforeach(current_texture)
+
+foreach(current_model ${MODELS_3D})
+    add_custom_command(TARGET AssimpModels
+        PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+            "${CMAKE_CURRENT_LIST_DIR}/${MODELS_3D_DIR}/${current_model}"
+            "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${MODELS_3D_DIR}/${current_model}"
+        DEPENDS "${CMAKE_CURRENT_LIST_DIR}/${MODELS_3D_DIR}/${current_model}"
+    )
+endforeach(current_model)
