@@ -1,98 +1,8 @@
-add_executable(LookAhead src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-A.cpp)
-add_executable(Scene360 src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-B.cpp)
-add_executable(GoodCamera src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-C.cpp)
-add_executable(PlatformTexture src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-D.cpp)
-add_executable(Redesign src/LoadTextures.cpp src/LoadShaders.cpp src/Prime-E.cpp)
-
-add_executable(LightFix src/LoadTextures.cpp src/LoadShaders.cpp src/Mesh.cpp src/Prime-F.cpp)
 add_executable(AssimpModels
     src/LoadTextures.cpp
     src/LoadShaders.cpp
-    src/Mesh.cpp
     src/Model3D.cpp
-    src/Prime-G.cpp
-)
-
-add_executable(LightFix src/LoadTextures.cpp src/LoadShaders.cpp src/Mesh.cpp src/Prime-F.cpp)
-add_executable(AssimpModels
-    src/LoadTextures.cpp
-    src/LoadShaders.cpp
-    src/Mesh.cpp
-    src/Model3D.cpp
-    src/Prime-G.cpp
-)
-
-add_executable(LhAssimpModels
-    src/LoadTextures.cpp
-    src/LoadShaders.cpp
-    src/Lh-Model3D.cpp
-    src/Prime-H.cpp
-)
-
-target_include_directories(LookAhead
-    PUBLIC include
-)
-
-target_link_libraries(LookAhead
-    GLEW::glew_s
-    glfw
-    gli
-    glm
-)
-
-target_include_directories(Scene360
-    PUBLIC include
-)
-
-target_link_libraries(Scene360
-    GLEW::glew_s
-    glfw
-    gli
-    glm
-)
-
-target_include_directories(GoodCamera
-    PUBLIC include
-)
-
-target_link_libraries(GoodCamera
-    GLEW::glew_s
-    glfw
-    gli
-    glm
-)
-
-target_include_directories(PlatformTexture
-    PUBLIC include
-)
-
-target_link_libraries(PlatformTexture
-    GLEW::glew_s
-    glfw
-    gli
-    glm
-)
-
-target_include_directories(Redesign
-    PUBLIC include
-)
-
-target_link_libraries(Redesign
-    GLEW::glew_s
-    glfw
-    gli
-    glm
-)
-
-target_include_directories(LightFix
-    PUBLIC include
-)
-
-target_link_libraries(LightFix
-    GLEW::glew_s
-    glfw
-    gli
-    glm
+    src/Prime.cpp
 )
 
 target_include_directories(AssimpModels
@@ -113,15 +23,11 @@ add_custom_target(MonoShaders
     COMMENT "Edit shader files"
     SOURCES "shaders/Viewer3D.vert" "shaders/Viewer3D.frag"
             "shaders/LitEnv.vert" "shaders/LitEnv.frag"
-            "shaders/OriginalDiffuse.vert" "shaders/OriginalDiffuse.frag"
-            "shaders/SimpleDiffuse.vert" "shaders/SimpleDiffuse.frag"
 )
 
 set(OUTPUT_SHADER_LIST)
 foreach(current_shader "Viewer3D.vert" "Viewer3D.frag"
                        "LitEnv.vert" "LitEnv.frag"
-                       "OriginalDiffuse.vert" "OriginalDiffuse.frag"
-                       "SimpleDiffuse.vert" "SimpleDiffuse.frag"
 )
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}"
         DEPENDS "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"
@@ -137,12 +43,7 @@ add_custom_target(Shaders
     DEPENDS ${OUTPUT_SHADER_LIST}
 )
 
-add_dependencies(LookAhead Shaders)
-add_dependencies(Scene360 Shaders)
-add_dependencies(GoodCamera Shaders)
-add_dependencies(PlatformTexture Shaders)
-add_dependencies(Redesign Shaders)
-add_dependencies(LightFix Shaders)
+add_dependencies(AssimpModels MonoShaders)
 
 # WORK WITH TEXTURE/IMAGE FILES
 

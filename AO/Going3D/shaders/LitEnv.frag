@@ -1,44 +1,53 @@
 #version 430 core
 #pragma debug(on)
 
-// Earlier Versions of GLSL do not support the layout "binding" qualifier
-
-layout (location = 0) in vec4 color_vert;
-layout (location = 1) in vec2 texCoord_vert;
-layout (location = 2) in vec3 normals_vert;
-layout (location = 3) in vec3 fragPos_vert;
+layout (location = 0) in vec4 color;
+layout (location = 1) in vec2 texCoord;
+layout (location = 2) in vec3 normals;
+layout (location = 3) in vec4 worldPos;
 
 layout (binding = 0) uniform sampler2D currentTexture;
+
+uniform float ambientLightStrength;
+
+uniform vec3 cameraPos;
+uniform vec3 worldLightColor;
+uniform vec3 lightSourcePos;
+
 uniform int surfaceRenderMode;
-uniform float ambientStrength;
-uniform vec3 lightSourceLoc;
 
 layout (location = 0) out vec4 output_frag;
 
-void main(){
-    vec3 worldLightColor = ambientStrength * vec3(1.0, 1.0, 1.0);
-    vec4 ambientLight = vec4(worldLightColor.r, worldLightColor.g, worldLightColor.b, 1.0);
+vec3 computeReflection(vec3 l, vec3 n){
+	vec3 reflection = (2 * dot(l, n)) * n - l;
+	return reflection;
+}
 
-    vec3 lightDirection = normalize(lightSourceLoc - fragPos_vert);
-    float lightDiffuse = max(dot(normals_vert, lightDirection), 1.0);
-    vec4 diffuseLight = vec4(worldLightColor.r * lightDiffuse,
-                             worldLightColor.g * lightDiffuse,
-                             worldLightColor.b * lightDiffuse,
+void main(){
+    float diffuseIntensity = 1.0;
+    float specularIntensity = 0.3;
+    vec4 colorFinal = vec4(84.0 / 255.0, 157.0 / 255.0, 234.0 / 255.0, 1.0);
+
+    vec3 diffuseLightDirection = normalize(lightSourcePos - vec3(worldPos.x, worldPos.y, worldPos.z));
+    float diffuseLightStrength = max(0.25, min(dot(normals, diffuseLightDirection), 1.0));
+
+    // Compute Specular Light Here
+	vec3 viewerDirection = normalize(cameraPos - vec3(worldPos.x, worldPos.y, worldPos.z));
+	vec3 specularLightDirection = normalize(computeReflection(diffuseLightDirection, normals));
+	float specularLightStrength = min(dot(viewerDirection, specularLightDirection), 1.0);
+
+    vec4 ambientLight = vec4(worldLightColor.r * ambientLightStrength,
+                             worldLightColor.g * ambientLightStrength,
+                             worldLightColor.b * ambientLightStrength,
                              1.0);
-    vec4 color_frag;
-    if(surfaceRenderMode == 1){
-        color_frag = vec4(color_vert.r * 0.65, color_vert.g * 0.65, color_vert.b * 0.65, color_vert.a);
-        // Individual values are used to avoid reducing transparency to 0.65 the original
-    } else if(surfaceRenderMode == 2){
-        color_frag = vec4(color_vert.r + (1.0 - color_vert.r) / 2,
-                        color_vert.g + (1.0 - color_vert.g) / 2, 
-                        color_vert.b + (1.0 - color_vert.b) / 2,
-                        color_vert.a);
-    } else if(surfaceRenderMode == 3){
-        color_frag = texture(currentTexture, texCoord_vert);
-    } else {
-        color_frag = color_vert;
-    }
-        
-    output_frag = color_frag * (ambientLight + diffuseLight);
+    vec4 diffuseLight = vec4(worldLightColor.r * diffuseLightStrength * diffuseIntensity,
+                             worldLightColor.g * diffuseLightStrength * diffuseIntensity,
+                             worldLightColor.b * diffuseLightStrength * diffuseIntensity,
+                             1.0);
+    vec4 specularLight = vec4(worldLightColor.r * specularLightStrength * specularIntensity,
+                              worldLightColor.g * specularLightStrength * specularIntensity,
+                              worldLightColor.b * specularLightStrength * specularIntensity,
+                              1.0);
+
+    output_frag = colorFinal * (ambientLight + diffuseLight);
 }

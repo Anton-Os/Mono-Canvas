@@ -2,9 +2,10 @@
 
 #include <vector>
 
-#include <assimp/Importer.hpp>      // C++ importer interface
-#include <assimp/scene.h>       // Output data structure
-#include <assimp/postprocess.h> // Post processing flags
+#include <assimp/cimport.h>
+#include <assimp/Importer.hpp> 
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 // From Mesh.cpp
 
@@ -18,45 +19,4 @@ struct Point {
 struct Texture {
     GLuint texId;
     const char* texFile;
-};
-
-class Mesh {
-public:
-    GLuint shaderProgId;
-    std::vector<Point> points;
-    std::vector<GLuint> indices;
-    std::vector<Texture> textures;
-    Mesh(GLuint shaderProgId, std::vector<Point>, std::vector<GLuint>, std::vector<Texture>);
-    void renderMesh();
-
-private:
-    unsigned int VAO, VBO, EBO;
-    void loadMesh();
-    void deleteMesh();
-};
-
-// From Model3D.cpp
-
-class Model3D{
-
-public:
-    std::string parentDir;
-    std::string modelPath;
-    const aiScene* currentScene;
-    Model3D(GLuint shaderProgId, std::string &parentDir, std::string &modelPath);
-    void renderScene();
-
-private:
-    std::vector<Mesh> existingMeshes;
-    void loadModel(std::string &fullModelPath);
-    void processNode(aiNode *node, const aiScene *scene);
-    Mesh processMesh(aiMesh *mesh, const aiScene *scene);
-    std::vector<Texture> loadMaterialTextures(
-        aiMaterial* material, 
-        aiTextureType materialType, 
-        std::string materialTypeName
-    );
-    GLuint shaderProgId; // MUST BE INHERITED FROM CURRENT MESH
-    GLuint surfaceRenderMode; // AO
-    GLubyte genRandomColorAttrib();// AO
 };
