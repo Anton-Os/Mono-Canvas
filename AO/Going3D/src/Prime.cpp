@@ -1,7 +1,6 @@
 
 #include "Common.h"
-// #include "Assimp.h"
-#include "Lh-Assimp.h"
+#include "Assimp.h"
 
 #include <GLFW/glfw3.h>
 
@@ -63,6 +62,16 @@ int main(int argc, char** argv){
 		std::cerr << "GLEW failed to initialize" << std::endl;
 		return -1;
 	}
+
+	std::string parentDir = getParentDirectory(argv[0]);
+	std::string recaroModel = parentDir + "\\data\\3D\\RECARO.stl";
+	std::string polyMillModel = parentDir + "\\data\\3D\\low-poly-mill.obj";
+
+	std::vector<Point> dummyData = {
+		{{0.0, 0.0, 0.0}, {1.0, 1.0, 1.0, 1.0}, {0.0, 0.0}, {0.0, 1.0, 0.0}} // Point Struct 0
+	};
+
+    assimpImportCPP(polyMillModel);
 
     /* -- -- -- Deallocation and deletion of resources -- -- -- */
 

@@ -7,16 +7,21 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-// From Mesh.cpp
-
 struct Point {
     std::array<GLfloat, 3> pos;
-    std::array<GLubyte, 4> color;
+    std::array<GLfloat, 4> color;
     std::array<GLfloat, 2> texCoord;
     std::array<GLfloat, 3> normal;
 };
 
-struct Texture {
-    GLuint texId;
-    const char* texFile;
+class Model {
+public:
+    int data;
+    Model(){
+        std::cout << "I got created! " << std::endl;
+    }
 };
+
+int assimpImportCPP(const std::string& pFile);
+// int loadModelData(std::vector<Point> dataToLoad);
+int loadModelData(int* a);

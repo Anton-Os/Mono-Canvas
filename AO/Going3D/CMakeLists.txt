@@ -62,8 +62,10 @@ list(APPEND TEXTURES_KTX "Texture8_PNG_BC7_1.KTX"
                          "Wood_2.KTX"
                          "Illusions.KTX"
 )
-list(APPEND MODELS_3D"CP92-Aston-Martin.stp"
-                       "DIE-CASTED-1.stp"
+list(APPEND MODELS_3D "RECARO.stl"
+                      "DIE-CASTED-1.stp"
+                      "low-poly-mill.max"
+                      "low-poly-mill.obj"
 )
 
 foreach(current_texture ${TEXTURES_KTX})

@@ -188,7 +188,7 @@ ExternalProject_Add(FLTK
 
 list(APPEND EXTLIB_TARGETS FLTK)
 
-#[[ ExternalProject_Add(FreeImage
+ExternalProject_Add(FreeImage
     GIT_REPOSITORY "https://github.com/Kanma/FreeImage.git"
     GIT_TAG "6bb613d9402926b3846dea1b417f20b6c596c5dc"
 
@@ -238,7 +238,7 @@ list(APPEND EXTLIB_TARGETS FLTK)
     BINARY_DIR "${FREEIMAGE_PROJECT_DIR}/build"
     TMP_DIR "${FREEIMAGE_PROJECT_DIR}/temp"
     STAMP_DIR "${FREEIMAGE_PROJECT_DIR}/stamp"
-) #]]
+)
 
 ExternalProject_Add(GLI
     GIT_REPOSITORY "https://github.com/g-truc/gli.git"
@@ -508,6 +508,7 @@ ExtlibWriteConfig(
         -DGLI_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/gli
         -DGLM_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/glm
         -DASSIMP_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/assimp-3.3
+        -DFREEIMAGE_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/freeimage
         # -DVULKANSDK_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/VulkanSDK
 
 )

@@ -36,6 +36,8 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
         message(FATAL_ERROR "Generators are incompatible")
     endif()
 
+    find_package(Vulkan QUIET MODULE)
+
     find_package(freeglut REQUIRED CONFIG)
     find_package(GLEW REQUIRED CONFIG)
     find_package(glfw3 REQUIRED CONFIG)
@@ -44,12 +46,16 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
     find_package(GLI REQUIRED CONFIG)
     find_package(GLM REQUIRED CONFIG)
     find_package(ASSIMP REQUIRED CONFIG)
+    find_package(freeimage REQUIRED CONFIG)
 
-    get_target_property(freeglut_ImportLoc freeglut_static IMPORTED_LOCATION_DEBUG)
+    # get_target_property(freeglut_ImportLoc freeglut_static IMPORTED_LOCATION_DEBUG)
 
     add_subdirectory("AO/Going3D")
     add_subdirectory("AO/Dimentions")
     add_subdirectory("AO/Triangles_Basis")
+    if(Vulkan_FOUND)
+        add_subdirectory("AO/VEruption")
+    endif()
 
 else ()
     include("cmake/BuildExtlibs.cmake")
