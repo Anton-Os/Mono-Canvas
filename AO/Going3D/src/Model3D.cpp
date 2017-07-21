@@ -26,7 +26,7 @@ int loadModelData(std::vector<Point> dataToLoad, std::vector<GLuint> dataIndices
   return 0;
 }
 
-int loadModelData(ModelStatic Model){
+GLuint loadModelData(ModelStatic* Model){
   GLuint VAO, VBO, EBO;
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
@@ -35,7 +35,7 @@ int loadModelData(ModelStatic Model){
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
-  glBufferData(GL_ARRAY_BUFFER, Model.modelMeshes.size() * sizeof(Point), &Model.modelMeshes[0], GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, Model->modelMeshes.size() * sizeof(Point), &Model->modelMeshes[0], GL_STATIC_DRAW);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, pos));
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, color));
@@ -45,11 +45,12 @@ int loadModelData(ModelStatic Model){
   glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, normal));
   glEnableVertexAttribArray(3);
 
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, Model.modelIndices.size() * sizeof(GLuint), &Model.modelIndices[0], GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, Model->modelIndices.size() * sizeof(GLuint), &Model->modelIndices[0], GL_STATIC_DRAW);
 
   GLenum errorLog = glGetError();
-  return 0;
+  return VAO;
 }
+
 
 int assimpImportCPP(const std::string& pFile) {
 
@@ -189,10 +190,10 @@ int assimpImportCPP(const std::string& pFile) {
   return 0;
 }
 
-int assimpImportCPP(ModelStatic Model){
+int assimpImportCPP(ModelStatic* Model){
 
   Assimp::Importer importer;
-  const aiScene* scene = importer.ReadFile( Model.pFile,
+  const aiScene* scene = importer.ReadFile(Model->pFile,
         aiProcess_CalcTangentSpace       | 
         aiProcess_Triangulate            |
         aiProcess_JoinIdenticalVertices  |
@@ -204,7 +205,7 @@ int assimpImportCPP(ModelStatic Model){
     std::cout << "File import has failed due to error: " << importer.GetErrorString() << std::endl;
     return -1;
   } else {
-    std::cout << "File has been successfully imported from" << Model.pFile << std::endl;
+    std::cout << "File has been successfully imported from" << Model->pFile << std::endl;
   }
 
   if(scene->HasMeshes()){
@@ -226,7 +227,7 @@ int assimpImportCPP(ModelStatic Model){
       for(unsigned int f = 0; f < meshFaceCount; f++){
         for(unsigned int i = 0; i < meshFaces[f].mNumIndices; i++){
           unsigned int currentIndex = meshFaces[f].mIndices[i];
-          Model.modelIndices.push_back(currentIndex);
+          Model->modelIndices.push_back(currentIndex);
         }
       }
 
@@ -294,7 +295,7 @@ int assimpImportCPP(ModelStatic Model){
         currentMeshData.texCoord = allVertexTexCoord.at(md);
         currentMeshData.normal = allVertexNormals.at(md);
 
-        Model.modelMeshes.push_back(currentMeshData);
+        Model->modelMeshes.push_back(currentMeshData);
       }
     }
   } else {
@@ -302,7 +303,7 @@ int assimpImportCPP(ModelStatic Model){
       return -1;
   }
 
-  loadModelData(Model);
+  Model->VertexArray = loadModelData(Model);
 
   if(scene->HasMaterials()){
     // Extract Materials belonging to the scene

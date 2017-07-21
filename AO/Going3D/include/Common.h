@@ -11,7 +11,8 @@
 // From LoadShaders.cpp
 
 GLchar* readShaderFile(const char* nameOfShader);
-GLuint compileShaders(const std::string &rootpath, const char* vertexShaderBaseName, const char* fragmentShaderBaseName);
+GLuint compileShaders(const std::string& rootpath, const char* vertexShaderBaseName, const char* fragmentShaderBaseName);
+GLuint compileShaders(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath);
 
 // From LoadTextures.cpp
 
@@ -43,12 +44,13 @@ struct PointTwo {
 
 struct ModelStatic {
     const std::string& pFile;
+    GLuint VertexArray;
     std::vector<Point> modelMeshes;
     std::vector<GLuint> modelIndices;
 };
 
 int assimpImportCPP(const std::string& pFile);
-int assimpImportCPP(ModelStatic Model);
+int assimpImportCPP(ModelStatic* Model);
 
 int loadModelData(std::vector<Point> dataToLoad, std::vector<GLuint> dataIndices);
-int loadModelData(ModelStatic Model);
+GLuint loadModelData(ModelStatic* Model);

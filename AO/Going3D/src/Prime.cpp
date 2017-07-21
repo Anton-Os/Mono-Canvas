@@ -67,18 +67,22 @@ int main(int argc, char** argv){
 
 	std::string recaroModel = parentDir + "\\data\\3D\\RECARO.stl";
 	std::string polyMillModel = parentDir + "\\data\\3D\\low-poly-mill.obj";
+
     std::string spongeModel = parentDir + "\\data\\3D\\Sponge.obj";
+    GLuint VertexArrayID;
     std::vector<Point> meshes;
 	std::vector<GLuint> indices;
 
-	GLuint modelStatic_glsl = compileShaders(parentDir, "shaders\\ModelStatic.vert", "shaders\\ModelStatic.frag");
-    
+    // GLuint modelStatic_glsl = compileShaders(parentDir, "shaders\\ModelStatic.vert", "shaders\\ModelStatic.frag");
+    std::string modelStatic_vert = parentDir + "\\shaders\\ModelStatic.vert";
+    std::string modelStatic_frag = parentDir + "\\shaders\\ModelStatic.frag";
+    GLuint modelStatic_glsl = compileShaders(modelStatic_vert, modelStatic_frag);
+
 	ModelStatic Sponge = {
-		spongeModel, meshes, indices
+        spongeModel, VertexArrayID, meshes, indices
 	};
 
-	// assimpImportCPP(spongeModel);
-    assimpImportCPP(Sponge);
+	assimpImportCPP(&Sponge);
 
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
@@ -87,7 +91,10 @@ int main(int argc, char** argv){
 
 		glUseProgram(modelStatic_glsl);
         // glDrawArrays(GL_TRIANGLES, 0, 50);
-        glDrawElements(GL_TRIANGLES, 800, GL_UNSIGNED_INT, 0);
+
+        glBindVertexArray(Sponge.VertexArray);
+        glDrawElements(GL_TRIANGLES, Sponge.modelIndices.size(), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
 
 		glfwSwapBuffers(window);
 	}
