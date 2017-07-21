@@ -18,5 +18,5 @@ void main(){
 	texCoord_vert = texCoord;
     color_vert = color;
 
-    gl_Position = matrixFinal * vec4(positionFinal.x, positionFinal.y, positionFinal.z, 1.0f);
+    gl_Position = matrixFinal * vec4(positionFinal.x, positionFinal.y, positionFinal.z, 7.0);
 }

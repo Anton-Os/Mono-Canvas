@@ -1,6 +1,6 @@
 
 #include "Common.h"
-#include "Assimp.h"
+// #include "Assimp.h"
 
 #include <GLFW/glfw3.h>
 
@@ -64,14 +64,25 @@ int main(int argc, char** argv){
 	}
 
 	std::string parentDir = getParentDirectory(argv[0]);
+
 	std::string recaroModel = parentDir + "\\data\\3D\\RECARO.stl";
 	std::string polyMillModel = parentDir + "\\data\\3D\\low-poly-mill.obj";
+    std::string spongeModel = parentDir + "\\data\\3D\\Sponge.obj";
 
-	std::vector<Point> dummyData = {
-		{{0.0, 0.0, 0.0}, {1.0, 1.0, 1.0, 1.0}, {0.0, 0.0}, {0.0, 1.0, 0.0}} // Point Struct 0
-	};
+	GLuint modelStatic_glsl = compileShaders(parentDir, "ModelStatic.vert", "ModelStatic.frag");
+    assimpImportCPP(spongeModel);
 
-    assimpImportCPP(polyMillModel);
+	while(!glfwWindowShouldClose(window)){
+		glfwPollEvents();
+		glClearColor(1.0f, 1.0f, 0.88, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glUseProgram(modelStatic_glsl);
+        // glDrawArrays(GL_TRIANGLES, 0, 50);
+        glDrawElements(GL_TRIANGLES, 800, GL_UNSIGNED_INT, 0);
+
+		glfwSwapBuffers(window);
+	}
 
     /* -- -- -- Deallocation and deletion of resources -- -- -- */
 

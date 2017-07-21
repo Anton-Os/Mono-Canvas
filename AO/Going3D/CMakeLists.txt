@@ -19,15 +19,11 @@ target_link_libraries(AssimpModels
 
 # WORK WITH SHADER FILES
 
-add_custom_target(MonoShaders
-    COMMENT "Edit shader files"
-    SOURCES "shaders/Viewer3D.vert" "shaders/Viewer3D.frag"
-            "shaders/LitEnv.vert" "shaders/LitEnv.frag"
-)
-
 set(OUTPUT_SHADER_LIST)
 foreach(current_shader "Viewer3D.vert" "Viewer3D.frag"
                        "LitEnv.vert" "LitEnv.frag"
+                       "ModelStatic.vert" "ModelStatic.frag"
+
 )
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}"
         DEPENDS "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"
@@ -39,7 +35,8 @@ foreach(current_shader "Viewer3D.vert" "Viewer3D.frag"
     list(APPEND OUTPUT_SHADER_LIST "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}")
     #add_dependencies(MonoCanvas-B "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}")
 endforeach(current_shader)
-add_custom_target(Shaders
+add_custom_target(MonoShaders
+    SOURCES ${OUTPUT_SHADER_LIST}
     DEPENDS ${OUTPUT_SHADER_LIST}
 )
 
@@ -66,6 +63,7 @@ list(APPEND MODELS_3D "RECARO.stl"
                       "DIE-CASTED-1.stp"
                       "low-poly-mill.max"
                       "low-poly-mill.obj"
+                      "Sponge.obj"
 )
 
 foreach(current_texture ${TEXTURES_KTX})

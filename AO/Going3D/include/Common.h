@@ -17,3 +17,29 @@ GLuint compileShaders(const std::string &rootpath, const char* vertexShaderBaseN
 
 GLuint createTexture(const char* filePath);
 GLuint textureCheck(GLuint texture, std::string pathToFile);
+
+// From Model3D.cpp
+
+#include <vector>
+
+#include <assimp/cimport.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
+struct Point {
+    std::array<GLfloat, 3> pos;
+    std::array<GLfloat, 4> color;
+    std::array<GLfloat, 2> texCoord;
+    std::array<GLfloat, 3> normal;
+};
+
+struct PointTwo {
+    GLfloat pos[3];
+    GLfloat color[4];
+    GLfloat texCoord[2];
+    GLfloat normal[3];
+};
+
+int assimpImportCPP(const std::string& pFile);
+int loadModelData(std::vector<Point> dataToLoad, std::vector<GLuint> dataIndices);
