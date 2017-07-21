@@ -68,9 +68,17 @@ int main(int argc, char** argv){
 	std::string recaroModel = parentDir + "\\data\\3D\\RECARO.stl";
 	std::string polyMillModel = parentDir + "\\data\\3D\\low-poly-mill.obj";
     std::string spongeModel = parentDir + "\\data\\3D\\Sponge.obj";
+    std::vector<Point> meshes;
+	std::vector<GLuint> indices;
 
-	GLuint modelStatic_glsl = compileShaders(parentDir, "ModelStatic.vert", "ModelStatic.frag");
-    assimpImportCPP(spongeModel);
+	GLuint modelStatic_glsl = compileShaders(parentDir, "shaders\\ModelStatic.vert", "shaders\\ModelStatic.frag");
+    
+	ModelStatic Sponge = {
+		spongeModel, meshes, indices
+	};
+
+	// assimpImportCPP(spongeModel);
+    assimpImportCPP(Sponge);
 
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();

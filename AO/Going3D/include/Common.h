@@ -41,5 +41,14 @@ struct PointTwo {
     GLfloat normal[3];
 };
 
+struct ModelStatic {
+    const std::string& pFile;
+    std::vector<Point> modelMeshes;
+    std::vector<GLuint> modelIndices;
+};
+
 int assimpImportCPP(const std::string& pFile);
+int assimpImportCPP(ModelStatic Model);
+
 int loadModelData(std::vector<Point> dataToLoad, std::vector<GLuint> dataIndices);
+int loadModelData(ModelStatic Model);
