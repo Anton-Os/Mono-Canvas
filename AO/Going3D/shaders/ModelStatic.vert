@@ -5,6 +5,11 @@ layout(location = 1) in vec4 color;
 layout(location = 2) in vec2 texCoord;
 layout(location = 3) in vec3 normal;
 
+layout (std140, binding = 0) uniform vertexBlock {
+    mat4 worldMatrix;
+    mat4 localMatrix;
+};
+
 layout(location = 0) out vec4 color_out;
 layout(location = 1) out vec2 texCoord_out;
 layout(location = 2) out vec3 normal_out;
@@ -14,5 +19,5 @@ void main(){
     texCoord_out = texCoord;
     normal_out = normal;
 
-    gl_Position = vec4(pos.x, pos.y, pos.z, 9.0);
+    gl_Position = worldMatrix * localMatrix * vec4(pos.x, pos.y, pos.z, 9.0);
 }

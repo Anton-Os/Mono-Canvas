@@ -257,7 +257,8 @@ int assimpImportCPP(ModelStatic* Model){
       } else {
         std::cerr << "Mesh # " << i << " does not contain vertex colors" << std::endl;
         for(unsigned int c = 0; c < meshVertexCount; c++){
-            allVertexColors.push_back( {0.2588f, 0.5254f, 0.9568f, 1.0} ); // Soothing blue color
+            // allVertexColors.push_back( {0.2588f, 0.5254f, 0.9568f, 1.0} ); // Soothing blue color
+            allVertexColors.push_back( {0.9607f, 0.6862f, 0, 1.0} ); // Yellowish color
         }
       }
 

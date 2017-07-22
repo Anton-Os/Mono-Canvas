@@ -46,7 +46,7 @@ int main(int argc, char** argv){
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE); 
     glViewport(0, 0, windowHeight, windowWidth);
 
-    GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "Lighting in 3D", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "Asset Import", nullptr, nullptr);
     if(nullptr != window) std::cout << "GLFW window created successfuly" << std::endl;
     else {
         std::cerr << "GLFW failed to create window" << std::endl;
@@ -65,8 +65,8 @@ int main(int argc, char** argv){
 
 	std::string parentDir = getParentDirectory(argv[0]);
 
-	std::string recaroModel = parentDir + "\\data\\3D\\RECARO.stl";
-	std::string polyMillModel = parentDir + "\\data\\3D\\low-poly-mill.obj";
+	/* std::string recaroModel = parentDir + "\\data\\3D\\RECARO.stl";
+	std::string polyMillModel = parentDir + "\\data\\3D\\low-poly-mill.obj"; */
 
     std::string spongeModel = parentDir + "\\data\\3D\\Sponge.obj";
     GLuint VertexArrayID;
@@ -83,6 +83,56 @@ int main(int argc, char** argv){
 	};
 
 	assimpImportCPP(&Sponge);
+
+	GLuint modelStatic_vert_uniformBlockID = glGetUniformBlockIndex(modelStatic_glsl, "vertexBlock");
+	GLuint modelStatic_frag_uniformBlockID = glGetUniformBlockIndex(modelStatic_glsl, "fragmentBlock");
+
+	if(modelStatic_vert_uniformBlockID == GL_INVALID_INDEX) 
+	std::cerr << "Uniform block vertexBlock does not exist in shader file " << modelStatic_vert << std::endl;
+
+	if(modelStatic_frag_uniformBlockID == GL_INVALID_INDEX) 
+	std::cerr << "Uniform block fragBlock does not exist in shader file " << modelStatic_frag << std::endl;
+
+	struct modelStatic_vert_uniformData {
+		glm::mat4 worldMatrix;
+		glm::mat4 localMatrix;
+	};
+
+	struct modelStatic_frag_uniformData {
+		GLfloat ambientLightStrength;
+		GLuint surfaceRenderMode;
+	};
+
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
+	glm::mat4 view = glm::mat4(1);
+
+	glm::mat4 worldMatrix = projection * view;
+	glm::mat4 sponge_localMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -5.0f));
+
+	modelStatic_vert_uniformData vertexBlock = {
+		worldMatrix,
+		sponge_localMatrix,
+	};
+
+	modelStatic_frag_uniformData fragmentBlock = {
+		1.0f,
+		0
+	};
+
+	glUniformBlockBinding(modelStatic_vert_uniformBlockID, modelStatic_glsl, 0);
+	glUniformBlockBinding(modelStatic_frag_uniformBlockID, modelStatic_glsl, 1);
+
+	GLuint UBO[2];
+	glGenBuffers(2, UBO);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, UBO[0]);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(vertexBlock), &vertexBlock, GL_STATIC_DRAW);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, UBO[0]);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, UBO[1]);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(fragmentBlock), &fragmentBlock, GL_STATIC_DRAW);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 1, UBO[1]);
+
 
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
