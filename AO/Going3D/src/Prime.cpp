@@ -72,31 +72,31 @@ int main(int argc, char** argv){
 	/* std::string recaroModel = parentDir + "\\data\\3D\\RECARO.stl";
 	std::string polyMillModel = parentDir + "\\data\\3D\\low-poly-mill.obj"; */
 
-    // GLuint modelStatic_glsl = compileShaders(parentDir, "shaders\\ModelStatic.vert", "shaders\\ModelStatic.frag");
-    std::string modelStatic_vert = parentDir + "\\shaders\\Viewer3D.vert";
-    std::string modelStatic_frag = parentDir + "\\shaders\\Viewer3D.frag";
-    GLuint modelStatic_glsl = compileShaders(modelStatic_vert, modelStatic_frag);
+    // GLuint viewer3D_glsl = compileShaders(parentDir, "shaders\\ModelStatic.vert", "shaders\\ModelStatic.frag");
+    std::string viewer3D_vert = parentDir + "\\shaders\\Viewer3D.vert";
+    std::string viewer3D_frag = parentDir + "\\shaders\\Viewer3D.frag";
+    GLuint viewer3D_glsl = compileShaders(viewer3D_vert, viewer3D_frag);
 
     ModelStatic Sponge;
     std::string spongeFilePath = parentDir + "\\data\\3D\\Sponge.obj";
 
     assimpImportCPP(spongeFilePath, &Sponge);
 
-	GLuint modelStatic_vert_uniformBlockID = glGetUniformBlockIndex(modelStatic_glsl, "vertexBlock");
-	GLuint modelStatic_frag_uniformBlockID = glGetUniformBlockIndex(modelStatic_glsl, "fragmentBlock");
+	/* GLuint viewer3D_vert_uniformBlockID = glGetUniformBlockIndex(viewer3D_glsl, "vertexBlock");
+	GLuint viewer3D_frag_uniformBlockID = glGetUniformBlockIndex(viewer3D_glsl, "fragmentBlock");
 
-	if(modelStatic_vert_uniformBlockID == GL_INVALID_INDEX) 
-	std::cerr << "Uniform block vertexBlock does not exist in shader file " << modelStatic_vert << std::endl;
+	if(viewer3D_vert_uniformBlockID == GL_INVALID_INDEX) 
+	std::cerr << "Uniform block vertexBlock does not exist in shader file " << viewer3D_vert << std::endl;
 
-	if(modelStatic_frag_uniformBlockID == GL_INVALID_INDEX) 
-	std::cerr << "Uniform block fragBlock does not exist in shader file " << modelStatic_frag << std::endl;
+	if(viewer3D_frag_uniformBlockID == GL_INVALID_INDEX) 
+	std::cerr << "Uniform block fragBlock does not exist in shader file " << viewer3D_frag << std::endl;
 
-	struct modelStatic_vert_uniformData {
+	struct viewer3D_vert_uniformData {
 		glm::mat4 worldMatrix;
 		glm::mat4 localMatrix;
 	};
 
-	struct modelStatic_frag_uniformData {
+	struct viewer3D_frag_uniformData {
 		GLfloat ambientLightStrength;
 		GLuint surfaceRenderMode;
 	};
@@ -107,7 +107,7 @@ int main(int argc, char** argv){
 	glm::mat4 worldMatrix = projection * view;
 	glm::mat4 localMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -5.0f));
 
-	modelStatic_vert_uniformData vertexBlock = {
+	viewer3D_vert_uniformData vertexBlock = {
 		worldMatrix,
 		localMatrix,
 	};
@@ -121,13 +121,13 @@ int main(int argc, char** argv){
 		return -1;
 	}
 
-	modelStatic_frag_uniformData fragmentBlock = {
+	viewer3D_frag_uniformData fragmentBlock = {
 		1.0f,
 		surfaceRenderMode
 	};
 
-	glUniformBlockBinding(modelStatic_vert_uniformBlockID, modelStatic_glsl, 0);
-	glUniformBlockBinding(modelStatic_frag_uniformBlockID, modelStatic_glsl, 1);
+	glUniformBlockBinding(viewer3D_vert_uniformBlockID, viewer3D_glsl, 0);
+	glUniformBlockBinding(viewer3D_frag_uniformBlockID, viewer3D_glsl, 1);
 
 	GLuint UBO[2];
 	glGenBuffers(2, UBO);
@@ -138,15 +138,16 @@ int main(int argc, char** argv){
 
 	glBindBuffer(GL_UNIFORM_BUFFER, UBO[1]);
 	glBufferData(GL_UNIFORM_BUFFER, sizeof(fragmentBlock), &fragmentBlock, GL_STATIC_DRAW);
-	glBindBufferBase(GL_UNIFORM_BUFFER, 1, UBO[1]);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 1, UBO[1]); */
 
+	viewer3D_UniformBlocks(viewer3D_glsl, &Sponge);
 
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
 		glClearColor(1.0f, 1.0f, 0.88, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glUseProgram(modelStatic_glsl);
+		glUseProgram(viewer3D_glsl);
         // glDrawArrays(GL_TRIANGLES, 0, 50);
 
         glBindVertexArray(Sponge.VertexArray);

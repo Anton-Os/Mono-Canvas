@@ -41,7 +41,7 @@ GLuint loadModelData(ModelStatic* Model){
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, color));
     glEnableVertexAttribArray(1);  
   }
-  if(Model->renderParams[Model->VAttrib_texCoord] == 0){
+  if(Model->renderParams[ShaderCtrlBit::texCoord] == 0){
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, texCoord));
     glEnableVertexAttribArray(2);
   }
@@ -280,13 +280,13 @@ int assimpImportCPP(const std::string &pFile, ModelStatic* Model){
             float tcY = modelMeshes[i]->mTextureCoords[0][tc].y;
             allVertexTexCoord.push_back( {tcX, tcY} );
         }
-        Model->renderParams[Model->VAttrib_texCoord] = 0;
+        Model->renderParams[ShaderCtrlBit::texCoord] = 0;
       } else {
         std::cout << "Mesh # " << i << " does not contain texture coordinates" << std::endl;
         for(unsigned int tc = 0; tc < meshVertexCount; tc++){
             allVertexTexCoord.push_back( {0.0, 0.0} );
         }
-        Model->renderParams[Model->VAttrib_texCoord] = 1;
+        Model->renderParams[ShaderCtrlBit::texCoord] = 1;
       }
 
       if(modelMeshes[i]->HasNormals()){

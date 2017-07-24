@@ -2,6 +2,9 @@
 
 #include <GL/glew.h>
 
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 /* Handles operations related to GLSL Shaders */
 
 GLchar* readShaderFile(const char* nameOfShader){
@@ -27,31 +30,6 @@ GLchar* readShaderFile(const char* nameOfShader){
 
     // cast to constant NOW because earlier fread cannot use shaderSource
     return shaderSource;
-}
-
-GLbyte* readShaderBytes(const char* nameOfShader){
-    FILE* shaderFile = fopen(nameOfShader, "r");
-    if (nullptr == shaderFile) {
-        std::cerr << "Failed to open shader file: " << nameOfShader << std::endl;
-        return nullptr;
-    }
-    fseek(shaderFile, 0, SEEK_END);
-    int shaderLength = ftell(shaderFile);
-    fseek(shaderFile, 0, SEEK_SET);
-
-    GLchar* shaderSource = new GLchar[shaderLength + 1];
-    // second argument specifies size in bytes
-    std::size_t n = fread(shaderSource, 1, shaderLength, shaderFile);
-    if (n <= 0) {
-        std::cerr << "Failed to read shader file (got " << n
-                  << " bytes, expected " << shaderLength << " bytes)" << std::endl;
-        return nullptr;
-    }
-    fclose(shaderFile);
-    shaderSource[n] = '\0';
-    
-    // cast to constant NOW because earlier fread cannot use shaderSource
-    return (GLbyte*)shaderSource;
 }
 
 GLuint compileShaders(const std::string& rootPath, const char* vertexShaderBaseName, const char* fragmentShaderBaseName){
@@ -175,6 +153,30 @@ GLuint compileShaders(const std::string& vertexShaderFilePath, const std::string
     return shader_program;
 }
 
+GLbyte* readShaderBytes(const char* nameOfShader){
+    FILE* shaderFile = fopen(nameOfShader, "r");
+    if (nullptr == shaderFile) {
+        std::cerr << "Failed to open shader file: " << nameOfShader << std::endl;
+        return nullptr;
+    }
+    fseek(shaderFile, 0, SEEK_END);
+    int shaderLength = ftell(shaderFile);
+    fseek(shaderFile, 0, SEEK_SET);
+
+    GLchar* shaderSource = new GLchar[shaderLength + 1];
+    // second argument specifies size in bytes
+    std::size_t n = fread(shaderSource, 1, shaderLength, shaderFile);
+    if (n <= 0) {
+        std::cerr << "Failed to read shader file (got " << n
+                  << " bytes, expected " << shaderLength << " bytes)" << std::endl;
+        return nullptr;
+    }
+    fclose(shaderFile);
+    shaderSource[n] = '\0';
+    
+    // cast to constant NOW because earlier fread cannot use shaderSource
+    return (GLbyte*)shaderSource;
+}
 
 /* GLuint spirvProgram(const std::string& rootPath, const char* vertexBinaryName, const char* fragmentBinaryName){
     GLuint vertexBinary;
@@ -191,3 +193,65 @@ GLuint compileShaders(const std::string& vertexShaderFilePath, const std::string
 
     glShaderBinary(1, &vertexBinary, GL_SHADER_BINARY_FORMAT_SPIR_V_ARB, sizeof(vertexBinarySource));
 } */
+
+void viewer3D_UniformBlocks(GLuint shaderProgID, ModelStatic* Model){
+	GLuint vert_uniformBlockID = glGetUniformBlockIndex(shaderProgID, "vertexBlock");
+	GLuint frag_uniformBlockID = glGetUniformBlockIndex(shaderProgID, "fragmentBlock");
+
+	if(vert_uniformBlockID == GL_INVALID_INDEX) 
+	std::cerr << "Uniform block 'vertexBlock' does not exist in vertex shader" << std::endl;
+
+	if(frag_uniformBlockID == GL_INVALID_INDEX) 
+	std::cerr << "Uniform block 'fragmentBlock' does not exist in fragment shader" << std::endl;
+
+	struct vert_uniformData {
+		glm::mat4 worldMatrix;
+		glm::mat4 localMatrix;
+	};
+
+	struct frag_uniformData {
+		GLfloat ambientLightStrength;
+		GLuint surfaceRenderMode;
+	};
+
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
+	glm::mat4 view = glm::mat4(1);
+
+	glm::mat4 worldMatrix = projection * view;
+	glm::mat4 localMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -5.0f));
+
+    GLfloat ambientLightStrength = 1.0f;
+	GLuint surfaceRenderMode;
+
+    if(Model->renderParams[ShaderCtrlBit::color] == 1 && Model->renderParams[ShaderCtrlBit::texCoord] == 0){
+		std::cout << "No vertex colors present, texture coordinates are" << std::endl;
+		surfaceRenderMode = 0;
+	} else {
+		std::cerr << "We are in a caveman era" << std::endl;
+		return;
+	}
+
+	vert_uniformData vertexBlock = {
+		worldMatrix,
+		localMatrix,
+	};
+
+	frag_uniformData fragmentBlock = {
+		ambientLightStrength,
+		surfaceRenderMode
+	};
+
+	glUniformBlockBinding(vert_uniformBlockID, shaderProgID, 0);
+	glUniformBlockBinding(frag_uniformBlockID, shaderProgID, 1);
+
+	GLuint UBO[2];
+	glGenBuffers(2, UBO);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, UBO[0]);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(vertexBlock), &vertexBlock, GL_STATIC_DRAW);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, UBO[0]);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, UBO[1]);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(fragmentBlock), &fragmentBlock, GL_STATIC_DRAW);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 1, UBO[1]);
+}
