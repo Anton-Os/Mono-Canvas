@@ -82,65 +82,10 @@ int main(int argc, char** argv){
 
     assimpImportCPP(spongeFilePath, &Sponge);
 
-	/* GLuint viewer3D_vert_uniformBlockID = glGetUniformBlockIndex(viewer3D_glsl, "vertexBlock");
-	GLuint viewer3D_frag_uniformBlockID = glGetUniformBlockIndex(viewer3D_glsl, "fragmentBlock");
+	viewer3D_ShaderObj viewer3D;
+	viewer3D.shaderProgID = viewer3D_glsl;
 
-	if(viewer3D_vert_uniformBlockID == GL_INVALID_INDEX) 
-	std::cerr << "Uniform block vertexBlock does not exist in shader file " << viewer3D_vert << std::endl;
-
-	if(viewer3D_frag_uniformBlockID == GL_INVALID_INDEX) 
-	std::cerr << "Uniform block fragBlock does not exist in shader file " << viewer3D_frag << std::endl;
-
-	struct viewer3D_vert_uniformData {
-		glm::mat4 worldMatrix;
-		glm::mat4 localMatrix;
-	};
-
-	struct viewer3D_frag_uniformData {
-		GLfloat ambientLightStrength;
-		GLuint surfaceRenderMode;
-	};
-
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
-	glm::mat4 view = glm::mat4(1);
-
-	glm::mat4 worldMatrix = projection * view;
-	glm::mat4 localMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -5.0f));
-
-	viewer3D_vert_uniformData vertexBlock = {
-		worldMatrix,
-		localMatrix,
-	};
-
-	GLuint surfaceRenderMode;
-    if(Sponge.renderParams[ShaderCtrlBit::color] == 1 && Sponge.renderParams[ShaderCtrlBit::texCoord] == 0){
-		std::cout << "No vertex colors present, texture coordinates are" << std::endl;
-		surfaceRenderMode = 0;
-	} else {
-		std::cerr << "We are in a caveman era" << std::endl;
-		return -1;
-	}
-
-	viewer3D_frag_uniformData fragmentBlock = {
-		1.0f,
-		surfaceRenderMode
-	};
-
-	glUniformBlockBinding(viewer3D_vert_uniformBlockID, viewer3D_glsl, 0);
-	glUniformBlockBinding(viewer3D_frag_uniformBlockID, viewer3D_glsl, 1);
-
-	GLuint UBO[2];
-	glGenBuffers(2, UBO);
-
-	glBindBuffer(GL_UNIFORM_BUFFER, UBO[0]);
-	glBufferData(GL_UNIFORM_BUFFER, sizeof(vertexBlock), &vertexBlock, GL_STATIC_DRAW);
-	glBindBufferBase(GL_UNIFORM_BUFFER, 0, UBO[0]);
-
-	glBindBuffer(GL_UNIFORM_BUFFER, UBO[1]);
-	glBufferData(GL_UNIFORM_BUFFER, sizeof(fragmentBlock), &fragmentBlock, GL_STATIC_DRAW);
-	glBindBufferBase(GL_UNIFORM_BUFFER, 1, UBO[1]); */
-
-	viewer3D_UniformBlocks(viewer3D_glsl, &Sponge);
+	viewer3D_UniformBlocks(&viewer3D, &Sponge);
 
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();

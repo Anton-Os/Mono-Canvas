@@ -10,6 +10,17 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
+// From LoadShaders.cpp
+
+GLchar* readShaderFile(const char* nameOfShader);
+GLuint compileShaders(const std::string& rootpath, const char* vertexShaderBaseName, const char* fragmentShaderBaseName);
+GLuint compileShaders(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath);
+
+// From LoadTextures.cpp
+
+GLuint createTexture(const char* filePath);
+GLuint textureCheck(GLuint texture, std::string pathToFile);
+
 // From Model3D.cpp
 
 #include <vector>
@@ -47,15 +58,23 @@ int assimpImportCPP(const std::string& pFile, ModelStatic* Model);
 int loadModelData(std::vector<Point> dataToLoad, std::vector<GLuint> dataIndices);
 GLuint loadModelData(ModelStatic* Model);
 
+// From ShaderCtrl.cpp
 
-// From LoadShaders.cpp
+struct viewer3D_vert_uniformData {
+	glm::mat4 worldMatrix;
+	glm::mat4 localMatrix;
+};
 
-GLchar* readShaderFile(const char* nameOfShader);
-GLuint compileShaders(const std::string& rootpath, const char* vertexShaderBaseName, const char* fragmentShaderBaseName);
-GLuint compileShaders(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath);
+struct viewer3D_frag_uniformData {
+	GLfloat ambientLightStrength;
+	GLuint surfaceRenderMode;
+};
+
+struct viewer3D_ShaderObj {
+    GLuint shaderProgID;
+    viewer3D_vert_uniformData vert_uniformData;
+    viewer3D_frag_uniformData frag_uniformData;
+};
+
 void viewer3D_UniformBlocks(GLuint shaderProgID, ModelStatic* Model);
-
-// From LoadTextures.cpp
-
-GLuint createTexture(const char* filePath);
-GLuint textureCheck(GLuint texture, std::string pathToFile);
+void viewer3D_UniformBlocks(viewer3D_ShaderObj* ShaderObj, ModelStatic* Model);
