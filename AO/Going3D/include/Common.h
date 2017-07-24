@@ -44,6 +44,13 @@ struct PointTwo {
     GLfloat normal[3];
 };
 
+namespace ShaderCtrlBit {
+    enum ShaderCtrlBit {
+        color,
+        texCoord
+    };
+};
+
 struct ModelStatic {
     GLuint VertexArray;
     std::vector<Point> modelMeshes;
@@ -53,14 +60,14 @@ struct ModelStatic {
         VAttrib_color,
         VAttrib_texCoord
     };
-    
+
     std::bitset<2> renderParams;
 };
 
-enum class VAttrib : std::size_t {
+/* enum class VAttrib : std::size_t {
     color,
     texCoord
-};
+}; */
 
 int assimpImportCPP(const std::string& pFile);
 int assimpImportCPP(const std::string& pFile, ModelStatic* Model);

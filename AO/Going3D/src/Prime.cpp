@@ -113,7 +113,7 @@ int main(int argc, char** argv){
 	};
 
 	GLuint surfaceRenderMode;
-    if(Sponge.renderParams[Sponge.VAttrib_color] == 1 && Sponge.renderParams[Sponge.VAttrib_texCoord] == 0){
+    if(Sponge.renderParams[ShaderCtrlBit::color] == 1 && Sponge.renderParams[ShaderCtrlBit::texCoord] == 0){
 		std::cout << "No vertex colors present, texture coordinates are" << std::endl;
 		surfaceRenderMode = 0;
 	} else {

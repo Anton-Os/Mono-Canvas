@@ -37,7 +37,7 @@ GLuint loadModelData(ModelStatic* Model){
   glBufferData(GL_ARRAY_BUFFER, Model->modelMeshes.size() * sizeof(Point), &Model->modelMeshes[0], GL_STATIC_DRAW);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, pos));
   glEnableVertexAttribArray(0);
-  if(Model->renderParams[Model->VAttrib_color] == 0){
+  if(Model->renderParams[ShaderCtrlBit::color] == 0){
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, color));
     glEnableVertexAttribArray(1);  
   }
@@ -263,14 +263,14 @@ int assimpImportCPP(const std::string &pFile, ModelStatic* Model){
             float cA = modelMeshes[i]->mColors[0][c].a;
             allVertexColors.push_back( {cR, cG, cB, cA} );
         }
-        Model->renderParams[Model->VAttrib_color] = 0;
+        Model->renderParams[ShaderCtrlBit::color] = 0;
       } else {
         std::cout << "Mesh # " << i << " does not contain vertex colors" << std::endl;
         for(unsigned int c = 0; c < meshVertexCount; c++){
             // allVertexColors.push_back( {0.2588f, 0.5254f, 0.9568f, 1.0} ); // Soothing blue color
             allVertexColors.push_back( {0.9607f, 0.6862f, 0, 0.8} ); // Yellowish color
         }
-        Model->renderParams[Model->VAttrib_color] = 1;
+        Model->renderParams[ShaderCtrlBit::color] = 1;
       }
 
       if(modelMeshes[i]->HasTextureCoords(0)){
