@@ -63,26 +63,24 @@ int main(int argc, char** argv){
 		return -1;
 	}
 
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	std::string parentDir = getParentDirectory(argv[0]);
 
 	/* std::string recaroModel = parentDir + "\\data\\3D\\RECARO.stl";
 	std::string polyMillModel = parentDir + "\\data\\3D\\low-poly-mill.obj"; */
 
-    std::string spongeModel = parentDir + "\\data\\3D\\Sponge.obj";
-    GLuint VertexArrayID;
-    std::vector<Point> meshes;
-	std::vector<GLuint> indices;
-
     // GLuint modelStatic_glsl = compileShaders(parentDir, "shaders\\ModelStatic.vert", "shaders\\ModelStatic.frag");
-    std::string modelStatic_vert = parentDir + "\\shaders\\ModelStatic.vert";
-    std::string modelStatic_frag = parentDir + "\\shaders\\ModelStatic.frag";
+    std::string modelStatic_vert = parentDir + "\\shaders\\Viewer3D.vert";
+    std::string modelStatic_frag = parentDir + "\\shaders\\Viewer3D.frag";
     GLuint modelStatic_glsl = compileShaders(modelStatic_vert, modelStatic_frag);
 
-	ModelStatic Sponge = {
-        spongeModel, VertexArrayID, meshes, indices
-	};
+    ModelStatic Sponge;
+    std::string spongeFilePath = parentDir + "\\data\\3D\\Sponge.obj";
 
-	assimpImportCPP(&Sponge);
+    assimpImportCPP(spongeFilePath, &Sponge);
 
 	GLuint modelStatic_vert_uniformBlockID = glGetUniformBlockIndex(modelStatic_glsl, "vertexBlock");
 	GLuint modelStatic_frag_uniformBlockID = glGetUniformBlockIndex(modelStatic_glsl, "fragmentBlock");
@@ -107,16 +105,25 @@ int main(int argc, char** argv){
 	glm::mat4 view = glm::mat4(1);
 
 	glm::mat4 worldMatrix = projection * view;
-	glm::mat4 sponge_localMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -5.0f));
+	glm::mat4 localMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -5.0f));
 
 	modelStatic_vert_uniformData vertexBlock = {
 		worldMatrix,
-		sponge_localMatrix,
+		localMatrix,
 	};
+
+	GLuint surfaceRenderMode;
+    if(Sponge.renderParams[Sponge.VAttrib_color] == 1 && Sponge.renderParams[Sponge.VAttrib_texCoord] == 0){
+		std::cout << "No vertex colors present, texture coordinates are" << std::endl;
+		surfaceRenderMode = 0;
+	} else {
+		std::cerr << "We are in a caveman era" << std::endl;
+		return -1;
+	}
 
 	modelStatic_frag_uniformData fragmentBlock = {
 		1.0f,
-		0
+		surfaceRenderMode
 	};
 
 	glUniformBlockBinding(modelStatic_vert_uniformBlockID, modelStatic_glsl, 0);

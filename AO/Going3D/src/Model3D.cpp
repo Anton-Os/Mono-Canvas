@@ -9,7 +9,6 @@ int loadModelData(std::vector<Point> dataToLoad, std::vector<GLuint> dataIndices
   glBindVertexArray(VAO);
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
   glBufferData(GL_ARRAY_BUFFER, dataToLoad.size() * sizeof(Point), &dataToLoad[0], GL_STATIC_DRAW);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, pos));
   glEnableVertexAttribArray(0);
@@ -38,10 +37,14 @@ GLuint loadModelData(ModelStatic* Model){
   glBufferData(GL_ARRAY_BUFFER, Model->modelMeshes.size() * sizeof(Point), &Model->modelMeshes[0], GL_STATIC_DRAW);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, pos));
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, color));
-  glEnableVertexAttribArray(1);
-  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, texCoord));
-  glEnableVertexAttribArray(2);
+  if(Model->renderParams[Model->VAttrib_color] == 0){
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, color));
+    glEnableVertexAttribArray(1);  
+  }
+  if(Model->renderParams[Model->VAttrib_texCoord] == 0){
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, texCoord));
+    glEnableVertexAttribArray(2);
+  }
   glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, normal));
   glEnableVertexAttribArray(3);
 
@@ -190,10 +193,10 @@ int assimpImportCPP(const std::string& pFile) {
   return 0;
 }
 
-int assimpImportCPP(ModelStatic* Model){
+int assimpImportCPP(const std::string &pFile, ModelStatic* Model){
 
   Assimp::Importer importer;
-  const aiScene* scene = importer.ReadFile(Model->pFile,
+  const aiScene* scene = importer.ReadFile(pFile,
         aiProcess_CalcTangentSpace       | 
         aiProcess_Triangulate            |
         aiProcess_JoinIdenticalVertices  |
@@ -205,7 +208,7 @@ int assimpImportCPP(ModelStatic* Model){
     std::cout << "File import has failed due to error: " << importer.GetErrorString() << std::endl;
     return -1;
   } else {
-    std::cout << "File has been successfully imported from" << Model->pFile << std::endl;
+    std::cout << "File has been successfully imported from" << pFile << std::endl;
   }
 
   if(scene->HasMeshes()){
@@ -224,11 +227,17 @@ int assimpImportCPP(ModelStatic* Model){
       unsigned int meshFaceCount = modelMeshes[i]->mNumFaces;
       aiFace* meshFaces = modelMeshes[i]->mFaces;
 
-      for(unsigned int f = 0; f < meshFaceCount; f++){
-        for(unsigned int i = 0; i < meshFaces[f].mNumIndices; i++){
-          unsigned int currentIndex = meshFaces[f].mIndices[i];
-          Model->modelIndices.push_back(currentIndex);
+      if(modelMeshes[i]->HasFaces()){
+        std::cout << "Mesh # " << i << " contains faces" << std::endl;
+        for(unsigned int f = 0; f < meshFaceCount; f++){
+          for(unsigned int i = 0; i < meshFaces[f].mNumIndices; i++){
+            unsigned int currentIndex = meshFaces[f].mIndices[i];
+            Model->modelIndices.push_back(currentIndex);
+          }
         }
+      } else {
+        std::cerr << "Mesh # " << " does not contain faces" << std::endl;
+        return -1;
       }
 
       if(modelMeshes[i]->HasPositions()){
@@ -254,12 +263,14 @@ int assimpImportCPP(ModelStatic* Model){
             float cA = modelMeshes[i]->mColors[0][c].a;
             allVertexColors.push_back( {cR, cG, cB, cA} );
         }
+        Model->renderParams[Model->VAttrib_color] = 0;
       } else {
-        std::cerr << "Mesh # " << i << " does not contain vertex colors" << std::endl;
+        std::cout << "Mesh # " << i << " does not contain vertex colors" << std::endl;
         for(unsigned int c = 0; c < meshVertexCount; c++){
             // allVertexColors.push_back( {0.2588f, 0.5254f, 0.9568f, 1.0} ); // Soothing blue color
-            allVertexColors.push_back( {0.9607f, 0.6862f, 0, 1.0} ); // Yellowish color
+            allVertexColors.push_back( {0.9607f, 0.6862f, 0, 0.8} ); // Yellowish color
         }
+        Model->renderParams[Model->VAttrib_color] = 1;
       }
 
       if(modelMeshes[i]->HasTextureCoords(0)){
@@ -269,11 +280,13 @@ int assimpImportCPP(ModelStatic* Model){
             float tcY = modelMeshes[i]->mTextureCoords[0][tc].y;
             allVertexTexCoord.push_back( {tcX, tcY} );
         }
+        Model->renderParams[Model->VAttrib_texCoord] = 0;
       } else {
-        std::cerr << "Mesh # " << i << " does not contain texture coordinates" << std::endl;
+        std::cout << "Mesh # " << i << " does not contain texture coordinates" << std::endl;
         for(unsigned int tc = 0; tc < meshVertexCount; tc++){
             allVertexTexCoord.push_back( {0.0, 0.0} );
         }
+        Model->renderParams[Model->VAttrib_texCoord] = 1;
       }
 
       if(modelMeshes[i]->HasNormals()){
@@ -322,6 +335,8 @@ int assimpImportCPP(ModelStatic* Model){
   } else {
     std::cout << "Scene does not contain textures" << std::endl;
   }
+
+  std::cout << Model->renderParams << std::endl;
   
   return 0;
 }

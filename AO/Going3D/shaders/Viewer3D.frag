@@ -1,39 +1,18 @@
 #version 430 core
-#pragma debug(on)
 
-// Earlier Versions do not support the layout "binding" qualifier
+layout(location = 0) in vec4 color;
+layout(location = 1) in vec2 texCoord;
+layout(location = 2) in vec3 normal;
 
-layout (location = 0) in vec4 color_vert;
-layout (location = 1) in vec2 texCoord_vert;
+layout (std140, binding = 1) uniform fragmentBlock {
+    float ambientLightStrength;
+    uint surfaceRenderMode;
+};
 
-uniform int surfaceRenderMode;
-layout(binding = 0) uniform sampler2D texture;
-
-layout (location = 0) out vec4 output_frag;
-
-/* void main(){
-    if(surfaceRenderMode == 1){
-        output_frag = vec4(color_vert.r * 0.65, color_vert.g * 0.65, color_vert.b * 0.65, color_vert.a);
-		// Individual values are used to avoid reducing transparency to 0.65 the original
-    } else if(surfaceRenderMode == 2){
-		output_frag = vec4(color_vert.r + (1.0 - color_vert.r) / 2, color_vert.g + (1.0 - color_vert.g) / 2, color_vert.b + (1.0 - color_vert.b) / 2, color_vert.a);
-	} else {
-	    output_frag = color_vert;
-	}
-} */
+layout(location = 0) out vec4 output_frag;
 
 void main(){
-    vec4 color_frag;
-    if(surfaceRenderMode == 1){
-        color_frag = vec4(color_vert.r * 0.65, color_vert.g * 0.65, color_vert.b * 0.65, color_vert.a);
-		// Individual values are used to avoid reducing transparency to 0.65 the original
-    } else if(surfaceRenderMode == 2){
-		color_frag = vec4(color_vert.r + (1.0 - color_vert.r) / 2,
-                          color_vert.g + (1.0 - color_vert.g) / 2, 
-                          color_vert.b + (1.0 - color_vert.b) / 2,
-                          color_vert.a);
-	} else {
-        color_frag = color_vert;
+    if(surfaceRenderMode == 0){
+        output_frag = vec4(0.9607, 0.6862, 0, 0.8);
     }
-    output_frag = color_frag;
 }

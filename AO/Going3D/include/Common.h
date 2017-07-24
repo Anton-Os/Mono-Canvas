@@ -1,9 +1,11 @@
 #include <cmath>
-#include <string>
 #include <cstring>
 #include <cstdlib>
+
+#include <string>
 #include <iostream>
 #include <array>
+#include <bitset>
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
@@ -43,14 +45,25 @@ struct PointTwo {
 };
 
 struct ModelStatic {
-    const std::string& pFile;
     GLuint VertexArray;
     std::vector<Point> modelMeshes;
     std::vector<GLuint> modelIndices;
+
+    enum renderEnum {
+        VAttrib_color,
+        VAttrib_texCoord
+    };
+    
+    std::bitset<2> renderParams;
+};
+
+enum class VAttrib : std::size_t {
+    color,
+    texCoord
 };
 
 int assimpImportCPP(const std::string& pFile);
-int assimpImportCPP(ModelStatic* Model);
+int assimpImportCPP(const std::string& pFile, ModelStatic* Model);
 
 int loadModelData(std::vector<Point> dataToLoad, std::vector<GLuint> dataIndices);
 GLuint loadModelData(ModelStatic* Model);
