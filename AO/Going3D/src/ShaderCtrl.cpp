@@ -55,3 +55,41 @@ void viewer3D_UniformBlocks(viewer3D_ShaderObj* ShaderObj, ModelStatic* Model){
 	glBufferData(GL_UNIFORM_BUFFER, sizeof(ShaderObj->frag_uniformData), &ShaderObj->frag_uniformData, GL_STATIC_DRAW);
 	glBindBufferBase(GL_UNIFORM_BUFFER, 1, UBO[1]);
 }
+
+GLint noBlocks_worldMatrix(GLuint shaderProgID, noBlocks_UniformData* noBlocks_Uniforms){
+    GLint locationIndex = glGetUniformLocation(shaderProgID, "worldMatrix");
+    glUniformMatrix4fv(locationIndex, 1, GL_FALSE, glm::value_ptr(noBlocks_Uniforms->worldMatrix));
+    return locationIndex;
+}
+
+GLint noBlocks_localMatrix(GLuint shaderProgID, noBlocks_UniformData* noBlocks_Uniforms){
+    GLint locationIndex = glGetUniformLocation(shaderProgID, "localMatrix");
+    glUniformMatrix4fv(locationIndex, 1, GL_FALSE, glm::value_ptr(noBlocks_Uniforms->localMatrix));
+	return locationIndex;
+}
+
+GLint noBlocks_defaultColor(GLuint shaderProgID, noBlocks_UniformData* noBlocks_Uniforms){
+	GLint locationIndex = glGetUniformLocation(shaderProgID, "defaultColor");
+    glUniform4fv(locationIndex, 1, noBlocks_Uniforms->defaultColor.data());
+	return locationIndex;
+}
+
+GLint noBlocks_surfaceRenderMode(GLuint shaderProgID, noBlocks_UniformData* noBlocks_Uniforms){
+	GLint locationIndex = glGetUniformLocation(shaderProgID, "surfaceRenderMode");
+	glUniform1ui(locationIndex, noBlocks_Uniforms->surfaceRenderMode);
+	return locationIndex;
+}
+
+int noBlocks_setUniforms(GLuint shaderProgID, noBlocks_UniformData* noBlocks_Uniforms, ModelStatic* Model){
+	GLint worldMatrix_INDEX = noBlocks_worldMatrix(shaderProgID, noBlocks_Uniforms);
+	GLint localMatrix_INDEX = noBlocks_localMatrix(shaderProgID, noBlocks_Uniforms);
+    GLint defaultColor_INDEX = noBlocks_defaultColor(shaderProgID, noBlocks_Uniforms);
+	GLint surfaceRenderMode_INDEX = noBlocks_surfaceRenderMode(shaderProgID, noBlocks_Uniforms);
+
+    if(worldMatrix_INDEX == -1) std::cerr << "worldMatrix has not been set properly" << std::endl; 
+	if(localMatrix_INDEX == -1) std::cerr << "localMatrix has not been set properly" << std::endl;
+	if(defaultColor_INDEX == -1) std::cerr << "defaultColor has not been set properly" << std::endl;
+	if(surfaceRenderMode_INDEX == -1) std::cerr << "surfaceRenderMode has not been set properly" << std::endl; 
+
+	return 0;
+}

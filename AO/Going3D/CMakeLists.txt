@@ -24,7 +24,7 @@ set(OUTPUT_SHADER_LIST)
 foreach(current_shader "Viewer3D.vert" "Viewer3D.frag"
                        "LitEnv.vert" "LitEnv.frag"
                        "ModelStatic.vert" "ModelStatic.frag"
-
+                       "NoBlocks.vert" "NoBlocks.frag"
 )
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}"
         DEPENDS "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"

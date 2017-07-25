@@ -69,31 +69,33 @@ int main(int argc, char** argv){
 
 	std::string parentDir = getParentDirectory(argv[0]);
 
-	/* std::string recaroModel = parentDir + "\\data\\3D\\RECARO.stl";
-	std::string polyMillModel = parentDir + "\\data\\3D\\low-poly-mill.obj"; */
-
-    // GLuint viewer3D_glsl = compileShaders(parentDir, "shaders\\ModelStatic.vert", "shaders\\ModelStatic.frag");
     std::string viewer3D_vert = parentDir + "\\shaders\\Viewer3D.vert";
     std::string viewer3D_frag = parentDir + "\\shaders\\Viewer3D.frag";
     GLuint viewer3D_glsl = compileShaders(viewer3D_vert, viewer3D_frag);
+
+	std::string noBlocks_vert = parentDir + "\\shaders\\NoBlocks.vert";
+    std::string noBlocks_frag = parentDir + "\\shaders\\NoBlocks.frag";
+    GLuint noBlocks_glsl = compileShaders(noBlocks_vert, noBlocks_frag);
 
     ModelStatic Sponge;
     std::string spongeFilePath = parentDir + "\\data\\3D\\Sponge.obj";
 
     assimpImportCPP(spongeFilePath, &Sponge);
 
-	viewer3D_ShaderObj viewer3D;
-	viewer3D.shaderProgID = viewer3D_glsl;
+	glUseProgram(noBlocks_glsl);
+	noBlocks_UniformData noBlocks_Uniforms;
 
-	viewer3D_UniformBlocks(&viewer3D, &Sponge);
+	noBlocks_Uniforms.worldMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
+	noBlocks_Uniforms.localMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -5.0f));
+    noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.8f };
+	noBlocks_Uniforms.surfaceRenderMode = 1;
+
+	noBlocks_setUniforms(noBlocks_glsl, &noBlocks_Uniforms, &Sponge);
 
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
 		glClearColor(1.0f, 1.0f, 0.88, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		glUseProgram(viewer3D_glsl);
-        // glDrawArrays(GL_TRIANGLES, 0, 50);
 
         glBindVertexArray(Sponge.VertexArray);
         glDrawElements(GL_TRIANGLES, Sponge.modelIndices.size(), GL_UNSIGNED_INT, 0);

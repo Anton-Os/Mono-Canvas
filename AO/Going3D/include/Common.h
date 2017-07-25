@@ -76,5 +76,21 @@ struct viewer3D_ShaderObj {
     viewer3D_frag_uniformData frag_uniformData;
 };
 
+struct noBlocks_UniformData {
+    glm::mat4 worldMatrix;
+    glm::mat4 localMatrix;
+
+    // glm::vec4 defaultColor;
+    std::array<GLfloat, 4> defaultColor;
+    GLuint surfaceRenderMode;
+};
+
 void viewer3D_UniformBlocks(GLuint shaderProgID, ModelStatic* Model);
 void viewer3D_UniformBlocks(viewer3D_ShaderObj* ShaderObj, ModelStatic* Model);
+
+GLint noBlocks_worldMatrix(GLuint shaderProgID, noBlocks_UniformData* noBlocks_Uniforms);
+GLint noBlocks_localMatrix(GLuint shaderProgID, noBlocks_UniformData* noBlocks_Uniforms);
+GLint noBlocks_defaultColor(GLuint shaderProgID, noBlocks_UniformData* noBlocks_Uniforms);
+GLint noBlocks_surfaceRenderMode(GLuint shaderProgID, noBlocks_UniformData* noBlocks_Uniforms);
+
+int noBlocks_setUniforms(GLuint shaderProgID, noBlocks_UniformData* noBlocks_Uniforms, ModelStatic* Model);
