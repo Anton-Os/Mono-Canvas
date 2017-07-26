@@ -49,6 +49,23 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
 	if (key == GLFW_KEY_S && action == GLFW_RELEASE) Key::S = false;
 	if (key == GLFW_KEY_D && action == GLFW_RELEASE) Key::D = false;
+
+	if(Key::W){
+		std::cout << "Moving backwards" << std::endl;
+		noBlocks_Uniforms.localMatrix = glm::translate(noBlocks_Uniforms.localMatrix, glm::vec3(0.0, 0.0, -0.5f));
+	}
+	if(Key::A){
+		std::cout << "Moving backwards" << std::endl;
+		noBlocks_Uniforms.localMatrix = glm::translate(noBlocks_Uniforms.localMatrix, glm::vec3(-0.5f, 0.0, 0.0));
+	}
+	if(Key::S){
+		std::cout << "Moving backwards" << std::endl;
+		noBlocks_Uniforms.localMatrix = glm::translate(noBlocks_Uniforms.localMatrix, glm::vec3(0.0, 0.0, 0.5f));
+	}
+	if(Key::D){
+		std::cout << "Moving backwards" << std::endl;
+		noBlocks_Uniforms.localMatrix = glm::translate(noBlocks_Uniforms.localMatrix, glm::vec3(0.5f, 0.0, 0.0));
+	}
 }
 
 int main(int argc, char** argv){
@@ -100,6 +117,7 @@ int main(int argc, char** argv){
 
     ModelStatic Sponge;
     std::string spongeFilePath = parentDir + "\\data\\3D\\Sponge.obj";
+	Sponge.renderParams[ShaderCtrlBit::color] = 0;
 
     assimpImportCPP(spongeFilePath, &Sponge);
 
@@ -108,7 +126,7 @@ int main(int argc, char** argv){
 	noBlocks_Uniforms.worldMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
 	noBlocks_Uniforms.localMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -5.0f));
     noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.8f };
-	noBlocks_Uniforms.surfaceRenderMode = 1;
+    noBlocks_Uniforms.surfaceRenderMode = 2;
 
 	noBlocks_setUniforms(noBlocks_glsl, &noBlocks_Uniforms);
 
@@ -117,6 +135,7 @@ int main(int argc, char** argv){
 		glClearColor(1.0f, 1.0f, 0.88, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		noBlocks_localMatrix(noBlocks_glsl, &noBlocks_Uniforms);
 		noBlocks_defaultColor(noBlocks_glsl, &noBlocks_Uniforms);
 
         glBindVertexArray(Sponge.VertexArray);

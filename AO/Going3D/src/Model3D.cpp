@@ -54,7 +54,6 @@ GLuint loadModelData(ModelStatic* Model){
   return VAO;
 }
 
-
 int assimpImportCPP(const std::string& pFile) {
 
   Assimp::Importer importer;
@@ -266,11 +265,16 @@ int assimpImportCPP(const std::string &pFile, ModelStatic* Model){
         Model->renderParams[ShaderCtrlBit::color] = 0;
       } else {
         std::cout << "Mesh # " << i << " does not contain vertex colors" << std::endl;
-        for(unsigned int c = 0; c < meshVertexCount; c++){
-            // allVertexColors.push_back( {0.2588f, 0.5254f, 0.9568f, 1.0} ); // Soothing blue color
-            allVertexColors.push_back( {0.9607f, 0.6862f, 0, 0.8} ); // Yellowish color
+        if(Model->renderParams[ShaderCtrlBit::color] == 0){
+          std::cout << "Proceeding to generate vertex colors..." << std::endl;
+          for(unsigned int c = 0; c < meshVertexCount; c++){
+            if(c % 3 == 0) allVertexColors.push_back( { 0.9607f, 0.6862f, 0.0f, 1.0f } );
+            else if(c % 3 == 1) allVertexColors.push_back( { 0.9176f, 0.6235f, 0.0705f, 1.0f } );
+            else if(c % 3 == 2) allVertexColors.push_back( { 0.9882f, 0.3529f, 0.2549f, 1.0f } );
+          }
+        } else {
+          Model->renderParams[ShaderCtrlBit::color] = 1;
         }
-        Model->renderParams[ShaderCtrlBit::color] = 1;
       }
 
       if(modelMeshes[i]->HasTextureCoords(0)){
