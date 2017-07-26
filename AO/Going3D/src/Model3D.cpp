@@ -267,10 +267,15 @@ int assimpImportCPP(const std::string &pFile, ModelStatic* Model){
         std::cout << "Mesh # " << i << " does not contain vertex colors" << std::endl;
         if(Model->renderParams[ShaderCtrlBit::color] == 0){
           std::cout << "Proceeding to generate vertex colors..." << std::endl;
+          srand(time(NULL));
+          GLfloat randomColor_R, randomColor_G, randomColor_B;
           for(unsigned int c = 0; c < meshVertexCount; c++){
-            if(c % 3 == 0) allVertexColors.push_back( { 0.9607f, 0.6862f, 0.0f, 1.0f } );
-            else if(c % 3 == 1) allVertexColors.push_back( { 0.9176f, 0.6235f, 0.0705f, 1.0f } );
-            else if(c % 3 == 2) allVertexColors.push_back( { 0.9882f, 0.3529f, 0.2549f, 1.0f } );
+            if(c % 3 == 0){
+              randomColor_R = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
+              randomColor_G = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
+              randomColor_B = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
+            }
+            allVertexColors.push_back( { randomColor_R, randomColor_G, randomColor_B, 0.5f } );
           }
         } else {
           Model->renderParams[ShaderCtrlBit::color] = 1;
