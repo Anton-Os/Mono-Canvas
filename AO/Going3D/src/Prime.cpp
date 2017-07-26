@@ -16,18 +16,39 @@ const std::string getParentDirectory(const char* path) {
 	return result;
 }
 
-GLboolean W, A, S, D = false;
+noBlocks_UniformData noBlocks_Uniforms;
+
+namespace Key {
+	GLboolean W, A, S, D = false;
+}
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	if (key == GLFW_KEY_W && action == GLFW_PRESS) W = true;
-	if (key == GLFW_KEY_A && action == GLFW_PRESS) A = true;
-	if (key == GLFW_KEY_S && action == GLFW_PRESS) S = true;
-	if (key == GLFW_KEY_D && action == GLFW_PRESS) D = true;
+	if (key == GLFW_KEY_W && action == GLFW_PRESS) Key::W = true;
+	if (key == GLFW_KEY_A && action == GLFW_PRESS) Key::A = true;
+	if (key == GLFW_KEY_S && action == GLFW_PRESS) Key::S = true;
+	if (key == GLFW_KEY_D && action == GLFW_PRESS) Key::D = true;
+	if (key == GLFW_KEY_1 && action == GLFW_PRESS){
+		std::cout << "Grey" << std::endl;
+		noBlocks_Uniforms.defaultColor = { 0.5f, 0.5f, 0.5f, 0.8f };
+	}
+	if (key == GLFW_KEY_2 && action == GLFW_PRESS){
+		std::cout << "Hot" << std::endl;
+		noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.8f };
+	}
+	if (key == GLFW_KEY_3 && action == GLFW_PRESS){
+		std::cout << "Cool" << std::endl;
+		noBlocks_Uniforms.defaultColor = {0.2588f, 0.5254f, 0.9568f, 0.8f};
+	}
+	if(key == GLFW_KEY_4 && action == GLFW_PRESS){
+		std::cout << "Neutral" << std::endl;
+		// noBlocks_Uniforms.defaultColor = {0.4f, 1.0f, 0.6196f, 0.8f};
+		noBlocks_Uniforms.defaultColor = {0.3372f, 0.749f, 0.4862f, 0.8f};
+	}
 
-	if (key == GLFW_KEY_W && action == GLFW_RELEASE) W = false;
-	if (key == GLFW_KEY_A && action == GLFW_RELEASE) A = false;
-	if (key == GLFW_KEY_S && action == GLFW_RELEASE) S = false;
-	if (key == GLFW_KEY_D && action == GLFW_RELEASE) D = false;
+	if (key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
+	if (key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
+	if (key == GLFW_KEY_S && action == GLFW_RELEASE) Key::S = false;
+	if (key == GLFW_KEY_D && action == GLFW_RELEASE) Key::D = false;
 }
 
 int main(int argc, char** argv){
@@ -83,19 +104,20 @@ int main(int argc, char** argv){
     assimpImportCPP(spongeFilePath, &Sponge);
 
 	glUseProgram(noBlocks_glsl);
-	noBlocks_UniformData noBlocks_Uniforms;
 
 	noBlocks_Uniforms.worldMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
 	noBlocks_Uniforms.localMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -5.0f));
     noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.8f };
 	noBlocks_Uniforms.surfaceRenderMode = 1;
 
-	noBlocks_setUniforms(noBlocks_glsl, &noBlocks_Uniforms, &Sponge);
+	noBlocks_setUniforms(noBlocks_glsl, &noBlocks_Uniforms);
 
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
 		glClearColor(1.0f, 1.0f, 0.88, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		noBlocks_defaultColor(noBlocks_glsl, &noBlocks_Uniforms);
 
         glBindVertexArray(Sponge.VertexArray);
         glDrawElements(GL_TRIANGLES, Sponge.modelIndices.size(), GL_UNSIGNED_INT, 0);
