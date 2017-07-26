@@ -2,7 +2,8 @@ add_executable(AssimpModels
     src/LoadTextures.cpp
     src/LoadShaders.cpp
     src/Model3D.cpp
-    src/ShaderCtrl.cpp
+    # src/ShaderCtrl.cpp
+    src/NoBlocks.cpp
     src/Prime.cpp
 )
 

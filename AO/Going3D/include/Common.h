@@ -77,3 +77,31 @@ GLint noBlocks_surfaceRenderMode(GLuint shaderProgID, noBlocks_UniformData* noBl
 
 int noBlocks_setUniforms(GLuint shaderProgID, noBlocks_UniformData* noBlocks_Uniforms);
 int noBlocks_setUniforms(GLuint shaderProgID, noBlocks_UniformData* noBlocks_Uniforms, ModelStatic* Model);
+
+// From NoBlocks.cpp
+
+namespace UniformIndex {
+    enum UniformIndex {
+        worldMatrix,
+        localMatrix,
+        defaultColor,
+        surfaceRenderMode
+    };
+};
+
+class NoBlocks {
+public:
+    NoBlocks(GLuint shaderProg){
+        shaderProgID = shaderProg;
+    }
+    void worldMatrix(noBlocks_UniformData* noBlocks_Uniforms);
+    void localMatrix(noBlocks_UniformData* noBlocks_Uniforms);
+    void defaultColor(noBlocks_UniformData* noBlocks_Uniforms);
+    void surfaceRenderMode(noBlocks_UniformData* noBlocks_Uniforms);
+    
+    void setUniforms(noBlocks_UniformData* noBlocks_Uniforms);
+    void setUniforms(noBlocks_UniformData* noBlocks_Uniforms, ModelStatic* Model);
+private:
+    GLuint shaderProgID;
+    std::vector<GLint> uniformLocation;
+};
