@@ -344,8 +344,6 @@ int assimpImportCPP(const std::string &pFile, ModelStatic* Model){
   } else {
     std::cout << "Scene does not contain textures" << std::endl;
   }
-
-  std::cout << Model->renderParams << std::endl;
   
   return 0;
 }

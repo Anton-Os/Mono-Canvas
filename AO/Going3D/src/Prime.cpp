@@ -17,6 +17,7 @@ const std::string getParentDirectory(const char* path) {
 }
 
 noBlocks_UniformData noBlocks_Uniforms;
+GLfloat rotateAngleX, rotateAngleY, rotateAngleZ;
 
 namespace Key {
 	GLboolean W, A, S, D, J, I, K, O, L, P = false;
@@ -77,30 +78,9 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 		std::cout << "Moving right" << std::endl;
 		noBlocks_Uniforms.localMatrix = glm::translate(noBlocks_Uniforms.localMatrix, glm::vec3(0.5f, 0.0, 0.0));
 	}
-	
 	if(Key::J){
-		std::cout << "Negative rotation via X axis" << std::endl;
-		noBlocks_Uniforms.localMatrix = glm::rotate(noBlocks_Uniforms.localMatrix, glm::radians(-5.0f), glm::vec3(1.0f, 0.0, 0.0));
-	}
-	if(Key::I){
-		std::cout << "Positive rotation via X axis" << std::endl;
-		noBlocks_Uniforms.localMatrix = glm::rotate(noBlocks_Uniforms.localMatrix, glm::radians(5.0f), glm::vec3(1.0f, 0.0, 0.0));
-	}
-	if(Key::K){
-		std::cout << "Negative rotation via Y axis" << std::endl;
-		noBlocks_Uniforms.localMatrix = glm::rotate(noBlocks_Uniforms.localMatrix, glm::radians(-5.0f), glm::vec3(0.0f, 1.0, 0.0));
-	}
-	if(Key::O){
-		std::cout << "Positive rotation via Y axis" << std::endl;
-		noBlocks_Uniforms.localMatrix = glm::rotate(noBlocks_Uniforms.localMatrix, glm::radians(5.0f), glm::vec3(0.0f, 1.0, 0.0));
-	}
-	if(Key::L){
-		std::cout << "Negative rotation via Z axis" << std::endl;
-		noBlocks_Uniforms.localMatrix = glm::rotate(noBlocks_Uniforms.localMatrix, glm::radians(-5.0f), glm::vec3(0.0f, 0.0, 1.0));
-	}
-	if(Key::P){
-		std::cout << "Positive rotation via Z axis" << std::endl;
-		noBlocks_Uniforms.localMatrix = glm::rotate(noBlocks_Uniforms.localMatrix, glm::radians(5.0f), glm::vec3(0.0f, 0.0, 1.0));
+		rotateAngleX -= 1.0f;
+		noBlocks_Uniforms.localMatrix = glm::rotate(noBlocks_Uniforms.localMatrix, glm::radians(rotateAngleX), glm::vec3(1.0f, 0.0, 0.0));
 	}
 }
 
@@ -152,7 +132,7 @@ int main(int argc, char** argv){
     GLuint noBlocks_glsl = compileShaders(noBlocks_vert, noBlocks_frag);
 
     ModelStatic Sponge;
-    std::string spongeFilePath = parentDir + "\\data\\3D\\Sponge.obj";
+    std::string spongeFilePath = parentDir + "\\data\\Sponge.obj";
 	Sponge.renderParams[ShaderCtrlBit::color] = 0;
 
     assimpImportCPP(spongeFilePath, &Sponge);

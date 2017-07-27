@@ -2,7 +2,6 @@ add_executable(AssimpModels
     src/LoadTextures.cpp
     src/LoadShaders.cpp
     src/Model3D.cpp
-    # src/ShaderCtrl.cpp
     src/NoBlocks.cpp
     src/Prime.cpp
 )
@@ -21,6 +20,7 @@ target_link_libraries(AssimpModels
 
 # WORK WITH SHADER FILES
 
+set(SRC_SHADER_LIST)
 set(OUTPUT_SHADER_LIST)
 foreach(current_shader "Viewer3D.vert" "Viewer3D.frag"
                        "LitEnv.vert" "LitEnv.frag"
@@ -35,55 +35,17 @@ foreach(current_shader "Viewer3D.vert" "Viewer3D.frag"
             "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/shaders/${current_shader}"    
     )
     list(APPEND OUTPUT_SHADER_LIST "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}")
-    #add_dependencies(MonoCanvas-B "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}")
+    list(APPEND SRC_SHADER_LIST "${CMAKE_CURRENT_SOURCE_DIR}/shaders/${current_shader}")
 endforeach(current_shader)
 add_custom_target(MonoShaders
-    SOURCES ${OUTPUT_SHADER_LIST}
+    SOURCES ${SRC_SHADER_LIST}
     DEPENDS ${OUTPUT_SHADER_LIST}
 )
 
 add_dependencies(AssimpModels MonoShaders)
 
-# WORK WITH TEXTURE/IMAGE FILES
-
-set(TEXTURES_KTX)
-set(MODELS_3D)
-set(TEXTURES_KTX_DIR "data/ktx")
-set(MODELS_3D_DIR "data/3D")
-list(APPEND TEXTURES_KTX "Texture8_PNG_BC7_1.KTX" 
-                         "800px-Birnam_wood_macbeth_PNG_BC7_1.KTX"
-                         "spotted-steel_PNG_BC7_3.KTX"
-                         "wildtextures-creased-white-paper-texture_PNG_BC7_1.KTX"
-                         "Concrete.ktx"
-                         "SpottedSteel.KTX"
-                         "CreasedWhitePaper.KTX"
-                         "Wood.KTX"
-                         "Wood_2.KTX"
-                         "Illusions.KTX"
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake.in" "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake")
+add_custom_target(GDrive ALL 
+    ${CMAKE_COMMAND} -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
+    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
 )
-list(APPEND MODELS_3D "RECARO.stl"
-                      "DIE-CASTED-1.stp"
-                      "low-poly-mill.max"
-                      "low-poly-mill.obj"
-                      "Sponge.obj"
-)
-
-foreach(current_texture ${TEXTURES_KTX})
-    add_custom_command(TARGET AssimpModels
-        PRE_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-            "${CMAKE_CURRENT_LIST_DIR}/${TEXTURES_KTX_DIR}/${current_texture}"
-            "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${TEXTURES_KTX_DIR}/${current_texture}"
-        DEPENDS "${CMAKE_CURRENT_LIST_DIR}/${TEXTURES_KTX_DIR}/${current_texture}"    
-    )
-endforeach(current_texture)
-
-foreach(current_model ${MODELS_3D})
-    add_custom_command(TARGET AssimpModels
-        PRE_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-            "${CMAKE_CURRENT_LIST_DIR}/${MODELS_3D_DIR}/${current_model}"
-            "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${MODELS_3D_DIR}/${current_model}"
-        DEPENDS "${CMAKE_CURRENT_LIST_DIR}/${MODELS_3D_DIR}/${current_model}"
-    )
-endforeach(current_model)
