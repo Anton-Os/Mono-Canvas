@@ -334,6 +334,8 @@ int assimpImportCPP(const std::string &pFile, ModelStatic* Model){
     std::cout << "Number of materials present in scene is " << materialsCount << std::endl;
     aiMaterial** modelMaterials = scene->mMaterials;
     for(unsigned int i = 0; i < materialsCount; i++){
+      // Extracting through Individual Get()
+      // Recursing through Material Properties
       GLuint materialPropertyCount = modelMaterials[i]->mNumProperties;
       aiMaterialProperty** materialProperties = modelMaterials[i]->mProperties;
       for(unsigned int p = 0; p < materialPropertyCount; p++){

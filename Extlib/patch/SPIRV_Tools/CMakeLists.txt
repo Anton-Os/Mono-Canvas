@@ -70,7 +70,7 @@ elseif(MSVC)
   set(SPIRV_WARNINGS -D_CRT_SECURE_NO_WARNINGS /wd4800)
 
   if(${SPIRV_WERROR})
-    set(SPIRV_WARNINGS ${SPIRV_WARNINGS} /WX)
+    set(SPIRV_WARNINGS ${SPIRV_WARNINGS} /WX-)
   endif()
 endif()
 
