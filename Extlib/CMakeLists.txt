@@ -26,8 +26,6 @@ endif()
 
 option(BUILD_PROGSCHJ "Build progschj examples" OFF)
 
-set(PYTHON_EMBEDDED_DIR "${CMAKE_SOURCE_DIR}/python-3.6.1-embed")
-
 set(ALL_PROJECT_DIR "${CMAKE_BINARY_DIR}/Projects")
 set(FREEGLUT_PROJECT_DIR "${ALL_PROJECT_DIR}/FreeGLUT")
 set(GLEW_PROJECT_DIR "${ALL_PROJECT_DIR}/GLEW")
@@ -46,44 +44,45 @@ set(SPIRVHEADERS_PROJECT_DIR "${ALL_PROJECT_DIR}/SPIRV_Headers")
 set(SHADERC_PROJECT_DIR "${ALL_PROJECT_DIR}/ShaderC")
 set(EIGEN_PROJECT_DIR "${ALL_PROJECT_DIR}/Eigen")
 set(VULKAN_PROJECT_DIR "${ALL_PROJECT_DIR}/VulkanSDK")
-# set(GLO_PROJECT_DIR "${ALL_PROJECT_DIR}/GLO")
+set(SQLITE_PROJECT_DIR "${ALL_PROJECT_DIR}/SQLite")
 
-set(LOCAL_PROJECT_DIR "${CMAKE_BINARY_DIR}/Local")
-set(SQLITE_LOCAL_DIR "${CMAKE_SOURCE_DIR}/sqlite-amalgamation-3180000")
-set(SQLITE_PROJECT_DIR "${LOCAL_PROJECT_DIR}/SQLite")
+set(UTILITIES_DIR "${CMAKE_BINARY_DIR}/Util")
+set(PYTHON_EMBEDDED_DIR "${UTILITIES_DIR}/python-3.6.1-embed")
 
 set(EXTLIB_TARGETS)
 
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake.in" 
+               "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
+                @ONLY               
+)
+
+if(NOT EXISTS ${UTILITIES_DIR})
+    file(MAKE_DIRECTORY ${UTILITIES_DIR})
+endif()
+
+add_custom_target(GDrive ALL 
+    ${CMAKE_COMMAND} -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
+    COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_BINARY_DIR}/Img2KTX.tar" 
+    COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_BINARY_DIR}/python-3.6.1-embed.tar"
+    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
+    WORKING_DIRECTORY ${UTILITIES_DIR}
+)
+
 ExternalProject_Add(SQLite
-    DOWNLOAD_COMMAND ""
+    URL "${CMAKE_BINARY_DIR}/sqlite-amalgamation-3180000.tar"
+    URL_MD5 62e1474d3d834d098c22f51e8208e5a1
 
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
 
     PREFIX "${SQLITE_PROJECT_DIR}"
-    SOURCE_DIR "${SQLITE_LOCAL_DIR}"
     BINARY_DIR "${SQLITE_PROJECT_DIR}/build"
     TMP_DIR "${SQLITE_PROJECT_DIR}/temp"
     STAMP_DIR "${SQLITE_PROJECT_DIR}/stamp"
+
+    DEPENDS GDrive
 )
 
 list(APPEND EXTLIB_TARGETS SQLite)
-
-#[[ if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows") # PicoPixel client includes window specific headers
-    ExternalProject_Add(PicoPixelClient
-        DOWNLOAD_COMMAND ""
-
-        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-
-        PREFIX ${PICOPIXELCLIENT_PROJECT_DIR}
-        SOURCE_DIR ${PICOPIXELCLIENT_LOCAL_DIR}
-        BINARY_DIR "${PICOPIXELCLIENT_PROJECT_DIR}/build"
-        TMP_DIR "${PICOPIXELCLIENT_PROJECT_DIR}/temp"
-        STAMP_DIR "${PICOPIXELCLIENT_PROJECT_DIR}/stamp"
-    )
-
-    list(APPEND EXTLIB_TARGETS PicoPixelClient)
-    message(STATUS "PicoPixelClient is added")
-endif()    #]]
 
 # Get FreeGLUT 3.0.0
 ExternalProject_Add(FreeGLUT
@@ -108,7 +107,7 @@ ExternalProject_Add(FreeGLUT
 list(APPEND EXTLIB_TARGETS FreeGLUT)
 
 ExternalProject_Add(GLEW
-    URL "${CMAKE_SOURCE_DIR}/glew-1.13.0.tgz"
+    URL "${CMAKE_BINARY_DIR}/glew-1.13.0.tgz"
     URL_MD5 7cbada3166d2aadfc4169c4283701066
 
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
@@ -125,6 +124,8 @@ ExternalProject_Add(GLEW
     BINARY_DIR "${GLEW_PROJECT_DIR}/build"
     TMP_DIR "${GLEW_PROJECT_DIR}/temp"
     STAMP_DIR "${GLEW_PROJECT_DIR}/stamp"
+
+    DEPENDS GDrive
 )
 
 list(APPEND EXTLIB_TARGETS GLEW)
@@ -160,7 +161,7 @@ ExternalProject_Add(GLFW
 list(APPEND EXTLIB_TARGETS GLFW)
 
 ExternalProject_Add(FLTK
-    URL "${CMAKE_SOURCE_DIR}/fltk-1.3.4-1-source.tar.gz"
+    URL "${CMAKE_BINARY_DIR}/fltk-1.3.4-1-source.tar.gz"
     URL_MD5 d7fcd27ab928648e1a1366dd2e273970
 
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
@@ -169,6 +170,8 @@ ExternalProject_Add(FLTK
     BINARY_DIR "${FLTK_PROJECT_DIR}/build"
     TMP_DIR "${FLTK_PROJECT_DIR}/temp"
     STAMP_DIR "${FLTK_PROJECT_DIR}/stamp"
+
+    DEPENDS GDrive
 )
 
 list(APPEND EXTLIB_TARGETS FLTK)
