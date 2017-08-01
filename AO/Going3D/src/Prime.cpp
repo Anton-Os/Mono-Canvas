@@ -137,6 +137,18 @@ int main(int argc, char** argv){
 
     assimpImportCPP(spongeFilePath, &Sponge);
 
+	ModelStatic Rock1;
+    std::string Rock1_filePath = parentDir + "\\data\\Rock1.dae";
+	Rock1.renderParams[ShaderCtrlBit::color] = 0;
+
+    assimpImportCPP(Rock1_filePath, &Rock1);
+
+	ModelStatic Nut;
+    std::string Nut_filePath = parentDir + "\\data\\nut.fbx";
+	Nut.renderParams[ShaderCtrlBit::color] = 0;
+
+    assimpImportCPP(Nut_filePath, &Nut);
+
 	glUseProgram(noBlocks_glsl);
 
 	noBlocks_Uniforms.worldMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
@@ -155,8 +167,8 @@ int main(int argc, char** argv){
 		noBlocksUtil.localMatrix(&noBlocks_Uniforms);
 		noBlocksUtil.defaultColor(&noBlocks_Uniforms);
 
-        glBindVertexArray(Sponge.VertexArray);
-        glDrawElements(GL_TRIANGLES, Sponge.modelIndices.size(), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(Nut.VertexArray);
+        glDrawElements(GL_TRIANGLES, Nut.modelIndices.size(), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
 		glfwSwapBuffers(window);

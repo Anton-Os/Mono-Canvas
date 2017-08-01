@@ -6,17 +6,27 @@ set(GDRIVE_NAMES)
 list(APPEND GDRIVE_URLS
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzS2RZdjhJZDgwMlU"
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzZXhGNVo1ZnVHZnM"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzQmIteWNwV0JOWlE"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzcnNpZXRKdm9MUUU"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzaEZ0UkgxUnF2bFk"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzMkU0Qk5CVS1ELVU"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzekMycG5pVzhFb28"
 )
 
 list(APPEND GDRIVE_NAMES
     "Sponge.obj"
     "Illusions.KTX"
+    "Rock1.obj"
+    "Rock1.dae"
+    "nut.obj"
+    "nut.fbx"
+    "nut.mb"
 )
 
 foreach(currentFile ${GDRIVE_NAMES})
     message(STATUS "Downloading ${currentFile}")
-    list(FIND GDRIVE_NAMES currentFile currentIndex)
-    list(GET GDRIVE_URLS currentIndex currentUrl)
+    list(FIND GDRIVE_NAMES ${currentFile} currentIndex)
+    list(GET GDRIVE_URLS ${currentIndex} currentUrl)
     if(NOT EXISTS @CMAKE_CURRENT_BINARY_DIR@/data/${currentFile})
         file(DOWNLOAD
             "${currentUrl}"
