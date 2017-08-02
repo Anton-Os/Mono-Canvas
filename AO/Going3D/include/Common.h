@@ -55,6 +55,7 @@ struct ModelStatic {
 
 int assimpImportCPP(const std::string& pFile);
 int assimpImportCPP(const std::string& pFile, ModelStatic* Model);
+int assimpImportCPP(const std::string& pFile, std::vector<ModelStatic>* MPerComponent);
 
 int loadModelData(std::vector<Point> dataToLoad, std::vector<GLuint> dataIndices);
 GLuint loadModelData(ModelStatic* Model);

@@ -132,11 +132,13 @@ int main(int argc, char** argv){
 	std::string scratchedSteel_filePath = parentDir + "\\data\\ScratchedSteel.ktx";
 	GLuint scratchedSteel = createTexture(scratchedSteel_filePath.c_str());
 
-	ModelStatic Nut;
-    std::string Nut_filePath = parentDir + "\\data\\nut.fbx";
-	Nut.renderParams[ShaderCtrlBit::color] = 0;
+	// ModelStatic Nut;
+    std::vector<ModelStatic> MPerComponent;
+	std::string Nut_filePath = parentDir + "\\data\\nut.fbx";
+	// Nut.renderParams[ShaderCtrlBit::color] = 0;
 
-    assimpImportCPP(Nut_filePath, &Nut);
+    // assimpImportCPP(Nut_filePath, &Nut);
+    assimpImportCPP(Nut_filePath, &MPerComponent);
 
 	glUseProgram(noBlocks_glsl);
 
@@ -158,8 +160,10 @@ int main(int argc, char** argv){
 		noBlocksUtil.localMatrix(&noBlocks_Uniforms);
 		noBlocksUtil.defaultColor(&noBlocks_Uniforms);
 
-        glBindVertexArray(Nut.VertexArray);
-        glDrawElements(GL_TRIANGLES, Nut.modelIndices.size(), GL_UNSIGNED_INT, 0);
+        // glBindVertexArray(Nut.VertexArray);
+        // glDrawElements(GL_TRIANGLES, Nut.modelIndices.size(), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(MPerComponent.front().VertexArray);
+        glDrawElements(GL_TRIANGLES, MPerComponent.front().modelIndices.size(), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
 		glfwSwapBuffers(window);
