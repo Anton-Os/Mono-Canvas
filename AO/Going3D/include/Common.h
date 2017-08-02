@@ -53,9 +53,18 @@ struct ModelStatic {
     std::bitset<2> renderParams;
 };
 
+struct ModelComposite {
+    GLuint VertexArray;
+    std::vector<Point> modelMeshes;
+    std::vector<GLuint> modelIndices;
+    std::vector<std::array<GLfloat, 3>> cameraPos;
+
+    std::bitset<2> renderParams;
+};
+
 int assimpImportCPP(const std::string& pFile);
 int assimpImportCPP(const std::string& pFile, ModelStatic* Model);
-int assimpImportCPP(const std::string& pFile, std::vector<ModelStatic>* MPerComponent);
+int assimpImportCPP(const std::string &pFile, std::vector<ModelComposite>* MPerComponent);
 
 int loadModelData(std::vector<Point> dataToLoad, std::vector<GLuint> dataIndices);
 GLuint loadModelData(ModelStatic* Model);

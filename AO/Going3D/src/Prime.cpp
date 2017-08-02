@@ -36,19 +36,19 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_P && action == GLFW_PRESS) Key::P = true;
 	if (key == GLFW_KEY_1 && action == GLFW_PRESS){
 		std::cout << "Grey" << std::endl;
-		noBlocks_Uniforms.defaultColor = { 0.5f, 0.5f, 0.5f, 0.8f };
+		noBlocks_Uniforms.defaultColor = { 0.5f, 0.5f, 0.5f, 0.4f };
 	}
 	if (key == GLFW_KEY_2 && action == GLFW_PRESS){
 		std::cout << "Hot" << std::endl;
-		noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.8f };
+		noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.4f };
 	}
 	if (key == GLFW_KEY_3 && action == GLFW_PRESS){
 		std::cout << "Cool" << std::endl;
-		noBlocks_Uniforms.defaultColor = {0.2588f, 0.5254f, 0.9568f, 0.8f};
+		noBlocks_Uniforms.defaultColor = {0.2588f, 0.5254f, 0.9568f, 0.4f};
 	}
 	if(key == GLFW_KEY_4 && action == GLFW_PRESS){
 		std::cout << "Neutral" << std::endl;
-		noBlocks_Uniforms.defaultColor = {0.3372f, 0.749f, 0.4862f, 0.8f};
+		noBlocks_Uniforms.defaultColor = {0.3372f, 0.749f, 0.4862f, 0.4f};
 	}
 
 	if (key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
@@ -133,19 +133,19 @@ int main(int argc, char** argv){
 	GLuint scratchedSteel = createTexture(scratchedSteel_filePath.c_str());
 
 	// ModelStatic Nut;
-    std::vector<ModelStatic> MPerComponent;
+    std::vector<ModelComposite> MPerComponent;
 	std::string Nut_filePath = parentDir + "\\data\\nut.fbx";
-	// Nut.renderParams[ShaderCtrlBit::color] = 0;
+	std::string LowPolyMill_filePath = parentDir + "\\data\\LowPolyMill.fbx";
 
     // assimpImportCPP(Nut_filePath, &Nut);
-    assimpImportCPP(Nut_filePath, &MPerComponent);
+    assimpImportCPP(LowPolyMill_filePath, &MPerComponent);
 
 	glUseProgram(noBlocks_glsl);
 
 	noBlocks_Uniforms.worldMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
 	noBlocks_Uniforms.localMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, -0.1f, -4.0f));
-    noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.8f };
-    noBlocks_Uniforms.surfaceRenderMode = 3;
+	noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.8f };
+    noBlocks_Uniforms.surfaceRenderMode = 2;
 
 	NoBlocks noBlocksUtil(noBlocks_glsl);
 	noBlocksUtil.setUniforms(&noBlocks_Uniforms);
@@ -160,10 +160,10 @@ int main(int argc, char** argv){
 		noBlocksUtil.localMatrix(&noBlocks_Uniforms);
 		noBlocksUtil.defaultColor(&noBlocks_Uniforms);
 
-        // glBindVertexArray(Nut.VertexArray);
-        // glDrawElements(GL_TRIANGLES, Nut.modelIndices.size(), GL_UNSIGNED_INT, 0);
-        glBindVertexArray(MPerComponent.front().VertexArray);
-        glDrawElements(GL_TRIANGLES, MPerComponent.front().modelIndices.size(), GL_UNSIGNED_INT, 0);
+        for(unsigned int d = 0; d < MPerComponent.size(); d++){
+			glBindVertexArray(MPerComponent.at(d).VertexArray);
+        	glDrawElements(GL_TRIANGLES, MPerComponent.at(d).modelIndices.size(), GL_UNSIGNED_INT, 0);
+		}
         glBindVertexArray(0);
 
 		glfwSwapBuffers(window);
