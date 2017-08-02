@@ -4,6 +4,7 @@ layout(location = 0) in vec4 color;
 layout(location = 1) in vec2 texCoord;
 layout(location = 2) in vec3 normal;
 
+layout(binding = 0) uniform sampler2D currentTexture;
 uniform vec4 defaultColor;
 uniform uint surfaceRenderMode;
 
@@ -14,5 +15,7 @@ void main(){
         output_frag = vec4(defaultColor.r, defaultColor.g, defaultColor.b, defaultColor.a);
     } else if(surfaceRenderMode == 2){
         output_frag = vec4(color.r, color.g, color.b, color.a);
+    } else if(surfaceRenderMode == 3){
+        output_frag = texture(currentTexture, texCoord);
     }
 }

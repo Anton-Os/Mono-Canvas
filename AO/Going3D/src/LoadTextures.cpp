@@ -42,8 +42,16 @@ GLuint createTexture(const char* Filename){
     for(std::size_t Level = 0; Level < texture.levels(); ++Level) {
         Extent = texture.extent(Level);
         glCompressedTexSubImage2D(
-            target, static_cast<GLint>(Level), 0, 0, Extent.x, Extent.y,
-            textureFormat.Internal, static_cast<GLsizei>(texture.size(Level)), texture.data(0, 0, Level));
+            target,
+            static_cast<GLint>(Level),
+            0,
+            0, 
+            Extent.x, 
+            Extent.y,
+            textureFormat.Internal, 
+            static_cast<GLsizei>(texture.size(Level)), 
+            texture.data(0, 0, Level)
+        );
     }
 
     return textureName;

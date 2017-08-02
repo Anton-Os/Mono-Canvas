@@ -123,25 +123,14 @@ int main(int argc, char** argv){
 
 	std::string parentDir = getParentDirectory(argv[0]);
 
-    std::string viewer3D_vert = parentDir + "\\shaders\\Viewer3D.vert";
-    std::string viewer3D_frag = parentDir + "\\shaders\\Viewer3D.frag";
-    GLuint viewer3D_glsl = compileShaders(viewer3D_vert, viewer3D_frag);
-
 	std::string noBlocks_vert = parentDir + "\\shaders\\NoBlocks.vert";
     std::string noBlocks_frag = parentDir + "\\shaders\\NoBlocks.frag";
     GLuint noBlocks_glsl = compileShaders(noBlocks_vert, noBlocks_frag);
 
-    ModelStatic Sponge;
-    std::string spongeFilePath = parentDir + "\\data\\Sponge.obj";
-	Sponge.renderParams[ShaderCtrlBit::color] = 0;
-
-    assimpImportCPP(spongeFilePath, &Sponge);
-
-	ModelStatic Rock1;
-    std::string Rock1_filePath = parentDir + "\\data\\Rock1.dae";
-	Rock1.renderParams[ShaderCtrlBit::color] = 0;
-
-    assimpImportCPP(Rock1_filePath, &Rock1);
+	std::string brushedSteel_filePath = parentDir + "\\data\\BrushedSteel.ktx";
+	GLuint brushedSteel = createTexture(brushedSteel_filePath.c_str());
+	std::string scratchedSteel_filePath = parentDir + "\\data\\ScratchedSteel.ktx";
+	GLuint scratchedSteel = createTexture(scratchedSteel_filePath.c_str());
 
 	ModelStatic Nut;
     std::string Nut_filePath = parentDir + "\\data\\nut.fbx";
@@ -152,16 +141,18 @@ int main(int argc, char** argv){
 	glUseProgram(noBlocks_glsl);
 
 	noBlocks_Uniforms.worldMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
-	noBlocks_Uniforms.localMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -5.0f));
+	noBlocks_Uniforms.localMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, -0.1f, -4.0f));
     noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.8f };
-    noBlocks_Uniforms.surfaceRenderMode = 1;
+    noBlocks_Uniforms.surfaceRenderMode = 3;
 
 	NoBlocks noBlocksUtil(noBlocks_glsl);
 	noBlocksUtil.setUniforms(&noBlocks_Uniforms);
 
+	glBindTextureUnit(0, scratchedSteel);
+
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
-		glClearColor(1.0f, 1.0f, 0.88, 1.0f);
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		noBlocksUtil.localMatrix(&noBlocks_Uniforms);
