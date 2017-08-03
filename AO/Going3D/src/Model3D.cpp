@@ -8,12 +8,33 @@ void iterateNodes(aiNode* rootNode){
   while(! nodeStack.empty()){
     aiNode* node = nodeStack.top();
     nodeStack.pop();
-
     aiNode** endIt = node->mChildren + node->mNumChildren;
     for(aiNode** it = node->mChildren; it != endIt; ++it){
       nodeStack.push(*it);
     }
+  }
+}
 
+void iterateNodes(const aiScene* scene){
+  aiMesh** modelMeshes = scene->mMeshes;
+  aiNode* rootNode = scene->mRootNode;
+  std::stack<aiNode*> nodeStack;
+  nodeStack.push(rootNode);
+  while(! nodeStack.empty()){
+    aiNode* currentNode = nodeStack.top();
+    nodeStack.pop();
+    aiNode** endIt = currentNode->mChildren + currentNode->mNumChildren;
+    for(aiNode** it = currentNode->mChildren; it != endIt; ++it){
+      nodeStack.push(*it);
+    }
+    unsigned int nodeMeshCount = currentNode->mNumMeshes;
+    unsigned int* nodeMeshes = currentNode->mMeshes;
+    ModelComposite Model;
+    for(unsigned int m = 0; m < nodeMeshCount; m++){
+        aiMesh* currentMesh = modelMeshes[nodeMeshes[m]];
+        for(unsigned int f = 0; f < currentMesh->mNumFaces; f++) std::cout << "Inside face " << f << std::endl;
+        for(unsigned int v = 0; v < currentMesh->mNumVertices; v++) std::cout << "Inside vertex position " << v << std::endl;
+    }
   }
 }
 
@@ -262,101 +283,7 @@ int assimpImportCPP(const std::string &pFile, std::vector<ModelComposite>* MPerC
   }
 
   if(scene->HasMeshes()){
-    aiNode* currentNode = scene->mRootNode;
-    iterateNodes(currentNode);
-    /* unsigned int meshesCount = scene->mNumMeshes;
-    unsigned int nodeMeshCount = currentNode->mNumMeshes;
-    unsigned int* nodeMeshes  = currentNode->mMeshes;
-    for(unsigned int m = 0; m < nodeMeshCount; m++){
-      aiMesh* modelMesh = scene->mMeshes[nodeMeshes[m]];
-      // aiMatrix4x4 meshTransform = currentNode->
-    } */
-    /* for(unsigned int m = 0; m < meshesCount; m++){
-      ModelComposite Model;
-      unsigned int meshFaceCount = modelMeshes[m]->mNumFaces;
-      std::cout << "Inside Mesh # " << m << std::endl;
-      for(unsigned int f = 0; f < meshFaceCount; f++){
-        unsigned int faceIndicesCount = modelMeshes[m]->mFaces[f].mNumIndices;
-        for(unsigned int i = 0; i < faceIndicesCount; i++){
-          unsigned int currentIndex = modelMeshes[m]->mFaces[f].mIndices[i];
-          Model.modelIndices.push_back(currentIndex);
-        }
-      }
-      unsigned int meshVertexCount = modelMeshes[m]->mNumVertices;
-      std::vector<std::array<GLfloat, 3>> allVertexPos;
-      std::vector<std::array<GLfloat, 4>> allVertexColors;
-      std::vector<std::array<GLfloat, 2>> allVertexTexCoord;
-      std::vector<std::array<GLfloat, 3>> allVertexNormals;
-      // std::vector<Point> allMeshAttribs;
-      if(modelMeshes[m]->HasPositions()){
-        for(unsigned int v = 0; v < meshVertexCount; v++){
-          allVertexPos.push_back(
-          { modelMeshes[m]->mVertices[v].x,
-            modelMeshes[m]->mVertices[v].y,
-            modelMeshes[m]->mVertices[v].z }
-          );
-        }
-      } else {
-        std::cerr << "No vertex positions present" << std::endl;
-        return -1;
-      }
-
-      if(modelMeshes[m]->HasVertexColors(0)){
-        for(unsigned int v = 0; v < meshVertexCount; v++){
-          allVertexColors.push_back(
-          { modelMeshes[m]->mColors[0][v].r,
-            modelMeshes[m]->mColors[0][v].g,
-            modelMeshes[m]->mColors[0][v].b,
-            modelMeshes[m]->mColors[0][v].a }
-          );
-        }
-        Model.renderParams[ShaderCtrlBit::color] = 0;
-      } else {
-        std::cout << "No vertex colors present, proceeding to generate at random..." << std::endl;
-        srand(time(NULL));
-        GLfloat randomColor_R, randomColor_G, randomColor_B;
-        for(unsigned int c = 0; c < meshVertexCount; c++){
-          randomColor_R = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
-          randomColor_G = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
-          randomColor_B = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
-          allVertexColors.push_back( { randomColor_R, randomColor_G, randomColor_B, 0.5f } );
-         }
-        Model.renderParams[ShaderCtrlBit::color] = 0;
-      }
-
-      if(modelMeshes[m]->HasTextureCoords(0)){
-        for(unsigned int v = 0; v < meshVertexCount; v++){
-          allVertexTexCoord.push_back(
-          { modelMeshes[m]->mTextureCoords[0][v].x,
-            modelMeshes[m]->mTextureCoords[0][v].y }
-          );
-        }
-        Model.renderParams[ShaderCtrlBit::texCoord] = 0;
-      } else {
-        std::cout << "No texture coordinates present" << std::endl;
-        Model.renderParams[ShaderCtrlBit::texCoord] = 1;
-      }
-
-      if(modelMeshes[m]->HasNormals()){
-        for(unsigned int v = 0; v < meshVertexCount; v++){
-          allVertexNormals.push_back(
-          { modelMeshes[m]->mNormals[v].x,
-            modelMeshes[m]->mNormals[v].y,
-            modelMeshes[m]->mNormals[v].z }
-          );
-        }
-      } else {
-        std::cerr << "No vertex normals present" << std::endl;
-        return -1;
-      }
-
-      for(unsigned int i = 0; i < meshVertexCount; i++) Model.modelMeshes.push_back(
-        { allVertexPos.at(i), allVertexColors.at(i), allVertexTexCoord.at(i), allVertexNormals.at(i) }
-      );
-
-      Model.VertexArray = loadModelData(&Model);
-      MPerComponent->push_back(Model);
-    } */
+    iterateNodes(scene);
   } else {
     std::cout << "Scene does not contain meshes" << std::endl;
     return -1;
