@@ -2,42 +2,6 @@
 #include <stack>
 // #include "Assimp.h"
 
-void iterateNodes(aiNode* rootNode){
-  std::stack<aiNode*> nodeStack;
-  nodeStack.push(rootNode);
-  while(! nodeStack.empty()){
-    aiNode* node = nodeStack.top();
-    nodeStack.pop();
-    aiNode** endIt = node->mChildren + node->mNumChildren;
-    for(aiNode** it = node->mChildren; it != endIt; ++it){
-      nodeStack.push(*it);
-    }
-  }
-}
-
-void iterateNodes(const aiScene* scene){
-  aiMesh** modelMeshes = scene->mMeshes;
-  aiNode* rootNode = scene->mRootNode;
-  std::stack<aiNode*> nodeStack;
-  nodeStack.push(rootNode);
-  while(! nodeStack.empty()){
-    aiNode* currentNode = nodeStack.top();
-    nodeStack.pop();
-    aiNode** endIt = currentNode->mChildren + currentNode->mNumChildren;
-    for(aiNode** it = currentNode->mChildren; it != endIt; ++it){
-      nodeStack.push(*it);
-    }
-    unsigned int nodeMeshCount = currentNode->mNumMeshes;
-    unsigned int* nodeMeshes = currentNode->mMeshes;
-    ModelComposite Model;
-    for(unsigned int m = 0; m < nodeMeshCount; m++){
-        aiMesh* currentMesh = modelMeshes[nodeMeshes[m]];
-        for(unsigned int f = 0; f < currentMesh->mNumFaces; f++) std::cout << "Inside face " << f << std::endl;
-        for(unsigned int v = 0; v < currentMesh->mNumVertices; v++) std::cout << "Inside vertex position " << v << std::endl;
-    }
-  }
-}
-
 GLuint loadModelData(ModelStatic* Model){
   GLuint VAO, VBO, EBO;
   glGenVertexArrays(1, &VAO);
@@ -94,6 +58,134 @@ GLuint loadModelData(ModelComposite* Model){
 
   GLenum errorLog = glGetError();
   return VAO;
+}
+
+void iterateNodes(aiNode* rootNode, std::vector<ModelComposite>* MPerComponent){
+  std::stack<aiNode*> nodeStack;
+  nodeStack.push(rootNode);
+  while(! nodeStack.empty()){
+    aiNode* node = nodeStack.top();
+    nodeStack.pop();
+    aiNode** endIt = node->mChildren + node->mNumChildren;
+    for(aiNode** it = node->mChildren; it != endIt; ++it){
+      nodeStack.push(*it);
+    }
+  }
+}
+
+int iterateNodes(const aiScene* scene, std::vector<ModelComposite>* MPerComponent){
+  aiMesh** modelMeshes = scene->mMeshes;
+  aiNode* rootNode = scene->mRootNode;
+  std::stack<aiNode*> nodeStack;
+  nodeStack.push(rootNode);
+  while(! nodeStack.empty()){
+    aiNode* currentNode = nodeStack.top();
+    nodeStack.pop();
+    aiNode** endIt = currentNode->mChildren + currentNode->mNumChildren;
+
+    for(aiNode** it = currentNode->mChildren; it != endIt; ++it){
+      nodeStack.push(*it);
+    }
+
+    ModelComposite Model;
+    unsigned int nodeMeshCount = currentNode->mNumMeshes;
+    unsigned int* nodeMeshes = currentNode->mMeshes;
+    aiMatrix4x4 relativePos = currentNode->mTransformation;
+    Model.relativePos = glm::mat4(
+      { relativePos.a1, relativePos.a2, relativePos.a3, relativePos.a4,
+      relativePos.b1, relativePos.b2, relativePos.b3, relativePos.b4,
+      relativePos.c1, relativePos.c2, relativePos.c3, relativePos.c4,
+      relativePos.d1, relativePos.d2, relativePos.d3, relativePos.d4 }
+    );
+
+    for(unsigned int m = 0; m < nodeMeshCount; m++){
+      aiMesh* currentMesh = modelMeshes[nodeMeshes[m]];
+      unsigned int meshFaceCount = currentMesh->mNumFaces;
+
+      for(unsigned int f = 0; f < meshFaceCount; f++){
+        unsigned int faceIndicesCount = currentMesh->mFaces[f].mNumIndices;
+        for(unsigned int i = 0; i < faceIndicesCount; i++){
+          unsigned int currentIndex = currentMesh->mFaces[f].mIndices[i];
+          Model.modelIndices.push_back(currentIndex);
+        }
+      }
+
+      unsigned int meshVertexCount = currentMesh->mNumVertices;
+      std::vector<std::array<GLfloat, 3>> allVertexPos;
+      std::vector<std::array<GLfloat, 4>> allVertexColors;
+      std::vector<std::array<GLfloat, 2>> allVertexTexCoord;
+      std::vector<std::array<GLfloat, 3>> allVertexNormals;
+
+      if(currentMesh->HasPositions()){
+        for(unsigned int v = 0; v < meshVertexCount; v++){
+          allVertexPos.push_back(
+          { currentMesh->mVertices[v].x,
+            currentMesh->mVertices[v].y,
+            currentMesh->mVertices[v].z }
+          );
+        }
+      } else {
+        std::cerr << "No vertex positions present" << std::endl;
+        return -1;
+      }
+
+      if(currentMesh->HasVertexColors(0)){
+        for(unsigned int v = 0; v < meshVertexCount; v++){
+          allVertexColors.push_back(
+          { currentMesh->mColors[0][v].r,
+            currentMesh->mColors[0][v].g,
+            currentMesh->mColors[0][v].b,
+            currentMesh->mColors[0][v].a }
+          );
+        }
+        Model.renderParams[ShaderCtrlBit::color] = 0;
+      } else {
+        std::cout << "No vertex colors present, proceeding to generate at random..." << std::endl;
+        srand(time(NULL));
+        GLfloat randomColor_R, randomColor_G, randomColor_B;
+        for(unsigned int c = 0; c < meshVertexCount; c++){
+          randomColor_R = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
+          randomColor_G = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
+          randomColor_B = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
+          allVertexColors.push_back( { randomColor_R, randomColor_G, randomColor_B, 0.5f } );
+         }
+        Model.renderParams[ShaderCtrlBit::color] = 0;
+      }
+
+      if(currentMesh->HasTextureCoords(0)){
+        for(unsigned int v = 0; v < meshVertexCount; v++){
+          allVertexTexCoord.push_back(
+          { currentMesh->mTextureCoords[0][v].x,
+            currentMesh->mTextureCoords[0][v].y }
+          );
+        }
+        Model.renderParams[ShaderCtrlBit::texCoord] = 0;
+      } else {
+        std::cout << "No texture coordinates present" << std::endl;
+        Model.renderParams[ShaderCtrlBit::texCoord] = 1;
+      }
+
+      if(currentMesh->HasNormals()){
+        for(unsigned int v = 0; v < meshVertexCount; v++){
+          allVertexNormals.push_back(
+          { currentMesh->mNormals[v].x,
+            currentMesh->mNormals[v].y,
+            currentMesh->mNormals[v].z }
+          );
+        }
+      } else {
+        std::cerr << "No vertex normals present" << std::endl;
+        return -1;
+      }
+
+      for(unsigned int i = 0; i < meshVertexCount; i++) Model.modelMeshes.push_back(
+        { allVertexPos.at(i), allVertexColors.at(i), allVertexTexCoord.at(i), allVertexNormals.at(i) }
+      );
+
+      Model.VertexArray = loadModelData(&Model);
+      MPerComponent->push_back(Model);
+    }
+  }
 }
 
 int assimpImportCPP(const std::string &pFile, ModelStatic* Model){
@@ -283,43 +375,11 @@ int assimpImportCPP(const std::string &pFile, std::vector<ModelComposite>* MPerC
   }
 
   if(scene->HasMeshes()){
-    iterateNodes(scene);
+    iterateNodes(scene, MPerComponent);
   } else {
     std::cout << "Scene does not contain meshes" << std::endl;
     return -1;
   }
 
-  /* for(int v = 0; v < MPerComponent.size(); v++) 
-  MPerComponent.at(v)->VertexArray = loadModelData(MPerComponent.at(v));
-
-  if(scene->HasMaterials()){
-    // Extract Materials belonging to the scene
-    unsigned int materialsCount = scene->mNumMaterials;
-    std::cout << "Number of materials present in scene is " << materialsCount << std::endl;
-    aiMaterial** modelMaterials = scene->mMaterials;
-    for(unsigned int i = 0; i < materialsCount; i++){
-      // Extracting through Individual Get()
-      // Recursing through Material Properties
-      GLuint materialPropertyCount = modelMaterials[i]->mNumProperties;
-      aiMaterialProperty** materialProperties = modelMaterials[i]->mProperties;
-      for(unsigned int p = 0; p < materialPropertyCount; p++){
-        // Retrieve Material Property Data
-        std::cout << "Inside Material # " << i << " Property # " << p << std::endl;
-      }
-    }
-
-  } else {
-    std::cout << "Scene does not contain materials" << std::endl;
-    return -1;
-  }
-
-  if(scene->HasTextures()){
-    // Extract the textures, convert them to KTX if nessicary, and execute image loading funcion
-    unsigned int texturesCount = scene->mNumMeshes;
-    std::cout << "Number of textures present in scene is " << texturesCount << std::endl;
-  } else {
-    std::cout << "Scene does not contain textures" << std::endl;
-  }
-  */
   return 0;
 }
