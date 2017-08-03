@@ -20,10 +20,13 @@ noBlocks_UniformData noBlocks_Uniforms;
 GLfloat rotateAngleX, rotateAngleY, rotateAngleZ;
 
 namespace Key {
-	GLboolean W, A, S, D, J, I, K, O, L, P = false;
+	GLboolean W, A, S, D, Q, E, J, I, K, O, L, P = false;
 }
 
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+glm::vec3 camMovement = glm::vec3(0.0, 0.0, -20.0f);
+glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
+
+/* void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (key == GLFW_KEY_W && action == GLFW_PRESS) Key::W = true;
 	if (key == GLFW_KEY_A && action == GLFW_PRESS) Key::A = true;
 	if (key == GLFW_KEY_S && action == GLFW_PRESS) Key::S = true;
@@ -82,6 +85,46 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 		rotateAngleX -= 1.0f;
 		noBlocks_Uniforms.localMatrix = glm::rotate(noBlocks_Uniforms.localMatrix, glm::radians(rotateAngleX), glm::vec3(1.0f, 0.0, 0.0));
 	}
+} */
+
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if (key == GLFW_KEY_W && action == GLFW_PRESS) Key::W = true;
+	if (key == GLFW_KEY_A && action == GLFW_PRESS) Key::A = true;
+	if (key == GLFW_KEY_S && action == GLFW_PRESS) Key::S = true;
+	if (key == GLFW_KEY_D && action == GLFW_PRESS) Key::D = true;
+	if (key == GLFW_KEY_Q && action == GLFW_PRESS) Key::Q = true;
+	if (key == GLFW_KEY_E && action == GLFW_PRESS) Key::E = true;
+	if (key == GLFW_KEY_J && action == GLFW_PRESS) Key::J = true;
+	if (key == GLFW_KEY_I && action == GLFW_PRESS) Key::I = true;
+	if (key == GLFW_KEY_K && action == GLFW_PRESS) Key::K = true;
+	if (key == GLFW_KEY_O && action == GLFW_PRESS) Key::O = true;
+	if (key == GLFW_KEY_L && action == GLFW_PRESS) Key::L = true;
+	if (key == GLFW_KEY_P && action == GLFW_PRESS) Key::P = true;
+	
+	if (key == GLFW_KEY_1 && action == GLFW_PRESS){ noBlocks_Uniforms.defaultColor = { 0.5f, 0.5f, 0.5f, 0.4f }; }
+	if (key == GLFW_KEY_2 && action == GLFW_PRESS){ noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.4f }; }
+	if (key == GLFW_KEY_3 && action == GLFW_PRESS){ noBlocks_Uniforms.defaultColor = {0.2588f, 0.5254f, 0.9568f, 0.4f}; }
+	if(key == GLFW_KEY_4 && action == GLFW_PRESS){ noBlocks_Uniforms.defaultColor = {0.3372f, 0.749f, 0.4862f, 0.4f}; }
+
+	if (key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
+	if (key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
+	if (key == GLFW_KEY_S && action == GLFW_RELEASE) Key::S = false;
+	if (key == GLFW_KEY_D && action == GLFW_RELEASE) Key::D = false;
+	if (key == GLFW_KEY_Q && action == GLFW_RELEASE) Key::Q = false;
+	if (key == GLFW_KEY_E && action == GLFW_RELEASE) Key::E = false;
+	if (key == GLFW_KEY_J && action == GLFW_RELEASE) Key::J = false;
+	if (key == GLFW_KEY_I && action == GLFW_RELEASE) Key::I = false;
+	if (key == GLFW_KEY_K && action == GLFW_RELEASE) Key::O = false;
+	if (key == GLFW_KEY_O && action == GLFW_RELEASE) Key::K = false;
+	if (key == GLFW_KEY_L && action == GLFW_RELEASE) Key::L = false;
+	if (key == GLFW_KEY_P && action == GLFW_RELEASE) Key::P = false;
+
+	if(Key::W){	camMovement.z += 1.0f; }
+	if(Key::A){ camMovement.x += 1.0f; }
+	if(Key::S){ camMovement.z -= 1.0f; }
+	if(Key::D){ camMovement.x -= 1.0f; }
+	if(Key::Q){ camMovement.y += 1.0f; }
+	if(Key::E){ camMovement.y -= 1.0f; }
 }
 
 int main(int argc, char** argv){
@@ -142,10 +185,10 @@ int main(int argc, char** argv){
 
 	glUseProgram(noBlocks_glsl);
 
-	noBlocks_Uniforms.worldMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
-	noBlocks_Uniforms.localMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, -0.1f, -4.0f));
+	noBlocks_Uniforms.worldMatrix = perspectiveMatrix;
+	// noBlocks_Uniforms.localMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, -0.1f, -4.0f));
 	noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.8f };
-    noBlocks_Uniforms.surfaceRenderMode = 3;
+    noBlocks_Uniforms.surfaceRenderMode = 1;
 
 	NoBlocks noBlocksUtil(noBlocks_glsl);
 	noBlocksUtil.setUniforms(&noBlocks_Uniforms);
@@ -157,11 +200,15 @@ int main(int argc, char** argv){
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		noBlocksUtil.localMatrix(&noBlocks_Uniforms);
+		// noBlocksUtil.localMatrix(&noBlocks_Uniforms);
+		noBlocks_Uniforms.worldMatrix = glm::translate(perspectiveMatrix, camMovement);
+		noBlocksUtil.worldMatrix(&noBlocks_Uniforms);
 		noBlocksUtil.defaultColor(&noBlocks_Uniforms);
 
         for(unsigned int d = 0; d < MPerComponent.size(); d++){
 			glBindVertexArray(MPerComponent.at(d).VertexArray);
+			noBlocks_Uniforms.localMatrix = MPerComponent.at(d).relativePos;
+			noBlocksUtil.localMatrix(&noBlocks_Uniforms);
         	glDrawElements(GL_TRIANGLES, MPerComponent.at(d).modelIndices.size(), GL_UNSIGNED_INT, 0);
 		}
         glBindVertexArray(0);
