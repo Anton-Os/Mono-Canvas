@@ -1,5 +1,21 @@
 #include "Common.h"
+#include <stack>
 // #include "Assimp.h"
+
+void iterateNodes(aiNode* rootNode){
+  std::stack<aiNode*> nodeStack;
+  nodeStack.push(rootNode);
+  while(! nodeStack.empty()){
+    aiNode* node = nodeStack.top();
+    nodeStack.pop();
+
+    aiNode** endIt = node->mChildren + node->mNumChildren;
+    for(aiNode** it = node->mChildren; it != endIt; ++it){
+      nodeStack.push(*it);
+    }
+
+  }
+}
 
 GLuint loadModelData(ModelStatic* Model){
   GLuint VAO, VBO, EBO;
@@ -83,10 +99,10 @@ int assimpImportCPP(const std::string &pFile, ModelStatic* Model){
     std::vector<std::array<GLfloat, 2>> allVertexTexCoord;
     std::vector<std::array<GLfloat, 3>> allVertexNormals;
 
-    unsigned int meshesCount = scene->mNumMeshes;
-    std::cout << "Number of meshes present in scene is " << meshesCount << std::endl;
     aiNode* currentNode = scene->mRootNode;
     aiMesh** modelMeshes = scene->mMeshes;
+    unsigned int meshesCount = scene->mNumMeshes;
+    std::cout << "Number of meshes present in scene is " << meshesCount << std::endl;
 
     for(unsigned int i = 0; i < meshesCount; i++){
       unsigned int meshVertexCount = modelMeshes[i]->mNumVertices;
@@ -246,9 +262,16 @@ int assimpImportCPP(const std::string &pFile, std::vector<ModelComposite>* MPerC
   }
 
   if(scene->HasMeshes()){
-    aiMesh** modelMeshes = scene->mMeshes;
-    unsigned int meshesCount = scene->mNumMeshes;
-    for(unsigned int m = 0; m < meshesCount; m++){
+    aiNode* currentNode = scene->mRootNode;
+    iterateNodes(currentNode);
+    /* unsigned int meshesCount = scene->mNumMeshes;
+    unsigned int nodeMeshCount = currentNode->mNumMeshes;
+    unsigned int* nodeMeshes  = currentNode->mMeshes;
+    for(unsigned int m = 0; m < nodeMeshCount; m++){
+      aiMesh* modelMesh = scene->mMeshes[nodeMeshes[m]];
+      // aiMatrix4x4 meshTransform = currentNode->
+    } */
+    /* for(unsigned int m = 0; m < meshesCount; m++){
       ModelComposite Model;
       unsigned int meshFaceCount = modelMeshes[m]->mNumFaces;
       std::cout << "Inside Mesh # " << m << std::endl;
@@ -333,7 +356,7 @@ int assimpImportCPP(const std::string &pFile, std::vector<ModelComposite>* MPerC
 
       Model.VertexArray = loadModelData(&Model);
       MPerComponent->push_back(Model);
-    }
+    } */
   } else {
     std::cout << "Scene does not contain meshes" << std::endl;
     return -1;
