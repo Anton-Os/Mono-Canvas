@@ -57,7 +57,7 @@ struct ModelComposite {
     GLuint VertexArray;
     std::vector<Point> modelMeshes;
     std::vector<GLuint> modelIndices;
-    std::vector<std::array<GLfloat, 3>> cameraPos;
+    glm::mat4 relativePos;
 
     std::bitset<2> renderParams;
 };
