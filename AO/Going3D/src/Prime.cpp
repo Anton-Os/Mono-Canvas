@@ -197,7 +197,7 @@ int main(int argc, char** argv){
 	noBlocks_Uniforms.worldMatrix = perspectiveMatrix;
 	// noBlocks_Uniforms.localMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, -0.1f, -4.0f));
 	noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.8f };
-    noBlocks_Uniforms.surfaceRenderMode = 1;
+    noBlocks_Uniforms.surfaceRenderMode = 3;
 
 	NoBlocks noBlocksUtil(noBlocks_glsl);
 	noBlocksUtil.setUniforms(&noBlocks_Uniforms);
