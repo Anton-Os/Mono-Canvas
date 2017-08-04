@@ -24,7 +24,7 @@ namespace Key {
 }
 
 glm::vec3 camMovement = glm::vec3(0.0, 0.0, -100.0f);
-glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
+glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.f);
 // glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(4.0f), 0.9f, 0.1f, 1000.0f);
 
 /* void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -109,9 +109,9 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_2 && action == GLFW_PRESS)
 	noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.4f };
 	if (key == GLFW_KEY_3 && action == GLFW_PRESS)
-	noBlocks_Uniforms.defaultColor = {0.2588f, 0.5254f, 0.9568f, 0.4f };
+	noBlocks_Uniforms.defaultColor = { 0.2588f, 0.5254f, 0.9568f, 0.4f };
 	if(key == GLFW_KEY_4 && action == GLFW_PRESS)
-	noBlocks_Uniforms.defaultColor = {0.3372f, 0.749f, 0.4862f, 0.4f }; 
+	noBlocks_Uniforms.defaultColor = { 0.3372f, 0.749f, 0.4862f, 0.4f }; 
 
 	if (key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
 	if (key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
@@ -132,8 +132,8 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if(Key::A){ camMovement.x += 1.0f; }
 	if(Key::S){ camMovement.z -= 1.0f; }
 	if(Key::D){ camMovement.x -= 1.0f; }
-	if(Key::Q){ camMovement.y += 1.0f; }
-	if(Key::E){ camMovement.y -= 1.0f; }
+	if(Key::Q){ camMovement.y -= 1.0f; }
+	if(Key::E){ camMovement.y += 1.0f; }
 }
 
 int main(int argc, char** argv){
@@ -187,7 +187,8 @@ int main(int argc, char** argv){
 	// ModelStatic Nut;
     std::vector<ModelComposite> MPerComponent;
 	std::string Nut_filePath = parentDir + "\\data\\nut.fbx";
-	std::string LowPolyMill_filePath = parentDir + "\\data\\LowPolyMill.fbx";
+    // std::string LowPolyMill_filePath = parentDir + "\\data\\LowPolyMill.fbx";
+    std::string LowPolyMill_filePath = parentDir + "\\data\\LowPolyMill.obj";
 
     // assimpImportCPP(Nut_filePath, &Nut);
     assimpImportCPP(LowPolyMill_filePath, &MPerComponent);
@@ -195,19 +196,18 @@ int main(int argc, char** argv){
 	glUseProgram(noBlocks_glsl);
 
 	noBlocks_Uniforms.worldMatrix = perspectiveMatrix;
-	// noBlocks_Uniforms.localMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, -0.1f, -4.0f));
 	noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.8f };
-    noBlocks_Uniforms.surfaceRenderMode = 3;
+    noBlocks_Uniforms.surfaceRenderMode = 1;
 
 	NoBlocks noBlocksUtil(noBlocks_glsl);
-	noBlocksUtil.setUniforms(&noBlocks_Uniforms);
+    noBlocksUtil.setUniforms(&noBlocks_Uniforms);
 
 	glBindTextureUnit(0, scratchedSteel);
 
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
         // glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glClearColor(0.4f, 0.4f, 0.4f, 1.0f);
+        glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// noBlocksUtil.localMatrix(&noBlocks_Uniforms);
@@ -217,14 +217,13 @@ int main(int argc, char** argv){
 
         for(unsigned int d = 0; d < MPerComponent.size(); d++){
             noBlocks_Uniforms.localMatrix = MPerComponent.at(d).relativePos;
-			noBlocksUtil.localMatrix(&noBlocks_Uniforms);
-        	if(MPerComponent.at(d).renderParams[ShaderCtrlBit::drawable] == 0){ 
-				glBindVertexArray(MPerComponent.at(d).VertexArray);
-				glDrawElements(GL_TRIANGLES, MPerComponent.at(d).modelIndices.size(), GL_UNSIGNED_INT, 0);
-			}
+            noBlocksUtil.localMatrix(&noBlocks_Uniforms);
+            if(MPerComponent.at(d).renderParams[ShaderCtrlBit::drawable] == 0){
+                glBindVertexArray(MPerComponent.at(d).VertexArray);
+                glDrawElements(GL_TRIANGLES, MPerComponent.at(d).modelIndices.size(), GL_UNSIGNED_INT, 0);
+            }
 		}
         glBindVertexArray(0);
-
 		glfwSwapBuffers(window);
 	}
 

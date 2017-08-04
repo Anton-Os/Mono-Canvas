@@ -185,13 +185,19 @@ int iterateNodes(const aiScene* scene, std::vector<ModelComposite>* MPerComponen
     aiMatrix4x4 relativePos = currentNode->mTransformation;
     aiNode* parentNode = currentNode->mParent;
     if(NULL != parentNode) relativePos *= parentNode->mTransformation;
-
     Model.relativePos = glm::mat4(
         { relativePos.a1, relativePos.b1, relativePos.c1, relativePos.d1,
         relativePos.a2, relativePos.b2, relativePos.c2, relativePos.d2,
         relativePos.a3, relativePos.b3, relativePos.c3, relativePos.d3,
-        relativePos.a4 * 0.1f, relativePos.b4 * 0.1f, relativePos.c4 * 0.1f, relativePos.d4 * 0.1f }
+        relativePos.a4, relativePos.b4, relativePos.c4, relativePos.d4 }
     );
+    /* GLfloat mFactor = 0.12f;
+    Model.relativePos = glm::mat4(
+        { relativePos.a1, relativePos.b1, relativePos.c1, relativePos.d1,
+        relativePos.a2, relativePos.b2, relativePos.c2, relativePos.d2,
+        relativePos.a3, relativePos.b3, relativePos.c3, relativePos.d3,
+        relativePos.a4 * mFactor, relativePos.b4 * mFactor, relativePos.c4 * mFactor, relativePos.d4 * mFactor }
+    ); */
     
     if(nodeMeshCount > 0){
       for(unsigned int m = 0; m < nodeMeshCount; m++){
