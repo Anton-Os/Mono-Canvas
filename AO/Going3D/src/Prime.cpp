@@ -20,11 +20,12 @@ noBlocks_UniformData noBlocks_Uniforms;
 GLfloat rotateAngleX, rotateAngleY, rotateAngleZ;
 
 namespace Key {
-	GLboolean W, A, S, D, Q, E, J, I, K, O, L, P = false;
+	GLboolean W, A, S, D, Q, E, H, U, J, I, K, O, L, P = false;
 }
 
-glm::vec3 camMovement = glm::vec3(0.0, 0.0, -20.0f);
+glm::vec3 camMovement = glm::vec3(0.0, 0.0, -100.0f);
 glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 200.f);
+// glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(4.0f), 0.9f, 0.1f, 1000.0f);
 
 /* void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (key == GLFW_KEY_W && action == GLFW_PRESS) Key::W = true;
@@ -94,17 +95,23 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_D && action == GLFW_PRESS) Key::D = true;
 	if (key == GLFW_KEY_Q && action == GLFW_PRESS) Key::Q = true;
 	if (key == GLFW_KEY_E && action == GLFW_PRESS) Key::E = true;
+	if (key == GLFW_KEY_H && action == GLFW_PRESS) Key::U = true;
+	if (key == GLFW_KEY_U && action == GLFW_PRESS) Key::H = true;
 	if (key == GLFW_KEY_J && action == GLFW_PRESS) Key::J = true;
 	if (key == GLFW_KEY_I && action == GLFW_PRESS) Key::I = true;
 	if (key == GLFW_KEY_K && action == GLFW_PRESS) Key::K = true;
 	if (key == GLFW_KEY_O && action == GLFW_PRESS) Key::O = true;
 	if (key == GLFW_KEY_L && action == GLFW_PRESS) Key::L = true;
 	if (key == GLFW_KEY_P && action == GLFW_PRESS) Key::P = true;
-	
-	if (key == GLFW_KEY_1 && action == GLFW_PRESS){ noBlocks_Uniforms.defaultColor = { 0.5f, 0.5f, 0.5f, 0.4f }; }
-	if (key == GLFW_KEY_2 && action == GLFW_PRESS){ noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.4f }; }
-	if (key == GLFW_KEY_3 && action == GLFW_PRESS){ noBlocks_Uniforms.defaultColor = {0.2588f, 0.5254f, 0.9568f, 0.4f}; }
-	if(key == GLFW_KEY_4 && action == GLFW_PRESS){ noBlocks_Uniforms.defaultColor = {0.3372f, 0.749f, 0.4862f, 0.4f}; }
+
+	if (key == GLFW_KEY_1 && action == GLFW_PRESS) 
+	noBlocks_Uniforms.defaultColor = { 0.5f, 0.5f, 0.5f, 0.4f };
+	if (key == GLFW_KEY_2 && action == GLFW_PRESS)
+	noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.4f };
+	if (key == GLFW_KEY_3 && action == GLFW_PRESS)
+	noBlocks_Uniforms.defaultColor = {0.2588f, 0.5254f, 0.9568f, 0.4f };
+	if(key == GLFW_KEY_4 && action == GLFW_PRESS)
+	noBlocks_Uniforms.defaultColor = {0.3372f, 0.749f, 0.4862f, 0.4f }; 
 
 	if (key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
 	if (key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
@@ -112,6 +119,8 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_D && action == GLFW_RELEASE) Key::D = false;
 	if (key == GLFW_KEY_Q && action == GLFW_RELEASE) Key::Q = false;
 	if (key == GLFW_KEY_E && action == GLFW_RELEASE) Key::E = false;
+	if (key == GLFW_KEY_H && action == GLFW_RELEASE) Key::H = false;
+	if (key == GLFW_KEY_U && action == GLFW_RELEASE) Key::U = false;
 	if (key == GLFW_KEY_J && action == GLFW_RELEASE) Key::J = false;
 	if (key == GLFW_KEY_I && action == GLFW_RELEASE) Key::I = false;
 	if (key == GLFW_KEY_K && action == GLFW_RELEASE) Key::O = false;
@@ -197,7 +206,8 @@ int main(int argc, char** argv){
 
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        // glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClearColor(0.4f, 0.4f, 0.4f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// noBlocksUtil.localMatrix(&noBlocks_Uniforms);
@@ -206,10 +216,12 @@ int main(int argc, char** argv){
 		noBlocksUtil.defaultColor(&noBlocks_Uniforms);
 
         for(unsigned int d = 0; d < MPerComponent.size(); d++){
-			glBindVertexArray(MPerComponent.at(d).VertexArray);
-			noBlocks_Uniforms.localMatrix = MPerComponent.at(d).relativePos;
+            noBlocks_Uniforms.localMatrix = MPerComponent.at(d).relativePos;
 			noBlocksUtil.localMatrix(&noBlocks_Uniforms);
-        	glDrawElements(GL_TRIANGLES, MPerComponent.at(d).modelIndices.size(), GL_UNSIGNED_INT, 0);
+        	if(MPerComponent.at(d).renderParams[ShaderCtrlBit::drawable] == 0){ 
+				glBindVertexArray(MPerComponent.at(d).VertexArray);
+				glDrawElements(GL_TRIANGLES, MPerComponent.at(d).modelIndices.size(), GL_UNSIGNED_INT, 0);
+			}
 		}
         glBindVertexArray(0);
 

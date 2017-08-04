@@ -41,7 +41,8 @@ struct Point {
 namespace ShaderCtrlBit {
     enum ShaderCtrlBit {
         color,
-        texCoord
+        texCoord,
+        drawable
     };
 };
 
@@ -50,7 +51,7 @@ struct ModelStatic {
     std::vector<Point> modelMeshes;
     std::vector<GLuint> modelIndices;
 
-    std::bitset<2> renderParams;
+    std::bitset<3> renderParams;
 };
 
 struct ModelComposite {

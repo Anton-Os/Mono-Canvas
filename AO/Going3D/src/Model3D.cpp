@@ -91,104 +91,105 @@ int iterateNodes(const aiScene* scene, std::vector<ModelComposite>* MPerComponen
     unsigned int nodeMeshCount = currentNode->mNumMeshes;
     unsigned int* nodeMeshes = currentNode->mMeshes;
     aiMatrix4x4 relativePos = currentNode->mTransformation;
-    /* Model.relativePos = glm::mat4(
-      { relativePos.a1, relativePos.a2, relativePos.a3, relativePos.a4,
-      relativePos.b1, relativePos.b2, relativePos.b3, relativePos.b4,
-      relativePos.c1, relativePos.c2, relativePos.c3, relativePos.c4,
-      relativePos.d1, relativePos.d2, relativePos.d3, relativePos.d4 }
-    ); */
     Model.relativePos = glm::mat4(
       { relativePos.a1, relativePos.b1, relativePos.c1, relativePos.d1,
       relativePos.a2, relativePos.b2, relativePos.c2, relativePos.d2,
       relativePos.a3, relativePos.b3, relativePos.c3, relativePos.d3,
       relativePos.a4, relativePos.b4, relativePos.c4, relativePos.d4 }
     );
+    
+    if(nodeMeshCount > 0){
+      for(unsigned int m = 0; m < nodeMeshCount; m++){
+        aiMesh* currentMesh = modelMeshes[nodeMeshes[m]];
+        unsigned int meshFaceCount = currentMesh->mNumFaces;
 
-    for(unsigned int m = 0; m < nodeMeshCount; m++){
-      aiMesh* currentMesh = modelMeshes[nodeMeshes[m]];
-      unsigned int meshFaceCount = currentMesh->mNumFaces;
-
-      for(unsigned int f = 0; f < meshFaceCount; f++){
-        unsigned int faceIndicesCount = currentMesh->mFaces[f].mNumIndices;
-        for(unsigned int i = 0; i < faceIndicesCount; i++){
-          unsigned int currentIndex = currentMesh->mFaces[f].mIndices[i];
-          Model.modelIndices.push_back(currentIndex);
+        for(unsigned int f = 0; f < meshFaceCount; f++){
+          unsigned int faceIndicesCount = currentMesh->mFaces[f].mNumIndices;
+          for(unsigned int i = 0; i < faceIndicesCount; i++){
+            unsigned int currentIndex = currentMesh->mFaces[f].mIndices[i];
+            Model.modelIndices.push_back(currentIndex);
+          }
         }
-      }
 
-      unsigned int meshVertexCount = currentMesh->mNumVertices;
-      std::vector<std::array<GLfloat, 3>> allVertexPos;
-      std::vector<std::array<GLfloat, 4>> allVertexColors;
-      std::vector<std::array<GLfloat, 2>> allVertexTexCoord;
-      std::vector<std::array<GLfloat, 3>> allVertexNormals;
+        unsigned int meshVertexCount = currentMesh->mNumVertices;
+        std::vector<std::array<GLfloat, 3>> allVertexPos;
+        std::vector<std::array<GLfloat, 4>> allVertexColors;
+        std::vector<std::array<GLfloat, 2>> allVertexTexCoord;
+        std::vector<std::array<GLfloat, 3>> allVertexNormals;
 
-      if(currentMesh->HasPositions()){
-        for(unsigned int v = 0; v < meshVertexCount; v++){
-          allVertexPos.push_back(
-          { currentMesh->mVertices[v].x,
-            currentMesh->mVertices[v].y,
-            currentMesh->mVertices[v].z }
-          );
+        if(currentMesh->HasPositions()){
+          for(unsigned int v = 0; v < meshVertexCount; v++){
+            allVertexPos.push_back(
+            { currentMesh->mVertices[v].x,
+              currentMesh->mVertices[v].y,
+              currentMesh->mVertices[v].z }
+            );
+          }
+        } else {
+          std::cerr << "No vertex positions present" << std::endl;
+          return -1;
         }
-      } else {
-        std::cerr << "No vertex positions present" << std::endl;
-        return -1;
-      }
 
-      if(currentMesh->HasVertexColors(0)){
-        for(unsigned int v = 0; v < meshVertexCount; v++){
-          allVertexColors.push_back(
-          { currentMesh->mColors[0][v].r,
-            currentMesh->mColors[0][v].g,
-            currentMesh->mColors[0][v].b,
-            currentMesh->mColors[0][v].a }
-          );
+        if(currentMesh->HasVertexColors(0)){
+          for(unsigned int v = 0; v < meshVertexCount; v++){
+            allVertexColors.push_back(
+            { currentMesh->mColors[0][v].r,
+              currentMesh->mColors[0][v].g,
+              currentMesh->mColors[0][v].b,
+              currentMesh->mColors[0][v].a }
+            );
+          }
+          Model.renderParams[ShaderCtrlBit::color] = 0;
+        } else {
+          std::cout << "No vertex colors present, proceeding to generate at random..." << std::endl;
+          srand(time(NULL));
+          GLfloat randomColor_R, randomColor_G, randomColor_B;
+          for(unsigned int c = 0; c < meshVertexCount; c++){
+            randomColor_R = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
+            randomColor_G = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
+            randomColor_B = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
+            allVertexColors.push_back( { randomColor_R, randomColor_G, randomColor_B, 0.5f } );
+          }
+          Model.renderParams[ShaderCtrlBit::color] = 0;
         }
-        Model.renderParams[ShaderCtrlBit::color] = 0;
-      } else {
-        std::cout << "No vertex colors present, proceeding to generate at random..." << std::endl;
-        srand(time(NULL));
-        GLfloat randomColor_R, randomColor_G, randomColor_B;
-        for(unsigned int c = 0; c < meshVertexCount; c++){
-          randomColor_R = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
-          randomColor_G = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
-          randomColor_B = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
-          allVertexColors.push_back( { randomColor_R, randomColor_G, randomColor_B, 0.5f } );
-         }
-        Model.renderParams[ShaderCtrlBit::color] = 0;
-      }
 
-      if(currentMesh->HasTextureCoords(0)){
-        for(unsigned int v = 0; v < meshVertexCount; v++){
-          allVertexTexCoord.push_back(
-          { currentMesh->mTextureCoords[0][v].x,
-            currentMesh->mTextureCoords[0][v].y }
-          );
+        if(currentMesh->HasTextureCoords(0)){
+          for(unsigned int v = 0; v < meshVertexCount; v++){
+            allVertexTexCoord.push_back(
+            { currentMesh->mTextureCoords[0][v].x,
+              currentMesh->mTextureCoords[0][v].y }
+            );
+          }
+          Model.renderParams[ShaderCtrlBit::texCoord] = 0;
+        } else {
+          std::cout << "No texture coordinates present" << std::endl;
+          Model.renderParams[ShaderCtrlBit::texCoord] = 1;
         }
-        Model.renderParams[ShaderCtrlBit::texCoord] = 0;
-      } else {
-        std::cout << "No texture coordinates present" << std::endl;
-        Model.renderParams[ShaderCtrlBit::texCoord] = 1;
-      }
 
-      if(currentMesh->HasNormals()){
-        for(unsigned int v = 0; v < meshVertexCount; v++){
-          allVertexNormals.push_back(
-          { currentMesh->mNormals[v].x,
-            currentMesh->mNormals[v].y,
-            currentMesh->mNormals[v].z }
-          );
+        if(currentMesh->HasNormals()){
+          for(unsigned int v = 0; v < meshVertexCount; v++){
+            allVertexNormals.push_back(
+            { currentMesh->mNormals[v].x,
+              currentMesh->mNormals[v].y,
+              currentMesh->mNormals[v].z }
+            );
+          }
+        } else {
+          std::cerr << "No vertex normals present" << std::endl;
+          return -1;
         }
-      } else {
-        std::cerr << "No vertex normals present" << std::endl;
-        return -1;
+
+        for(unsigned int i = 0; i < meshVertexCount; i++) Model.modelMeshes.push_back(
+          { allVertexPos.at(i), allVertexColors.at(i), allVertexTexCoord.at(i), allVertexNormals.at(i) }
+        );
+
+        Model.VertexArray = loadModelData(&Model);
+        Model.renderParams[ShaderCtrlBit::drawable] = 0;
+        MPerComponent->push_back(Model);
       }
-
-      for(unsigned int i = 0; i < meshVertexCount; i++) Model.modelMeshes.push_back(
-        { allVertexPos.at(i), allVertexColors.at(i), allVertexTexCoord.at(i), allVertexNormals.at(i) }
-      );
-
-      Model.VertexArray = loadModelData(&Model);
+    } else {
+      Model.VertexArray = 0;
+      Model.renderParams[ShaderCtrlBit::drawable] = 1;
       MPerComponent->push_back(Model);
     }
   }
