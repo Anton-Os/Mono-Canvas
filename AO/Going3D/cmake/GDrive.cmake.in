@@ -12,8 +12,10 @@ list(APPEND GDRIVE_URLS
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzMkU0Qk5CVS1ELVU"
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8Zzc0dNSjlRbThQaFU"
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzdUVvOXk4XzlWNTg"
+    # "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzY0RqaWRDejdIS1k"
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzY0RqaWRDejdIS1k"
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzUDhMOUp3cXF4MkE"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzWjAxTElSSWtyY3c"
 )
 
 list(APPEND GDRIVE_NAMES
@@ -25,8 +27,10 @@ list(APPEND GDRIVE_NAMES
     "nut.fbx"
     "BrushedSteel.ktx"
     "ScratchedSteel.ktx"
+    # "LowPolyMill.fbx"
     "LowPolyMill.fbx"
     "LowPolyMill.obj"
+    "LowPolyMill.dae"
 )
 
 foreach(currentFile ${GDRIVE_NAMES})

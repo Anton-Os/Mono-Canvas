@@ -408,7 +408,8 @@ int assimpImportCPP(const std::string &pFile, std::vector<ModelComposite>* MPerC
         aiProcess_Triangulate            |
         aiProcess_JoinIdenticalVertices  |
         aiProcess_SortByPType |
-        aiProcess_GenNormals
+        aiProcess_GenNormals |
+        aiProcess_PreTransformVertices
   );
 
   if(!scene) {

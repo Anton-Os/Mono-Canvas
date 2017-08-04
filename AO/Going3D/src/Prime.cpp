@@ -105,13 +105,13 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_P && action == GLFW_PRESS) Key::P = true;
 
 	if (key == GLFW_KEY_1 && action == GLFW_PRESS) 
-	noBlocks_Uniforms.defaultColor = { 0.5f, 0.5f, 0.5f, 0.4f };
+	noBlocks_Uniforms.defaultColor = { 0.5f, 0.5f, 0.5f, 0.7f };
 	if (key == GLFW_KEY_2 && action == GLFW_PRESS)
-	noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.4f };
+	noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.7f };
 	if (key == GLFW_KEY_3 && action == GLFW_PRESS)
-	noBlocks_Uniforms.defaultColor = { 0.2588f, 0.5254f, 0.9568f, 0.4f };
+	noBlocks_Uniforms.defaultColor = { 0.2588f, 0.5254f, 0.9568f, 0.7f };
 	if(key == GLFW_KEY_4 && action == GLFW_PRESS)
-	noBlocks_Uniforms.defaultColor = { 0.3372f, 0.749f, 0.4862f, 0.4f }; 
+	noBlocks_Uniforms.defaultColor = { 0.3372f, 0.749f, 0.4862f, 0.7f }; 
 
 	if (key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
 	if (key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
@@ -187,8 +187,8 @@ int main(int argc, char** argv){
 	// ModelStatic Nut;
     std::vector<ModelComposite> MPerComponent;
 	std::string Nut_filePath = parentDir + "\\data\\nut.fbx";
-    // std::string LowPolyMill_filePath = parentDir + "\\data\\LowPolyMill.fbx";
-    std::string LowPolyMill_filePath = parentDir + "\\data\\LowPolyMill.obj";
+    std::string LowPolyMill_filePath = parentDir + "\\data\\LowPolyMill.fbx";
+    // std::string LowPolyMill_filePath = parentDir + "\\data\\LowPolyMill.obj";
 
     // assimpImportCPP(Nut_filePath, &Nut);
     assimpImportCPP(LowPolyMill_filePath, &MPerComponent);
