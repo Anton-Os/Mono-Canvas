@@ -191,13 +191,6 @@ int iterateNodes(const aiScene* scene, std::vector<ModelComposite>* MPerComponen
         relativePos.a3, relativePos.b3, relativePos.c3, relativePos.d3,
         relativePos.a4, relativePos.b4, relativePos.c4, relativePos.d4 }
     );
-    /* GLfloat mFactor = 0.12f;
-    Model.relativePos = glm::mat4(
-        { relativePos.a1, relativePos.b1, relativePos.c1, relativePos.d1,
-        relativePos.a2, relativePos.b2, relativePos.c2, relativePos.d2,
-        relativePos.a3, relativePos.b3, relativePos.c3, relativePos.d3,
-        relativePos.a4 * mFactor, relativePos.b4 * mFactor, relativePos.c4 * mFactor, relativePos.d4 * mFactor }
-    ); */
     
     if(nodeMeshCount > 0){
       for(unsigned int m = 0; m < nodeMeshCount; m++){

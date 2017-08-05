@@ -51,8 +51,6 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
     # get_target_property(freeglut_ImportLoc freeglut_static IMPORTED_LOCATION_DEBUG)
 
     add_subdirectory("AO/Going3D")
-    add_subdirectory("AO/Dimentions")
-    add_subdirectory("AO/Triangles_Basis")
     if(Vulkan_FOUND)
         add_subdirectory("AO/VEruption")
     endif()

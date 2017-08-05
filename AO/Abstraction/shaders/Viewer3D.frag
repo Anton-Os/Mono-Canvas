@@ -12,5 +12,7 @@ layout (std140, binding = 1) uniform fragmentBlock {
 layout(location = 0) out vec4 output_frag;
 
 void main(){
-    output_frag = color;
+    if(surfaceRenderMode == 0){
+        output_frag = vec4(0.9607, 0.6862, 0, 0.8);
+    }
 }

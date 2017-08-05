@@ -128,9 +128,9 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_L && action == GLFW_RELEASE) Key::L = false;
 	if (key == GLFW_KEY_P && action == GLFW_RELEASE) Key::P = false;
 
-	if(Key::W){	camMovement.z += 1.0f; }
+	if(Key::W){	camMovement.z += 3.0f; }
 	if(Key::A){ camMovement.x += 1.0f; }
-	if(Key::S){ camMovement.z -= 1.0f; }
+	if(Key::S){ camMovement.z -= 3.0f; }
 	if(Key::D){ camMovement.x -= 1.0f; }
 	if(Key::Q){ camMovement.y -= 1.0f; }
 	if(Key::E){ camMovement.y += 1.0f; }
@@ -183,31 +183,43 @@ int main(int argc, char** argv){
 	GLuint brushedSteel = createTexture(brushedSteel_filePath.c_str());
 	std::string scratchedSteel_filePath = parentDir + "\\data\\ScratchedSteel.ktx";
 	GLuint scratchedSteel = createTexture(scratchedSteel_filePath.c_str());
+	std::string limeStone_filePath = parentDir + "\\data\\LimeStone.ktx";
+	GLuint limeStone = createTexture(limeStone_filePath.c_str());
+	std::string sevenGrass_filePath = parentDir + "\\data\\SevenGrass.ktx";
+	GLuint sevenGrass = createTexture(sevenGrass_filePath.c_str());
+	std::string treeBark_filePath = parentDir + "\\data\\TreeBark.ktx";
+	GLuint treeBark = createTexture(treeBark_filePath.c_str());
+	std::string youngLeaves_filePath = parentDir + "\\data\\YoungLeaves.ktx";
+	GLuint youngLeaves = createTexture(youngLeaves_filePath.c_str());
+	std::string lightWood_filePath = parentDir + "\\data\\LightWood.ktx";
+	GLuint lightWood = createTexture(lightWood_filePath.c_str());
+	std::string medWood_filePath = parentDir + "\\data\\MedWood.ktx";
+	GLuint medWood = createTexture(medWood_filePath.c_str());
+	std::string woodPlanks_filePath = parentDir + "\\data\\WoodPlanks.ktx";
+	GLuint woodPlanks = createTexture(woodPlanks_filePath.c_str());
 
-	// ModelStatic Nut;
+	std::array<GLuint, 8> textureOrder = 
+	{ 0, 0, youngLeaves, treeBark, sevenGrass, medWood, limeStone, lightWood };
+
     std::vector<ModelComposite> MPerComponent;
 	std::string Nut_filePath = parentDir + "\\data\\nut.fbx";
     std::string LowPolyMill_filePath = parentDir + "\\data\\LowPolyMill.fbx";
-    // std::string LowPolyMill_filePath = parentDir + "\\data\\LowPolyMill.obj";
 
-    // assimpImportCPP(Nut_filePath, &Nut);
     assimpImportCPP(LowPolyMill_filePath, &MPerComponent);
 
 	glUseProgram(noBlocks_glsl);
 
 	noBlocks_Uniforms.worldMatrix = perspectiveMatrix;
 	noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.8f };
-    noBlocks_Uniforms.surfaceRenderMode = 1;
+    noBlocks_Uniforms.surfaceRenderMode = 3;
 
 	NoBlocks noBlocksUtil(noBlocks_glsl);
     noBlocksUtil.setUniforms(&noBlocks_Uniforms);
 
-	glBindTextureUnit(0, scratchedSteel);
-
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
         // glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// noBlocksUtil.localMatrix(&noBlocks_Uniforms);
@@ -216,12 +228,11 @@ int main(int argc, char** argv){
 		noBlocksUtil.defaultColor(&noBlocks_Uniforms);
 
         for(unsigned int d = 0; d < MPerComponent.size(); d++){
-            noBlocks_Uniforms.localMatrix = MPerComponent.at(d).relativePos;
-            noBlocksUtil.localMatrix(&noBlocks_Uniforms);
-            if(MPerComponent.at(d).renderParams[ShaderCtrlBit::drawable] == 0){
-                glBindVertexArray(MPerComponent.at(d).VertexArray);
+            glBindVertexArray(MPerComponent.at(d).VertexArray);
+			// glBindTextureUnit(0, MPerComponent.at(d).currentTexture);
+			glBindTextureUnit(0, textureOrder[d]);
+            if(MPerComponent.at(d).renderParams[ShaderCtrlBit::drawable] == 0);
                 glDrawElements(GL_TRIANGLES, MPerComponent.at(d).modelIndices.size(), GL_UNSIGNED_INT, 0);
-            }
 		}
         glBindVertexArray(0);
 		glfwSwapBuffers(window);

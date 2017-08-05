@@ -12,10 +12,16 @@ list(APPEND GDRIVE_URLS
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzMkU0Qk5CVS1ELVU"
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8Zzc0dNSjlRbThQaFU"
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzdUVvOXk4XzlWNTg"
-    # "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzY0RqaWRDejdIS1k"
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzY0RqaWRDejdIS1k"
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzUDhMOUp3cXF4MkE"
-    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzWjAxTElSSWtyY3c"
+
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzaWpjVEJEQ2ZEOEE"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzaWNjemIwRzMzQjA"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8Zza2diQlVuZ0lURUU"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzdjJmM25vNloxNlk"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzejFPOGhNUnppa3c"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzOWNnS3d4Z0JsWGs"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzUy04amxDSnpTZWs"
 )
 
 list(APPEND GDRIVE_NAMES
@@ -27,10 +33,16 @@ list(APPEND GDRIVE_NAMES
     "nut.fbx"
     "BrushedSteel.ktx"
     "ScratchedSteel.ktx"
-    # "LowPolyMill.fbx"
     "LowPolyMill.fbx"
     "LowPolyMill.obj"
-    "LowPolyMill.dae"
+    
+    "LimeStone.ktx"
+    "SevenGrass.ktx"
+    "TreeBark.ktx"
+    "YoungLeaves.ktx"
+    "LightWood.ktx"
+    "MedWood.ktx"
+    "WoodPlanks.ktx"
 )
 
 foreach(currentFile ${GDRIVE_NAMES})

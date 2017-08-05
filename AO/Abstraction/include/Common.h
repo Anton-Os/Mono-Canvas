@@ -14,7 +14,6 @@
 // From LoadShaders.cpp
 
 GLchar* readShaderFile(const char* nameOfShader);
-GLuint compileShaders(const std::string& rootpath, const char* vertexShaderBaseName, const char* fragmentShaderBaseName);
 GLuint compileShaders(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath);
 
 // From LoadTextures.cpp
@@ -64,12 +63,8 @@ struct ModelComposite {
     std::bitset<3> renderParams;
 };
 
-int assimpImportCPP(const std::string& pFile);
-int assimpImportCPP(const std::string& pFile, ModelStatic* Model);
+GLuint loadModelData(ModelComposite* Model);
 int assimpImportCPP(const std::string &pFile, std::vector<ModelComposite>* MPerComponent);
-
-int loadModelData(std::vector<Point> dataToLoad, std::vector<GLuint> dataIndices);
-GLuint loadModelData(ModelStatic* Model);
 
 // From ShaderCtrl.cpp
 
