@@ -1,5 +1,6 @@
 
 #include "Common.h"
+#include "Abstraction.h"
 
 #include <GLFW/glfw3.h>
 
@@ -88,7 +89,7 @@ int main(int argc, char** argv){
     std::string noBlocks_frag = parentDir + "\\shaders\\LitBlocks.frag";
     GLuint noBlocks_glsl = compileShaders(noBlocks_vert, noBlocks_frag);
 
-    std::vector<ModelComposite> MPerComponent;
+    std::vector<AssimpComposite> MPerComponent;
     std::string LowPolyMill_filePath = parentDir + "\\data\\LowPolyMill.fbx";
 
     assimpImportCPP(LowPolyMill_filePath, &MPerComponent);
@@ -110,12 +111,10 @@ int main(int argc, char** argv){
 
 		noBlocks_Uniforms.worldMatrix = glm::translate(perspectiveMatrix, camMovement);
 
-        for(unsigned int d = 0; d < MPerComponent.size(); d++){
-            glBindVertexArray(MPerComponent.at(d).VertexArray);
-			glBindTextureUnit(0, textureOrder[d]);
-            if(MPerComponent.at(d).renderParams[ShaderCtrlBit::drawable] == 0)
+        /* for(unsigned int d = 0; d < MPerComponent.size(); d++){
+			if(MPerComponent.at(d).renderParams[ShaderCtrlBit::drawable] == 0)
                 glDrawElements(GL_TRIANGLES, MPerComponent.at(d).modelIndices.size(), GL_UNSIGNED_INT, 0);
-		}
+		} */
         glBindVertexArray(0);
 		glfwSwapBuffers(window);
 	}

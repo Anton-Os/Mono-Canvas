@@ -1,16 +1,16 @@
-add_executable(AssimpModels
+add_executable(Abstraction
     src/LoadTextures.cpp
     src/LoadShaders.cpp
-    src/Model3D.cpp
+    revision/Model3D.cpp
     src/NoBlocks.cpp
-    src/Prime.cpp
+    revision/Prime.cpp
 )
 
-target_include_directories(AssimpModels
+target_include_directories(Abstraction
     PUBLIC include
 )
 
-target_link_libraries(AssimpModels
+target_link_libraries(Abstraction
     GLEW::glew_s
     glfw
     gli
@@ -35,12 +35,12 @@ foreach(current_shader "NoBlocks.vert" "NoBlocks.frag"
     list(APPEND OUTPUT_SHADER_LIST "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}")
     list(APPEND SRC_SHADER_LIST "${CMAKE_CURRENT_SOURCE_DIR}/shaders/${current_shader}")
 endforeach(current_shader)
-add_custom_target(MonoShaders
+add_custom_target(RevShaders
     SOURCES ${SRC_SHADER_LIST}
     DEPENDS ${OUTPUT_SHADER_LIST}
 )
 
-add_dependencies(AssimpModels MonoShaders)
+add_dependencies(Abstraction RevShaders)
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake.in" 
                "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"

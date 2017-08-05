@@ -48,7 +48,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake.in"
                "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
                 @ONLY
 )
-add_custom_target(GDrive ALL 
+#[[ add_custom_target(GDrive ALL 
     ${CMAKE_COMMAND} -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
     DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
-)
+) #]]
