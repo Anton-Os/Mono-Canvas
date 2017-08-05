@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include <array>
+#include <vector>
 #include <bitset>
 
 #include <GL/glew.h>
@@ -20,43 +21,6 @@ GLuint compileShaders(const std::string& vertexShaderFilePath, const std::string
 
 GLuint createTexture(const char* filePath);
 GLuint textureCheck(GLuint texture, std::string pathToFile);
-
-// From Model3D.cpp
-
-#include <vector>
-
-#include <assimp/cimport.h>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
-struct Point {
-    std::array<GLfloat, 3> pos;
-    std::array<GLfloat, 4> color;
-    std::array<GLfloat, 2> texCoord;
-    std::array<GLfloat, 3> normal;
-};
-
-namespace ShaderCtrlBit {
-    enum ShaderCtrlBit {
-        color,
-        texCoord,
-        drawable
-    };
-};
-
-struct ModelComposite {
-    GLuint VertexArray;
-    GLuint currentTexture;
-    std::vector<Point> modelMeshes;
-    std::vector<GLuint> modelIndices;
-    glm::mat4 relativePos;
-
-    std::bitset<3> renderParams;
-};
-
-GLuint loadModelData(ModelComposite* Model);
-int assimpImportCPP(const std::string &pFile, std::vector<ModelComposite>* MPerComponent);
 
 // From NoBlocks.cpp
 

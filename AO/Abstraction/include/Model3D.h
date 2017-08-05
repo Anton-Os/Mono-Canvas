@@ -1,5 +1,3 @@
-#include <vector>
-
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -29,3 +27,13 @@ struct AssimpComposite {
 };
 
 int assimpImportCPP(const std::string &pFile, std::vector<AssimpComposite>* MPerComponent);
+
+// From ProcessData.cpp
+
+namespace CONTEXT {
+    enum CONTEXT {
+        Default
+    };
+};
+
+int processData(std::vector<AssimpComposite>* MPerComponent, enum CONTEXT::CONTEXT);
