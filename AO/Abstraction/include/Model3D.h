@@ -30,10 +30,14 @@ int assimpImportCPP(const std::string &pFile, std::vector<AssimpComposite>* MPer
 
 // From ProcessData.cpp
 
-namespace CONTEXT {
-    enum CONTEXT {
-        Default
-    };
+class CrossContext {
+public:
+    CrossContext(std::vector<AssimpComposite>* MPerComponentParam){
+        MPerComponent = MPerComponentParam;
+    }
+    void processData();
+    void draw();
+private:
+    std::vector<AssimpComposite>* MPerComponent;
+    std::vector<GLuint> vertexArray;
 };
-
-int processData(std::vector<AssimpComposite>* MPerComponent, enum CONTEXT::CONTEXT);
