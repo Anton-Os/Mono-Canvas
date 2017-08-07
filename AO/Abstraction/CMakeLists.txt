@@ -1,7 +1,8 @@
 add_executable(Abstraction
     src/LoadTextures.cpp
     src/LoadShaders.cpp
-    revision/Model3D.cpp
+    src/Model3D.cpp
+    revision/AssimpModel.cpp
     src/NoBlocks.cpp
     revision/CrossContext.cpp
     revision/Prime.cpp
@@ -23,7 +24,9 @@ target_link_libraries(Abstraction
 
 set(SRC_SHADER_LIST)
 set(OUTPUT_SHADER_LIST)
-foreach(current_shader "NoBlocks.vert" "NoBlocks.frag"
+foreach(current_shader "Viewer3D.vert" "Viewer3D.frag"
+                       "LitEnv.vert" "LitEnv.frag"
+                       "NoBlocks.vert" "NoBlocks.frag"
                        "LitBlocks.vert" "LitBlocks.frag"
 )
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}"
@@ -36,12 +39,12 @@ foreach(current_shader "NoBlocks.vert" "NoBlocks.frag"
     list(APPEND OUTPUT_SHADER_LIST "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}")
     list(APPEND SRC_SHADER_LIST "${CMAKE_CURRENT_SOURCE_DIR}/shaders/${current_shader}")
 endforeach(current_shader)
-add_custom_target(RevShaders
+add_custom_target(AbsShaders
     SOURCES ${SRC_SHADER_LIST}
     DEPENDS ${OUTPUT_SHADER_LIST}
 )
 
-add_dependencies(Abstraction RevShaders)
+add_dependencies(AssimpModels AbsShaders)
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake.in" 
                "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"

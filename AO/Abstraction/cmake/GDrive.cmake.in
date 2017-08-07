@@ -4,11 +4,45 @@ set(GDRIVE_URLS)
 set(GDRIVE_NAMES)
 
 list(APPEND GDRIVE_URLS
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzS2RZdjhJZDgwMlU"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzZXhGNVo1ZnVHZnM"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzQmIteWNwV0JOWlE"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzcnNpZXRKdm9MUUU"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzaEZ0UkgxUnF2bFk"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzMkU0Qk5CVS1ELVU"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8Zzc0dNSjlRbThQaFU"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzdUVvOXk4XzlWNTg"
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzY0RqaWRDejdIS1k"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzUDhMOUp3cXF4MkE"
+
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzaWpjVEJEQ2ZEOEE"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzaWNjemIwRzMzQjA"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8Zza2diQlVuZ0lURUU"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzdjJmM25vNloxNlk"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzejFPOGhNUnppa3c"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzOWNnS3d4Z0JsWGs"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzUy04amxDSnpTZWs"
 )
 
 list(APPEND GDRIVE_NAMES
+    "Sponge.obj"
+    "Illusions.KTX"
+    "Rock1.obj"
+    "Rock1.dae"
+    "nut.obj"
+    "nut.fbx"
+    "BrushedSteel.ktx"
+    "ScratchedSteel.ktx"
     "LowPolyMill.fbx"
+    "LowPolyMill.obj"
+    
+    "LimeStone.ktx"
+    "SevenGrass.ktx"
+    "TreeBark.ktx"
+    "YoungLeaves.ktx"
+    "LightWood.ktx"
+    "MedWood.ktx"
+    "WoodPlanks.ktx"
 )
 
 foreach(currentFile ${GDRIVE_NAMES})

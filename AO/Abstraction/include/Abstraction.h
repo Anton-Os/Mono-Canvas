@@ -37,7 +37,9 @@ public:
     }
     void processData();
     void draw();
+    void draw(std::vector<ModelComposite>* MPerComponentParam);
 private:
     std::vector<AssimpComposite>* MPerComponent;
     std::vector<GLuint> vertexArray;
+    GLuint processOpenGL(AssimpComposite* ModelComponent);
 };

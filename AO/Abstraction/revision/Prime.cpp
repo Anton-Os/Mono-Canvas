@@ -1,6 +1,6 @@
 
 #include "Common.h"
-#include "Model3D.h"
+#include "Abstraction.h"
 
 #include <GLFW/glfw3.h>
 
@@ -20,8 +20,10 @@ namespace Key {
 	GLboolean W, A, S, D, Q, E, H, U, J, I, K, O, L, P = false;
 }
 
+// Variable definitions that do not pertain to noBlocks_Uniforms must be set here
+// noBlocks_uniforms will refer to variables set by keyboard/mouse events
+
 glm::vec3 camMovement = glm::vec3(0.0, 0.0, -100.0f);
-glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.f);
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (key == GLFW_KEY_W && action == GLFW_PRESS) Key::W = true;
@@ -38,12 +40,12 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_Q && action == GLFW_RELEASE) Key::Q = false;
 	if (key == GLFW_KEY_E && action == GLFW_RELEASE) Key::E = false;
 
-	if(Key::W) camMovement.z += 3.0f; 
-	if(Key::A) camMovement.x += 1.0f; 
-	if(Key::S) camMovement.z -= 3.0f; 
-	if(Key::D) camMovement.x -= 1.0f; 
-	if(Key::Q) camMovement.y -= 1.0f; 
-	if(Key::E) camMovement.y += 1.0f; 
+	if(Key::W){	camMovement.z += 3.0f; }
+	if(Key::A){ camMovement.x += 1.0f; }
+	if(Key::S){ camMovement.z -= 3.0f; }
+	if(Key::D){ camMovement.x -= 1.0f; }
+	if(Key::Q){ camMovement.y -= 1.0f; }
+	if(Key::E){ camMovement.y += 1.0f; }
 }
 
 int main(int argc, char** argv){
@@ -89,17 +91,21 @@ int main(int argc, char** argv){
     std::string noBlocks_frag = parentDir + "\\shaders\\LitBlocks.frag";
     GLuint noBlocks_glsl = compileShaders(noBlocks_vert, noBlocks_frag);
 
-    std::vector<AssimpComposite> MPerComponent;
+    std::vector<ModelComposite> MPerComponent;
+	std::vector<AssimpComposite> APerComponent;
     std::string LowPolyMill_filePath = parentDir + "\\data\\LowPolyMill.fbx";
 
     assimpImportCPP(LowPolyMill_filePath, &MPerComponent);
+	assimpImportCPP(LowPolyMill_filePath, &APerComponent);
+
+	CrossContext crossContextUtil(&APerComponent);
+	crossContextUtil.processData();
 
 	glUseProgram(noBlocks_glsl);
 
 	noBlocks_UniformData noBlocks_Uniforms;
+	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.f);
 	noBlocks_Uniforms.worldMatrix = perspectiveMatrix;
-	noBlocks_Uniforms.defaultColor = { 0.9607f, 0.6862f, 0.0f, 0.8f };
-    noBlocks_Uniforms.surfaceRenderMode = 0;
 
 	NoBlocks noBlocksUtil(noBlocks_glsl);
     noBlocksUtil.setUniforms(&noBlocks_Uniforms);
@@ -110,11 +116,17 @@ int main(int argc, char** argv){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		noBlocks_Uniforms.worldMatrix = glm::translate(perspectiveMatrix, camMovement);
+		noBlocksUtil.worldMatrix(&noBlocks_Uniforms);
 
         /* for(unsigned int d = 0; d < MPerComponent.size(); d++){
-			if(MPerComponent.at(d).renderParams[ShaderCtrlBit::drawable] == 0)
+            glBindVertexArray(MPerComponent.at(d).VertexArray);
+            if(MPerComponent.at(d).renderParams[ShaderCtrlBit::drawable] == 0);
                 glDrawElements(GL_TRIANGLES, MPerComponent.at(d).modelIndices.size(), GL_UNSIGNED_INT, 0);
 		} */
+
+		// crossContextUtil.draw(&MPerComponent);
+		crossContextUtil.draw();
+
         glBindVertexArray(0);
 		glfwSwapBuffers(window);
 	}

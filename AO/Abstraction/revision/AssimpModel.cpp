@@ -1,5 +1,5 @@
 #include "Common.h"
-#include "Model3D.h"
+#include "Abstraction.h"
 #include <stack>
 // #include "Assimp.h"
 
@@ -21,7 +21,7 @@ int iterateNodes(const aiScene* scene, std::vector<AssimpComposite>* MPerCompone
     unsigned int nodeMeshCount = currentNode->mNumMeshes;
     aiMatrix4x4 relTransform = currentNode->mTransformation;
     
-    for(aiNode* nextParent = currentNode->mParent; NULL != nextParent; nextParent = nextParent->mParent)
+    for(aiNode* nextParent = currentNode->mParent; nullptr != nextParent; nextParent = nextParent->mParent)
     relTransform *= nextParent->mTransformation;
 
     AssimpComposite meshComponent;
@@ -35,10 +35,10 @@ int iterateNodes(const aiScene* scene, std::vector<AssimpComposite>* MPerCompone
             meshComponent.faceIndex.push_back(currentFace->mIndices[i]);
         
         if(! currentMesh->HasPositions()) return -1;
-        if( currentMesh->HasVertexColors(0)) meshComponent.renderParams[ImportCtrl::color] = 1;
-        else meshComponent.renderParams[ImportCtrl::color] = 0;
-        if( currentMesh->HasTextureCoords(0)) meshComponent.renderParams[ImportCtrl::texCoord] = 1;
-        else meshComponent.renderParams[ImportCtrl::texCoord] = 0;
+        if( currentMesh->HasVertexColors(0)) meshComponent.renderParams[ImportCtrl::color] = true;
+        else meshComponent.renderParams[ImportCtrl::color] = false;
+        if( currentMesh->HasTextureCoords(0)) meshComponent.renderParams[ImportCtrl::texCoord] = true;
+        else meshComponent.renderParams[ImportCtrl::texCoord] = false;
         if(! currentMesh->HasNormals()) return -2;
 
         for(unsigned int m = 0; m < currentMesh->mNumVertices; m++){
@@ -52,10 +52,11 @@ int iterateNodes(const aiScene* scene, std::vector<AssimpComposite>* MPerCompone
           meshComponent.modelMeshes.push_back(currentBlock);
         }
       } 
-      meshComponent.renderParams[ImportCtrl::drawable] = 1;
+      meshComponent.renderParams[ImportCtrl::drawable] = true;
+      std::cout << "renderParams are set to " << meshComponent.renderParams << std::endl;
     } else {
-      meshComponent.renderParams.set(0);
-      std::cout << "renderParams are set to" << meshComponent.renderParams;
+      meshComponent.renderParams[ImportCtrl::drawable] = false;
+      std::cout << "renderParams are set to " << meshComponent.renderParams << std::endl;
     }
     meshComponent.relTransform = relTransform;
     MPerComponent->push_back(meshComponent);

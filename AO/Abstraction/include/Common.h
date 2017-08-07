@@ -6,7 +6,6 @@
 #include <string>
 #include <iostream>
 #include <array>
-#include <vector>
 #include <bitset>
 
 #include <GL/glew.h>
@@ -15,6 +14,7 @@
 // From LoadShaders.cpp
 
 GLchar* readShaderFile(const char* nameOfShader);
+GLuint compileShaders(const std::string& rootpath, const char* vertexShaderBaseName, const char* fragmentShaderBaseName);
 GLuint compileShaders(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath);
 
 // From LoadTextures.cpp
@@ -22,7 +22,56 @@ GLuint compileShaders(const std::string& vertexShaderFilePath, const std::string
 GLuint createTexture(const char* filePath);
 GLuint textureCheck(GLuint texture, std::string pathToFile);
 
-// From NoBlocks.cpp
+// From Model3D.cpp
+
+#include <vector>
+
+#include <assimp/cimport.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
+struct Point {
+    std::array<GLfloat, 3> pos;
+    std::array<GLfloat, 4> color;
+    std::array<GLfloat, 2> texCoord;
+    std::array<GLfloat, 3> normal;
+};
+
+namespace ShaderCtrlBit {
+    enum ShaderCtrlBit {
+        color,
+        texCoord,
+        drawable
+    };
+};
+
+struct ModelStatic {
+    GLuint VertexArray;
+    std::vector<Point> modelMeshes;
+    std::vector<GLuint> modelIndices;
+
+    std::bitset<3> renderParams;
+};
+
+struct ModelComposite {
+    GLuint VertexArray;
+    GLuint currentTexture;
+    std::vector<Point> modelMeshes;
+    std::vector<GLuint> modelIndices;
+    glm::mat4 relativePos;
+
+    std::bitset<3> renderParams;
+};
+
+int assimpImportCPP(const std::string& pFile);
+int assimpImportCPP(const std::string& pFile, ModelStatic* Model);
+int assimpImportCPP(const std::string &pFile, std::vector<ModelComposite>* MPerComponent);
+
+int loadModelData(std::vector<Point> dataToLoad, std::vector<GLuint> dataIndices);
+GLuint loadModelData(ModelStatic* Model);
+
+// From ShaderCtrl.cpp
 
 struct noBlocks_UniformData {
     glm::mat4 worldMatrix;
@@ -32,12 +81,16 @@ struct noBlocks_UniformData {
     GLuint surfaceRenderMode;
 };
 
+
 GLint noBlocks_worldMatrix(GLuint shaderProgID, noBlocks_UniformData* noBlocks_Uniforms);
 GLint noBlocks_localMatrix(GLuint shaderProgID, noBlocks_UniformData* noBlocks_Uniforms);
 GLint noBlocks_defaultColor(GLuint shaderProgID, noBlocks_UniformData* noBlocks_Uniforms);
 GLint noBlocks_surfaceRenderMode(GLuint shaderProgID, noBlocks_UniformData* noBlocks_Uniforms);
 
 int noBlocks_setUniforms(GLuint shaderProgID, noBlocks_UniformData* noBlocks_Uniforms);
+int noBlocks_setUniforms(GLuint shaderProgID, noBlocks_UniformData* noBlocks_Uniforms, ModelStatic* Model);
+
+// From NoBlocks.cpp
 
 namespace UniformIndex {
     enum UniformIndex {
@@ -59,6 +112,7 @@ public:
     void surfaceRenderMode(noBlocks_UniformData* noBlocks_Uniforms);
     
     void setUniforms(noBlocks_UniformData* noBlocks_Uniforms);
+    void setUniforms(noBlocks_UniformData* noBlocks_Uniforms, ModelStatic* Model);
 private:
     GLuint shaderProgID;
     std::vector<GLint> uniformLocation;
