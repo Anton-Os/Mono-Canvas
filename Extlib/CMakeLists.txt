@@ -31,7 +31,6 @@ set(FREEGLUT_PROJECT_DIR "${ALL_PROJECT_DIR}/FreeGLUT")
 set(GLEW_PROJECT_DIR "${ALL_PROJECT_DIR}/GLEW")
 set(GLFW_PROJECT_DIR "${ALL_PROJECT_DIR}/GLFW")
 set(FLTK_PROJECT_DIR "${ALL_PROJECT_DIR}/FLTK")
-# set(GLAD_PROJECT_DIR "${ALL_PROJECT_DIR}/GLAD")
 set(FREEIMAGE_PROJECT_DIR "${ALL_PROJECT_DIR}/FreeImage")
 set(GLI_PROJECT_DIR "${ALL_PROJECT_DIR}/GLI")
 set(GLM_PROJECT_DIR "${ALL_PROJECT_DIR}/GLM")
@@ -43,7 +42,6 @@ set(SPIRVTOOLS_PROJECT_DIR "${ALL_PROJECT_DIR}/SPIRV_Tools")
 set(SPIRVHEADERS_PROJECT_DIR "${ALL_PROJECT_DIR}/SPIRV_Headers")
 set(SHADERC_PROJECT_DIR "${ALL_PROJECT_DIR}/ShaderC")
 set(EIGEN_PROJECT_DIR "${ALL_PROJECT_DIR}/Eigen")
-set(VULKAN_PROJECT_DIR "${ALL_PROJECT_DIR}/VulkanSDK")
 set(SQLITE_PROJECT_DIR "${ALL_PROJECT_DIR}/SQLite")
 
 set(UTILITIES_DIR "${CMAKE_BINARY_DIR}/Util")
@@ -176,57 +174,59 @@ ExternalProject_Add(FLTK
 
 list(APPEND EXTLIB_TARGETS FLTK)
 
-ExternalProject_Add(FreeImage
-    GIT_REPOSITORY "https://github.com/Kanma/FreeImage.git"
-    GIT_TAG "6bb613d9402926b3846dea1b417f20b6c596c5dc"
+if(NOT MSVC)
+    ExternalProject_Add(FreeImage
+        GIT_REPOSITORY "https://github.com/Kanma/FreeImage.git"
+        GIT_TAG "6bb613d9402926b3846dea1b417f20b6c596c5dc"
 
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
 
-    PATCH_COMMAND ${CMAKE_COMMAND} -E copy 
-       "${CMAKE_SOURCE_DIR}/patch/FreeImage/CMakeLists.txt"
-       "<SOURCE_DIR>/CMakeLists.txt"
-    COMMAND ${CMAKE_COMMAND} -E copy
-       "${CMAKE_SOURCE_DIR}/patch/FreeImage/LibMNG/CMakeLists.txt"
-       "<SOURCE_DIR>/LibMNG/CMakeLists.txt"
-    COMMAND ${CMAKE_COMMAND} -E copy
-       "${CMAKE_SOURCE_DIR}/patch/FreeImage/LibOpenJPEG/CMakeLists.txt"
-       "<SOURCE_DIR>/LibOpenJPEG/CMakeLists.txt"
-    COMMAND ${CMAKE_COMMAND} -E copy
-       "${CMAKE_SOURCE_DIR}/patch/FreeImage/LibPNG/CMakeLists.txt"
-       "<SOURCE_DIR>/LibPNG/CMakeLists.txt"
-    COMMAND ${CMAKE_COMMAND} -E copy
-       "${CMAKE_SOURCE_DIR}/patch/FreeImage/LibJPEG/CMakeLists.txt"
-       "<SOURCE_DIR>/LibJPEG/CMakeLists.txt"
-    COMMAND ${CMAKE_COMMAND} -E copy
-       "${CMAKE_SOURCE_DIR}/patch/FreeImage/LibRawLite/CMakeLists.txt"
-       "<SOURCE_DIR>/LibRawLite/CMakeLists.txt"
-    COMMAND ${CMAKE_COMMAND} -E copy
-       "${CMAKE_SOURCE_DIR}/patch/FreeImage/OpenEXR/CMakeLists.txt"
-       "<SOURCE_DIR>/OpenEXR/CMakeLists.txt"      
-    COMMAND ${CMAKE_COMMAND} -E copy
-       "${CMAKE_SOURCE_DIR}/patch/FreeImage/CompilerTypeFix.cmake"
-       "<SOURCE_DIR>/CompilerTypeFix.cmake"
-    COMMAND ${CMAKE_COMMAND} -E copy
-       "${CMAKE_SOURCE_DIR}/patch/FreeImage/dependencies/XMake/XMake.cmake"
-       "<SOURCE_DIR>/dependencies/XMake/XMake.cmake"      
-    COMMAND ${CMAKE_COMMAND} -E copy
-       "${CMAKE_SOURCE_DIR}/patch/FreeImage/freeimage-config.cmake"
-       "<SOURCE_DIR>/freeimage-config.cmake"   
-    COMMAND ${CMAKE_COMMAND} -E copy
-       "${CMAKE_SOURCE_DIR}/patch/FreeImage/FreeImage/PluginTIFF.cpp"
-       "<SOURCE_DIR>/FreeImage/PluginTIFF.cpp"   
-    COMMAND ${CMAKE_COMMAND} -E copy
-       "${CMAKE_SOURCE_DIR}/patch/FreeImage/LibTIFF/CMakeLists.txt"
-       "<SOURCE_DIR>/LibTIFF/CMakeLists.txt"
-    COMMAND ${CMAKE_COMMAND} -E copy
-       "${CMAKE_SOURCE_DIR}/patch/FreeImage/dependencies/zlib/CMakeLists.txt"
-       "<SOURCE_DIR>/dependencies/zlib/CMakeLists.txt"
+        PATCH_COMMAND ${CMAKE_COMMAND} -E copy 
+        "${CMAKE_SOURCE_DIR}/patch/FreeImage/CMakeLists.txt"
+        "<SOURCE_DIR>/CMakeLists.txt"
+        COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/FreeImage/LibMNG/CMakeLists.txt"
+        "<SOURCE_DIR>/LibMNG/CMakeLists.txt"
+        COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/FreeImage/LibOpenJPEG/CMakeLists.txt"
+        "<SOURCE_DIR>/LibOpenJPEG/CMakeLists.txt"
+        COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/FreeImage/LibPNG/CMakeLists.txt"
+        "<SOURCE_DIR>/LibPNG/CMakeLists.txt"
+        COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/FreeImage/LibJPEG/CMakeLists.txt"
+        "<SOURCE_DIR>/LibJPEG/CMakeLists.txt"
+        COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/FreeImage/LibRawLite/CMakeLists.txt"
+        "<SOURCE_DIR>/LibRawLite/CMakeLists.txt"
+        COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/FreeImage/OpenEXR/CMakeLists.txt"
+        "<SOURCE_DIR>/OpenEXR/CMakeLists.txt"      
+        COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/FreeImage/CompilerTypeFix.cmake"
+        "<SOURCE_DIR>/CompilerTypeFix.cmake"
+        COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/FreeImage/dependencies/XMake/XMake.cmake"
+        "<SOURCE_DIR>/dependencies/XMake/XMake.cmake"      
+        COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/FreeImage/freeimage-config.cmake"
+        "<SOURCE_DIR>/freeimage-config.cmake"   
+        COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/FreeImage/FreeImage/PluginTIFF.cpp"
+        "<SOURCE_DIR>/FreeImage/PluginTIFF.cpp"   
+        COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/FreeImage/LibTIFF/CMakeLists.txt"
+        "<SOURCE_DIR>/LibTIFF/CMakeLists.txt"
+        COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/FreeImage/dependencies/zlib/CMakeLists.txt"
+        "<SOURCE_DIR>/dependencies/zlib/CMakeLists.txt"
 
-    PREFIX ${FREEIMAGE_PROJECT_DIR}
-    BINARY_DIR "${FREEIMAGE_PROJECT_DIR}/build"
-    TMP_DIR "${FREEIMAGE_PROJECT_DIR}/temp"
-    STAMP_DIR "${FREEIMAGE_PROJECT_DIR}/stamp"
-)
+        PREFIX ${FREEIMAGE_PROJECT_DIR}
+        BINARY_DIR "${FREEIMAGE_PROJECT_DIR}/build"
+        TMP_DIR "${FREEIMAGE_PROJECT_DIR}/temp"
+        STAMP_DIR "${FREEIMAGE_PROJECT_DIR}/stamp"
+    )
+endif()
 
 ExternalProject_Add(GLI
     GIT_REPOSITORY "https://github.com/g-truc/gli.git"
@@ -403,29 +403,6 @@ ExternalProject_Add(ShaderC
 
 list(APPEND EXTLIB_TARGETS ShaderC)
 
-#[[ ExternalProject_Add(VulkanSDK
-    GIT_REPOSITORY "https://github.com/ARM-software/vulkan-sdk.git"
-    GIT_TAG " 820bfeb60204394c04f0da55effa8e3fe8f8f005"
-
-    # BUILD_COMMAND ""
-
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-
-    PATCH_COMMAND  ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/VulkanSDK/CMakeLists.txt"
-        "<SOURCE_DIR>/CMakeLists.txt"
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/VulkanSDK/vulkansdk-config.cmake"
-        "<SOURCE_DIR>/vulkansdk-config.cmake"
-
-    PREFIX ${VULKAN_PROJECT_DIR}
-    BINARY_DIR "${VULKAN_PROJECT_DIR}/build"
-    TMP_DIR "${VULKAN_PROJECT_DIR}/temp"
-    STAMP_DIR "${VULKAN_PROJECT_DIR}/stamp"
-) #]]
-
-# list(APPEND EXTLIB_TARGETS VulkanSDK)
-
 #[[ ExternalProject_Add(Eigen
     GIT_REPOSITORY "https://github.com/PX4/eigen.git"
     GIT_TAG "e7850ed81f9c469e02df496ef09ae32ec0379b71"
@@ -454,27 +431,6 @@ list(APPEND EXTLIB_TARGETS Eigen) #]]
     STAMP_DIR "${GLO_PROJECT_DIR}/stamp"
 ) #]]
 
-
-#[[ ExternalProject_Add(GLAD
-    GIT_REPOSITORY "https://github.com/Dav1dde/glad.git"
-    GIT_TAG "4014836cb06e86058b1e82b4b1777f511e31ef11"
-
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-               -DGLAD_INSTALL:BOOL=ON
-
-    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/GLAD/CMakeLists.txt"
-        "<SOURCE_DIR>/CMakeLists.txt"
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/GLAD/GLADConfig.cmake"
-        "<SOURCE_DIR>/GLADConfig.cmake"
-
-    PREFIX "${GLAD_PROJECT_DIR}"
-    BINARY_DIR "${GLAD_PROJECT_DIR}/build"
-    TMP_DIR "${GLAD_PROJECT_DIR}/temp"
-    STAMP_DIR "${GLAD_PROJECT_DIR}/stamp"
-) #]]
-
 include("cmake/CompilerSettings.cmake")
 include("cmake/WriteInitialCache.cmake")
 
@@ -497,8 +453,6 @@ ExtlibWriteConfig(
         -DGLM_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/glm
         -DASSIMP_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/assimp-3.3
         -DFREEIMAGE_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/freeimage
-        # -DVULKANSDK_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/VulkanSDK
-
 )
 
 add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/ExtlibCache.txt"
