@@ -19,6 +19,6 @@ layout(std140, binding = 2) uniform lightSourceBlock {
 layout(location = 0) out vec4 output_frag;
 
 void main(){
-    vec4 presetColor = vec4(0.1, 0.1, 0.1, 1.0);
+    vec4 presetColor = vec4(0.2, 0.2, 0.2, 1.0);
     output_frag = presetColor;
 }

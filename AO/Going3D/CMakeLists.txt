@@ -18,6 +18,26 @@ target_link_libraries(AssimpModels
     assimp
 )
 
+add_executable(Textureless
+    comp/LoadTextures.cpp
+    comp/LoadShaders.cpp
+    comp/Model3D.cpp
+    comp/ShaderCtrl.cpp
+    main/Textureless.cpp
+)
+
+target_include_directories(Textureless
+    PUBLIC include
+)
+
+target_link_libraries(Textureless
+    GLEW::glew_s
+    glfw
+    gli
+    glm
+    assimp
+)
+
 # WORK WITH SHADER FILES
 
 set(SRC_SHADER_LIST)
@@ -43,3 +63,4 @@ add_custom_target(MonoShaders
 )
 
 add_dependencies(AssimpModels MonoShaders)
+add_dependencies(Textureless MonoShaders)

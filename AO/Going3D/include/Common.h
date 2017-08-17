@@ -73,19 +73,19 @@ GLuint loadModelData(ModelStatic* Model);
 
 // From ShaderCtrl
 
-namespace UniformIndex {
-    enum UniformIndex {
-        worldMatrix,
-        localMatrix,
-        defaultColor,
-        surfaceRenderMode,
-    };
-};
-
 class AnyShader {
 protected:
     GLuint shaderProgID;
     std::vector<GLint> uniformLocation;
+};
+
+namespace NoBlocks_UniformIndex {
+    enum NoBlocks_UniformIndex {
+        worldMatrix,
+        localMatrix,
+        defaultColor,
+        surfaceRenderMode
+    };
 };
 
 struct noBlocks_UniformData {
@@ -107,6 +107,15 @@ public:
     void surfaceRenderMode(noBlocks_UniformData* noBlocks_Uniforms);
     
     void setUniforms(noBlocks_UniformData* noBlocks_Uniforms);
+};
+
+namespace LitEnv_UniformIndex {
+    enum LitEnv_UniformIndex {
+        worldMatrix,
+        localMatrix,
+        materialBlock,
+        lightSourceBlock
+    };
 };
 
 struct litEnv_MaterialBlock {
