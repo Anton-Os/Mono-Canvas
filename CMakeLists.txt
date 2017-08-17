@@ -38,17 +38,14 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
 
     find_package(Vulkan QUIET MODULE)
 
-    find_package(freeglut REQUIRED CONFIG)
     find_package(GLEW REQUIRED CONFIG)
     find_package(glfw3 REQUIRED CONFIG)
-    find_package(FLTK CONFIG)
+    find_package(FLTK CONFIG CONFIG)
     find_package(SQLite REQUIRED CONFIG)
     find_package(GLI REQUIRED CONFIG)
     find_package(GLM REQUIRED CONFIG)
     find_package(ASSIMP REQUIRED CONFIG)
-    find_package(freeimage REQUIRED CONFIG)
 
-    # get_target_property(freeglut_ImportLoc freeglut_static IMPORTED_LOCATION_DEBUG)
 
     add_subdirectory("AO/Going3D")
     if(Vulkan_FOUND)
@@ -68,3 +65,12 @@ else ()
             "target to build extlib"
       )
 endif()
+
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake.in" 
+               "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
+                @ONLY
+)
+add_custom_target(GDrive ALL 
+    ${CMAKE_COMMAND} -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
+    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
+)

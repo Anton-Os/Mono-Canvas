@@ -1,6 +1,5 @@
 #include "Common.h"
 #include <stack>
-// #include "Assimp.h"
 
 GLuint loadModelData(ModelStatic* Model){
   GLuint VAO, VBO, EBO;
@@ -43,11 +42,11 @@ GLuint loadModelData(ModelComposite* Model){
   glBufferData(GL_ARRAY_BUFFER, Model->modelMeshes.size() * sizeof(Point), &Model->modelMeshes[0], GL_STATIC_DRAW);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, pos));
   glEnableVertexAttribArray(0);
-  if(Model->renderParams[ShaderCtrlBit::color] == 0){
+  if(Model->renderParams[ShaderCtrlBit::color] == 1){
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, color));
     glEnableVertexAttribArray(1);  
   }
-  if(Model->renderParams[ShaderCtrlBit::texCoord] == 0){
+  if(Model->renderParams[ShaderCtrlBit::texCoord] == 1){
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, texCoord));
     glEnableVertexAttribArray(2);
   }
@@ -73,7 +72,7 @@ void iterateNodes(aiNode* rootNode, std::vector<ModelComposite>* MPerComponent){
   }
 }
 
-int fillFaces(aiMesh* currentMesh, ModelComposite* Model){
+int loadOpenGL_Faces(aiMesh* currentMesh, ModelComposite* Model){
   if(currentMesh->HasFaces()){
     for(unsigned int f = 0; f < currentMesh->mNumFaces; f++){
       unsigned int faceIndicesCount = currentMesh->mFaces[f].mNumIndices;
@@ -89,7 +88,7 @@ int fillFaces(aiMesh* currentMesh, ModelComposite* Model){
   }
 }
 
-int fillVertexPos(aiMesh* currentMesh, std::vector<std::array<GLfloat, 3>>* allVertexPos){
+int loadOpenGL_VertexPos(aiMesh* currentMesh, std::vector<std::array<GLfloat, 3>>* allVertexPos){
   if(currentMesh->HasPositions()){
     for(unsigned int v = 0; v < currentMesh->mNumVertices; v++){
       allVertexPos->push_back(
@@ -105,7 +104,7 @@ int fillVertexPos(aiMesh* currentMesh, std::vector<std::array<GLfloat, 3>>* allV
   }
 }
 
-int fillVertexColor(aiMesh* currentMesh, ModelComposite* Model, std::vector<std::array<GLfloat, 4>>* allVertexColors){
+int loadOpenGL_VertexColor(aiMesh* currentMesh, ModelComposite* Model, std::vector<std::array<GLfloat, 4>>* allVertexColors){
   if(currentMesh->HasVertexColors(0)){
     for(unsigned int v = 0; v < currentMesh->mNumVertices; v++){
       allVertexColors->push_back(
@@ -115,7 +114,7 @@ int fillVertexColor(aiMesh* currentMesh, ModelComposite* Model, std::vector<std:
           currentMesh->mColors[0][v].a }
       );
     }
-    Model->renderParams[ShaderCtrlBit::color] = 0;
+    Model->renderParams[ShaderCtrlBit::color] = 1;
     return 0;
   } else {
     std::cout << "No vertex colors present, proceeding to generate at random..." << std::endl;
@@ -132,7 +131,7 @@ int fillVertexColor(aiMesh* currentMesh, ModelComposite* Model, std::vector<std:
   }
 }
 
-int fillVertexTexCoord(aiMesh* currentMesh, ModelComposite* Model, std::vector<std::array<GLfloat, 2>>* allVertexTexCoord){
+int loadOpenGL_VertexTexCoord(aiMesh* currentMesh, ModelComposite* Model, std::vector<std::array<GLfloat, 2>>* allVertexTexCoord){
   if(currentMesh->HasTextureCoords(0)){
     for(unsigned int v = 0; v < currentMesh->mNumVertices; v++){
       allVertexTexCoord->push_back(
@@ -140,16 +139,16 @@ int fillVertexTexCoord(aiMesh* currentMesh, ModelComposite* Model, std::vector<s
           currentMesh->mTextureCoords[0][v].y }
       );
     }
-    Model->renderParams[ShaderCtrlBit::texCoord] = 0;
+    Model->renderParams[ShaderCtrlBit::texCoord] = 1;
     return 0;
   } else {
     std::cout << "No texture coordinates present" << std::endl;
-    Model->renderParams[ShaderCtrlBit::texCoord] = 1;
+    Model->renderParams[ShaderCtrlBit::texCoord] = 0;
     return 1;
   }
 }
 
-int fillVertexNormals(aiMesh* currentMesh, std::vector<std::array<GLfloat, 3>>* allVertexNormals){
+int loadOpenGL_VertexNormals(aiMesh* currentMesh, std::vector<std::array<GLfloat, 3>>* allVertexNormals){
   if(currentMesh->HasPositions()){
     for(unsigned int v = 0; v < currentMesh->mNumVertices; v++){
       allVertexNormals->push_back(
@@ -196,7 +195,7 @@ int iterateNodes(const aiScene* scene, std::vector<ModelComposite>* MPerComponen
       for(unsigned int m = 0; m < nodeMeshCount; m++){
         aiMesh* currentMesh = modelMeshes[nodeMeshes[m]];
         
-        int facesComplete = fillFaces(currentMesh, &Model);
+        int facesComplete = loadOpenGL_Faces(currentMesh, &Model);
 
         unsigned int meshVertexCount = currentMesh->mNumVertices;
         std::vector<std::array<GLfloat, 3>> allVertexPos;
@@ -204,25 +203,26 @@ int iterateNodes(const aiScene* scene, std::vector<ModelComposite>* MPerComponen
         std::vector<std::array<GLfloat, 2>> allVertexTexCoord;
         std::vector<std::array<GLfloat, 3>> allVertexNormals;
 
-        int positionsComplete = fillVertexPos(currentMesh, &allVertexPos);
-        int colorsComplete = fillVertexColor(currentMesh, &Model, &allVertexColors);
-        int texCoordComplete = fillVertexTexCoord(currentMesh, &Model, &allVertexTexCoord);
-        int normalsComplete = fillVertexNormals(currentMesh, &allVertexNormals);
+        int positionsComplete = loadOpenGL_VertexPos(currentMesh, &allVertexPos);
+        int colorsComplete = loadOpenGL_VertexColor(currentMesh, &Model, &allVertexColors);
+        int texCoordComplete = loadOpenGL_VertexTexCoord(currentMesh, &Model, &allVertexTexCoord);
+        int normalsComplete = loadOpenGL_VertexNormals(currentMesh, &allVertexNormals);
 
         for(unsigned int i = 0; i < meshVertexCount; i++) Model.modelMeshes.push_back(
           { allVertexPos.at(i), allVertexColors.at(i), allVertexTexCoord.at(i), allVertexNormals.at(i) }
         );
 
         Model.VertexArray = loadModelData(&Model);
-        Model.renderParams[ShaderCtrlBit::drawable] = 0;
+        Model.renderParams[ShaderCtrlBit::drawable] = 1;
         MPerComponent->push_back(Model);
       }
     } else {
       Model.VertexArray = 0;
-      Model.renderParams[ShaderCtrlBit::drawable] = 1;
+      Model.renderParams[ShaderCtrlBit::drawable] = 0;
       MPerComponent->push_back(Model);
     }
   }
+  return 0;
 }
 
 int assimpImportCPP(const std::string &pFile, ModelStatic* Model){

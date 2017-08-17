@@ -17,5 +17,7 @@ void main(){
         output_frag = vec4(color.r, color.g, color.b, color.a);
     } else if(surfaceRenderMode == 3){
         output_frag = texture(currentTexture, texCoord);
+    } else if(surfaceRenderMode == 4){
+        output_frag = vec4(0.2588, 0.5254, 0.9568, 0.7);
     }
 }

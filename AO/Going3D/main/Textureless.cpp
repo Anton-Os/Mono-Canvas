@@ -179,31 +179,31 @@ int main(int argc, char** argv){
     std::string noBlocks_frag = parentDir + "\\shaders\\NoBlocks.frag";
     GLuint noBlocks_glsl = compileShaders(noBlocks_vert, noBlocks_frag);
 
-	std::string brushedSteel_filePath = parentDir + "\\data\\BrushedSteel.ktx";
+	std::string brushedSteel_filePath = parentDir + "\\..\\..\\data\\BrushedSteel.ktx";
 	GLuint brushedSteel = createTexture(brushedSteel_filePath.c_str());
-	std::string scratchedSteel_filePath = parentDir + "\\data\\ScratchedSteel.ktx";
+	std::string scratchedSteel_filePath = parentDir + "\\..\\..\\data\\ScratchedSteel.ktx";
 	GLuint scratchedSteel = createTexture(scratchedSteel_filePath.c_str());
-	std::string limeStone_filePath = parentDir + "\\data\\LimeStone.ktx";
+	std::string limeStone_filePath = parentDir + "\\..\\..\\data\\LimeStone.ktx";
 	GLuint limeStone = createTexture(limeStone_filePath.c_str());
-	std::string sevenGrass_filePath = parentDir + "\\data\\SevenGrass.ktx";
+	std::string sevenGrass_filePath = parentDir + "\\..\\..\\data\\SevenGrass.ktx";
 	GLuint sevenGrass = createTexture(sevenGrass_filePath.c_str());
-	std::string treeBark_filePath = parentDir + "\\data\\TreeBark.ktx";
+	std::string treeBark_filePath = parentDir + "\\..\\..\\data\\TreeBark.ktx";
 	GLuint treeBark = createTexture(treeBark_filePath.c_str());
-	std::string youngLeaves_filePath = parentDir + "\\data\\YoungLeaves.ktx";
+	std::string youngLeaves_filePath = parentDir + "\\..\\..\\data\\YoungLeaves.ktx";
 	GLuint youngLeaves = createTexture(youngLeaves_filePath.c_str());
-	std::string lightWood_filePath = parentDir + "\\data\\LightWood.ktx";
+	std::string lightWood_filePath = parentDir + "\\..\\..\\data\\LightWood.ktx";
 	GLuint lightWood = createTexture(lightWood_filePath.c_str());
-	std::string medWood_filePath = parentDir + "\\data\\MedWood.ktx";
+	std::string medWood_filePath = parentDir + "\\..\\..\\data\\MedWood.ktx";
 	GLuint medWood = createTexture(medWood_filePath.c_str());
-	std::string woodPlanks_filePath = parentDir + "\\data\\WoodPlanks.ktx";
+	std::string woodPlanks_filePath = parentDir + "\\..\\..\\data\\WoodPlanks.ktx";
 	GLuint woodPlanks = createTexture(woodPlanks_filePath.c_str());
 
 	std::array<GLuint, 8> textureOrder = 
 	{ 0, 0, youngLeaves, treeBark, sevenGrass, medWood, limeStone, lightWood };
 
     std::vector<ModelComposite> MPerComponent;
-	std::string Nut_filePath = parentDir + "\\data\\nut.fbx";
-    std::string LowPolyMill_filePath = parentDir + "\\data\\LowPolyMill.fbx";
+	std::string Nut_filePath = parentDir + "\\..\\..\\data\\nut.fbx";
+    std::string LowPolyMill_filePath = parentDir + "\\..\\..\\data\\LowPolyMill.fbx";
 
     assimpImportCPP(LowPolyMill_filePath, &MPerComponent);
 

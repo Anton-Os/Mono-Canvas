@@ -24,18 +24,13 @@ if (NOT CMAKE_CONFIGURATION_TYPES)
     endif()
 endif()
 
-option(BUILD_PROGSCHJ "Build progschj examples" OFF)
-
 set(ALL_PROJECT_DIR "${CMAKE_BINARY_DIR}/Projects")
-set(FREEGLUT_PROJECT_DIR "${ALL_PROJECT_DIR}/FreeGLUT")
 set(GLEW_PROJECT_DIR "${ALL_PROJECT_DIR}/GLEW")
 set(GLFW_PROJECT_DIR "${ALL_PROJECT_DIR}/GLFW")
 set(FLTK_PROJECT_DIR "${ALL_PROJECT_DIR}/FLTK")
-set(FREEIMAGE_PROJECT_DIR "${ALL_PROJECT_DIR}/FreeImage")
 set(GLI_PROJECT_DIR "${ALL_PROJECT_DIR}/GLI")
 set(GLM_PROJECT_DIR "${ALL_PROJECT_DIR}/GLM")
 set(ASSIMP_PROJECT_DIR "${ALL_PROJECT_DIR}/ASSIMP")
-set(PROGSCHJ_EXAMPLES_PROJECT_DIR "${ALL_PROJECT_DIR}/ProgschjExamples")
 set(GOOGLETEST_PROJECT_DIR "${ALL_PROJECT_DIR}/GoogleTest")
 set(GLSLANG_PROJECT_DIR "${ALL_PROJECT_DIR}/GLSLang")
 set(SPIRVTOOLS_PROJECT_DIR "${ALL_PROJECT_DIR}/SPIRV_Tools")
@@ -58,13 +53,15 @@ if(NOT EXISTS ${UTILITIES_DIR})
     file(MAKE_DIRECTORY ${UTILITIES_DIR})
 endif()
 
-add_custom_target(GDrive ALL 
+add_custom_target(GDrive_Extlib ALL 
     ${CMAKE_COMMAND} -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
     COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_BINARY_DIR}/Img2KTX.tar" 
     COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_BINARY_DIR}/python-3.6.1-embed.tar"
     DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
     WORKING_DIRECTORY ${UTILITIES_DIR}
 )
+
+list(APPEND EXTLIB_TARGETS GDrive_Extlib)
 
 ExternalProject_Add(SQLite
     URL "${CMAKE_BINARY_DIR}/sqlite-amalgamation-3180000.tar"
@@ -77,32 +74,10 @@ ExternalProject_Add(SQLite
     TMP_DIR "${SQLITE_PROJECT_DIR}/temp"
     STAMP_DIR "${SQLITE_PROJECT_DIR}/stamp"
 
-    DEPENDS GDrive
+    DEPENDS GDrive_Extlib
 )
 
 list(APPEND EXTLIB_TARGETS SQLite)
-
-# Get FreeGLUT 3.0.0
-ExternalProject_Add(FreeGLUT
-    GIT_REPOSITORY "https://github.com/dcnieho/FreeGLUT.git"
-    GIT_TAG "cd8bf6e3ae9913f004ee55c7c02743e601ab9411"
-
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-    
-    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/freeglut/CMakeLists.txt"
-        "<SOURCE_DIR>/CMakeLists.txt"
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/freeglut/freeglutConfig.cmake.in"
-        "<SOURCE_DIR>/freeglutConfig.cmake.in"
-
-    PREFIX ${FREEGLUT_PROJECT_DIR}
-    BINARY_DIR "${FREEGLUT_PROJECT_DIR}/build"
-    TMP_DIR "${FREEGLUT_PROJECT_DIR}/temp"
-    STAMP_DIR "${FREEGLUT_PROJECT_DIR}/stamp"
-)
-
-list(APPEND EXTLIB_TARGETS FreeGLUT)
 
 ExternalProject_Add(GLEW
     URL "${CMAKE_BINARY_DIR}/glew-1.13.0.tgz"
@@ -123,26 +98,10 @@ ExternalProject_Add(GLEW
     TMP_DIR "${GLEW_PROJECT_DIR}/temp"
     STAMP_DIR "${GLEW_PROJECT_DIR}/stamp"
 
-    DEPENDS GDrive
+    DEPENDS GDrive_Extlib
 )
 
 list(APPEND EXTLIB_TARGETS GLEW)
-
-if(BUILD_PROGSCHJ)
-    ExternalProject_Add(ProgschjExamples
-        GIT_REPOSITORY "https://github.com/progschj/OpenGL-Examples.git"
-        GIT_TAG "dd74a51ec081ad8584bdba023f367f33b5add66a"
-
-        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-
-        PREFIX ${PROGSCHJ_EXAMPLES_PROJECT_DIR}
-        BINARY_DIR "${PROGSCHJ_EXAMPLES_PROJECT_DIR}/build"
-        TMP_DIR "${PROGSCHJ_EXAMPLES_PROJECT_DIR}/temp"
-        STAMP_DIR "${PROGSCHJ_EXAMPLES_PROJECT_DIR}/stamp"
-    )
-
-    list(APPEND EXTLIB_TARGETS ProgschjExamples)
-endif(BUILD_PROGSCHJ)
 
 ExternalProject_Add(GLFW
     GIT_REPOSITORY "https://github.com/glfw/glfw.git"
@@ -169,64 +128,10 @@ ExternalProject_Add(FLTK
     TMP_DIR "${FLTK_PROJECT_DIR}/temp"
     STAMP_DIR "${FLTK_PROJECT_DIR}/stamp"
 
-    DEPENDS GDrive
+    DEPENDS GDrive_Extlib
 )
 
 list(APPEND EXTLIB_TARGETS FLTK)
-
-if(NOT MSVC)
-    ExternalProject_Add(FreeImage
-        GIT_REPOSITORY "https://github.com/Kanma/FreeImage.git"
-        GIT_TAG "6bb613d9402926b3846dea1b417f20b6c596c5dc"
-
-        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-
-        PATCH_COMMAND ${CMAKE_COMMAND} -E copy 
-        "${CMAKE_SOURCE_DIR}/patch/FreeImage/CMakeLists.txt"
-        "<SOURCE_DIR>/CMakeLists.txt"
-        COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/FreeImage/LibMNG/CMakeLists.txt"
-        "<SOURCE_DIR>/LibMNG/CMakeLists.txt"
-        COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/FreeImage/LibOpenJPEG/CMakeLists.txt"
-        "<SOURCE_DIR>/LibOpenJPEG/CMakeLists.txt"
-        COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/FreeImage/LibPNG/CMakeLists.txt"
-        "<SOURCE_DIR>/LibPNG/CMakeLists.txt"
-        COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/FreeImage/LibJPEG/CMakeLists.txt"
-        "<SOURCE_DIR>/LibJPEG/CMakeLists.txt"
-        COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/FreeImage/LibRawLite/CMakeLists.txt"
-        "<SOURCE_DIR>/LibRawLite/CMakeLists.txt"
-        COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/FreeImage/OpenEXR/CMakeLists.txt"
-        "<SOURCE_DIR>/OpenEXR/CMakeLists.txt"      
-        COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/FreeImage/CompilerTypeFix.cmake"
-        "<SOURCE_DIR>/CompilerTypeFix.cmake"
-        COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/FreeImage/dependencies/XMake/XMake.cmake"
-        "<SOURCE_DIR>/dependencies/XMake/XMake.cmake"      
-        COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/FreeImage/freeimage-config.cmake"
-        "<SOURCE_DIR>/freeimage-config.cmake"   
-        COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/FreeImage/FreeImage/PluginTIFF.cpp"
-        "<SOURCE_DIR>/FreeImage/PluginTIFF.cpp"   
-        COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/FreeImage/LibTIFF/CMakeLists.txt"
-        "<SOURCE_DIR>/LibTIFF/CMakeLists.txt"
-        COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/FreeImage/dependencies/zlib/CMakeLists.txt"
-        "<SOURCE_DIR>/dependencies/zlib/CMakeLists.txt"
-
-        PREFIX ${FREEIMAGE_PROJECT_DIR}
-        BINARY_DIR "${FREEIMAGE_PROJECT_DIR}/build"
-        TMP_DIR "${FREEIMAGE_PROJECT_DIR}/temp"
-        STAMP_DIR "${FREEIMAGE_PROJECT_DIR}/stamp"
-    )
-endif()
 
 ExternalProject_Add(GLI
     GIT_REPOSITORY "https://github.com/g-truc/gli.git"
@@ -419,18 +324,6 @@ list(APPEND EXTLIB_TARGETS ShaderC)
 
 list(APPEND EXTLIB_TARGETS Eigen) #]]
 
-#[[ ExternalProject_Add(GLO
-    GIT_REPOSITORY "https://github.com/g-truc/glo.git"
-    GIT_TAG "e5736d57b8a5caad8647360f6efe0ddfb62de2ae"
-
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-
-    PREFIX ${GLO_PROJECT_DIR}
-    BINARY_DIR "${GLO_PROJECT_DIR}/build"
-    TMP_DIR "${GLO_PROJECT_DIR}/temp"
-    STAMP_DIR "${GLO_PROJECT_DIR}/stamp"
-) #]]
-
 include("cmake/CompilerSettings.cmake")
 include("cmake/WriteInitialCache.cmake")
 
@@ -453,6 +346,9 @@ ExtlibWriteConfig(
         -DGLM_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/glm
         -DASSIMP_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/assimp-3.3
         -DFREEIMAGE_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/freeimage
+        
+        # This path will be specified once I build OSG independently
+        -DOSG_DIR:PATH=${CMAKE_INSTALL_PREFIX}
 )
 
 add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/ExtlibCache.txt"
@@ -471,5 +367,4 @@ if(IS_DIRECTORY "${CMAKE_BINARY_DIR}/SPIRV_Headers-prefix")
     file(REMOVE
         "${CMAKE_BINARY_DIR}/SPIRV_Headers-prefix"
     )
-
 endif()
