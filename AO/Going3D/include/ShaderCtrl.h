@@ -44,6 +44,12 @@ namespace LitEnv_UniformIndex {
     };
 };
 
+struct TestBlock {
+    GLfloat Red;
+    GLfloat Green;
+    GLfloat Blue;
+};
+
 struct litEnv_UniformData {
     glm::mat4 worldMatrix;
     glm::mat4 localMatrix;
@@ -60,6 +66,7 @@ public:
 
     void worldMatrix(litEnv_UniformData* Uniforms);
     void localMatrix(litEnv_UniformData* Uniforms);
+    void testBlock(litEnv_UniformData* Uniforms, TestBlock* testBlock);
     void materialBlock(litEnv_UniformData* Uniforms, MaterialBlock* materialBlock);
     void lightSourceBlock(litEnv_UniformData* Uniforms, LightSourceBlock* lightSourceBlock);
 

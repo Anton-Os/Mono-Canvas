@@ -6,7 +6,7 @@ layout(location = 2) in vec3 normal;
 
 layout(binding = 0) uniform sampler2D currentTexture;
 
-layout(std140, binding = 1) uniform materialBlock {
+/* layout(std140, binding = 1) uniform materialBlock {
     vec4 ambientColor;
     vec4 diffuseColor;
     vec4 specularColor;
@@ -16,11 +16,17 @@ layout(std140, binding = 2) uniform lightSourceBlock {
     float lightIntensity;
     float lightRadius;
     vec4 lightAbsoluteLocation;
+}; */
+
+layout (std140, binding = 1) uniform materialBlock {
+    float Red;
+    float Green;
+    float Blue;
 };
 
 layout(location = 0) out vec4 output_frag;
 
 void main(){
-    vec4 presetColor = vec4(0.2, 0.2, 0.2, 1.0);
+    vec4 presetColor = vec4(0.2, Green, Blue, 1.0);
     output_frag = presetColor;
 }

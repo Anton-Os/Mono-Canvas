@@ -12,13 +12,23 @@ void LitEnv::localMatrix(litEnv_UniformData* Uniforms){
      glUniformMatrix4fv(LitEnv::uniformLocation[LitEnv_UniformIndex::localMatrix], 1, GL_FALSE, glm::value_ptr(Uniforms->localMatrix));
 }
 
-void LitEnv::materialBlock(litEnv_UniformData* Uniforms, MaterialBlock* materialBlock){
+/* void LitEnv::materialBlock(litEnv_UniformData* Uniforms, MaterialBlock* materialBlock){
     glUniformBlockBinding(LitEnv::shaderProgID, LitEnv::uniformLocation[LitEnv_UniformIndex::materialBlock], 1);
 
     glGenBuffers(1, &LitEnv::UBO[0]);
     glBindBuffer(GL_UNIFORM_BUFFER, LitEnv::UBO[0]);
 
     glBufferData(GL_UNIFORM_BUFFER, sizeof(MaterialBlock), &materialBlock, GL_STATIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 1, LitEnv::UBO[0]);
+} */
+
+void LitEnv::testBlock(litEnv_UniformData* Uniforms, TestBlock* testBlock){
+    glUniformBlockBinding(LitEnv::shaderProgID, LitEnv::uniformLocation[LitEnv_UniformIndex::materialBlock], 1);
+
+    glGenBuffers(1, &LitEnv::UBO[0]);
+    glBindBuffer(GL_UNIFORM_BUFFER, LitEnv::UBO[0]);
+
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(TestBlock), &testBlock, GL_STATIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, LitEnv::UBO[0]);
 }
 
@@ -44,5 +54,7 @@ void LitEnv::setUniforms(litEnv_UniformData* Uniforms, ModelComposite* Model){
 
     LitEnv::worldMatrix(Uniforms);
     LitEnv::localMatrix(Uniforms);
-    LitEnv::materialBlock(Uniforms, &Model->materialBlock);
+    TestBlock test123 = { 0.4f, 0.3f, 0.1f };
+    LitEnv::testBlock(Uniforms, &test123);
+    // LitEnv::materialBlock(Uniforms, &Model->materialBlock);
 }
