@@ -36,24 +36,3 @@ void NoBlocks::setUniforms(noBlocks_UniformData* Uniforms){
     NoBlocks::defaultColor(Uniforms);
     NoBlocks::surfaceRenderMode(Uniforms);
 }
-
-// LitEnv Shader Program
-
-void LitEnv::worldMatrix(litEnv_UniformData* Uniforms){
-     glUniformMatrix4fv(LitEnv::uniformLocation[LitEnv_UniformIndex::worldMatrix], 1, GL_FALSE, glm::value_ptr(Uniforms->worldMatrix));
-}
-
-void LitEnv::localMatrix(litEnv_UniformData* Uniforms){
-     glUniformMatrix4fv(LitEnv::uniformLocation[LitEnv_UniformIndex::localMatrix], 1, GL_FALSE, glm::value_ptr(Uniforms->localMatrix));
-}
-
-void LitEnv::setUniforms(litEnv_UniformData* Uniforms){
-    LitEnv::uniformLocation.push_back( glGetUniformLocation(LitEnv::shaderProgID, "worldMatrix") );
-    LitEnv::uniformLocation.push_back( glGetUniformLocation(LitEnv::shaderProgID, "localMatrix") );
-
-    if(LitEnv::uniformLocation[LitEnv_UniformIndex::worldMatrix] == -1) std::cerr << "worldMatrix has not been set properly" << std::endl; 
-    if(LitEnv::uniformLocation[LitEnv_UniformIndex::localMatrix] == -1) std::cerr << "localMatrix has not been set properly" << std::endl;
-
-    LitEnv::worldMatrix(Uniforms);
-    LitEnv::localMatrix(Uniforms);
-}

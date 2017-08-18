@@ -5,11 +5,13 @@ layout(location = 1) in vec2 texCoord;
 layout(location = 2) in vec3 normal;
 
 layout(binding = 0) uniform sampler2D currentTexture;
+
 layout(std140, binding = 1) uniform materialBlock {
     vec4 ambientColor;
     vec4 diffuseColor;
     vec4 specularColor;
 };
+
 layout(std140, binding = 2) uniform lightSourceBlock {
     float lightIntensity;
     float lightRadius;

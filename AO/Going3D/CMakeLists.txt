@@ -2,7 +2,8 @@ add_executable(AssimpModels
     comp/LoadTextures.cpp
     comp/LoadShaders.cpp
     comp/Model3D.cpp
-    comp/ShaderCtrl.cpp
+    # comp/ShaderCtrl.cpp
+    pipeline/NoBlocks.cpp
     main/AssimpModels.cpp
 )
 
@@ -22,7 +23,8 @@ add_executable(Textureless
     comp/LoadTextures.cpp
     comp/LoadShaders.cpp
     comp/Model3D.cpp
-    comp/ShaderCtrl.cpp
+    # comp/ShaderCtrl.cpp
+    pipeline/LitEnv.cpp
     main/Textureless.cpp
 )
 

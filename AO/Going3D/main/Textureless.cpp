@@ -103,7 +103,7 @@ int main(int argc, char** argv){
 	litEnv_Uniforms.worldMatrix = perspectiveMatrix;
 
 	LitEnv litEnvUtil(litEnv_glsl);
-    litEnvUtil.setUniforms(&litEnv_Uniforms);
+    litEnvUtil.setUniforms(&litEnv_Uniforms, &MPerComponent[4]);
 
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();

@@ -38,6 +38,24 @@ struct Point {
     std::array<GLfloat, 3> normal;
 };
 
+/* struct MaterialBlock {
+    std::array<GLfloat, 4> ambientColor;
+    std::array<GLfloat, 4> diffuseColor;
+    std::array<GLfloat, 4> specularColor;
+}; */
+
+struct MaterialBlock {
+    GLfloat ambientColor[4];
+    GLfloat diffuseColor[4];
+    GLfloat specularColor[4];
+};
+
+struct LightSourceBlock {
+    GLfloat intensity;
+    GLfloat radius;
+    std::array<GLfloat, 4> absoluteLocation;
+};
+
 namespace ShaderCtrlBit {
     enum ShaderCtrlBit {
         color,
@@ -56,10 +74,11 @@ struct ModelStatic {
 
 struct ModelComposite {
     GLuint VertexArray;
-    GLuint currentTexture;
     std::vector<Point> modelMeshes;
     std::vector<GLuint> modelIndices;
     glm::mat4 relativePos;
+    GLuint currentTexture;
+    MaterialBlock materialBlock;
 
     std::bitset<3> renderParams;
 };
@@ -71,83 +90,4 @@ int assimpImportCPP(const std::string &pFile, std::vector<ModelComposite>* MPerC
 int loadModelData(std::vector<Point> dataToLoad, std::vector<GLuint> dataIndices);
 GLuint loadModelData(ModelStatic* Model);
 
-// From ShaderCtrl
-
-class AnyShader {
-protected:
-    GLuint shaderProgID;
-    std::vector<GLint> uniformLocation;
-};
-
-namespace NoBlocks_UniformIndex {
-    enum NoBlocks_UniformIndex {
-        worldMatrix,
-        localMatrix,
-        defaultColor,
-        surfaceRenderMode
-    };
-};
-
-struct noBlocks_UniformData {
-    glm::mat4 worldMatrix;
-    glm::mat4 localMatrix;
-
-    std::array<GLfloat, 4> defaultColor;
-    GLuint surfaceRenderMode;
-};
-
-class NoBlocks : public AnyShader {
-public:
-    NoBlocks(GLuint shaderProg){
-        shaderProgID = shaderProg;
-    }
-    void worldMatrix(noBlocks_UniformData* noBlocks_Uniforms);
-    void localMatrix(noBlocks_UniformData* noBlocks_Uniforms);
-    void defaultColor(noBlocks_UniformData* noBlocks_Uniforms);
-    void surfaceRenderMode(noBlocks_UniformData* noBlocks_Uniforms);
-    
-    void setUniforms(noBlocks_UniformData* noBlocks_Uniforms);
-};
-
-namespace LitEnv_UniformIndex {
-    enum LitEnv_UniformIndex {
-        worldMatrix,
-        localMatrix,
-        materialBlock,
-        lightSourceBlock
-    };
-};
-
-struct litEnv_MaterialBlock {
-    std::array<GLfloat, 4> ambientColor;
-    std::array<GLfloat, 4> diffuseColor;
-    std::array<GLfloat, 4> specularColor;
-};
-
-struct litEnv_LightSourceBlock {
-    GLfloat intensity;
-    GLfloat radius;
-    std::array<GLfloat, 4> absoluteLocation;
-};
-
-struct litEnv_UniformData {
-    glm::mat4 worldMatrix;
-    glm::mat4 localMatrix;
-
-    litEnv_MaterialBlock materialBlock;
-    litEnv_LightSourceBlock lightSourceBlock;
-};
-
-class LitEnv : public AnyShader {
-public:
-    LitEnv(GLuint shaderProg){
-        shaderProgID = shaderProg;
-    }
-
-    void worldMatrix(litEnv_UniformData* litEnv_Uniforms);
-    void localMatrix(litEnv_UniformData* litEnv_Uniforms);
-    void materialBlock(litEnv_UniformData* litEnv_Uniforms);
-    void lightSourceBlock(litEnv_UniformData* litEnv_Uniforms);
-
-    void setUniforms(litEnv_UniformData* litEnv_Uniforms);
-};
+#include "ShaderCtrl.h"
