@@ -39,6 +39,7 @@ namespace LitEnv_UniformIndex {
     enum LitEnv_UniformIndex {
         worldMatrix,
         localMatrix,
+        testBlock,
         materialBlock,
         lightSourceBlock
     };
@@ -68,6 +69,7 @@ public:
     void localMatrix(litEnv_UniformData* Uniforms);
     void testBlock(litEnv_UniformData* Uniforms, TestBlock* testBlock);
     void materialBlock(litEnv_UniformData* Uniforms, MaterialBlock* materialBlock);
+    void materialBlock(litEnv_UniformData* Uniforms, MaterialBlock materialBlock);
     void lightSourceBlock(litEnv_UniformData* Uniforms, LightSourceBlock* lightSourceBlock);
 
     void setUniforms(litEnv_UniformData* Uniforms);
