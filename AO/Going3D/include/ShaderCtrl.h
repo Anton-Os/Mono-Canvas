@@ -35,25 +35,18 @@ public:
     void setUniforms(noBlocks_UniformData* noBlocks_Uniforms);
 };
 
-namespace LitEnv_UniformIndex {
-    enum LitEnv_UniformIndex {
+namespace LitEnv_UNI {
+    enum LitEnv_UNI {
         worldMatrix,
         localMatrix,
-        testBlock,
-        materialBlock,
-        lightSourceBlock
+        cameraPos
     };
-};
-
-struct TestBlock {
-    GLfloat Red;
-    GLfloat Green;
-    GLfloat Blue;
 };
 
 struct litEnv_UniformData {
     glm::mat4 worldMatrix;
     glm::mat4 localMatrix;
+    std::array<GLfloat, 3> cameraPos;
 
     MaterialBlock materialBlock;
     LightSourceBlock lightSourceBlock;
@@ -64,16 +57,14 @@ public:
     LitEnv(GLuint shaderProg){
         shaderProgID = shaderProg;
     }
-
-    void worldMatrix(litEnv_UniformData* Uniforms);
-    void localMatrix(litEnv_UniformData* Uniforms);
-    void testBlock(litEnv_UniformData* Uniforms, TestBlock* testBlock);
-    void materialBlock(litEnv_UniformData* Uniforms, MaterialBlock* materialBlock);
-    void materialBlock(litEnv_UniformData* Uniforms, MaterialBlock materialBlock);
-    void lightSourceBlock(litEnv_UniformData* Uniforms, LightSourceBlock* lightSourceBlock);
+    void worldMatrix(glm::mat4 worldMatrix);
+    void localMatrix(glm::mat4 localMatrix);
+    void cameraPos(std::array<GLfloat, 3> cameraPos);
+    void materialBlock(MaterialBlock* materialBlock);
+    void lightSourceBlock(LightSourceBlock* lightSourceBlock);
 
     void setUniforms(litEnv_UniformData* Uniforms);
     void setUniforms(litEnv_UniformData* Uniforms, ModelComposite* Model);
 private:
-    GLuint UBO[2];
+    GLuint SSBO[2];
 };

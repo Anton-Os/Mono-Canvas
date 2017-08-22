@@ -101,9 +101,10 @@ int main(int argc, char** argv){
 	litEnv_UniformData litEnv_Uniforms;
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.f);
 	litEnv_Uniforms.worldMatrix = perspectiveMatrix;
+	litEnv_Uniforms.cameraPos = {0.0f, 0.0f, 0.0f}; 
 
 	LitEnv litEnvUtil(litEnv_glsl);
-    litEnvUtil.setUniforms(&litEnv_Uniforms, &MPerComponent[5]);
+    litEnvUtil.setUniforms(&litEnv_Uniforms);
 
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
@@ -111,12 +112,14 @@ int main(int argc, char** argv){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		litEnv_Uniforms.worldMatrix = glm::translate(perspectiveMatrix, camMovement);
-		litEnvUtil.worldMatrix(&litEnv_Uniforms);
+		litEnvUtil.worldMatrix(litEnv_Uniforms.worldMatrix);
 
         for(unsigned int d = 0; d < MPerComponent.size(); d++){
-            glBindVertexArray(MPerComponent.at(d).VertexArray);;
-            if(MPerComponent.at(d).renderParams[ShaderCtrlBit::drawable] == 0);
-                glDrawElements(GL_TRIANGLES, MPerComponent.at(d).modelIndices.size(), GL_UNSIGNED_INT, 0);
+            if(MPerComponent.at(d).renderParams[ShaderCtrlBit::drawable] == 1){
+				litEnvUtil.materialBlock(&MPerComponent.at(d).materialBlock);
+                glBindVertexArray(MPerComponent.at(d).VertexArray);
+				glDrawElements(GL_TRIANGLES, MPerComponent.at(d).modelIndices.size(), GL_UNSIGNED_INT, 0);
+			}
 		}
         glBindVertexArray(0);
 		glfwSwapBuffers(window);

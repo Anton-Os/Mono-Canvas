@@ -38,22 +38,15 @@ struct Point {
     std::array<GLfloat, 3> normal;
 };
 
-/* struct MaterialBlock {
+struct MaterialBlock {
     std::array<GLfloat, 4> ambientColor;
     std::array<GLfloat, 4> diffuseColor;
     std::array<GLfloat, 4> specularColor;
-}; */
-
-struct MaterialBlock {
-    GLfloat ambientColor[4];
-    GLfloat diffuseColor[4];
-    GLfloat specularColor[4];
 };
 
 struct LightSourceBlock {
-    GLfloat intensity;
     GLfloat radius;
-    std::array<GLfloat, 4> absoluteLocation;
+    std::array<GLfloat, 3> absoluteLocation;
 };
 
 namespace ShaderCtrlBit {

@@ -12,7 +12,7 @@ layout(location = 2) out vec3 normal_out;
 
 void main(){
     texCoord_out = texCoord;
-    normal_out = normal;
+    normal_out = mat3(transpose(inverse(localMatrix))) * normal;
 
     gl_Position = worldMatrix * localMatrix * vec4(pos.x, pos.y, pos.z, 1.0);
 }
