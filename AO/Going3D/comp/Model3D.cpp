@@ -30,6 +30,34 @@ GLuint loadModelData(ModelComposite* Model){
   return VAO;
 }
 
+int loadModelMaterial(const aiScene* scene, ModelComposite* Model, unsigned int iteration){
+  if(scene->HasMaterials()){
+    aiColor4D ambientColor; 
+    scene->mMaterials[iteration]->Get(AI_MATKEY_COLOR_AMBIENT, ambientColor);
+	aiColor4D diffuseColor;
+	scene->mMaterials[iteration]->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
+	aiColor4D specularColor;
+	scene->mMaterials[iteration]->Get(AI_MATKEY_COLOR_SPECULAR, specularColor);
+
+    aiString ambientTexture;
+    scene->mMaterials[iteration]->Get(AI_MATKEY_TEXTURE(aiTextureType_AMBIENT, 0), ambientTexture);
+    aiString diffuseTexture;
+    scene->mMaterials[iteration]->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), diffuseTexture);
+    aiString specularTexture;
+    scene->mMaterials[iteration]->Get(AI_MATKEY_TEXTURE(aiTextureType_SPECULAR, 0), specularTexture);
+
+    Model->materialBlock = {
+      { ambientColor.r, ambientColor.g, ambientColor.b, ambientColor.a },
+	    { diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a },
+	    { specularColor.r, specularColor.g, specularColor.b, specularColor.a }
+    };
+    return 0;
+  }  else {
+    std::cerr << "No model materials present" << std::endl;
+    return -1;
+  }
+}
+
 int loadOpenGL_Faces(aiMesh* currentMesh, ModelComposite* Model){
   if(currentMesh->HasFaces()){
     for(unsigned int f = 0; f < currentMesh->mNumFaces; f++){
@@ -170,18 +198,7 @@ int iterateNodes(const aiScene* scene, std::vector<ModelComposite>* MPerComponen
           { allVertexPos.at(i), allVertexColors.at(i), allVertexTexCoord.at(i), allVertexNormals.at(i) }
         );
 
-        aiColor4D ambientColor; 
-        scene->mMaterials[m]->Get(AI_MATKEY_COLOR_AMBIENT, ambientColor);
-		    aiColor4D diffuseColor;
-		    scene->mMaterials[m]->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
-		    aiColor4D specularColor;
-		    scene->mMaterials[m]->Get(AI_MATKEY_COLOR_SPECULAR, specularColor);
-
-        Model.materialBlock = {
-          { ambientColor.r, ambientColor.g, ambientColor.b, ambientColor.a },
-		      { diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a },
-		      { specularColor.r, specularColor.g, specularColor.b, specularColor.a }
-        };
+        loadModelMaterial(scene, &Model, m);
 
         Model.VertexArray = loadModelData(&Model);
         Model.renderParams[ShaderCtrlBit::drawable] = 1;

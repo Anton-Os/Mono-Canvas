@@ -5,6 +5,9 @@ set(GDRIVE_NAMES)
 
 list(APPEND GDRIVE_URLS
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzY0RqaWRDejdIS1k"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8Zzdmp4RVBHdlFNeDA"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzbTdXeHV1X3J2U1k"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzUjB5R1pINWRxQTQ"
 
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8Zzc0dNSjlRbThQaFU"
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzdUVvOXk4XzlWNTg"
@@ -19,6 +22,9 @@ list(APPEND GDRIVE_URLS
 
 list(APPEND GDRIVE_NAMES
     "LowPolyMill.fbx"
+    "KSR-29-SniperRifle.fbx"
+    "Wolf-Anim.fbx"
+    "Dragon-Anim.fbx"
     
     "BrushedSteel.ktx"
     "ScratchedSteel.ktx"

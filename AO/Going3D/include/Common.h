@@ -38,6 +38,12 @@ struct Point {
     std::array<GLfloat, 3> normal;
 };
 
+struct Texel {
+    GLuint height;
+    GLuint width;
+    std::array<GLfloat, 4> texColor;
+};
+
 struct MaterialBlock {
     std::array<GLfloat, 4> ambientColor;
     std::array<GLfloat, 4> diffuseColor;
@@ -68,9 +74,9 @@ struct ModelStatic {
 struct ModelComposite {
     GLuint VertexArray;
     std::vector<Point> modelMeshes;
+    std::vector<Texel> textureEmb;
     std::vector<GLuint> modelIndices;
     glm::mat4 relativePos;
-    GLuint currentTexture;
     MaterialBlock materialBlock;
 
     std::bitset<3> renderParams;
