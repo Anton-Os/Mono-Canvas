@@ -46,7 +46,8 @@ namespace LitEnv_UNI {
 struct litEnv_UniformData {
     glm::mat4 worldMatrix;
     glm::mat4 localMatrix;
-    std::array<GLfloat, 3> cameraPos;
+    // std::array<GLfloat, 3> cameraPos;
+    glm::vec3 cameraPos;
 
     MaterialBlock materialBlock;
     LightSourceBlock lightSourceBlock;
@@ -59,7 +60,8 @@ public:
     }
     void worldMatrix(glm::mat4 worldMatrix);
     void localMatrix(glm::mat4 localMatrix);
-    void cameraPos(std::array<GLfloat, 3> cameraPos);
+    // void cameraPos(std::array<GLfloat, 3> cameraPos);
+    void cameraPos(glm::vec3 cameraPos);
     void materialBlock(MaterialBlock* materialBlock);
     void lightSourceBlock(LightSourceBlock* lightSourceBlock);
 

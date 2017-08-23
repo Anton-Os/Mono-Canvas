@@ -22,7 +22,7 @@ namespace Key {
 	GLboolean W, A, S, D, Q, E = false;
 }
 
-glm::vec3 camMovement = glm::vec3(0.0, 0.0, -100.0f);
+glm::vec3 cameraPos = glm::vec3(0.0, 0.0, -100.0f);
 glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.f);
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -40,12 +40,12 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_Q && action == GLFW_RELEASE) Key::Q = false;
 	if (key == GLFW_KEY_E && action == GLFW_RELEASE) Key::E = false;
 
-	if(Key::W) camMovement.z += 3.0f; 
-	if(Key::A) camMovement.x += 3.0f; 
-	if(Key::S) camMovement.z -= 3.0f; 
-	if(Key::D) camMovement.x -= 3.0f; 
-	if(Key::Q) camMovement.y -= 1.0f; 
-	if(Key::E) camMovement.y += 1.0f; 
+	if(Key::W) cameraPos.z += 3.0f; 
+	if(Key::A) cameraPos.x += 3.0f; 
+	if(Key::S) cameraPos.z -= 3.0f; 
+	if(Key::D) cameraPos.x -= 3.0f; 
+	if(Key::Q) cameraPos.y -= 1.0f; 
+	if(Key::E) cameraPos.y += 1.0f; 
 }
 
 int main(int argc, char** argv){
@@ -92,8 +92,8 @@ int main(int argc, char** argv){
     GLuint litEnv_glsl = compileShaders(litEnv_vert, litEnv_frag);
 
     std::vector<ModelComposite> MPerComponent;
-    // std::string LowPolyMill_filePath = parentDir + "\\..\\..\\data\\LowPolyMill.fbx";
-	std::string LowPolyMill_filePath = parentDir + "\\..\\..\\data\\KSR-29-SniperRifle.fbx";
+    std::string LowPolyMill_filePath = parentDir + "\\..\\..\\data\\LowPolyMill.fbx";
+	// std::string LowPolyMill_filePath = parentDir + "\\..\\..\\data\\KSR-29-SniperRifle.fbx";
 
     assimpImportCPP(LowPolyMill_filePath, &MPerComponent);
 
@@ -102,6 +102,7 @@ int main(int argc, char** argv){
 	litEnv_UniformData litEnv_Uniforms;
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.f);
 	litEnv_Uniforms.worldMatrix = perspectiveMatrix;
+	litEnv_Uniforms.localMatrix = glm::mat4(1);
 	litEnv_Uniforms.cameraPos = {0.0f, 0.0f, 0.0f}; 
 
 	LitEnv litEnvUtil(litEnv_glsl);
@@ -112,12 +113,15 @@ int main(int argc, char** argv){
         glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		litEnv_Uniforms.worldMatrix = glm::translate(perspectiveMatrix, camMovement);
+		litEnv_Uniforms.cameraPos = cameraPos;
+		litEnvUtil.cameraPos(litEnv_Uniforms.cameraPos);
+		litEnv_Uniforms.worldMatrix = glm::translate(perspectiveMatrix, cameraPos);
 		litEnvUtil.worldMatrix(litEnv_Uniforms.worldMatrix);
 
         for(unsigned int d = 0; d < MPerComponent.size(); d++){
             if(MPerComponent.at(d).renderParams[ShaderCtrlBit::drawable] == 1){
 				litEnvUtil.materialBlock(&MPerComponent.at(d).materialBlock);
+				litEnvUtil.localMatrix(MPerComponent.at(d).relativePos);
                 glBindVertexArray(MPerComponent.at(d).VertexArray);
 				glDrawElements(GL_TRIANGLES, MPerComponent.at(d).modelIndices.size(), GL_UNSIGNED_INT, 0);
 			}

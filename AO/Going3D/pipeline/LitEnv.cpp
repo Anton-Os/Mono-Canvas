@@ -20,8 +20,12 @@ void LitEnv::localMatrix(glm::mat4 localMatrix){
      glUniformMatrix4fv(LitEnv::uniformLocation[LitEnv_UNI::localMatrix], 1, GL_FALSE, glm::value_ptr(localMatrix));
 }
 
-void LitEnv::cameraPos(std::array<GLfloat, 3> cameraPos){
+/* void LitEnv::cameraPos(std::array<GLfloat, 3> cameraPos){
     glUniform3fv(LitEnv::uniformLocation[LitEnv_UNI::cameraPos], 1, cameraPos.data());
+} */
+
+void LitEnv::cameraPos(glm::vec3 cameraPos){
+    glUniform3fv(LitEnv::uniformLocation[LitEnv_UNI::cameraPos], 1, glm::value_ptr(cameraPos));
 }
 
 void LitEnv::materialBlock(MaterialBlock* materialBlock){
