@@ -52,7 +52,8 @@ struct MaterialBlock {
 
 struct LightSourceBlock {
     GLfloat radius;
-    std::array<GLfloat, 3> absoluteLocation;
+    // std::array<GLfloat, 3> absoluteLocation;
+    glm::vec3 absoluteLocation;
 };
 
 namespace ShaderCtrlBit {

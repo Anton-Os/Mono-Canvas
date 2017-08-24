@@ -20,14 +20,22 @@ layout(std430, binding = 2) buffer lightSourceBlock {
 layout(location = 0) out vec4 output_frag;
 
 void main(){
-    vec3 diffuseLightDirection = normalize(cameraPos - pos);
-    // float diffuseStrength = min(dot(normal, viewDirection), 1.0);
-    float diffuseStrength = dot(normal, diffuseLightDirection) * 6.0;
+    vec3 viewDirection = normalize(pos - cameraPos);
+    // float diffuseStrength = dot(normal, viewDirection);
+    float diffuseStrength = distance(pos, cameraPos);
+    float diffuseFactor = 5;
     vec4 diffuseLight = + vec4(
-        diffuseColor.r * diffuseStrength,
-        diffuseColor.g * diffuseStrength,
-        diffuseColor.b * diffuseStrength,
+        diffuseColor.r * diffuseStrength / diffuseStrength,
+        diffuseColor.g * diffuseStrength / diffuseStrength,
+        diffuseColor.b * diffuseStrength / diffuseStrength,
         diffuseColor.a
     );
-    output_frag = diffuseLight;
+    if(cameraPos == vec3(0.0, 0.0, -100.0)){
+        output_frag = vec4(0.0, 0.0, 1.0, 1.0);
+    } else if(diffuseStrength < 300.0){
+        output_frag = vec4(1.0, 0.0, 0.0, 1.0);
+    } else {
+        output_frag = vec4(0.0, 1.0, 0.0, 1.0);
+    }
+    //output_frag = diffuseLight;
 }

@@ -58,7 +58,7 @@ void LitEnv::setUniforms(litEnv_UniformData* Uniforms){
     LitEnv::cameraPos(Uniforms->cameraPos);
 
     LightSourceBlock lightSourceBlock = {
-        100.0f, {0.0f, 0.0f, 0.0f}
+        100.0f, glm::vec3(0.0, 0.0, 0.0)
     };
     LitEnv::lightSourceBlock(&lightSourceBlock);
 }
@@ -74,7 +74,7 @@ void LitEnv::setUniforms(litEnv_UniformData* Uniforms, ModelComposite* Model){
 
     LitEnv::worldMatrix(Uniforms->worldMatrix);
     LitEnv::localMatrix(Uniforms->localMatrix);
-    LitEnv::cameraPos(Uniforms->cameraPos);
+    // LitEnv::cameraPos(Uniforms->cameraPos);
     LitEnv::materialBlock(&Model->materialBlock);
 
     LightSourceBlock lightSourceBlock = {

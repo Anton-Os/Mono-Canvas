@@ -24,6 +24,7 @@ namespace Key {
 
 glm::vec3 cameraPos = glm::vec3(0.0, 0.0, -100.0f);
 glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.f);
+GLfloat movementSpeed = 10.0f;
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (key == GLFW_KEY_W && action == GLFW_PRESS) Key::W = true;
@@ -40,12 +41,12 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_Q && action == GLFW_RELEASE) Key::Q = false;
 	if (key == GLFW_KEY_E && action == GLFW_RELEASE) Key::E = false;
 
-	if(Key::W) cameraPos.z += 3.0f; 
-	if(Key::A) cameraPos.x += 3.0f; 
-	if(Key::S) cameraPos.z -= 3.0f; 
-	if(Key::D) cameraPos.x -= 3.0f; 
-	if(Key::Q) cameraPos.y -= 1.0f; 
-	if(Key::E) cameraPos.y += 1.0f; 
+	if(Key::W) cameraPos.z += movementSpeed; 
+	if(Key::A) cameraPos.x += movementSpeed;
+	if(Key::S) cameraPos.z -= movementSpeed;
+	if(Key::D) cameraPos.x -= movementSpeed;
+	if(Key::Q) cameraPos.y -= movementSpeed;
+	if(Key::E) cameraPos.y += movementSpeed;
 }
 
 int main(int argc, char** argv){
@@ -103,7 +104,7 @@ int main(int argc, char** argv){
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.f);
 	litEnv_Uniforms.worldMatrix = perspectiveMatrix;
 	litEnv_Uniforms.localMatrix = glm::mat4(1);
-	litEnv_Uniforms.cameraPos = {0.0f, 0.0f, 0.0f}; 
+	litEnv_Uniforms.cameraPos = cameraPos; 
 
 	LitEnv litEnvUtil(litEnv_glsl);
     litEnvUtil.setUniforms(&litEnv_Uniforms);
@@ -113,8 +114,10 @@ int main(int argc, char** argv){
         glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		/* litEnv_Uniforms.lightSourceBlock.absoluteLocation = cameraPos;
+		litEnvUtil.lightSourceBlock(&litEnv_Uniforms.lightSourceBlock); */
 		litEnv_Uniforms.cameraPos = cameraPos;
-		litEnvUtil.cameraPos(litEnv_Uniforms.cameraPos);
+		litEnvUtil.cameraPos(cameraPos);
 		litEnv_Uniforms.worldMatrix = glm::translate(perspectiveMatrix, cameraPos);
 		litEnvUtil.worldMatrix(litEnv_Uniforms.worldMatrix);
 
