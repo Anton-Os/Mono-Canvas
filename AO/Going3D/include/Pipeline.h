@@ -11,8 +11,7 @@ namespace CF_UNIF {
     enum CF_UNIF {
         mvMatrix,
         mvpMatrix,
-        nMatrix,
-        camPos
+        nMatrix
     };
 };
 
@@ -22,10 +21,9 @@ public:
     void mvMatrix(glm::mat4 mvMatrix);
     void mvpMatrix(glm::mat4 mvpMatrix);
     void nMatrix(glm::mat3 nMatrix);
-    void camPos(glm::vec3 camPos);
     void materialBlock(MaterialBlock* materialBlock);
-    void setUniforms();
+    void initUniforms();
 private:
-    GLint unifLoc[4];
-    GLuint SSBO;
+    GLint unifLoc[3];
+    GLuint SSBO[1];
 };

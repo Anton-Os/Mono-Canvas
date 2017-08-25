@@ -75,7 +75,7 @@ struct ModelStatic {
 struct ModelComposite {
     GLuint VertexArray;
     std::vector<Point> modelMeshes;
-    std::vector<Texel> textureEmb;
+    // std::vector<Texel> textureEmb;
     std::vector<GLuint> modelIndices;
     glm::mat4 relativePos;
     MaterialBlock materialBlock;
