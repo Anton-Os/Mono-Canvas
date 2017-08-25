@@ -91,3 +91,4 @@ int loadModelData(std::vector<Point> dataToLoad, std::vector<GLuint> dataIndices
 GLuint loadModelData(ModelStatic* Model);
 
 #include "ShaderCtrl.h"
+#include "Pipeline.h"
