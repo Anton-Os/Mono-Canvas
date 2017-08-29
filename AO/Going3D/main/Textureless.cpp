@@ -16,8 +16,6 @@ const std::string getParentDirectory(const char* path) {
 	return result;
 }
 
-noBlocks_UniformData noBlocks_Uniforms;
-
 namespace Key {
 	GLboolean W, A, S, D, Q, E = false;
 }
@@ -100,31 +98,27 @@ int main(int argc, char** argv){
 
 	glUseProgram(litEnv_glsl);
 
-	litEnv_UniformData litEnv_Uniforms;
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.f);
-	litEnv_Uniforms.worldMatrix = perspectiveMatrix;
-	litEnv_Uniforms.localMatrix = glm::mat4(1);
-	litEnv_Uniforms.cameraPos = cameraPos; 
+	glm::mat4 mvMatrix, mvpMatrix = glm::mat4(1); 
+	glm::mat3 nMatrix(1);
 
 	LitEnv litEnvUtil(litEnv_glsl);
-    litEnvUtil.setUniforms(&litEnv_Uniforms);
+	litEnvUtil.setUniforms();
+	std::array<GLfloat, 3> dummyLightSource = {0.0, 0.0, -50.0f};
+	litEnvUtil.lightSourcePos(dummyLightSource);
 
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
         glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		/* litEnv_Uniforms.lightSourceBlock.absoluteLocation = cameraPos;
-		litEnvUtil.lightSourceBlock(&litEnv_Uniforms.lightSourceBlock); */
-		litEnv_Uniforms.cameraPos = cameraPos;
-		litEnvUtil.cameraPos(cameraPos);
-		litEnv_Uniforms.worldMatrix = glm::translate(perspectiveMatrix, cameraPos);
-		litEnvUtil.worldMatrix(litEnv_Uniforms.worldMatrix);
-
         for(unsigned int d = 0; d < MPerComponent.size(); d++){
             if(MPerComponent.at(d).renderParams[ShaderCtrlBit::drawable] == 1){
+				mvMatrix = glm::translate(glm::mat4(1), cameraPos) * MPerComponent.at(d).relativePos;
+				litEnvUtil.mvMatrix(mvMatrix);
+				litEnvUtil.mvpMatrix(perspectiveMatrix * mvMatrix);
+				litEnvUtil.nMatrix(glm::mat3(glm::transpose(glm::inverse(mvMatrix))));
 				litEnvUtil.materialBlock(&MPerComponent.at(d).materialBlock);
-				litEnvUtil.localMatrix(MPerComponent.at(d).relativePos);
                 glBindVertexArray(MPerComponent.at(d).VertexArray);
 				glDrawElements(GL_TRIANGLES, MPerComponent.at(d).modelIndices.size(), GL_UNSIGNED_INT, 0);
 			}

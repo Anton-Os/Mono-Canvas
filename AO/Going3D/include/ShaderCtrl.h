@@ -37,9 +37,10 @@ public:
 
 namespace LitEnv_UNI {
     enum LitEnv_UNI {
-        worldMatrix,
-        localMatrix,
-        cameraPos
+        mvMatrix,
+        mvpMatrix,
+        nMatrix,
+        lightSourcePos
     };
 };
 
@@ -58,13 +59,14 @@ public:
     LitEnv(GLuint shaderProg){
         shaderProgID = shaderProg;
     }
-    void worldMatrix(glm::mat4 worldMatrix);
-    void localMatrix(glm::mat4 localMatrix);
-    // void cameraPos(std::array<GLfloat, 3> cameraPos);
-    void cameraPos(glm::vec3 cameraPos);
+    void mvMatrix(glm::mat4 mvMatrix);
+    void mvpMatrix(glm::mat4 mvpMatrix);
+    void nMatrix(glm::mat3 nMatrix);
+    void lightSourcePos(std::array<GLfloat, 3> lightSourcePos);
     void materialBlock(MaterialBlock* materialBlock);
-    void lightSourceBlock(LightSourceBlock* lightSourceBlock);
+    // void lightSourceBlock(LightSourceBlock* lightSourceBlock);
 
+    void setUniforms();
     void setUniforms(litEnv_UniformData* Uniforms);
     void setUniforms(litEnv_UniformData* Uniforms, ModelComposite* Model);
 private:

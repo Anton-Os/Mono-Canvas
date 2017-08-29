@@ -25,7 +25,6 @@ add_executable(Textureless
     comp/Model3D.cpp
     # comp/ShaderCtrl.cpp
     pipeline/LitEnv.cpp
-    pipeline/CamFlash.cpp
     main/Textureless.cpp
 )
 
@@ -41,35 +40,12 @@ target_link_libraries(Textureless
     assimp
 )
 
-add_executable(FirstPerson
-    comp/LoadTextures.cpp
-    comp/LoadShaders.cpp
-    comp/Model3D.cpp
-    pipeline/CamFlash.cpp
-    main/FirstPerson.cpp
-)
-
-target_include_directories(FirstPerson
-    PUBLIC include
-)
-
-target_link_libraries(FirstPerson
-    GLEW::glew_s
-    glfw
-    gli
-    glm
-    assimp
-)
-
 # WORK WITH SHADER FILES
 
 set(SRC_SHADER_LIST)
 set(OUTPUT_SHADER_LIST)
-foreach(current_shader # "Viewer3D.vert" "Viewer3D.frag"
-                       "LitEnv.vert" "LitEnv.frag"
-                       # "LightSpace.vert" "LightSpace.frag"
+foreach(current_shader "LitEnv.vert" "LitEnv.frag"
                        "NoBlocks.vert" "NoBlocks.frag"
-                       "CamFlash.vert" "CamFlash.frag"
 )
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}"
         DEPENDS "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"
@@ -88,4 +64,3 @@ add_custom_target(MonoShaders
 
 add_dependencies(AssimpModels MonoShaders)
 add_dependencies(Textureless MonoShaders)
-add_dependencies(FirstPerson MonoShaders)
