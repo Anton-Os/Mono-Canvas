@@ -1,6 +1,5 @@
 
 #include "Common.h"
-// #include "Assimp.h"
 
 #include <GLFW/glfw3.h>
 
@@ -99,13 +98,10 @@ int main(int argc, char** argv){
 	glUseProgram(litEnv_glsl);
 
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.f);
-	glm::mat4 mvMatrix, mvpMatrix = glm::mat4(1); 
-	glm::mat3 nMatrix(1);
+	glm::mat4 mvMatrix(1);
 
 	LitEnv litEnvUtil(litEnv_glsl);
-	litEnvUtil.setUniforms();
-	std::array<GLfloat, 3> dummyLightSource = {0.0, 0.0, -50.0f};
-	litEnvUtil.lightSourcePos(dummyLightSource);
+	litEnvUtil.initUniforms();
 
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
