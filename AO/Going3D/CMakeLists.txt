@@ -40,6 +40,26 @@ target_link_libraries(Textureless
     assimp
 )
 
+add_executable(FluidCamera
+    comp/LoadTextures.cpp
+    comp/LoadShaders.cpp
+    comp/Model3D.cpp
+    pipeline/LitEnv.cpp
+    main/FluidCamera.cpp
+)
+
+target_include_directories(FluidCamera
+    PUBLIC include
+)
+
+target_link_libraries(FluidCamera
+    GLEW::glew_s
+    glfw
+    gli
+    glm
+    assimp
+)
+
 # WORK WITH SHADER FILES
 
 set(SRC_SHADER_LIST)

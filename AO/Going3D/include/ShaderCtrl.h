@@ -35,44 +35,6 @@ public:
     void setUniforms(noBlocks_UniformData* noBlocks_Uniforms);
 };
 
-/* namespace LitEnv_UNI {
-    enum LitEnv_UNI {
-        mvMatrix,
-        mvpMatrix,
-        nMatrix,
-        lightSourcePos
-    };
-};
-
-struct litEnv_UniformData {
-    glm::mat4 worldMatrix;
-    glm::mat4 localMatrix;
-    // std::array<GLfloat, 3> cameraPos;
-    glm::vec3 cameraPos;
-
-    MaterialBlock materialBlock;
-    LightSourceBlock lightSourceBlock;
-};
-
-class LitEnv : public AnyShader {
-public:
-    LitEnv(GLuint shaderProg){
-        shaderProgID = shaderProg;
-    }
-    void mvMatrix(glm::mat4 mvMatrix);
-    void mvpMatrix(glm::mat4 mvpMatrix);
-    void nMatrix(glm::mat3 nMatrix);
-    void lightSourcePos(std::array<GLfloat, 3> lightSourcePos);
-    void materialBlock(MaterialBlock* materialBlock);
-    // void lightSourceBlock(LightSourceBlock* lightSourceBlock);
-
-    void setUniforms();
-    void setUniforms(litEnv_UniformData* Uniforms);
-    void setUniforms(litEnv_UniformData* Uniforms, ModelComposite* Model);
-private:
-    GLuint SSBO[2];
-}; */
-
 class BaseShader {
 protected:
     BaseShader(GLuint shaderProg){ 

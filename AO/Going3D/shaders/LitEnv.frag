@@ -16,12 +16,11 @@ layout(location = 0) out vec4 frag_out;
 
 void main(){
     float diffuseStrength = -dot(normalize(vec3(pos)), normalize(normal));
-    vec4 defaultColor = vec4(1.0, 1.0, 1.0, 1.0);
     vec4 diffuseLight = vec4(
         diffuseColor.r * diffuseStrength,
         diffuseColor.g * diffuseStrength,
         diffuseColor.b * diffuseStrength,
         diffuseColor.a
-    ); 
+    );
     frag_out = diffuseLight;
 }
