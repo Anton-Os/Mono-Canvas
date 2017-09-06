@@ -25,7 +25,11 @@ GLboolean cursorPresent = true;
 GLdouble cursorInitX, cursorInitY;
 GLfloat hAngle, vAngle;
 // camRoll = 1.0;
-GLfloat movementSpeed = 10.0f;
+
+namespace Player {
+	GLfloat height = 3.0f; 
+	GLfloat movementSpeed = 10.0f;
+}
 
 void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
 
@@ -56,12 +60,12 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_Q && action == GLFW_RELEASE) Key::Q = false;
 	if (key == GLFW_KEY_E && action == GLFW_RELEASE) Key::E = false;
 
-	if(Key::W) cameraPos.z += movementSpeed; 
-	if(Key::A) cameraPos.x += movementSpeed;
-	if(Key::S) cameraPos.z -= movementSpeed;
-	if(Key::D) cameraPos.x -= movementSpeed;
-	if(Key::Q) cameraPos.y -= movementSpeed;
-	if(Key::E) cameraPos.y += movementSpeed;
+	if(Key::W) cameraPos.z += Player::movementSpeed; 
+	if(Key::A) cameraPos.x += Player::movementSpeed;
+	if(Key::S) cameraPos.z -= Player::movementSpeed;
+	if(Key::D) cameraPos.x -= Player::movementSpeed;
+	if(Key::Q) cameraPos.y -= Player::movementSpeed;
+	if(Key::E) cameraPos.y += Player::movementSpeed;
 }
 
 int main(int argc, char** argv){
@@ -115,7 +119,7 @@ int main(int argc, char** argv){
     GLuint litEnv_glsl = compileShaders(litEnv_vert, litEnv_frag);
 	std::string Sphere_vert = parentDir + "\\shaders\\Sphere.vert";
 	std::string Sphere_frag = parentDir + "\\shaders\\Sphere.frag";
-	GLuint Sphere_glsl = compileShaders();
+	GLuint Sphere_glsl = compileShaders(Sphere_vert, Sphere_frag);
 
     std::vector<ModelComposite> MPerComponent;
     std::string LowPolyMill_filePath = parentDir + "\\..\\..\\data\\LowPolyMill.fbx";
@@ -123,16 +127,18 @@ int main(int argc, char** argv){
 
     assimpImportCPP(LowPolyMill_filePath, &MPerComponent);
 
-	glUseProgram(litEnv_glsl);
-
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.f);
 	glm::mat4 mvMatrix(1);
 	glm::vec3 lookPos(1);
 
+	glUseProgram(litEnv_glsl);
 	LitEnv litEnvUtil(litEnv_glsl);
 	litEnvUtil.initUniforms();
 
-	// error = glGetError();
+	glUseProgram(Sphere_glsl);
+	LitEnv sphereUtil(Sphere_glsl);
+	sphereUtil.initUniforms();
+
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
         glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
@@ -141,7 +147,7 @@ int main(int argc, char** argv){
 		lookPos = glm::vec3(cameraPos.x + std::sin(hAngle), cameraPos.y + std::sin(vAngle), cameraPos.z + std::cos(hAngle + vAngle));
 		mvMatrix = glm::lookAt(cameraPos, lookPos, glm::vec3(0.0, 1.0, 0.0));
 
-        for(unsigned int d = 0; d < MPerComponent.size(); d++){
+        /* for(unsigned int d = 0; d < MPerComponent.size(); d++){
             if(MPerComponent.at(d).renderParams[ShaderCtrlBit::drawable] == 1){
 				// mvMatrix *= glm::translate(glm::mat4(1), cameraPos) * MPerComponent.at(d).relativePos;
 				litEnvUtil.mvMatrix(mvMatrix);
@@ -155,7 +161,18 @@ int main(int argc, char** argv){
 				// glEndQuery(GL_PRIMITIVES_GENERATED);
 				// glGetQueryObjectui64v(occQuery[d], GL_QUERY_RESULT, &occQueryResult[d]);
 			}
-		}
+		} */
+
+		ModelComposite Sphere;
+		createSphere(&Sphere, 100.0, 60, 60);
+
+		litEnvUtil.mvMatrix(mvMatrix);
+		sphereUtil.mvpMatrix(perspectiveMatrix * mvMatrix);
+		sphereUtil.nMatrix(glm::mat3(glm::transpose(glm::inverse(mvMatrix))));
+		glBindVertexArray(Sphere.VertexArray);
+		glPointSize(8.0f);
+		glDrawArrays(GL_POINTS, 0, Sphere.modelMeshes.size());
+
         glBindVertexArray(0);
 		glfwSwapBuffers(window);
 	}

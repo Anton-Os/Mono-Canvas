@@ -9,13 +9,27 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 
-int createSphere(ModelComposite* sphereModel, GLfloat radius, GLuint slices, GLuint stacks){
+int createSphere(ModelComposite* sphereModel, GLfloat size, GLuint slices, GLuint stacks){
     GLfloat uTexInc = 1.0 / slices;
     GLfloat vTexInc = 1.0 / stacks;
-    GLfloat uTex, vTex = 0.0;
+    GLfloat uTex = 0.0;
+    GLfloat vTex = 0.0;
     Point spherePoint;
     for(GLuint sl = 0; sl < slices; sl++){
+        float pSlice = glm::pi<float>() * (-0.5 + (float) (sl - 1) / slices);
+        float pSliceOpp = std::sin(pSlice);
+        float pSliceAdj = std::cos(pSlice);
+
+        /* float cSlice = glm::pi<float>() * (-0.5 + (float) sl / slices);
+        float cSliceOpp = std::sin(cSlice);
+        float cSliceAdj = std::cos(cSlice); */
         for(GLuint st = 0; st < stacks; st++){
+            float pStack = 2 * glm::pi<float>() * (float) (st - 1) / stacks;
+            float pStackOpp = std::cos(pStack);
+            float pStackAdj = std::sin(pStack);
+            spherePoint.pos = { pStackAdj * pSliceAdj * size, pStackOpp * pSliceAdj * size, pSliceOpp * size };
+            spherePoint.color = genRandomColors(0.5); // marked for removal
+            spherePoint.normal = {0.0, 0.0, 0.0}; // marked for removal
             spherePoint.texCoord = { uTex, vTex };
             sphereModel->modelMeshes.push_back(spherePoint);
             vTex += vTexInc;

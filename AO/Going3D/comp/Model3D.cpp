@@ -1,6 +1,28 @@
 #include "Common.h"
 #include <stack>
 
+void genRandomColors(std::vector<std::array<GLfloat, 4>>* allVertexColors, GLuint vertexCount, GLfloat alphaFactor){
+  srand(time(NULL));
+  GLfloat randomColor_R, randomColor_G, randomColor_B;
+  for(unsigned int c = 0; c < vertexCount; c++){
+    randomColor_R = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
+    randomColor_G = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
+    randomColor_B = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
+    allVertexColors->push_back({ randomColor_R, randomColor_G, randomColor_B, alphaFactor });
+  }
+}
+
+std::array<GLfloat, 4> genRandomColors(GLfloat alphaFactor){
+  srand(time(NULL));
+  GLfloat randomColor_R, randomColor_G, randomColor_B;
+
+  randomColor_R = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
+  randomColor_G = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
+  randomColor_B = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
+  std::array<GLfloat, 4> returnVal = { randomColor_R, randomColor_G, randomColor_B, alphaFactor };
+  return returnVal;
+}
+
 GLuint loadModelData(ModelComposite* Model){
   GLuint VAO, VBO, EBO;
   glGenVertexArrays(1, &VAO);
@@ -133,14 +155,7 @@ void loadOpenGL_VertexColor(aiMesh* currentMesh, ModelComposite* Model, std::vec
     Model->renderParams[ShaderCtrlBit::color] = 1;
   } else {
     std::cout << "No vertex colors present, proceeding to generate at random..." << std::endl;
-    srand(time(NULL));
-    GLfloat randomColor_R, randomColor_G, randomColor_B;
-    for(unsigned int c = 0; c < currentMesh->mNumVertices; c++){
-      randomColor_R = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
-      randomColor_G = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
-      randomColor_B = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
-      allVertexColors->push_back( { randomColor_R, randomColor_G, randomColor_B, 0.5f } );
-    }
+    genRandomColors(allVertexColors, currentMesh->mNumVertices, 0.5f);
     Model->renderParams[ShaderCtrlBit::color] = 1;
   }
 }

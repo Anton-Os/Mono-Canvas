@@ -80,7 +80,15 @@ struct ModelComposite {
 int assimpImportCPP(const std::string& pFile);
 int assimpImportCPP(const std::string &pFile, std::vector<ModelComposite>* MPerComponent);
 
+void genRandomColors(std::vector<std::array<GLfloat, 4>>* allVertexColors, GLfloat alphaFactor);
+void genRandomColors(std::vector<std::array<GLfloat, 4>>* allVertexColors, GLuint vertexCount, GLfloat alphaFactor);
+std::array<GLfloat, 4> genRandomColors(GLfloat alphaFactor);
+
 GLuint loadModelData(ModelComposite* Model);
 GLuint loadModelData(ModelComposite* Model, std::bitset<5> renderParams);
+
+// From SphereAo.cpp
+
+int createSphere(ModelComposite* sphereModel, GLfloat size, GLuint slices, GLuint stacks);
 
 #include "ShaderCtrl.h"

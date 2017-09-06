@@ -67,7 +67,7 @@ add_executable(Globe
     comp/Sphere.cpp
     comp/SphereAo.cpp
     pipeline/LitEnv.cpp
-    main/FluidCamera.cpp
+    main/Globe.cpp
 )
 
 target_include_directories(Globe
