@@ -31,8 +31,8 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
 
 	if(cursorPresent) cursorPresent = false;
 	else {
-		if(xpos != cursorInitX) hAngle += GLfloat((xpos - cursorInitX) / 30);
-		if(ypos != cursorInitY) vAngle += GLfloat((ypos - cursorInitY) / 30);
+		if(xpos != cursorInitX) hAngle -= GLfloat((xpos - cursorInitX) / 90);
+		if(ypos != cursorInitY) vAngle -= GLfloat((ypos - cursorInitY) / 90);
 
 		std::cout << "Horizontal Angle: " << hAngle << " Vertical Angle: " << vAngle << std::endl;
 	}
@@ -101,11 +101,17 @@ int main(int argc, char** argv){
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// GLuint error;
+	// GLuint occQuery[10];
+	// GLuint64 occQueryResult[10];
+	// glGenQueries(10, occQuery);
 
 	std::string parentDir = getParentDirectory(argv[0]);
 
-	std::string litEnv_vert = parentDir + "\\shaders\\LitEnv.vert";
-    std::string litEnv_frag = parentDir + "\\shaders\\LitEnv.frag";
+	// std::string litEnv_vert = parentDir + "\\shaders\\LitEnv.vert";
+    // std::string litEnv_frag = parentDir + "\\shaders\\LitEnv.frag";
+	std::string litEnv_vert = parentDir + "\\shaders\\V-Instanced.vert";
+	std::string litEnv_frag = parentDir + "\\shaders\\V-Instanced.frag";
     GLuint litEnv_glsl = compileShaders(litEnv_vert, litEnv_frag);
 
     std::vector<ModelComposite> MPerComponent;
@@ -123,6 +129,7 @@ int main(int argc, char** argv){
 	LitEnv litEnvUtil(litEnv_glsl);
 	litEnvUtil.initUniforms();
 
+	// error = glGetError();
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
         glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
@@ -133,13 +140,17 @@ int main(int argc, char** argv){
 
         for(unsigned int d = 0; d < MPerComponent.size(); d++){
             if(MPerComponent.at(d).renderParams[ShaderCtrlBit::drawable] == 1){
-				// mvMatrix = glm::translate(glm::mat4(1), cameraPos) * MPerComponent.at(d).relativePos;
+				// mvMatrix *= glm::translate(glm::mat4(1), cameraPos) * MPerComponent.at(d).relativePos;
 				litEnvUtil.mvMatrix(mvMatrix);
 				litEnvUtil.mvpMatrix(perspectiveMatrix * mvMatrix);
 				litEnvUtil.nMatrix(glm::mat3(glm::transpose(glm::inverse(mvMatrix))));
 				litEnvUtil.materialBlock(&MPerComponent.at(d).materialBlock);
                 glBindVertexArray(MPerComponent.at(d).VertexArray);
+				
+				// glBeginQuery(GL_PRIMITIVES_GENERATED, occQuery[d]);
 				glDrawElements(GL_TRIANGLES, MPerComponent.at(d).modelIndices.size(), GL_UNSIGNED_INT, 0);
+				// glEndQuery(GL_PRIMITIVES_GENERATED);
+				// glGetQueryObjectui64v(occQuery[d], GL_QUERY_RESULT, &occQueryResult[d]);
 			}
 		}
         glBindVertexArray(0);

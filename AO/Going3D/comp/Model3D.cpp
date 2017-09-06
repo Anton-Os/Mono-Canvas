@@ -30,14 +30,14 @@ GLuint loadModelData(ModelComposite* Model){
   return VAO;
 }
 
-int loadModelMaterial(const aiScene* scene, aiMesh* currentMesh, ModelComposite* Model){
+void loadModelMaterial(const aiScene* scene, aiMesh* currentMesh, ModelComposite* Model){
   if(scene->HasMaterials()){
     aiColor4D ambientColor; 
     scene->mMaterials[currentMesh->mMaterialIndex]->Get(AI_MATKEY_COLOR_AMBIENT, ambientColor);
-	aiColor4D diffuseColor;
-	scene->mMaterials[currentMesh->mMaterialIndex]->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
-	aiColor4D specularColor;
-	scene->mMaterials[currentMesh->mMaterialIndex]->Get(AI_MATKEY_COLOR_SPECULAR, specularColor);
+	  aiColor4D diffuseColor;
+	  scene->mMaterials[currentMesh->mMaterialIndex]->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
+	  aiColor4D specularColor;
+	  scene->mMaterials[currentMesh->mMaterialIndex]->Get(AI_MATKEY_COLOR_SPECULAR, specularColor);
 
     aiString ambientTexture;
     scene->mMaterials[currentMesh->mMaterialIndex]->Get(AI_MATKEY_TEXTURE(aiTextureType_AMBIENT, 0), ambientTexture);
@@ -51,14 +51,12 @@ int loadModelMaterial(const aiScene* scene, aiMesh* currentMesh, ModelComposite*
 	    { diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a },
 	    { specularColor.r, specularColor.g, specularColor.b, specularColor.a }
     };
-    return 0;
   }  else {
     std::cerr << "No model materials present" << std::endl;
-    return -1;
   }
 }
 
-int loadOpenGL_Faces(aiMesh* currentMesh, ModelComposite* Model){
+void loadOpenGL_Faces(aiMesh* currentMesh, ModelComposite* Model){
   if(currentMesh->HasFaces()){
     for(unsigned int f = 0; f < currentMesh->mNumFaces; f++){
       unsigned int faceIndicesCount = currentMesh->mFaces[f].mNumIndices;
@@ -67,14 +65,12 @@ int loadOpenGL_Faces(aiMesh* currentMesh, ModelComposite* Model){
         Model->modelIndices.push_back(currentIndex);
       }
     }
-    return 0;
   } else {
     std::cerr << "Mesh present without faces" << std::endl;
-    return -1;
   }
 }
 
-int loadOpenGL_VertexPos(aiMesh* currentMesh, std::vector<std::array<GLfloat, 3>>* allVertexPos){
+void loadOpenGL_VertexPos(aiMesh* currentMesh, std::vector<std::array<GLfloat, 3>>* allVertexPos){
   if(currentMesh->HasPositions()){
     for(unsigned int v = 0; v < currentMesh->mNumVertices; v++){
       allVertexPos->push_back(
@@ -83,14 +79,12 @@ int loadOpenGL_VertexPos(aiMesh* currentMesh, std::vector<std::array<GLfloat, 3>
           currentMesh->mVertices[v].z }
       );
     }
-    return 0;
   } else {
     std::cerr << "No vertex positions present" << std::endl;
-    return -1;
   }
 }
 
-int loadOpenGL_VertexColor(aiMesh* currentMesh, ModelComposite* Model, std::vector<std::array<GLfloat, 4>>* allVertexColors){
+void loadOpenGL_VertexColor(aiMesh* currentMesh, ModelComposite* Model, std::vector<std::array<GLfloat, 4>>* allVertexColors){
   if(currentMesh->HasVertexColors(0)){
     for(unsigned int v = 0; v < currentMesh->mNumVertices; v++){
       allVertexColors->push_back(
@@ -101,7 +95,6 @@ int loadOpenGL_VertexColor(aiMesh* currentMesh, ModelComposite* Model, std::vect
       );
     }
     Model->renderParams[ShaderCtrlBit::color] = 1;
-    return 0;
   } else {
     std::cout << "No vertex colors present, proceeding to generate at random..." << std::endl;
     srand(time(NULL));
@@ -112,12 +105,11 @@ int loadOpenGL_VertexColor(aiMesh* currentMesh, ModelComposite* Model, std::vect
       randomColor_B = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
       allVertexColors->push_back( { randomColor_R, randomColor_G, randomColor_B, 0.5f } );
     }
-    Model->renderParams[ShaderCtrlBit::color] = 0;
-    return 1;
+    Model->renderParams[ShaderCtrlBit::color] = 1;
   }
 }
 
-int loadOpenGL_VertexTexCoord(aiMesh* currentMesh, ModelComposite* Model, std::vector<std::array<GLfloat, 2>>* allVertexTexCoord){
+void loadOpenGL_VertexTexCoord(aiMesh* currentMesh, ModelComposite* Model, std::vector<std::array<GLfloat, 2>>* allVertexTexCoord){
   if(currentMesh->HasTextureCoords(0)){
     for(unsigned int v = 0; v < currentMesh->mNumVertices; v++){
       allVertexTexCoord->push_back(
@@ -126,15 +118,13 @@ int loadOpenGL_VertexTexCoord(aiMesh* currentMesh, ModelComposite* Model, std::v
       );
     }
     Model->renderParams[ShaderCtrlBit::texCoord] = 1;
-    return 0;
   } else {
     std::cout << "No texture coordinates present" << std::endl;
     Model->renderParams[ShaderCtrlBit::texCoord] = 0;
-    return 1;
   }
 }
 
-int loadOpenGL_VertexNormals(aiMesh* currentMesh, std::vector<std::array<GLfloat, 3>>* allVertexNormals){
+void loadOpenGL_VertexNormals(aiMesh* currentMesh, std::vector<std::array<GLfloat, 3>>* allVertexNormals){
   if(currentMesh->HasPositions()){
     for(unsigned int v = 0; v < currentMesh->mNumVertices; v++){
       allVertexNormals->push_back(
@@ -143,14 +133,12 @@ int loadOpenGL_VertexNormals(aiMesh* currentMesh, std::vector<std::array<GLfloat
           currentMesh->mNormals[v].z }
       );
     }
-    return 0;
   } else {
     std::cerr << "No vertex positions present" << std::endl;
-    return -1;
   }
 }
 
-int iterateNodes(const aiScene* scene, std::vector<ModelComposite>* MPerComponent){
+void iterateNodes(const aiScene* scene, std::vector<ModelComposite>* MPerComponent){
   aiMesh** modelMeshes = scene->mMeshes;
   aiNode* rootNode = scene->mRootNode;
   std::stack<aiNode*> nodeStack;
@@ -181,7 +169,7 @@ int iterateNodes(const aiScene* scene, std::vector<ModelComposite>* MPerComponen
       for(unsigned int m = 0; m < nodeMeshCount; m++){
         aiMesh* currentMesh = modelMeshes[nodeMeshes[m]];
         
-        int facesComplete = loadOpenGL_Faces(currentMesh, &Model);
+        loadOpenGL_Faces(currentMesh, &Model);
 
         unsigned int meshVertexCount = currentMesh->mNumVertices;
         std::vector<std::array<GLfloat, 3>> allVertexPos;
@@ -189,10 +177,10 @@ int iterateNodes(const aiScene* scene, std::vector<ModelComposite>* MPerComponen
         std::vector<std::array<GLfloat, 2>> allVertexTexCoord;
         std::vector<std::array<GLfloat, 3>> allVertexNormals;
 
-        int positionsComplete = loadOpenGL_VertexPos(currentMesh, &allVertexPos);
-        int colorsComplete = loadOpenGL_VertexColor(currentMesh, &Model, &allVertexColors);
-        int texCoordComplete = loadOpenGL_VertexTexCoord(currentMesh, &Model, &allVertexTexCoord);
-        int normalsComplete = loadOpenGL_VertexNormals(currentMesh, &allVertexNormals);
+        loadOpenGL_VertexPos(currentMesh, &allVertexPos);
+        loadOpenGL_VertexColor(currentMesh, &Model, &allVertexColors);
+        loadOpenGL_VertexTexCoord(currentMesh, &Model, &allVertexTexCoord);
+        loadOpenGL_VertexNormals(currentMesh, &allVertexNormals);
 
         for(unsigned int i = 0; i < meshVertexCount; i++) Model.modelMeshes.push_back(
           { allVertexPos.at(i), allVertexColors.at(i), allVertexTexCoord.at(i), allVertexNormals.at(i) }
@@ -210,7 +198,6 @@ int iterateNodes(const aiScene* scene, std::vector<ModelComposite>* MPerComponen
       MPerComponent->push_back(Model);
     }
   }
-  return 0;
 }
 
 int assimpImportCPP(const std::string &pFile, std::vector<ModelComposite>* MPerComponent){
