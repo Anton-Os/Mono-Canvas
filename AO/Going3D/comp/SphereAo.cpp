@@ -22,6 +22,8 @@ int createSphere(ModelComposite* sphereModel, GLfloat radius, GLuint slices, GLu
         }
         uTex += uTexInc;
     }
-    sphereModel->VertexArray = loadModelData(sphereModel);
+    sphereModel->relativePos = glm::mat4(1);
+    std::string sphereBits = "00110";
+    sphereModel->VertexArray = loadModelData(sphereModel, std::bitset<5>(sphereBits));
     return 0;
 }

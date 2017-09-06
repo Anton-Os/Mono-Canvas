@@ -66,14 +66,6 @@ namespace ShaderCtrlBit {
     };
 };
 
-struct ModelStatic {
-    GLuint VertexArray;
-    std::vector<Point> modelMeshes;
-    std::vector<GLuint> modelIndices;
-
-    std::bitset<3> renderParams;
-};
-
 struct ModelComposite {
     GLuint VertexArray;
     std::vector<Point> modelMeshes;
@@ -82,15 +74,13 @@ struct ModelComposite {
     glm::mat4 relativePos;
     MaterialBlock materialBlock;
 
-    std::bitset<3> renderParams;
+    std::bitset<5> renderParams;
 };
 
 int assimpImportCPP(const std::string& pFile);
-int assimpImportCPP(const std::string& pFile, ModelStatic* Model);
 int assimpImportCPP(const std::string &pFile, std::vector<ModelComposite>* MPerComponent);
 
-int loadModelData(std::vector<Point> dataToLoad, std::vector<GLuint> dataIndices);
-// GLuint loadModelData(ModelStatic* Model);
 GLuint loadModelData(ModelComposite* Model);
+GLuint loadModelData(ModelComposite* Model, std::bitset<5> renderParams);
 
 #include "ShaderCtrl.h"
