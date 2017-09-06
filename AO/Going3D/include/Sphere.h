@@ -2,6 +2,7 @@
 #define SPHERE_H
 
 #include <GL/glew.h>
+#define GLM_ENABLE_EXPERIMENTAL true
 
 class Sphere
 {

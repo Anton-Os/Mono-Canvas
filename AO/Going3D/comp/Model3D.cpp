@@ -21,11 +21,14 @@ GLuint loadModelData(ModelComposite* Model){
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, texCoord));
     glEnableVertexAttribArray(2);
   }
-  glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, normal));
-  glEnableVertexAttribArray(3);
+  if(Model->renderParams[ShaderCtrlBit::normal] == 1){
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, normal));
+    glEnableVertexAttribArray(3);
+  }
 
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, Model->modelIndices.size() * sizeof(GLuint), &Model->modelIndices[0], GL_STATIC_DRAW);
-
+  if(Model->renderParams[ShaderCtrlBit::indexed] == 1){
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, Model->modelIndices.size() * sizeof(GLuint), &Model->modelIndices[0], GL_STATIC_DRAW);
+  }
   GLenum errorLog = glGetError();
   return VAO;
 }
@@ -65,6 +68,7 @@ void loadOpenGL_Faces(aiMesh* currentMesh, ModelComposite* Model){
         Model->modelIndices.push_back(currentIndex);
       }
     }
+    Model->renderParams[ShaderCtrlBit::indexed] = 1;
   } else {
     std::cerr << "Mesh present without faces" << std::endl;
   }
@@ -124,7 +128,7 @@ void loadOpenGL_VertexTexCoord(aiMesh* currentMesh, ModelComposite* Model, std::
   }
 }
 
-void loadOpenGL_VertexNormals(aiMesh* currentMesh, std::vector<std::array<GLfloat, 3>>* allVertexNormals){
+void loadOpenGL_VertexNormals(aiMesh* currentMesh, ModelComposite* Model, std::vector<std::array<GLfloat, 3>>* allVertexNormals){
   if(currentMesh->HasPositions()){
     for(unsigned int v = 0; v < currentMesh->mNumVertices; v++){
       allVertexNormals->push_back(
@@ -133,6 +137,7 @@ void loadOpenGL_VertexNormals(aiMesh* currentMesh, std::vector<std::array<GLfloa
           currentMesh->mNormals[v].z }
       );
     }
+    Model->renderParams[ShaderCtrlBit::normal] = 1;
   } else {
     std::cerr << "No vertex positions present" << std::endl;
   }
@@ -180,7 +185,7 @@ void iterateNodes(const aiScene* scene, std::vector<ModelComposite>* MPerCompone
         loadOpenGL_VertexPos(currentMesh, &allVertexPos);
         loadOpenGL_VertexColor(currentMesh, &Model, &allVertexColors);
         loadOpenGL_VertexTexCoord(currentMesh, &Model, &allVertexTexCoord);
-        loadOpenGL_VertexNormals(currentMesh, &allVertexNormals);
+        loadOpenGL_VertexNormals(currentMesh, &Model, &allVertexNormals);
 
         for(unsigned int i = 0; i < meshVertexCount; i++) Model.modelMeshes.push_back(
           { allVertexPos.at(i), allVertexColors.at(i), allVertexTexCoord.at(i), allVertexNormals.at(i) }

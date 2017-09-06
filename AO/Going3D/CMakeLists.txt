@@ -60,6 +60,28 @@ target_link_libraries(FluidCamera
     assimp
 )
 
+add_executable(Globe
+    comp/LoadTextures.cpp
+    comp/LoadShaders.cpp
+    comp/Model3D.cpp
+    comp/Sphere.cpp
+    comp/SphereAo.cpp
+    pipeline/LitEnv.cpp
+    main/FluidCamera.cpp
+)
+
+target_include_directories(Globe
+    PUBLIC include
+)
+
+target_link_libraries(Globe
+    GLEW::glew_s
+    glfw
+    gli
+    glm
+    assimp
+)
+
 # WORK WITH SHADER FILES
 
 set(SRC_SHADER_LIST)
@@ -67,6 +89,7 @@ set(OUTPUT_SHADER_LIST)
 foreach(current_shader "LitEnv.vert" "LitEnv.frag"
                        "NoBlocks.vert" "NoBlocks.frag"
                        "V-Instanced.vert" "V-Instanced.frag"
+                       "Sphere.vert" "Sphere.frag"
 )
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}"
         DEPENDS "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"

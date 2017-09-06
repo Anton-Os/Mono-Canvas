@@ -60,7 +60,9 @@ namespace ShaderCtrlBit {
     enum ShaderCtrlBit {
         color,
         texCoord,
-        drawable
+        drawable,
+        normal,
+        indexed
     };
 };
 
@@ -88,6 +90,7 @@ int assimpImportCPP(const std::string& pFile, ModelStatic* Model);
 int assimpImportCPP(const std::string &pFile, std::vector<ModelComposite>* MPerComponent);
 
 int loadModelData(std::vector<Point> dataToLoad, std::vector<GLuint> dataIndices);
-GLuint loadModelData(ModelStatic* Model);
+// GLuint loadModelData(ModelStatic* Model);
+GLuint loadModelData(ModelComposite* Model);
 
 #include "ShaderCtrl.h"
