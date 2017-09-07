@@ -12,6 +12,6 @@ void main(){
 	if(renderMode == 1){
 		// Textured Sphere
 	} else {
-		frag_out = vec4(1.0, 0.8, 0.0, 1.0);
+		frag_out = vec4(0.258, 0.525, 0.956, 1.0);
 	}
 }

@@ -7,37 +7,39 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-#define GLM_ENABLE_EXPERIMENTAL
 
-int createSphere(ModelComposite* sphereModel, GLfloat size, GLuint slices, GLuint stacks){
-    GLfloat uTexInc = 1.0 / slices;
-    GLfloat vTexInc = 1.0 / stacks;
+int createSphere(ModelComposite* sphereModel, GLfloat radius, GLuint sliceCount, GLuint stackCount){
     GLfloat uTex = 0.0;
     GLfloat vTex = 0.0;
-    Point spherePoint;
-    for(GLuint sl = 0; sl < slices; sl++){
-        float pSlice = glm::pi<float>() * (-0.5 + (float) (sl - 1) / slices);
-        float pSliceOpp = std::sin(pSlice);
-        float pSliceAdj = std::cos(pSlice);
-
-        /* float cSlice = glm::pi<float>() * (-0.5 + (float) sl / slices);
-        float cSliceOpp = std::sin(cSlice);
-        float cSliceAdj = std::cos(cSlice); */
-        for(GLuint st = 0; st < stacks; st++){
-            float pStack = 2 * glm::pi<float>() * (float) (st - 1) / stacks;
-            float pStackOpp = std::cos(pStack);
-            float pStackAdj = std::sin(pStack);
-            spherePoint.pos = { pStackAdj * pSliceAdj * size, pStackOpp * pSliceAdj * size, pSliceOpp * size };
-            spherePoint.color = genRandomColors(0.5); // marked for removal
-            spherePoint.normal = {0.0, 0.0, 0.0}; // marked for removal
+	// GLuint sliceIt = 0;
+	// GLuint stackIt = 0;
+	GLuint vertexID = 0;
+    for(double phi = 0; phi < glm::pi<float>() * 2; phi += glm::pi<float>() / sliceCount){
+		// sliceIt++;
+        for(double theta = 0; theta < glm::pi<float>(); theta += glm::pi<float>() / stackCount){
+            Point spherePoint;
+            spherePoint.pos = { radius * (GLfloat)std::cos(phi) * (GLfloat)std::sin(theta),
+                                radius * (GLfloat)std::sin(phi) * (GLfloat)std::sin(theta),
+                                radius * (GLfloat)std::cos(theta) };
+            spherePoint.color = {0.0, 0.0, 0.0, 0.0};
+            spherePoint.normal = {0.0, 0.0, 0.0};
             spherePoint.texCoord = { uTex, vTex };
             sphereModel->modelMeshes.push_back(spherePoint);
-            vTex += vTexInc;
+
+            sphereModel->modelIndices.push_back(vertexID); // SHARED LOWER LEFT
+            sphereModel->modelIndices.push_back(vertexID + 1);
+            sphereModel->modelIndices.push_back(vertexID + stackCount + 1); // SHARED UPPER RIGHT
+            sphereModel->modelIndices.push_back(vertexID);
+            sphereModel->modelIndices.push_back(vertexID + stackCount);
+            sphereModel->modelIndices.push_back(vertexID + stackCount + 1);
+			vertexID++; // stackIt++;
+			// vTex += vTexInc;
         }
-        uTex += uTexInc;
+		// stackIt = 0;
+        //  uTex += uTexInc;
     }
     sphereModel->relativePos = glm::mat4(1);
-    std::string sphereBits = "00110";
+    std::string sphereBits = "10110";
     sphereModel->VertexArray = loadModelData(sphereModel, std::bitset<5>(sphereBits));
     return 0;
 }

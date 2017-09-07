@@ -24,13 +24,12 @@ std::array<GLfloat, 4> genRandomColors(GLfloat alphaFactor){
 }
 
 GLuint loadModelData(ModelComposite* Model){
-  GLuint VAO, VBO, EBO;
+  GLuint VAO;
   glGenVertexArrays(1, &VAO);
-  glGenBuffers(1, &VBO);
-  glGenBuffers(1, &EBO);
   glBindVertexArray(VAO);
+  GLuint VBO;
+  glGenBuffers(1, &VBO);
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
   glBufferData(GL_ARRAY_BUFFER, Model->modelMeshes.size() * sizeof(Point), &Model->modelMeshes[0], GL_STATIC_DRAW);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, pos));
@@ -49,6 +48,9 @@ GLuint loadModelData(ModelComposite* Model){
   }
 
   if(Model->renderParams[ShaderCtrlBit::indexed] == 1){
+    GLuint EBO;
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, Model->modelIndices.size() * sizeof(GLuint), &Model->modelIndices[0], GL_STATIC_DRAW);
   }
   GLenum errorLog = glGetError();

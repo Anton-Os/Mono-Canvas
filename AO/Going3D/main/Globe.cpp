@@ -29,14 +29,16 @@ GLfloat hAngle, vAngle;
 namespace Player {
 	GLfloat height = 3.0f; 
 	GLfloat movementSpeed = 10.0f;
+	GLuint vRotationSpeed = 120;
+	GLuint hRotationSpeed = 120;
 }
 
 void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
 
 	if(cursorPresent) cursorPresent = false;
 	else {
-		if(xpos != cursorInitX) hAngle -= GLfloat((xpos - cursorInitX) / 90);
-		if(ypos != cursorInitY) vAngle -= GLfloat((ypos - cursorInitY) / 90);
+		if(xpos != cursorInitX) hAngle -= GLfloat((xpos - cursorInitX) / Player::hRotationSpeed);
+		if(ypos != cursorInitY) vAngle -= GLfloat((ypos - cursorInitY) / Player::vRotationSpeed);
 
 		std::cout << "Horizontal Angle: " << hAngle << " Vertical Angle: " << vAngle << std::endl;
 	}
@@ -105,18 +107,14 @@ int main(int argc, char** argv){
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	// GLuint error;
-	// GLuint occQuery[10];
-	// GLuint64 occQueryResult[10];
-	// glGenQueries(10, occQuery);
 
 	std::string parentDir = getParentDirectory(argv[0]);
 
 	std::string litEnv_vert = parentDir + "\\shaders\\LitEnv.vert";
     std::string litEnv_frag = parentDir + "\\shaders\\LitEnv.frag";
+	GLuint litEnv_glsl = compileShaders(litEnv_vert, litEnv_frag);
 	// std::string litEnv_vert = parentDir + "\\shaders\\V-Instanced.vert";
 	// std::string litEnv_frag = parentDir + "\\shaders\\V-Instanced.frag";
-    GLuint litEnv_glsl = compileShaders(litEnv_vert, litEnv_frag);
 	std::string Sphere_vert = parentDir + "\\shaders\\Sphere.vert";
 	std::string Sphere_frag = parentDir + "\\shaders\\Sphere.frag";
 	GLuint Sphere_glsl = compileShaders(Sphere_vert, Sphere_frag);
@@ -141,37 +139,22 @@ int main(int argc, char** argv){
 
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
-        glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
+        // glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.05f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		lookPos = glm::vec3(cameraPos.x + std::sin(hAngle), cameraPos.y + std::sin(vAngle), cameraPos.z + std::cos(hAngle + vAngle));
 		mvMatrix = glm::lookAt(cameraPos, lookPos, glm::vec3(0.0, 1.0, 0.0));
 
-        /* for(unsigned int d = 0; d < MPerComponent.size(); d++){
-            if(MPerComponent.at(d).renderParams[ShaderCtrlBit::drawable] == 1){
-				// mvMatrix *= glm::translate(glm::mat4(1), cameraPos) * MPerComponent.at(d).relativePos;
-				litEnvUtil.mvMatrix(mvMatrix);
-				litEnvUtil.mvpMatrix(perspectiveMatrix * mvMatrix);
-				litEnvUtil.nMatrix(glm::mat3(glm::transpose(glm::inverse(mvMatrix))));
-				litEnvUtil.materialBlock(&MPerComponent.at(d).materialBlock);
-                glBindVertexArray(MPerComponent.at(d).VertexArray);
-				
-				// glBeginQuery(GL_PRIMITIVES_GENERATED, occQuery[d]);
-				glDrawElements(GL_TRIANGLES, MPerComponent.at(d).modelIndices.size(), GL_UNSIGNED_INT, 0);
-				// glEndQuery(GL_PRIMITIVES_GENERATED);
-				// glGetQueryObjectui64v(occQuery[d], GL_QUERY_RESULT, &occQueryResult[d]);
-			}
-		} */
-
 		ModelComposite Sphere;
-		createSphere(&Sphere, 100.0, 60, 60);
+		createSphere(&Sphere, 100.0f, 30, 30);
 
-		litEnvUtil.mvMatrix(mvMatrix);
 		sphereUtil.mvpMatrix(perspectiveMatrix * mvMatrix);
 		sphereUtil.nMatrix(glm::mat3(glm::transpose(glm::inverse(mvMatrix))));
 		glBindVertexArray(Sphere.VertexArray);
 		glPointSize(8.0f);
-		glDrawArrays(GL_POINTS, 0, Sphere.modelMeshes.size());
+		// glDrawArrays(GL_TRIANGLES, 0, Sphere.modelMeshes.size());
+		glDrawElements(GL_TRIANGLES, Sphere.modelMeshes.size(), GL_UNSIGNED_INT, 0);
 
         glBindVertexArray(0);
 		glfwSwapBuffers(window);
