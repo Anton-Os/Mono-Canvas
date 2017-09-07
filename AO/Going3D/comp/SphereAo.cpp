@@ -9,13 +9,9 @@
 
 
 int createSphere(ModelComposite* sphereModel, GLfloat radius, GLuint sliceCount, GLuint stackCount){
-    GLfloat uTex = 0.0;
-    GLfloat vTex = 0.0;
-	// GLuint sliceIt = 0;
-	// GLuint stackIt = 0;
-	GLuint vertexID = 0;
+    GLfloat uTex = 0.0; GLfloat vTex = 0.0;
+	GLuint sliceIt = 0; GLuint stackIt = 0; GLuint vertexID = 0;
     for(double phi = 0; phi < glm::pi<float>() * 2; phi += glm::pi<float>() / sliceCount){
-		// sliceIt++;
         for(double theta = 0; theta < glm::pi<float>(); theta += glm::pi<float>() / stackCount){
             Point spherePoint;
             spherePoint.pos = { radius * (GLfloat)std::cos(phi) * (GLfloat)std::sin(theta),
@@ -26,15 +22,29 @@ int createSphere(ModelComposite* sphereModel, GLfloat radius, GLuint sliceCount,
             spherePoint.texCoord = { uTex, vTex };
             sphereModel->modelMeshes.push_back(spherePoint);
 
+            // DAVIDBITTON APPROACH
+            /* GLint i1 = (sliceIt * (stackCount + 1)) + stackIt;
+            GLint i2 = i1 + stackCount + 1;
+
+            sphereModel->modelIndices.push_back(i1);
+            sphereModel->modelIndices.push_back(i2);
+            sphereModel->modelIndices.push_back(i1 + 1);
+            sphereModel->modelIndices.push_back(i2);
+            sphereModel->modelIndices.push_back(i2 + 1);
+            sphereModel->modelIndices.push_back(i1 + 1); */
+            
+            // VERTEX ID APPROACH
             sphereModel->modelIndices.push_back(vertexID); // SHARED LOWER LEFT
             sphereModel->modelIndices.push_back(vertexID + 1);
             sphereModel->modelIndices.push_back(vertexID + stackCount + 1); // SHARED UPPER RIGHT
             sphereModel->modelIndices.push_back(vertexID);
             sphereModel->modelIndices.push_back(vertexID + stackCount);
             sphereModel->modelIndices.push_back(vertexID + stackCount + 1);
-			vertexID++; // stackIt++;
+
+			vertexID++; stackIt++;
 			// vTex += vTexInc;
         }
+        sliceIt++;
 		// stackIt = 0;
         //  uTex += uTexInc;
     }

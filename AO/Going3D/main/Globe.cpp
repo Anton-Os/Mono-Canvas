@@ -154,7 +154,7 @@ int main(int argc, char** argv){
 		glBindVertexArray(Sphere.VertexArray);
 		glPointSize(8.0f);
 		// glDrawArrays(GL_TRIANGLES, 0, Sphere.modelMeshes.size());
-		glDrawElements(GL_TRIANGLES, Sphere.modelMeshes.size(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, Sphere.modelIndices.size(), GL_UNSIGNED_INT, 0);
 
         glBindVertexArray(0);
 		glfwSwapBuffers(window);
