@@ -15,22 +15,29 @@ const std::string getParentDirectory(const char* path) {
 	return result;
 }
 
-namespace Key {
-	GLboolean W, A, S, D, Q, E = false;
-}
-
-glm::vec3 cameraPos = glm::vec3(0.0, 0.0, -100.0f);
+// glm::vec3 cameraPos = glm::vec3(0.0, 0.0, -100.0f);
+glm::vec3 cameraPos = glm::vec3(0.0, 0.0, 0.0);
 glm::mat4 cameraRotation(1);
 GLboolean cursorPresent = true;
 GLdouble cursorInitX, cursorInitY;
 GLfloat hAngle, vAngle;
 // camRoll = 1.0;
 
+namespace Key {
+	GLboolean W, A, S, D, Q, E, O, P, K, L = false;
+}
+
 namespace Player {
 	GLfloat height = 3.0f; 
 	GLfloat movementSpeed = 10.0f;
 	GLuint vRotationSpeed = 120;
-	GLuint hRotationSpeed = 120;
+	GLuint hRotationSpeed = 90;
+}
+
+namespace Globe {
+	GLfloat size = 100.0f;
+	GLuint slices = 33;
+	GLuint stacks = 33;
 }
 
 void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
@@ -54,6 +61,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_D && action == GLFW_PRESS) Key::D = true;
 	if (key == GLFW_KEY_Q && action == GLFW_PRESS) Key::Q = true;
 	if (key == GLFW_KEY_E && action == GLFW_PRESS) Key::E = true;
+	if (key == GLFW_KEY_O && action == GLFW_PRESS) Key::O = true;
+	if (key == GLFW_KEY_P && action == GLFW_PRESS) Key::P = true;
+	if (key == GLFW_KEY_K && action == GLFW_PRESS) Key::K = true;
+	if (key == GLFW_KEY_L && action == GLFW_PRESS) Key::L = true;
 
 	if (key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
 	if (key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
@@ -61,6 +72,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_D && action == GLFW_RELEASE) Key::D = false;
 	if (key == GLFW_KEY_Q && action == GLFW_RELEASE) Key::Q = false;
 	if (key == GLFW_KEY_E && action == GLFW_RELEASE) Key::E = false;
+	if (key == GLFW_KEY_O && action == GLFW_RELEASE) Key::O = false;
+	if (key == GLFW_KEY_P && action == GLFW_RELEASE) Key::P = false;
+	if (key == GLFW_KEY_K && action == GLFW_RELEASE) Key::K = false;
+	if (key == GLFW_KEY_L && action == GLFW_RELEASE) Key::L = false;
 
 	if(Key::W) cameraPos.z += Player::movementSpeed; 
 	if(Key::A) cameraPos.x += Player::movementSpeed;
@@ -68,6 +83,12 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if(Key::D) cameraPos.x -= Player::movementSpeed;
 	if(Key::Q) cameraPos.y -= Player::movementSpeed;
 	if(Key::E) cameraPos.y += Player::movementSpeed;
+	if(Key::O) Globe::slices++;
+	if(Key::P) Globe::slices--;
+	if(Key::K) Globe::stacks++;
+	if(Key::L) Globe::stacks--;
+	if(Key::O || Key::P || Key::K || Key::L) 
+	std::cout << "Size: " << Globe::size << " Slices: " << Globe::slices << " Stacks: " << Globe::stacks << std::endl;
 }
 
 int main(int argc, char** argv){
@@ -139,15 +160,15 @@ int main(int argc, char** argv){
 
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
-        // glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
-		glClearColor(0.0f, 0.0f, 0.05f, 1.0f);
+        glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
+		// glClearColor(0.0f, 0.0f, 0.05f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		lookPos = glm::vec3(cameraPos.x + std::sin(hAngle), cameraPos.y + std::sin(vAngle), cameraPos.z + std::cos(hAngle + vAngle));
 		mvMatrix = glm::lookAt(cameraPos, lookPos, glm::vec3(0.0, 1.0, 0.0));
 
 		ModelComposite Sphere;
-		createSphere(&Sphere, 100.0f, 30, 30);
+		createSphere(&Sphere, Globe::size, Globe::slices, Globe::stacks);
 
 		sphereUtil.mvpMatrix(perspectiveMatrix * mvMatrix);
 		sphereUtil.nMatrix(glm::mat3(glm::transpose(glm::inverse(mvMatrix))));

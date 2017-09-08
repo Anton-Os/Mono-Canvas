@@ -64,7 +64,6 @@ add_executable(Globe
     comp/LoadTextures.cpp
     comp/LoadShaders.cpp
     comp/Model3D.cpp
-    comp/Sphere.cpp
     comp/SphereAo.cpp
     pipeline/LitEnv.cpp
     main/Globe.cpp

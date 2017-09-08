@@ -11,6 +11,8 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 // From LoadShaders.cpp
 
 GLchar* readShaderFile(const char* nameOfShader);
