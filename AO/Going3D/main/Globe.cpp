@@ -158,6 +158,13 @@ int main(int argc, char** argv){
 	Sphere sphereUtil(Sphere_glsl);
 	sphereUtil.initUniforms();
 
+	ColorPalette4x3 warmPalette {
+		{1.0, 0.313, 0.313},
+		{1.0, 0.6, 0.4},
+		{1.0, 0.701, 0.854},
+		{1.0, 1.0, 0.6},
+	};
+
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
         glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
@@ -172,7 +179,8 @@ int main(int argc, char** argv){
 
 		sphereUtil.mvpMatrix(perspectiveMatrix * mvMatrix);
 		sphereUtil.nMatrix(glm::mat3(glm::transpose(glm::inverse(mvMatrix))));
-		sphereUtil.renderMode(0);
+		sphereUtil.renderMode(1);
+		sphereUtil.colorPalette(&warmPalette);
 		glBindVertexArray(Sphere.VertexArray);
 		glPointSize(8.0f);
 		// glDrawArrays(GL_TRIANGLES, 0, Sphere.modelMeshes.size());
