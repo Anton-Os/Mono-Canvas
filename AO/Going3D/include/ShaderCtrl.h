@@ -63,3 +63,31 @@ private:
     GLint unifLoc[3];
     GLuint SSBO[1];
 };
+
+namespace SPH_UNIF {
+    enum SPH_UNIF {
+        mvpMatrix,
+        nMatrix,
+        renderMode
+    };
+};
+
+struct ColorPalette4x3 {
+    std::array<GLfloat, 3> color1;
+    std::array<GLfloat, 3> color2;
+    std::array<GLfloat, 3> color3;
+    std::array<GLfloat, 3> color4;
+};
+
+class Sphere : public BaseShader {
+public:
+    Sphere(GLuint shaderProg) : BaseShader(shaderProg){ }
+    void mvpMatrix(glm::mat4 mvpMatrix);
+    void nMatrix(glm::mat3 nMatrix);
+    void renderMode(GLuint renderMode);
+    void colorPalette(ColorPalette4x3* colorPalette);
+    void initUniforms();
+private:
+    GLint unifLoc[3];
+    GLuint SSBO[1];
+};

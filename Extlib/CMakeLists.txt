@@ -38,20 +38,21 @@ set(SPIRVHEADERS_PROJECT_DIR "${ALL_PROJECT_DIR}/SPIRV_Headers")
 set(SHADERC_PROJECT_DIR "${ALL_PROJECT_DIR}/ShaderC")
 set(EIGEN_PROJECT_DIR "${ALL_PROJECT_DIR}/Eigen")
 set(SQLITE_PROJECT_DIR "${ALL_PROJECT_DIR}/SQLite")
+set(BOOST_PROJECT_DIR "${ALL_PROJECT_DIR}/Boost")
 
 set(UTILITIES_DIR "${CMAKE_BINARY_DIR}/Util")
 set(PYTHON_EMBEDDED_DIR "${UTILITIES_DIR}/python-3.6.1-embed")
 
 set(EXTLIB_TARGETS)
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake.in" 
-               "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
-                @ONLY               
-)
-
 if(NOT EXISTS ${UTILITIES_DIR})
     file(MAKE_DIRECTORY ${UTILITIES_DIR})
 endif()
+
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake.in" 
+               "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
+                @ONLY
+)
 
 add_custom_target(GDrive_Extlib ALL 
     ${CMAKE_COMMAND} -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
@@ -62,6 +63,17 @@ add_custom_target(GDrive_Extlib ALL
 )
 
 list(APPEND EXTLIB_TARGETS GDrive_Extlib)
+
+#[[ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/GetBoost.cmake.in" 
+               "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GetBoost.cmake"
+)
+
+add_custom_target(Boost ALL
+    ${CMAKE_COMMAND} -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GetBoost.cmake"
+    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GetBoost.cmake"
+)
+
+list(APPEND EXTLIB_TARGETS Boost) #]]
 
 ExternalProject_Add(SQLite
     URL "${CMAKE_BINARY_DIR}/sqlite-amalgamation-3180000.tar"
@@ -78,6 +90,58 @@ ExternalProject_Add(SQLite
 )
 
 list(APPEND EXTLIB_TARGETS SQLite)
+
+message( "External project - Boost" )
+
+set( Boost_Bootstrap_Command )
+if( UNIX )
+  set( Boost_Bootstrap_Command ./bootstrap.sh )
+  set( Boost_b2_Command ./b2 )
+else()
+  if( WIN32 )
+    set( Boost_Bootstrap_Command bootstrap.bat )
+    set( Boost_b2_Command b2.exe )
+  endif()
+endif()
+
+ExternalProject_Add(Boost
+  URL "https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz"
+  URL_HASH SHA256=a13de2c8fbad635e6ba9c8f8714a0e6b4264b60a29b964b940a22554705b6b60
+  BUILD_IN_SOURCE 1
+  UPDATE_COMMAND ""
+  PATCH_COMMAND ""
+  CONFIGURE_COMMAND ${Boost_Bootstrap_Command}
+  BUILD_COMMAND  ${Boost_b2_Command} install
+    --without-python
+    --without-mpi
+    --disable-icu
+    --prefix=${BOOST_PROJECT_DIR}
+    --threading=single,multi
+    --link=shared
+    --variant=release
+    -j8
+# INSTALL_COMMAND ""
+  INSTALL_COMMAND ${Boost_b2_Command} install 
+    --without-python
+    --without-mpi
+    --disable-icu
+    --prefix=${CMAKE_INSTALL_PREFIX}
+    --threading=single,multi
+    --link=shared
+    --variant=release
+    -j8
+# INSTALL_DIR ${CMAKE_BINARY_DIR}/INSTALL
+)
+
+if( NOT WIN32 )
+  set(Boost_LIBRARY_DIR ${CMAKE_BINARY_DIR}/INSTALL/lib/boost/ )
+  set(Boost_INCLUDE_DIR ${CMAKE_BINARY_DIR}/INSTALL/include/ )
+else()
+  set(Boost_LIBRARY_DIR ${CMAKE_BINARY_DIR}/INSTALL/lib/ )
+  set(Boost_INCLUDE_DIR ${CMAKE_BINARY_DIR}/INSTALL/include/boost-1_49/ )
+endif()
+
+list(APPEND EXTLIB_TARGETS Boost)
 
 ExternalProject_Add(GLEW
     URL "${CMAKE_BINARY_DIR}/glew-1.13.0.tgz"

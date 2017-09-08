@@ -155,7 +155,7 @@ int main(int argc, char** argv){
 	litEnvUtil.initUniforms();
 
 	glUseProgram(Sphere_glsl);
-	LitEnv sphereUtil(Sphere_glsl);
+	Sphere sphereUtil(Sphere_glsl);
 	sphereUtil.initUniforms();
 
 	while(!glfwWindowShouldClose(window)){
@@ -172,6 +172,7 @@ int main(int argc, char** argv){
 
 		sphereUtil.mvpMatrix(perspectiveMatrix * mvMatrix);
 		sphereUtil.nMatrix(glm::mat3(glm::transpose(glm::inverse(mvMatrix))));
+		sphereUtil.renderMode(0);
 		glBindVertexArray(Sphere.VertexArray);
 		glPointSize(8.0f);
 		// glDrawArrays(GL_TRIANGLES, 0, Sphere.modelMeshes.size());

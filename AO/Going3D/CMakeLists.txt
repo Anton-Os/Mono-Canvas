@@ -66,6 +66,7 @@ add_executable(Globe
     comp/Model3D.cpp
     comp/SphereAo.cpp
     pipeline/LitEnv.cpp
+    pipeline/Sphere.cpp
     main/Globe.cpp
 )
 
