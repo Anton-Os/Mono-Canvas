@@ -2,22 +2,12 @@
 
 #include <gli/gli.hpp>
 
-GLuint textureCheck(GLuint texture, std::string pathToFile){
-    if(texture == 0){
-        std::cerr << "Errors occured producing texture" << std::endl;
-        return 1;
-    } else {
-        std::cout << "Texture created successfuly from: \n" << pathToFile << std::endl;
-        return 0;
-    }
-}
-
 GLuint createTexture(const char* Filename){
     // GLenum result;
 
     gli::texture texture = gli::load(Filename);
     if(texture.empty()){
-        std::cout << "Texture provided is empty" << std::endl;
+        std::cout << "Texture " << Filename << " is empty" << std::endl;
         return 1;
     }
 

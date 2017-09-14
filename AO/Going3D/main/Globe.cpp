@@ -15,10 +15,10 @@ const std::string getParentDirectory(const char* path) {
 	return result;
 }
 
-// glm::vec3 cameraPos = glm::vec3(0.0, 0.0, -100.0f);
-glm::vec3 cameraPos = glm::vec3(0.0, 0.0, 0.0);
+glm::vec3 cameraPos = glm::vec3(0.0, 0.0, -300.0f);
+// glm::vec3 cameraPos = glm::vec3(0.0, 0.0, 0.0);
 glm::mat4 cameraRotation(1);
-GLboolean cursorPresent = true;
+GLboolean cursorPresent = true;	
 GLdouble cursorInitX, cursorInitY;
 GLfloat hAngle, vAngle;
 // camRoll = 1.0;
@@ -36,8 +36,8 @@ namespace Player {
 
 namespace Globe {
 	GLfloat size = 100.0f;
-	GLuint slices = 33;
-	GLuint stacks = 33;
+	GLuint slices = 54;
+	GLuint stacks = 48;
 }
 
 void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
@@ -159,11 +159,21 @@ int main(int argc, char** argv){
 	sphereUtil.initUniforms();
 
 	ColorPalette4x3 warmPalette {
-		{1.0, 0.313, 0.313},
-		{1.0, 0.6, 0.4},
-		{1.0, 0.701, 0.854},
-		{1.0, 1.0, 0.6},
+		{1.0f, 0.313f, 0.313f},
+		{1.0f, 0.6f, 0.4f},
+		{1.0f, 0.701f, 0.854f},
+		{1.0f, 1.0f, 0.6f},
 	};
+
+	ColorPalette4x3 coolPalette {
+		{0.219f, 0.447f, 0.819f},
+		{0.243f, 0.4f, 0.76f},
+		{0.466f, 0.615f, 0.819f},
+		{0.76f, 0.913f, 0.96f}
+	};
+
+	std::string seamlessSand_filePath = parentDir + "\\..\\..\\data\\BrushedSteel.ktx";
+	GLuint seamlessSand = createTexture(seamlessSand_filePath.c_str());
 
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
@@ -179,11 +189,10 @@ int main(int argc, char** argv){
 
 		sphereUtil.mvpMatrix(perspectiveMatrix * mvMatrix);
 		sphereUtil.nMatrix(glm::mat3(glm::transpose(glm::inverse(mvMatrix))));
-		sphereUtil.renderMode(1);
-		sphereUtil.colorPalette(&warmPalette);
+		sphereUtil.renderMode(2);
+		sphereUtil.colorPalette(&coolPalette);
+		glBindTextureUnit(0, seamlessSand);
 		glBindVertexArray(Sphere.VertexArray);
-		glPointSize(8.0f);
-		// glDrawArrays(GL_TRIANGLES, 0, Sphere.modelMeshes.size());
 		glDrawElements(GL_TRIANGLES, Sphere.modelIndices.size(), GL_UNSIGNED_INT, 0);
 
         glBindVertexArray(0);
