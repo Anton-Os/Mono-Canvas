@@ -20,13 +20,17 @@ GLuint createTexture(const char* Filename){
     GLuint textureName;
     glGenTextures(1, &textureName);
     glBindTexture(target, textureName);
+    // glGenerateMipmap(target);
     
     glTexParameteri(target, GL_TEXTURE_BASE_LEVEL, 0);
     glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, static_cast<GLint>(texture.levels() - 1));
     glTexParameteriv(target, GL_TEXTURE_SWIZZLE_RGBA, &textureFormat.Swizzles[0]);
     glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glm::tvec3<GLsizei> Extent(texture.extent()); // Because it begins at level zero
+	glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+    glm::tvec3<GLsizei> Extent(texture.extent());
+    GLint texLevels = texture.levels();
     glTexStorage2D(target, static_cast<GLint>(texture.levels()), textureFormat.Internal, Extent.x, Extent.y);
 
     for(std::size_t Level = 0; Level < texture.levels(); ++Level) {

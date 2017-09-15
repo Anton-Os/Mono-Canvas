@@ -82,6 +82,29 @@ target_link_libraries(Globe
     assimp
 )
 
+add_executable(PlanetSys
+    comp/LoadTextures.cpp
+    comp/LoadShaders.cpp
+    comp/Model3D.cpp
+    comp/SphereAo.cpp
+    pipeline/LitEnv.cpp
+    pipeline/Sphere.cpp
+    main/PlanetSys.cpp
+)
+
+target_include_directories(PlanetSys
+    PUBLIC include
+)
+
+target_link_libraries(PlanetSys
+    GLEW::glew_s
+    glfw
+    gli
+    glm
+    assimp
+)
+
+
 # WORK WITH SHADER FILES
 
 set(SRC_SHADER_LIST)

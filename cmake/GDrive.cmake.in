@@ -19,6 +19,8 @@ list(APPEND GDRIVE_URLS
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzOWNnS3d4Z0JsWGs"
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzUy04amxDSnpTZWs"
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzcFo1MTQ4b2t2NlE"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzZ1gzekJXZVh4UDg"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzRk1MSGNNOUg0WGM"
 )
 
 list(APPEND GDRIVE_NAMES
@@ -37,6 +39,8 @@ list(APPEND GDRIVE_NAMES
     "MedWood.ktx"
     "WoodPlanks.ktx"
     "SeamlessSand.ktx"
+    "SandTex1.ktx"
+    "MipTest.ktx"
 )
 
 foreach(currentFile ${GDRIVE_NAMES})

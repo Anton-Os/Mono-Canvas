@@ -20,6 +20,10 @@ int createSphere(ModelComposite* sphereModel, GLfloat radius, GLuint sliceCount,
                                 radius * (GLfloat)std::cos(theta) };
             spherePoint.color = {0.0, 0.0, 0.0, 0.0};
             spherePoint.normal = {0.0, 0.0, 0.0};
+			if (vertexID % (stackCount * 2) < stackCount) uTex = 0.0;
+			else uTex = 1.0;
+			if (vertexID % 2 == 0) vTex = 0.0;
+			else vTex = 1.0;
             spherePoint.texCoord = { uTex, vTex };
             sphereModel->modelMeshes.push_back(spherePoint);
             
@@ -31,9 +35,9 @@ int createSphere(ModelComposite* sphereModel, GLfloat radius, GLuint sliceCount,
             sphereModel->modelIndices.push_back(vertexID + stackCount + 1);
 
 			vertexID++;
-			vTex += vTexInc;
+			// vTex += vTexInc;
         }
-        uTex += uTexInc;
+        // uTex += uTexInc;
     }
     
     sphereModel->relativePos = glm::mat4(1);

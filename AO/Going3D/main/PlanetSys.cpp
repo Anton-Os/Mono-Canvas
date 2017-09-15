@@ -15,14 +15,6 @@ const std::string getParentDirectory(const char* path) {
 	return result;
 }
 
-glm::vec3 cameraPos = glm::vec3(0.0, 0.0, -300.0f);
-// glm::vec3 cameraPos = glm::vec3(0.0, 0.0, 0.0);
-glm::mat4 cameraRotation(1);
-GLboolean cursorPresent = true;	
-GLdouble cursorInitX, cursorInitY;
-GLfloat hAngle, vAngle;
-// camRoll = 1.0;
-
 namespace Key {
 	GLboolean W, A, S, D, Q, E, O, P, K, L = false;
 }
@@ -35,10 +27,17 @@ namespace Player {
 }
 
 namespace Globe {
-	GLfloat size = 100.0f;
-	GLuint slices = 54;
-	GLuint stacks = 48;
+	GLfloat size = 600.0f;
+	GLuint slices = 300;
+	GLuint stacks = 300;
 }
+
+// glm::vec3 cameraPos = glm::vec3(0.0, 0.0, -300.0f);
+glm::vec3 cameraPos = glm::vec3(0.0, Globe::size + Player::height, 0.0f);
+glm::mat4 cameraRotation(1);
+GLboolean cursorPresent = true;	
+GLdouble cursorInitX, cursorInitY;
+GLfloat hAngle, vAngle;
 
 void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
 
@@ -134,19 +133,16 @@ int main(int argc, char** argv){
 	std::string litEnv_vert = parentDir + "\\shaders\\LitEnv.vert";
     std::string litEnv_frag = parentDir + "\\shaders\\LitEnv.frag";
 	GLuint litEnv_glsl = compileShaders(litEnv_vert, litEnv_frag);
-	// std::string litEnv_vert = parentDir + "\\shaders\\V-Instanced.vert";
-	// std::string litEnv_frag = parentDir + "\\shaders\\V-Instanced.frag";
 	std::string Sphere_vert = parentDir + "\\shaders\\Sphere.vert";
 	std::string Sphere_frag = parentDir + "\\shaders\\Sphere.frag";
 	GLuint Sphere_glsl = compileShaders(Sphere_vert, Sphere_frag);
 
     std::vector<ModelComposite> MPerComponent;
     std::string LowPolyMill_filePath = parentDir + "\\..\\..\\data\\LowPolyMill.fbx";
-	// std::string LowPolyMill_filePath = parentDir + "\\..\\..\\data\\KSR-29-SniperRifle.fbx";
 
     assimpImportCPP(LowPolyMill_filePath, &MPerComponent);
 
-	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.f);
+	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1500.0f);
 	glm::mat4 mvMatrix(1);
 	glm::vec3 lookPos(1);
 
@@ -172,26 +168,24 @@ int main(int argc, char** argv){
 		{0.76f, 0.913f, 0.96f}
 	};
 
-	std::string seamlessSand_filePath = parentDir + "\\..\\..\\data\\BrushedSteel.ktx";
-	GLuint seamlessSand = createTexture(seamlessSand_filePath.c_str());
+	std::string sphereTex_filePath = parentDir + "\\..\\..\\data\\SandTex1.ktx";
+	GLuint sphereTex = createTexture(sphereTex_filePath.c_str());
+
+	ModelComposite Sphere;
+	createSphere(&Sphere, Globe::size, Globe::slices, Globe::stacks);
 
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
-        glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
-		// glClearColor(0.0f, 0.0f, 0.05f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		lookPos = glm::vec3(cameraPos.x + std::sin(hAngle), cameraPos.y + std::sin(vAngle), cameraPos.z + std::cos(hAngle + vAngle));
 		mvMatrix = glm::lookAt(cameraPos, lookPos, glm::vec3(0.0, 1.0, 0.0));
 
-		ModelComposite Sphere;
-		createSphere(&Sphere, Globe::size, Globe::slices, Globe::stacks);
-
 		sphereUtil.mvpMatrix(perspectiveMatrix * mvMatrix);
 		sphereUtil.nMatrix(glm::mat3(glm::transpose(glm::inverse(mvMatrix))));
-		sphereUtil.renderMode(1);
+		sphereUtil.renderMode(2);
 		sphereUtil.colorPalette(&coolPalette);
-		glBindTextureUnit(0, seamlessSand);
+		glBindTextureUnit(0, sphereTex);
 		glBindVertexArray(Sphere.VertexArray);
 		glDrawElements(GL_TRIANGLES, Sphere.modelIndices.size(), GL_UNSIGNED_INT, 0);
 
