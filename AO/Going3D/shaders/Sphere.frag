@@ -5,6 +5,7 @@ layout(location = 1) in vec3 normal;
 layout(location = 2) in flat uint vertexID;
 
 layout(binding = 0) uniform sampler2D sphereTex;
+uniform uvec2 sphereParams;
 uniform uint renderMode;
 
 layout(std430, binding = 1) buffer colorPalette {
@@ -13,6 +14,7 @@ layout(std430, binding = 1) buffer colorPalette {
 	float color3[3];
 	float color4[3];
 };
+
 
 layout(location = 0) out vec4 frag_out;
 
@@ -24,6 +26,11 @@ void main(){
 		else frag_out = vec4(color4[0], color4[1], color4[2], 1.0);
 	} else if(renderMode == 2){
 		frag_out = texture(sphereTex, texCoord);
+	} else if(renderMode == 3){ 
+		// float intensity = (1.0 / float(sphereParams[1])) * mod(vertexID, sphereParams[1]);
+		float intensity = (1.0 / float(sphereParams[1])) * 3;
+	 	frag_out = vec4(intensity, intensity, intensity, 1.0);
+		// frag_out = vec4(0.55, 0.66, 0.956, 1.0);
 	} else {
 		frag_out = vec4(0.258, 0.525, 0.956, 1.0);
 	}

@@ -15,6 +15,10 @@ void Sphere::renderMode(GLuint renderMode){
     glUniform1ui(Sphere::unifLoc[SPH_UNIF::renderMode], renderMode);
 }
 
+void Sphere::sphereParams(std::array<GLuint, 2> sphereParams){
+    glUniform2uiv(Sphere::unifLoc[SPH_UNIF::sphereParams], 1, sphereParams.data());
+}
+
 void Sphere::colorPalette(ColorPalette4x3* colorPalette){
 	glGenBuffers(1, &Sphere::SSBO[0]);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, Sphere::SSBO[0]);
@@ -30,4 +34,6 @@ void Sphere::initUniforms(){
     if(Sphere::unifLoc[SPH_UNIF::nMatrix] == -1) std::cerr << "Sphere uniform issue: nMatrix" << std::endl;
     Sphere::unifLoc[SPH_UNIF::renderMode] = glGetUniformLocation(Sphere::shaderProgID, "renderMode");
     if(Sphere::unifLoc[SPH_UNIF::renderMode] == -1) std::cerr << "Sphere uniform issue: renderMode" << std::endl;
+    Sphere::unifLoc[SPH_UNIF::sphereParams] = glGetUniformLocation(Sphere::shaderProgID, "sphereParams");
+    if(Sphere::unifLoc[SPH_UNIF::sphereParams] == -1) std::cerr << "Sphere uniform issue: sphereParams" << std::endl;
 }

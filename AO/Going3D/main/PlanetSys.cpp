@@ -24,21 +24,18 @@ namespace Globe {
 	GLuint slices = 300;
 	GLuint stacks = 300;
 	GLboolean isRotated = false;
-	glm::vec3 rotation = glm::vec3(0.0, 0.0, 0.0);
 	glm::mat4 rotationMatrix(1);
 }
 
 namespace Player {
 	GLfloat height = 3.0f; 
-	GLfloat movementSpeed = 10.0f;
+	GLfloat movementSpeed = 10.0f / Globe::size;
 	GLuint vRotationSpeed = 120;
 	GLuint hRotationSpeed = 90;
-	// glm::vec3 camera = glm::vec3(0.0, Globe::size + Player::height, 0.0f);
-	glm::vec3 camera = glm::vec3(0.0, 0.0f, -1200.0f);
+	glm::vec2 pos = glm::vec2(0.0, 0.0);
+	glm::vec3 camera = glm::vec3(0.0, 0.0, Globe::size + Player::height);
 }
 
-// glm::vec3 Player::camera = glm::vec3(0.0, 0.0, -300.0f);
-glm::mat4 cameraRotation(1);
 GLboolean cursorPresent = true;	
 GLdouble cursorInitX, cursorInitY;
 GLfloat hAngle, vAngle;
@@ -80,10 +77,12 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
 	if (key == GLFW_KEY_K && action == GLFW_RELEASE) Key::K = false;
 	if (key == GLFW_KEY_L && action == GLFW_RELEASE) Key::L = false;
 
-	if(Key::W) Player::camera.z += Player::movementSpeed; 
-	if(Key::A) Player::camera.x += Player::movementSpeed;
-	if(Key::S) Player::camera.z -= Player::movementSpeed;
-	if(Key::D) Player::camera.x -= Player::movementSpeed;
+	if(Key::W) Globe::rotation.x = 1.0; 
+	if(Key::A) Globe::rotation.y = 1.0;
+	if(Key::S) Globe::rotation.x = -1.0;
+	if(Key::D) Globe::rotation.y = -1.0;
+	if(Key::W || Key::A || Key::S || Key::D)
+	Globe::isRotated = true;
 	if(Key::Q) Player::camera.y -= Player::movementSpeed;
 	if(Key::E) Player::camera.y += Player::movementSpeed;
 	if(Key::O) Globe::slices++;
@@ -117,10 +116,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_K && action == GLFW_RELEASE) Key::K = false;
 	if (key == GLFW_KEY_L && action == GLFW_RELEASE) Key::L = false;
 
-	if(Key::W) Globe::rotation.x = 1.0; 
-	if(Key::A) Globe::rotation.y = 1.0;
-	if(Key::S) Globe::rotation.x = -1.0;
-	if(Key::D) Globe::rotation.y = -1.0;
+	if(Key::W) Player::pos.x += Player::movementSpeed; 
+	if(Key::A) Player::pos.y += Player::movementSpeed;
+	if(Key::S) Player::pos.x -= Player::movementSpeed;
+	if(Key::D) Player::pos.y -= Player::movementSpeed;
 	if(Key::W || Key::A || Key::S || Key::D)
 	Globe::isRotated = true;
 	if(Key::Q) Player::camera.y -= Player::movementSpeed;
@@ -132,6 +131,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if(Key::O || Key::P || Key::K || Key::L) 
 	std::cout << "Size: " << Globe::size << " Slices: " << Globe::slices << " Stacks: " << Globe::stacks << std::endl;
 }
+
 
 int main(int argc, char** argv){
     /* -- -- -- Creation of OpenGL Context, Windowing, and Handling User Input -- -- -- */
@@ -221,18 +221,20 @@ int main(int argc, char** argv){
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		lookPos = glm::vec3(Player::camera.x + std::sin(hAngle), Player::camera.y + std::sin(vAngle), Player::camera.z + std::cos(hAngle + vAngle));
+		lookPos = glm::vec3(Player::camera.x + std::sin(hAngle), Player::camera.y + std::cos(hAngle + vAngle), Player::camera.z + std::sin(vAngle));
 		if(Globe::isRotated){
-			Globe::rotationMatrix = glm::rotate(Globe::rotationMatrix, Player::movementSpeed / 600, Globe::rotation);
-			Globe::rotation = glm::vec3(0.0, 0.0, 0.0);
+			glm::vec2 pDirection = glm::normalize(Player::pos);
+			Globe::rotationMatrix = glm::rotate(glm::mat4(1), glm::length(Player::pos), glm::vec3(pDirection.x, pDirection.y, 0.0));
 			Globe::isRotated = false;
 		}
-		mvMatrix = glm::lookAt(Player::camera, lookPos, glm::vec3(0.0, 1.0, 0.0)) * Globe::rotationMatrix;
+		mvMatrix = glm::lookAt(Player::camera, lookPos, glm::vec3(0.0, 0.0, 1.0)) * Globe::rotationMatrix;
 
 		sphereUtil.mvpMatrix(perspectiveMatrix * mvMatrix);
 		sphereUtil.nMatrix(glm::mat3(glm::transpose(glm::inverse(mvMatrix))));
 		sphereUtil.renderMode(1);
 		sphereUtil.colorPalette(&coolPalette);
+		std::array<GLuint, 2> sphereParams = {Globe::slices, Globe::stacks};
+		sphereUtil.sphereParams(sphereParams);
 		glBindTextureUnit(0, sphereTex);
 		glBindVertexArray(Sphere.VertexArray);
 		glDrawElements(GL_TRIANGLES, Sphere.modelIndices.size(), GL_UNSIGNED_INT, 0);

@@ -68,7 +68,8 @@ namespace SPH_UNIF {
     enum SPH_UNIF {
         mvpMatrix,
         nMatrix,
-        renderMode
+        renderMode,
+        sphereParams
     };
 };
 
@@ -79,6 +80,11 @@ struct ColorPalette4x3 {
     std::array<GLfloat, 3> color4;
 };
 
+struct SphereParams {
+    GLfloat sliceCount;
+    GLfloat stackCount;
+};
+
 class Sphere : public BaseShader {
 public:
     Sphere(GLuint shaderProg) : BaseShader(shaderProg){ }
@@ -86,8 +92,9 @@ public:
     void nMatrix(glm::mat3 nMatrix);
     void renderMode(GLuint renderMode);
     void colorPalette(ColorPalette4x3* colorPalette);
+    void sphereParams(std::array<GLuint, 2> sphereParams);
     void initUniforms();
 private:
     GLint unifLoc[3];
-    GLuint SSBO[1];
+    GLuint SSBO[2];
 };
