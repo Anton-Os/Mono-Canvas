@@ -89,9 +89,10 @@ std::array<GLfloat, 4> genRandomColors(GLfloat alphaFactor);
 GLuint loadModelData(ModelComposite* Model);
 GLuint loadModelData(ModelComposite* Model, std::bitset<5> renderParams);
 
-// From SphereAo.cpp
+// From Geometry.cpp
 
 int createSphere(ModelComposite* sphereModel, GLfloat radius, GLuint sliceCount, GLuint stackCount);
 // int createSphere(ModelComposite* sphereModel, GLfloat radius, GLfloat sliceCount, GLfloat stackCount);
+unsigned int createRevLine(GLuint length, std::array<GLfloat, 2> pos, std::array<GLfloat, 2> change, std::array<GLfloat, 6> colorRange);
 
 #include "ShaderCtrl.h"

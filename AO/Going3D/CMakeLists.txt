@@ -64,7 +64,7 @@ add_executable(Globe
     comp/LoadTextures.cpp
     comp/LoadShaders.cpp
     comp/Model3D.cpp
-    comp/SphereAo.cpp
+    comp/Geometry.cpp
     pipeline/LitEnv.cpp
     pipeline/Sphere.cpp
     main/Globe.cpp
@@ -86,7 +86,7 @@ add_executable(PlanetSys
     comp/LoadTextures.cpp
     comp/LoadShaders.cpp
     comp/Model3D.cpp
-    comp/SphereAo.cpp
+    comp/Geometry.cpp
     pipeline/LitEnv.cpp
     pipeline/Sphere.cpp
     main/PlanetSys.cpp
@@ -113,6 +113,7 @@ foreach(current_shader "LitEnv.vert" "LitEnv.frag"
                        "NoBlocks.vert" "NoBlocks.frag"
                        "V-Instanced.vert" "V-Instanced.frag"
                        "Sphere.vert" "Sphere.frag"
+                       "Line.vert" "Line.frag"
 )
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}"
         DEPENDS "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"

@@ -32,6 +32,6 @@ void main(){
 	 	frag_out = vec4(intensity, intensity, intensity, 1.0);
 		// frag_out = vec4(0.55, 0.66, 0.956, 1.0);
 	} else {
-		frag_out = vec4(0.258, 0.525, 0.956, 1.0);
+		frag_out = vec4(0.258, 0.525, 0.956, 0.7);
 	}
 }
