@@ -30,6 +30,7 @@ namespace Globe {
 namespace Player {
 	GLfloat height = 3.0f; 
 	GLfloat movementSpeed = 10.0f / Globe::size;
+	GLuint steps = 100;
 	GLuint vRotationSpeed = 120;
 	GLuint hRotationSpeed = 90;
 	glm::vec2 pos = glm::vec2(0.0, 0.0);
@@ -116,10 +117,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_K && action == GLFW_RELEASE) Key::K = false;
 	if (key == GLFW_KEY_L && action == GLFW_RELEASE) Key::L = false;
 
-	if(Key::W) Player::pos.x += Player::movementSpeed; 
-	if(Key::A) Player::pos.y += Player::movementSpeed;
-	if(Key::S) Player::pos.x -= Player::movementSpeed;
-	if(Key::D) Player::pos.y -= Player::movementSpeed;
+	if(Key::W) Player::pos.y += glm::pi<float>() / Player::steps;
+	if(Key::A) Player::pos.x += glm::pi<float>() / Player::steps;
+	if(Key::S) Player::pos.y -= glm::pi<float>() / Player::steps;
+	if(Key::D) Player::pos.x += glm::pi<float>() / Player::steps;
 	if(Key::W || Key::A || Key::S || Key::D)
 	Globe::isRotated = true;
 	if(Key::Q) Player::camera.y -= Player::movementSpeed;
@@ -221,13 +222,9 @@ int main(int argc, char** argv){
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		Player::camera = glm::vec3(std::sin(Player::pos.x), std::sin(Player::pos.y), std::cos(Player::pos.x + Player::pos.y)) * Globe::size;
 		lookPos = glm::vec3(Player::camera.x + std::sin(hAngle), Player::camera.y + std::cos(hAngle + vAngle), Player::camera.z + std::sin(vAngle));
-		if(Globe::isRotated){
-			glm::vec2 pDirection = glm::normalize(Player::pos);
-			Globe::rotationMatrix = glm::rotate(glm::mat4(1), glm::length(Player::pos), glm::vec3(pDirection.x, pDirection.y, 0.0));
-			Globe::isRotated = false;
-		}
-		mvMatrix = glm::lookAt(Player::camera, lookPos, glm::vec3(0.0, 0.0, 1.0)) * Globe::rotationMatrix;
+		mvMatrix = glm::lookAt(Player::camera, glm::vec3(Player::camera.x, Player::camera.y + 1.0, Player::camera.z), glm::vec3(0.0, 0.0, 1.0));
 
 		sphereUtil.mvpMatrix(perspectiveMatrix * mvMatrix);
 		sphereUtil.nMatrix(glm::mat3(glm::transpose(glm::inverse(mvMatrix))));
