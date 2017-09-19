@@ -35,6 +35,8 @@ namespace Player {
 	GLuint xRotationSpeed = 90;
 	glm::vec2 pos = glm::vec2(0.0, 0.0);
 	glm::vec3 camera = glm::vec3(0.0, 0.0, Globe::size + Player::height);
+	glm::vec3 lookPos = glm::vec3(0);
+	glm::vec3 up = glm::vec3(0.0, 0.0, 1.0);
 }
 
 namespace Mouse {
@@ -146,7 +148,6 @@ int main(int argc, char** argv){
 
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1500.0f);
 	glm::mat4 mvMatrix(1);
-	glm::vec3 lookPos(1);
 
 	glUseProgram(litEnv_glsl);
 	LitEnv litEnvUtil(litEnv_glsl);
@@ -175,22 +176,24 @@ int main(int argc, char** argv){
 
 	ModelComposite Sphere;
 	createSphere(&Sphere, Globe::size, Globe::slices, Globe::stacks);
+	sphereUtil.renderMode(1);
+	sphereUtil.colorPalette(&coolPalette);
+	std::array<GLuint, 2> sphereParams = {Globe::slices, Globe::stacks};
+	sphereUtil.sphereParams(sphereParams);
+	glBindTextureUnit(0, sphereTex);
 
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		Player::camera = glm::vec3(std::sin(Player::pos.x), std::sin(Player::pos.y), std::cos(Player::pos.x + Player::pos.y)) * Globe::size;
-		lookPos = glm::vec3(Player::camera.x + std::sin(Mouse::xOffset), Player::camera.y + std::cos(Mouse::xOffset + Mouse::yOffset), Player::camera.z + std::sin(Mouse::yOffset));
-		mvMatrix = glm::lookAt(Player::camera, glm::vec3(Player::camera.x, Player::camera.y + 1.0, Player::camera.z), glm::vec3(0.0, 0.0, 1.0));
+		Player::up = glm::vec3(std::sin(Player::pos.x), std::sin(Player::pos.y), std::cos(Player::pos.x + Player::pos.y));
+		Player::camera = Player::up * Globe::size;
+		// Player::camera = Player::up * Globe::size + Player::up * Player::height;
+		Player::lookPos = glm::vec3(Player::camera.x + std::sin(Mouse::xOffset), Player::camera.y + std::cos(Mouse::xOffset + Mouse::yOffset), Player::camera.z + std::sin(Mouse::yOffset));
+		mvMatrix = glm::lookAt(Player::camera, glm::vec3(Player::camera.x, Player::camera.y + 1.0, Player::camera.z), Player::up);
 
 		sphereUtil.mvpMatrix(perspectiveMatrix * mvMatrix);
 		sphereUtil.nMatrix(glm::mat3(glm::transpose(glm::inverse(mvMatrix))));
-		sphereUtil.renderMode(1);
-		sphereUtil.colorPalette(&coolPalette);
-		std::array<GLuint, 2> sphereParams = {Globe::slices, Globe::stacks};
-		sphereUtil.sphereParams(sphereParams);
-		glBindTextureUnit(0, sphereTex);
 		glBindVertexArray(Sphere.VertexArray);
 		glDrawElements(GL_TRIANGLES, Sphere.modelIndices.size(), GL_UNSIGNED_INT, 0);
 
