@@ -148,6 +148,7 @@ int main(int argc, char** argv){
 
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1500.0f);
 	glm::mat4 mvMatrix(1);
+	glm::vec3 globeRelDir(0);
 
 	glUseProgram(litEnv_glsl);
 	LitEnv litEnvUtil(litEnv_glsl);
@@ -187,10 +188,10 @@ int main(int argc, char** argv){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		Player::up = glm::vec3(std::sin(Player::pos.x), std::sin(Player::pos.y), std::cos(Player::pos.x + Player::pos.y));
-		Player::camera = Player::up * Globe::size;
-		// Player::camera = Player::up * Globe::size + Player::up * Player::height;
-		Player::lookPos = glm::vec3(Player::camera.x + std::sin(Mouse::xOffset), Player::camera.y + std::cos(Mouse::xOffset + Mouse::yOffset), Player::camera.z + std::sin(Mouse::yOffset));
-		mvMatrix = glm::lookAt(Player::camera, glm::vec3(Player::camera.x, Player::camera.y + 1.0, Player::camera.z), Player::up);
+		Player::camera = (Player::up * Globe::size) + (glm::normalize(Player::camera) * Player::height);
+		// Player::lookPos = glm::vec3(Player::camera.x + std::sin(Mouse::xOffset), Player::camera.y + std::cos(Mouse::xOffset + Mouse::yOffset), Player::camera.z + std::sin(Mouse::yOffset));
+		Player::lookPos = glm::vec3(Player::camera.x, Player::camera.y + std::cos(Player::pos.y), Player::camera.z - std::sin(Player::pos.y));
+		mvMatrix = glm::lookAt(Player::camera, Player::lookPos, Player::up);
 
 		sphereUtil.mvpMatrix(perspectiveMatrix * mvMatrix);
 		sphereUtil.nMatrix(glm::mat3(glm::transpose(glm::inverse(mvMatrix))));
