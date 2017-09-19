@@ -39,6 +39,7 @@ set(SHADERC_PROJECT_DIR "${ALL_PROJECT_DIR}/ShaderC")
 set(EIGEN_PROJECT_DIR "${ALL_PROJECT_DIR}/Eigen")
 set(SQLITE_PROJECT_DIR "${ALL_PROJECT_DIR}/SQLite")
 set(BOOST_PROJECT_DIR "${ALL_PROJECT_DIR}/Boost")
+set(OPENSSL_PROJECT_DIR "${ALL_PROJECT_DIR}/OpenSSL")
 
 set(UTILITIES_DIR "${CMAKE_BINARY_DIR}/Util")
 set(PYTHON_EMBEDDED_DIR "${UTILITIES_DIR}/python-3.6.1-embed")
@@ -142,6 +143,20 @@ else()
 endif()
 
 list(APPEND EXTLIB_TARGETS Boost)
+
+#[[ ExternalProject_Add(OpenSSL
+    GIT_REPOSITORY "https://github.com/pol51/OpenSSL-CMake.git"
+    GIT_TAG "3d4fe696e28665b3b642ed2ce87ba4a02230c53d"
+
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+
+    PREFIX ${OPENSSL_PROJECT_DIR}
+    BINARY_DIR "${OPENSSL_PROJECT_DIR}/build"
+    TMP_DIR "${OPENSSL_PROJECT_DIR}/temp"
+    STAMP_DIR "${OPENSSL_PROJECT_DIR}/stamp"
+)
+
+list(APPEND EXTLIB_TARGETS OpenSSL) #]]
 
 ExternalProject_Add(GLEW
     URL "${CMAKE_BINARY_DIR}/glew-1.13.0.tgz"
@@ -410,9 +425,7 @@ ExtlibWriteConfig(
         -DGLM_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/glm
         -DASSIMP_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/assimp-3.3
         -DFREEIMAGE_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/freeimage
-        
-        # This path will be specified once I build OSG independently
-        -DOSG_DIR:PATH=${CMAKE_INSTALL_PREFIX}
+        -DBOOST_INCLUDEDIR:PATH=${CMAKE_INSTALL_PREFIX}/include/boost-1_65_1
 )
 
 add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/ExtlibCache.txt"

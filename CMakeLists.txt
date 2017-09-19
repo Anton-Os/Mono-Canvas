@@ -45,7 +45,7 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
     find_package(GLI REQUIRED CONFIG)
     find_package(GLM REQUIRED CONFIG)
     find_package(ASSIMP REQUIRED CONFIG)
-
+    find_package(Boost REQUIRED)
 
     add_subdirectory("AO/Going3D")
     if(Vulkan_FOUND)
