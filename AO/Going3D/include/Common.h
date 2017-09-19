@@ -22,7 +22,6 @@ GLuint compileShaders(const std::string& vertexShaderFilePath, const std::string
 // From LoadTextures.cpp
 
 GLuint createTexture(const char* filePath);
-GLuint textureCheck(GLuint texture, std::string pathToFile);
 
 // From Model3D.cpp
 
@@ -71,7 +70,6 @@ namespace ShaderCtrlBit {
 struct ModelComposite {
     GLuint VertexArray;
     std::vector<Point> modelMeshes;
-    std::vector<Texel> textureEmb;
     std::vector<GLuint> modelIndices;
     glm::mat4 relativePos;
     MaterialBlock materialBlock;
@@ -82,17 +80,14 @@ struct ModelComposite {
 int assimpImportCPP(const std::string& pFile);
 int assimpImportCPP(const std::string &pFile, std::vector<ModelComposite>* MPerComponent);
 
-void genRandomColors(std::vector<std::array<GLfloat, 4>>* allVertexColors, GLfloat alphaFactor);
-void genRandomColors(std::vector<std::array<GLfloat, 4>>* allVertexColors, GLuint vertexCount, GLfloat alphaFactor);
-std::array<GLfloat, 4> genRandomColors(GLfloat alphaFactor);
+// From LoadData.cpp
 
+void genRandomColors(std::vector<std::array<GLfloat, 4>>* allVertexColors, GLuint vertexCount, GLfloat alphaFactor);
 GLuint loadModelData(ModelComposite* Model);
-GLuint loadModelData(ModelComposite* Model, std::bitset<5> renderParams);
 
 // From Geometry.cpp
 
-int createSphere(ModelComposite* sphereModel, GLfloat radius, GLuint sliceCount, GLuint stackCount);
-// int createSphere(ModelComposite* sphereModel, GLfloat radius, GLfloat sliceCount, GLfloat stackCount);
-unsigned int createRevLine(GLuint length, std::array<GLfloat, 2> pos, std::array<GLfloat, 2> change, std::array<GLfloat, 6> colorRange);
+unsigned int createRevLine(GLuint length, std::array<GLfloat, 2> posInit, std::array<GLfloat, 2> posChange);
+void createSphere(ModelComposite* sphereModel, GLfloat radius, GLuint sliceCount, GLuint stackCount);
 
 #include "ShaderCtrl.h"

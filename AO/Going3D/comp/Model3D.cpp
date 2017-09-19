@@ -1,51 +1,6 @@
 #include "Common.h"
 #include <stack>
 
-void genRandomColors(std::vector<std::array<GLfloat, 4>>* allVertexColors, GLuint vertexCount, GLfloat alphaFactor){
-  srand(time(NULL));
-  GLfloat randomColor_R, randomColor_G, randomColor_B;
-  for(unsigned int c = 0; c < vertexCount; c++){
-    randomColor_R = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
-    randomColor_G = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
-    randomColor_B = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
-    allVertexColors->push_back({ randomColor_R, randomColor_G, randomColor_B, alphaFactor });
-  }
-}
-
-GLuint loadModelData(ModelComposite* Model){
-  GLuint VAO;
-  glGenVertexArrays(1, &VAO);
-  glBindVertexArray(VAO);
-  GLuint VBO;
-  glGenBuffers(1, &VBO);
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-  glBufferData(GL_ARRAY_BUFFER, Model->modelMeshes.size() * sizeof(Point), &Model->modelMeshes[0], GL_STATIC_DRAW);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, pos));
-  glEnableVertexAttribArray(0);
-  if(Model->renderParams[ShaderCtrlBit::color] == 1){
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, color));
-    glEnableVertexAttribArray(1);  
-  }
-  if(Model->renderParams[ShaderCtrlBit::texCoord] == 1){
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, texCoord));
-    glEnableVertexAttribArray(2);
-  }
-  if(Model->renderParams[ShaderCtrlBit::normal] == 1){
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Point), (GLvoid*)offsetof(Point, normal));
-    glEnableVertexAttribArray(3);
-  }
-
-  if(Model->renderParams[ShaderCtrlBit::indexed] == 1){
-    GLuint EBO;
-    glGenBuffers(1, &EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, Model->modelIndices.size() * sizeof(GLuint), &Model->modelIndices[0], GL_STATIC_DRAW);
-  }
-  GLenum errorLog = glGetError();
-  return VAO;
-}
-
 void loadModelMaterial(const aiScene* scene, aiMesh* currentMesh, ModelComposite* Model){
   if(scene->HasMaterials()){
     aiColor4D ambientColor; 
@@ -72,7 +27,7 @@ void loadModelMaterial(const aiScene* scene, aiMesh* currentMesh, ModelComposite
   }
 }
 
-void loadOpenGL_Faces(aiMesh* currentMesh, ModelComposite* Model){
+void modelFaces(aiMesh* currentMesh, ModelComposite* Model){
   if(currentMesh->HasFaces()){
     for(unsigned int f = 0; f < currentMesh->mNumFaces; f++){
       unsigned int faceIndicesCount = currentMesh->mFaces[f].mNumIndices;
@@ -87,7 +42,7 @@ void loadOpenGL_Faces(aiMesh* currentMesh, ModelComposite* Model){
   }
 }
 
-void loadOpenGL_VertexPos(aiMesh* currentMesh, std::vector<std::array<GLfloat, 3>>* allVertexPos){
+void modelVertexPos(aiMesh* currentMesh, std::vector<std::array<GLfloat, 3>>* allVertexPos){
   if(currentMesh->HasPositions()){
     for(unsigned int v = 0; v < currentMesh->mNumVertices; v++){
       allVertexPos->push_back(
@@ -101,7 +56,7 @@ void loadOpenGL_VertexPos(aiMesh* currentMesh, std::vector<std::array<GLfloat, 3
   }
 }
 
-void loadOpenGL_VertexColor(aiMesh* currentMesh, ModelComposite* Model, std::vector<std::array<GLfloat, 4>>* allVertexColors){
+void modelVertexColor(aiMesh* currentMesh, ModelComposite* Model, std::vector<std::array<GLfloat, 4>>* allVertexColors){
   if(currentMesh->HasVertexColors(0)){
     for(unsigned int v = 0; v < currentMesh->mNumVertices; v++){
       allVertexColors->push_back(
@@ -119,7 +74,7 @@ void loadOpenGL_VertexColor(aiMesh* currentMesh, ModelComposite* Model, std::vec
   }
 }
 
-void loadOpenGL_VertexTexCoord(aiMesh* currentMesh, ModelComposite* Model, std::vector<std::array<GLfloat, 2>>* allVertexTexCoord){
+void modelVertexTexCoord(aiMesh* currentMesh, ModelComposite* Model, std::vector<std::array<GLfloat, 2>>* allVertexTexCoord){
   if(currentMesh->HasTextureCoords(0)){
     for(unsigned int v = 0; v < currentMesh->mNumVertices; v++){
       allVertexTexCoord->push_back(
@@ -134,7 +89,7 @@ void loadOpenGL_VertexTexCoord(aiMesh* currentMesh, ModelComposite* Model, std::
   }
 }
 
-void loadOpenGL_VertexNormals(aiMesh* currentMesh, ModelComposite* Model, std::vector<std::array<GLfloat, 3>>* allVertexNormals){
+void modelVertexNormals(aiMesh* currentMesh, ModelComposite* Model, std::vector<std::array<GLfloat, 3>>* allVertexNormals){
   if(currentMesh->HasPositions()){
     for(unsigned int v = 0; v < currentMesh->mNumVertices; v++){
       allVertexNormals->push_back(
@@ -180,7 +135,7 @@ void iterateNodes(const aiScene* scene, std::vector<ModelComposite>* MPerCompone
       for(unsigned int m = 0; m < nodeMeshCount; m++){
         aiMesh* currentMesh = modelMeshes[nodeMeshes[m]];
         
-        loadOpenGL_Faces(currentMesh, &Model);
+        modelFaces(currentMesh, &Model);
 
         unsigned int meshVertexCount = currentMesh->mNumVertices;
         std::vector<std::array<GLfloat, 3>> allVertexPos;
@@ -188,10 +143,10 @@ void iterateNodes(const aiScene* scene, std::vector<ModelComposite>* MPerCompone
         std::vector<std::array<GLfloat, 2>> allVertexTexCoord;
         std::vector<std::array<GLfloat, 3>> allVertexNormals;
 
-        loadOpenGL_VertexPos(currentMesh, &allVertexPos);
-        loadOpenGL_VertexColor(currentMesh, &Model, &allVertexColors);
-        loadOpenGL_VertexTexCoord(currentMesh, &Model, &allVertexTexCoord);
-        loadOpenGL_VertexNormals(currentMesh, &Model, &allVertexNormals);
+        modelVertexPos(currentMesh, &allVertexPos);
+        modelVertexColor(currentMesh, &Model, &allVertexColors);
+        modelVertexTexCoord(currentMesh, &Model, &allVertexTexCoord);
+        modelVertexNormals(currentMesh, &Model, &allVertexNormals);
 
         for(unsigned int i = 0; i < meshVertexCount; i++) Model.modelMeshes.push_back(
           { allVertexPos.at(i), allVertexColors.at(i), allVertexTexCoord.at(i), allVertexNormals.at(i) }

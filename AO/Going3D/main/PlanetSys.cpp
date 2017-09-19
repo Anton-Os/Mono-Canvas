@@ -31,68 +31,31 @@ namespace Player {
 	GLfloat height = 3.0f; 
 	GLfloat movementSpeed = 10.0f / Globe::size;
 	GLuint steps = 100;
-	GLuint vRotationSpeed = 120;
-	GLuint hRotationSpeed = 90;
+	GLuint yRotationSpeed = 120;
+	GLuint xRotationSpeed = 90;
 	glm::vec2 pos = glm::vec2(0.0, 0.0);
-	glm::vec3 camera = glm::vec3(0.0, 0.0, Globe::size * 3);
+	glm::vec3 camera = glm::vec3(0.0, 0.0, Globe::size + Player::height);
 }
 
-GLboolean cursorPresent = true;	
-GLdouble cursorInitX, cursorInitY;
-GLfloat hAngle, vAngle;
+namespace Mouse {
+	GLboolean appears = true;	
+	GLdouble xInit, yInit;
+	GLfloat xOffset, yOffset;
+}
 
 void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
 
-	if(cursorPresent) cursorPresent = false;
+	if(Mouse::appears) Mouse::appears = false;
 	else {
-		if(xpos != cursorInitX) hAngle -= GLfloat((xpos - cursorInitX) / Player::hRotationSpeed);
-		if(ypos != cursorInitY) vAngle -= GLfloat((ypos - cursorInitY) / Player::vRotationSpeed);
+		if(xpos != Mouse::xInit) Mouse::xOffset -= GLfloat((xpos - Mouse::xInit) / Player::xRotationSpeed);
+		if(ypos != Mouse::yInit) Mouse::yOffset -= GLfloat((ypos - Mouse::yInit) / Player::yRotationSpeed);
 
-		std::cout << "Horizontal Angle: " << hAngle << " Vertical Angle: " << vAngle << std::endl;
+		std::cout << "Horizontal Angle: " << Mouse::xOffset << " Vertical Angle: " << Mouse::yOffset << std::endl;
 	}
 
-	cursorInitX = xpos;
-	cursorInitY = ypos;
+	Mouse::xInit = xpos;
+	Mouse::yInit = ypos;
 }
-
-/* void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	if (key == GLFW_KEY_W && action == GLFW_PRESS) Key::W = true;
-	if (key == GLFW_KEY_A && action == GLFW_PRESS) Key::A = true;
-	if (key == GLFW_KEY_S && action == GLFW_PRESS) Key::S = true;
-	if (key == GLFW_KEY_D && action == GLFW_PRESS) Key::D = true;
-	if (key == GLFW_KEY_Q && action == GLFW_PRESS) Key::Q = true;
-	if (key == GLFW_KEY_E && action == GLFW_PRESS) Key::E = true;
-	if (key == GLFW_KEY_O && action == GLFW_PRESS) Key::O = true;
-	if (key == GLFW_KEY_P && action == GLFW_PRESS) Key::P = true;
-	if (key == GLFW_KEY_K && action == GLFW_PRESS) Key::K = true;
-	if (key == GLFW_KEY_L && action == GLFW_PRESS) Key::L = true;
-
-	if (key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
-	if (key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
-	if (key == GLFW_KEY_S && action == GLFW_RELEASE) Key::S = false;
-	if (key == GLFW_KEY_D && action == GLFW_RELEASE) Key::D = false;
-	if (key == GLFW_KEY_Q && action == GLFW_RELEASE) Key::Q = false;
-	if (key == GLFW_KEY_E && action == GLFW_RELEASE) Key::E = false;
-	if (key == GLFW_KEY_O && action == GLFW_RELEASE) Key::O = false;
-	if (key == GLFW_KEY_P && action == GLFW_RELEASE) Key::P = false;
-	if (key == GLFW_KEY_K && action == GLFW_RELEASE) Key::K = false;
-	if (key == GLFW_KEY_L && action == GLFW_RELEASE) Key::L = false;
-
-	if(Key::W) Globe::rotation.x = 1.0; 
-	if(Key::A) Globe::rotation.y = 1.0;
-	if(Key::S) Globe::rotation.x = -1.0;
-	if(Key::D) Globe::rotation.y = -1.0;
-	if(Key::W || Key::A || Key::S || Key::D)
-	Globe::isRotated = true;
-	if(Key::Q) Player::camera.y -= Player::movementSpeed;
-	if(Key::E) Player::camera.y += Player::movementSpeed;
-	if(Key::O) Globe::slices++;
-	if(Key::P) Globe::slices--;
-	if(Key::K) Globe::stacks++;
-	if(Key::L) Globe::stacks--;
-	if(Key::O || Key::P || Key::K || Key::L) 
-	std::cout << "Size: " << Globe::size << " Slices: " << Globe::slices << " Stacks: " << Globe::stacks << std::endl;
-} */
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (key == GLFW_KEY_W && action == GLFW_PRESS) Key::W = true;
@@ -120,7 +83,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if(Key::W) Player::pos.y += glm::pi<float>() / Player::steps;
 	if(Key::A) Player::pos.x += glm::pi<float>() / Player::steps;
 	if(Key::S) Player::pos.y -= glm::pi<float>() / Player::steps;
-	if(Key::D) Player::pos.x += glm::pi<float>() / Player::steps;
+	if(Key::D) Player::pos.x -= glm::pi<float>() / Player::steps;
 	if(Key::W || Key::A || Key::S || Key::D)
 	Globe::isRotated = true;
 	if(Key::Q) Player::camera.y -= Player::movementSpeed;
@@ -180,16 +143,8 @@ int main(int argc, char** argv){
 	std::string Sphere_vert = parentDir + "\\shaders\\Sphere.vert";
 	std::string Sphere_frag = parentDir + "\\shaders\\Sphere.frag";
 	GLuint Sphere_glsl = compileShaders(Sphere_vert, Sphere_frag);
-	std::string Line_vert = parentDir + "\\shaders\\Line.vert";
-	std::string Line_frag = parentDir + "\\shaders\\Line.frag";
-	GLuint Line_glsl = compileShaders(Line_vert, Line_frag);
 
-    std::vector<ModelComposite> MPerComponent;
-    std::string LowPolyMill_filePath = parentDir + "\\..\\..\\data\\LowPolyMill.fbx";
-
-    assimpImportCPP(LowPolyMill_filePath, &MPerComponent);
-
-	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 2000.0f);
+	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1500.0f);
 	glm::mat4 mvMatrix(1);
 	glm::vec3 lookPos(1);
 
@@ -200,9 +155,6 @@ int main(int argc, char** argv){
 	glUseProgram(Sphere_glsl);
 	Sphere sphereUtil(Sphere_glsl);
 	sphereUtil.initUniforms();
-
-	glUseProgram(Line_glsl);
-	GLuint Line_mvp = glGetUniformLocation(Line_glsl, "mvpMatrix");
 
 	ColorPalette4x3 warmPalette {
 		{1.0f, 0.313f, 0.313f},
@@ -224,57 +176,23 @@ int main(int argc, char** argv){
 	ModelComposite Sphere;
 	createSphere(&Sphere, Globe::size, Globe::slices, Globe::stacks);
 
-	GLuint lines[4];
-	GLuint lineCount = 4;
-
-	/* std::array<std::array<GLfloat, 2>, 4> lineAlgo = {
-		{glm::pi<float>() / Player::steps, 0.0}, {0.0, glm::pi<float>() / Player::steps},
-		{-1 * (glm::pi<float>() / Player::steps), 0.0}, {0.0, -1 * (glm::pi<float>() / Player::steps)}
-	}; */
-
-	std::array<std::array<GLfloat, 2>, 4> lineAlgo;
-	lineAlgo[0] = {glm::pi<float>() / Player::steps, 0.0};
-	lineAlgo[1] = {0.0, glm::pi<float>() / Player::steps};
-	lineAlgo[2] = {-1 * (glm::pi<float>() / Player::steps), 0.0};
-	lineAlgo[3] = {0.0, -1 * (glm::pi<float>() / Player::steps)};
- 	
-	std::array<GLfloat, 12> warmColors = {
-		1.0f, 0.313f, 0.313f, 1.0f, 0.6f, 0.4f,
-		1.0f, 0.701f, 0.854f, 1.0f, 1.0f, 0.6f,
-	};
-
 	while(!glfwWindowShouldClose(window)){
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Player::camera = glm::vec3(std::sin(Player::pos.x), std::sin(Player::pos.y), std::cos(Player::pos.x + Player::pos.y)) * Globe::size;
-		// lookPos = glm::vec3(Player::camera.x + std::sin(hAngle), Player::camera.y + std::cos(hAngle + vAngle), Player::camera.z + std::sin(vAngle));
-		// mvMatrix = glm::lookAt(Player::camera, glm::vec3(Player::camera.x, Player::camera.y + 1.0, Player::camera.z), glm::vec3(0.0, 0.0, 1.0));
+		Player::camera = glm::vec3(std::sin(Player::pos.x), std::sin(Player::pos.y), std::cos(Player::pos.x + Player::pos.y)) * Globe::size;
+		lookPos = glm::vec3(Player::camera.x + std::sin(Mouse::xOffset), Player::camera.y + std::cos(Mouse::xOffset + Mouse::yOffset), Player::camera.z + std::sin(Mouse::yOffset));
+		mvMatrix = glm::lookAt(Player::camera, glm::vec3(Player::camera.x, Player::camera.y + 1.0, Player::camera.z), glm::vec3(0.0, 0.0, 1.0));
 
-		mvMatrix = glm::lookAt(Player::camera, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
-
-		glUseProgram(Sphere_glsl);
 		sphereUtil.mvpMatrix(perspectiveMatrix * mvMatrix);
 		sphereUtil.nMatrix(glm::mat3(glm::transpose(glm::inverse(mvMatrix))));
-		sphereUtil.renderMode(0);
+		sphereUtil.renderMode(1);
 		sphereUtil.colorPalette(&coolPalette);
 		std::array<GLuint, 2> sphereParams = {Globe::slices, Globe::stacks};
 		sphereUtil.sphereParams(sphereParams);
 		glBindTextureUnit(0, sphereTex);
 		glBindVertexArray(Sphere.VertexArray);
 		glDrawElements(GL_TRIANGLES, Sphere.modelIndices.size(), GL_UNSIGNED_INT, 0);
-
-		glUseProgram(Line_glsl);
-		glUniformMatrix4fv(Line_mvp, 1, GL_FALSE, glm::value_ptr(perspectiveMatrix * mvMatrix));
-
-		glLineWidth(40.0f);
-		for(GLuint lineNum = 0; lineNum < lineCount; lineNum++){
-			lines[lineNum] = createRevLine( Globe::size, {0.0, 0.0}, /* lineAlgo[lineNum], */ {0.0, 0.0},		
-							 {0.0, 0.0, 0.0, warmColors[lineNum * 3], warmColors[lineNum * 3 + 1], warmColors[lineNum * 3 + 2]}
-			);
-			glBindVertexArray(lines[lineNum]);
-			glDrawArrays(GL_LINES, 0, Globe::size);
-		}
 
         glBindVertexArray(0);
 		glfwSwapBuffers(window);

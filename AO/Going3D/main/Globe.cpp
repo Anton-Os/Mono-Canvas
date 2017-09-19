@@ -134,17 +134,9 @@ int main(int argc, char** argv){
 	std::string litEnv_vert = parentDir + "\\shaders\\LitEnv.vert";
     std::string litEnv_frag = parentDir + "\\shaders\\LitEnv.frag";
 	GLuint litEnv_glsl = compileShaders(litEnv_vert, litEnv_frag);
-	// std::string litEnv_vert = parentDir + "\\shaders\\V-Instanced.vert";
-	// std::string litEnv_frag = parentDir + "\\shaders\\V-Instanced.frag";
 	std::string Sphere_vert = parentDir + "\\shaders\\Sphere.vert";
 	std::string Sphere_frag = parentDir + "\\shaders\\Sphere.frag";
 	GLuint Sphere_glsl = compileShaders(Sphere_vert, Sphere_frag);
-
-    std::vector<ModelComposite> MPerComponent;
-    std::string LowPolyMill_filePath = parentDir + "\\..\\..\\data\\LowPolyMill.fbx";
-	// std::string LowPolyMill_filePath = parentDir + "\\..\\..\\data\\KSR-29-SniperRifle.fbx";
-
-    assimpImportCPP(LowPolyMill_filePath, &MPerComponent);
 
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.f);
 	glm::mat4 mvMatrix(1);

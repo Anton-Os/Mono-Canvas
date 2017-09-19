@@ -1,6 +1,7 @@
 add_executable(AssimpModels
     comp/LoadTextures.cpp
     comp/LoadShaders.cpp
+    comp/LoadData.cpp
     comp/Model3D.cpp
     # comp/ShaderCtrl.cpp
     pipeline/NoBlocks.cpp
@@ -22,6 +23,7 @@ target_link_libraries(AssimpModels
 add_executable(Textureless
     comp/LoadTextures.cpp
     comp/LoadShaders.cpp
+    comp/LoadData.cpp
     comp/Model3D.cpp
     # comp/ShaderCtrl.cpp
     pipeline/LitEnv.cpp
@@ -43,6 +45,7 @@ target_link_libraries(Textureless
 add_executable(FluidCamera
     comp/LoadTextures.cpp
     comp/LoadShaders.cpp
+    comp/LoadData.cpp
     comp/Model3D.cpp
     pipeline/LitEnv.cpp
     main/FluidCamera.cpp
@@ -63,7 +66,8 @@ target_link_libraries(FluidCamera
 add_executable(Globe
     comp/LoadTextures.cpp
     comp/LoadShaders.cpp
-    comp/Model3D.cpp
+    comp/LoadData.cpp
+    # comp/Model3D.cpp
     comp/Geometry.cpp
     pipeline/LitEnv.cpp
     pipeline/Sphere.cpp
@@ -85,7 +89,8 @@ target_link_libraries(Globe
 add_executable(PlanetSys
     comp/LoadTextures.cpp
     comp/LoadShaders.cpp
-    comp/Model3D.cpp
+    comp/LoadData.cpp
+    # comp/Model3D.cpp
     comp/Geometry.cpp
     pipeline/LitEnv.cpp
     pipeline/Sphere.cpp
@@ -113,7 +118,6 @@ foreach(current_shader "LitEnv.vert" "LitEnv.frag"
                        "NoBlocks.vert" "NoBlocks.frag"
                        "V-Instanced.vert" "V-Instanced.frag"
                        "Sphere.vert" "Sphere.frag"
-                       "Line.vert" "Line.frag"
 )
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}"
         DEPENDS "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"
