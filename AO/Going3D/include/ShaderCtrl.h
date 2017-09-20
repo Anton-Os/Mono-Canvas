@@ -69,7 +69,8 @@ namespace SPH_UNIF {
         mvpMatrix,
         nMatrix,
         renderMode,
-        sphereParams
+        sphereParams,
+        gradient
     };
 };
 
@@ -93,8 +94,9 @@ public:
     void renderMode(GLuint renderMode);
     void colorPalette(ColorPalette4x3* colorPalette);
     void sphereParams(std::array<GLuint, 2> sphereParams);
+    void gradient(std::array<GLfloat, 6> gradient);
     void initUniforms();
 private:
-    GLint unifLoc[3];
+    GLint unifLoc[5];
     GLuint SSBO[2];
 };
