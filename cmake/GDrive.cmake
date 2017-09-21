@@ -46,11 +46,11 @@ list(APPEND GDRIVE_NAMES
 foreach(currentFile ${GDRIVE_NAMES})
     list(FIND GDRIVE_NAMES ${currentFile} currentIndex)
     list(GET GDRIVE_URLS ${currentIndex} currentUrl)
-    if(NOT EXISTS @CMAKE_BINARY_DIR@/AO/data/${currentFile})
+    if(NOT EXISTS D:/AntonDocs/MonoCanvas/MSVC-2017/AO/AO/data/${currentFile})
         message(STATUS "Downloading ${currentFile}")
         file(DOWNLOAD
             "${currentUrl}"
-            @CMAKE_BINARY_DIR@/AO/data/${currentFile}
+            D:/AntonDocs/MonoCanvas/MSVC-2017/AO/AO/data/${currentFile}
             SHOW_PROGRESS
         )
     else()

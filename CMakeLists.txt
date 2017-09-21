@@ -47,7 +47,11 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
     find_package(ASSIMP REQUIRED CONFIG)
     find_package(Boost REQUIRED)
 
+    set(BOOST_LIBS)
+    file(GLOB BOOST_LIBS "${BOOST_LIBRARYDIR}/*.lib")
+
     add_subdirectory("AO/Going3D")
+    add_subdirectory("AO/Network")
     if(Vulkan_FOUND)
         add_subdirectory("AO/VEruption")
     endif()
@@ -66,11 +70,12 @@ else ()
       )
 endif()
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake.in" 
-               "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake" 
+               "${CMAKE_BINARY_DIR}/GDrive.cmake"
                 @ONLY
 )
+
 add_custom_target(GDrive ALL 
-    ${CMAKE_COMMAND} -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
-    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
+    ${CMAKE_COMMAND} -P "${CMAKE_BINARY_DIR}/GDrive.cmake"
+    DEPENDS "${CMAKE_BINARY_DIR}/GDrive.cmake"
 )

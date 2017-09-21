@@ -50,16 +50,16 @@ if(NOT EXISTS ${UTILITIES_DIR})
     file(MAKE_DIRECTORY ${UTILITIES_DIR})
 endif()
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake.in" 
-               "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake" 
+               "${CMAKE_BINARY_DIR}/GDrive.cmake"
                 @ONLY
 )
 
 add_custom_target(GDrive_Extlib ALL 
-    ${CMAKE_COMMAND} -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
+    ${CMAKE_COMMAND} -P "${CMAKE_BINARY_DIR}/GDrive.cmake"
     COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_BINARY_DIR}/Img2KTX.tar" 
     COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_BINARY_DIR}/python-3.6.1-embed.tar"
-    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
+    DEPENDS "${CMAKE_BINARY_DIR}/GDrive.cmake"
     WORKING_DIRECTORY ${UTILITIES_DIR}
 )
 
@@ -112,35 +112,33 @@ ExternalProject_Add(Boost
   UPDATE_COMMAND ""
   PATCH_COMMAND ""
   CONFIGURE_COMMAND ${Boost_Bootstrap_Command}
-  BUILD_COMMAND  ${Boost_b2_Command} install
+  BUILD_COMMAND  ${Boost_b2_Command} install debug
     --without-python
     --without-mpi
     --disable-icu
     --prefix=${BOOST_PROJECT_DIR}
     --threading=single,multi
     --link=shared
-    --variant=release
+    --variant=debug
+    --libdir=${BOOST_PROJECT_DIR}/lib
+    --includedir=${BOOST_PROJECT_DIR}/include
+    architecture=x86 
+    address-model=64
     -j8
 # INSTALL_COMMAND ""
-  INSTALL_COMMAND ${Boost_b2_Command} install 
+  INSTALL_COMMAND ${Boost_b2_Command} install debug
     --without-python
     --without-mpi
     --disable-icu
     --prefix=${CMAKE_INSTALL_PREFIX}
     --threading=single,multi
     --link=shared
-    --variant=release
+    --variant=debug
+    architecture=x86 
+    address-model=64
     -j8
 # INSTALL_DIR ${CMAKE_BINARY_DIR}/INSTALL
 )
-
-if( NOT WIN32 )
-  set(Boost_LIBRARY_DIR ${CMAKE_BINARY_DIR}/INSTALL/lib/boost/ )
-  set(Boost_INCLUDE_DIR ${CMAKE_BINARY_DIR}/INSTALL/include/ )
-else()
-  set(Boost_LIBRARY_DIR ${CMAKE_BINARY_DIR}/INSTALL/lib/ )
-  set(Boost_INCLUDE_DIR ${CMAKE_BINARY_DIR}/INSTALL/include/boost-1_49/ )
-endif()
 
 list(APPEND EXTLIB_TARGETS Boost)
 
@@ -426,6 +424,7 @@ ExtlibWriteConfig(
         -DASSIMP_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/assimp-3.3
         -DFREEIMAGE_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/freeimage
         -DBOOST_INCLUDEDIR:PATH=${CMAKE_INSTALL_PREFIX}/include/boost-1_65_1
+        -DBOOST_LIBRARYDIR:PATH=${BOOST_PROJECT_DIR}/lib
 )
 
 add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/ExtlibCache.txt"

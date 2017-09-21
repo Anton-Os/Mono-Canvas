@@ -17,6 +17,7 @@ const std::string getParentDirectory(const char* path) {
 
 namespace Key {
 	GLboolean W, A, S, D, Q, E, O, P, K, L = false;
+	GLboolean One = false;
 }
 
 namespace Globe {
@@ -30,20 +31,17 @@ namespace Globe {
 }
 
 namespace Player {
+	GLboolean isGod = false;
 	GLfloat height = 3.0f; 
 	GLfloat movementSpeed = 10.0f / Globe::size;
 	// GLuint steps = 100;
-	GLuint steps = 20;
+	GLuint steps = 100;
 	GLuint yRotationSpeed = 120;
 	GLuint xRotationSpeed = 90;
 	glm::vec2 pos = glm::vec2(0.0, 0.0);
 	glm::vec3 camera = glm::vec3(0.0, 0.0, Globe::size + Player::height);
 	glm::vec3 lookPos = glm::vec3(0);
 	glm::vec3 up = glm::vec3(0.0, 0.0, 1.0);
-}
-
-namespace God {
-	GLfloat distance = Globe::size * 5;
 }
 
 namespace Mouse {
@@ -77,6 +75,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_P && action == GLFW_PRESS) Key::P = true;
 	if (key == GLFW_KEY_K && action == GLFW_PRESS) Key::K = true;
 	if (key == GLFW_KEY_L && action == GLFW_PRESS) Key::L = true;
+	if (key == GLFW_KEY_1 && action == GLFW_PRESS) {
+		if(Player::isGod == true) Player::isGod = false;
+		else Player::isGod = true;
+	}
 
 	if (key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
 	if (key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
@@ -89,10 +91,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_K && action == GLFW_RELEASE) Key::K = false;
 	if (key == GLFW_KEY_L && action == GLFW_RELEASE) Key::L = false;
 
-	if(Key::W) Player::pos.y += glm::pi<float>() / Player::steps;
-	if(Key::A) Player::pos.x += glm::pi<float>() / Player::steps;
-	if(Key::S) Player::pos.y -= glm::pi<float>() / Player::steps;
-	if(Key::D) Player::pos.x -= glm::pi<float>() / Player::steps;
+	if(Key::W) Player::pos.y += (2 * glm::pi<float>()) / Player::steps;
+	if(Key::A) Player::pos.x += (2 * glm::pi<float>()) / Player::steps;
+	if(Key::S) Player::pos.y -= (2 * glm::pi<float>()) / Player::steps;
+	if(Key::D) Player::pos.x -= (2 * glm::pi<float>()) / Player::steps;
 	if(Key::W || Key::A || Key::S || Key::D)
 	Globe::isRotated = true;
 	if(Key::Q) Player::camera.y -= Player::movementSpeed;
@@ -198,12 +200,19 @@ int main(int argc, char** argv){
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		Player::up = glm::vec3(std::sin(Player::pos.x), std::sin(Player::pos.y), std::cos(Player::pos.x + Player::pos.y));
-		Player::camera = (Player::up * Globe::size) + (glm::normalize(Player::camera) * Player::height);
-		// Player::lookPos = glm::vec3(Player::camera.x + std::sin(Mouse::xOffset), Player::camera.y + std::cos(Mouse::xOffset + Mouse::yOffset), Player::camera.z + std::sin(Mouse::yOffset));
-		Player::lookPos = glm::vec3(Player::camera.x, Player::camera.y + std::cos(Player::pos.y), Player::camera.z - std::sin(Player::pos.y));
-		// mvMatrix = glm::lookAt(Player::camera, Player::lookPos, Player::up);
-		mvMatrix = glm::lookAt(glm::vec3(std::sin(Player::pos.x), std::sin(Player::pos.y), std::cos(Player::pos.x + Player::pos.y)) * God::distance, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+		// Player::up = glm::vec3(std::sin(Player::pos.x), std::sin(Player::pos.y), std::cos(Player::pos.x + Player::pos.y));
+		Player::up = glm::vec3(std::sin(Player::pos.x) * std::sin(Player::pos.y), std::cos(Player::pos.x + Player::pos.y), std::sin(Player::pos.x) * std::cos(Player::pos.y));
+		if(!Player::isGod){
+			Player::camera = (Player::up * Globe::size) + (glm::normalize(Player::camera) * Player::height);
+			// Player::lookPos = glm::vec3(Player::camera.x + std::sin(Mouse::xOffset), Player::camera.y + std::cos(Mouse::xOffset + Mouse::yOffset), Player::camera.z + std::sin(Mouse::yOffset));
+			Player::lookPos = glm::vec3(Player::camera.x, Player::camera.y + std::cos(Player::pos.y), Player::camera.z - std::sin(Player::pos.y));
+			mvMatrix = glm::lookAt(Player::camera, Player::lookPos, Player::up);
+			// mvMatrix = glm::lookAt(glm::vec3(std::sin(Player::pos.x), std::sin(Player::pos.y), std::cos(Player::pos.x + Player::pos.y)) * God::distance, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+		} else {
+			Player::camera = Player::up * (Globe::size * 5);
+			Player::lookPos = glm::vec3(0.0, 0.0, 0.0);
+			mvMatrix = glm::lookAt(Player::camera, Player::lookPos, glm::vec3(Player::up.x, Player::up.z, Player::up.y));
+		}
 
 		sphereUtil.mvpMatrix(perspectiveMatrix * mvMatrix);
 		sphereUtil.nMatrix(glm::mat3(glm::transpose(glm::inverse(mvMatrix))));
@@ -214,7 +223,7 @@ int main(int argc, char** argv){
 		glfwSwapBuffers(window);
 	}
 
-    /* -- -- -- Deallocation and deletion of resources -- -- -- */
+    /* -- -- -- Deallocation and deletion of resourcdes -- -- -- */
 
     glfwTerminate();
     return 0;
