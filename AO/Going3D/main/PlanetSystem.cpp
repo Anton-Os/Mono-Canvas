@@ -17,17 +17,15 @@ const std::string getParentDirectory(const char* path) {
 
 namespace Key {
 	GLboolean W, A, S, D, Q, E, O, P, K, L = false;
-	GLboolean One = false;
 }
 
-namespace Globe {
-	// GLfloat size = 600.0f;
-	// GLfloat size = 1000.0f;
+namespace Globe {;
 	GLfloat size = 300.0f;
-	GLuint slices = 102;
-	GLuint stacks = 100;
-	GLboolean isRotated = false;
-	glm::mat4 rotationMatrix(1);
+	GLuint slices = 63;
+	GLuint stacks = 60;
+	GLboolean redraw = false;
+	glm::mat4 rtRollMatrix(1);
+	glm::mat4 rtYawMatrix(1);
 }
 
 namespace Player {
@@ -39,6 +37,7 @@ namespace Player {
 	GLuint yRotationSpeed = 120;
 	GLuint xRotationSpeed = 90;
 	glm::vec2 pos = glm::vec2(0.0, 0.0);
+	glm::vec2 prevPos = glm::vec2(0.0, 0.0);
 	glm::vec3 camera = glm::vec3(0.0, 0.0, Globe::size + Player::height);
 	glm::vec3 lookPos = glm::vec3(0);
 	glm::vec3 up = glm::vec3(0.0, 0.0, 1.0);
@@ -96,7 +95,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if(Key::S) Player::pos.y -= (2 * glm::pi<float>()) / Player::steps;
 	if(Key::D) Player::pos.x -= (2 * glm::pi<float>()) / Player::steps;
 	if(Key::W || Key::A || Key::S || Key::D)
-	Globe::isRotated = true;
+	Globe::redraw = true;
 	if(Key::Q) Player::camera.y -= Player::movementSpeed;
 	if(Key::E) Player::camera.y += Player::movementSpeed;
 	if(Key::O) Globe::slices++;
@@ -157,7 +156,6 @@ int main(int argc, char** argv){
 
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
 	glm::mat4 mvMatrix(1);
-	glm::vec3 globeRelDir(0);
 
 	glUseProgram(litEnv_glsl);
 	LitEnv litEnvUtil(litEnv_glsl);
@@ -185,33 +183,40 @@ int main(int argc, char** argv){
 	GLuint sphereTex = createTexture(sphereTex_filePath.c_str());
 
 	ModelComposite Sphere;
-	createSphere(&Sphere, Globe::size, Globe::slices, Globe::stacks);
 	sphereUtil.renderMode(3);
 	sphereUtil.colorPalette(&coolPalette);
 	std::array<GLuint, 2> sphereParams = {Globe::slices, Globe::stacks};
 	sphereUtil.sphereParams(sphereParams);
-	std::array<GLfloat, 6> sphereGrad = { coolPalette.color1[0], coolPalette.color1[1], coolPalette.color1[2],
-										  coolPalette.color2[0], coolPalette.color2[1], coolPalette.color2[2]
+	std::array<GLfloat, 6> sphereGrad = { 
+		coolPalette.color1[0], coolPalette.color1[1], coolPalette.color1[2],
+		coolPalette.color2[0], coolPalette.color2[1], coolPalette.color2[2]
 	};
 	sphereUtil.gradient(sphereGrad);
 	glBindTextureUnit(0, sphereTex);
 
 	while(!glfwWindowShouldClose(window)){
+		Player::prevPos = Player::pos;
+		// Before variables are influenced by pollEvents
+
 		glfwPollEvents();
+		glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Player::up = glm::vec3(std::sin(Player::pos.x), std::sin(Player::pos.y), std::cos(Player::pos.x + Player::pos.y));
-		Player::up = glm::vec3(std::sin(Player::pos.x) * std::sin(Player::pos.y), std::cos(Player::pos.x + Player::pos.y), std::sin(Player::pos.x) * std::cos(Player::pos.y));
-		if(!Player::isGod){
-			Player::camera = (Player::up * Globe::size) + (glm::normalize(Player::camera) * Player::height);
-			// Player::lookPos = glm::vec3(Player::camera.x + std::sin(Mouse::xOffset), Player::camera.y + std::cos(Mouse::xOffset + Mouse::yOffset), Player::camera.z + std::sin(Mouse::yOffset));
-			Player::lookPos = glm::vec3(Player::camera.x, Player::camera.y + std::cos(Player::pos.y), Player::camera.z - std::sin(Player::pos.y));
-			mvMatrix = glm::lookAt(Player::camera, Player::lookPos, Player::up);
-			// mvMatrix = glm::lookAt(glm::vec3(std::sin(Player::pos.x), std::sin(Player::pos.y), std::cos(Player::pos.x + Player::pos.y)) * God::distance, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+		createSphere(&Sphere, Globe::size, Globe::slices, Globe::stacks);
+
+		Globe::rtYawMatrix = glm::rotate(glm::mat4(1), Player::pos.y, glm::vec3(1.0, 0.0, 0.0));
+		Globe::rtRollMatrix = glm::rotate(glm::mat4(1), Player::pos.x, glm::vec3(0.0, 0.0, 1.0));
+
+		if(Player::isGod){
+			Player::up = glm::vec3(0.0, 1.0, 0.0);
+			Player::camera = (Player::up * Globe::size) + (Player::up * Player::height);
+			Player::lookPos = glm::vec3(Player::camera.x, Player::camera.y, Player::camera.z - 1.0);
+			mvMatrix = glm::lookAt(Player::camera, Player::lookPos, Player::up) * Globe::rtYawMatrix * Globe::rtRollMatrix;
 		} else {
-			Player::camera = Player::up * (Globe::size * 5);
-			Player::lookPos = glm::vec3(0.0, 0.0, 0.0);
-			mvMatrix = glm::lookAt(Player::camera, Player::lookPos, glm::vec3(Player::up.x, Player::up.z, Player::up.y));
+			Player::up = glm::vec3(0.0, 1.0, 0.0);
+			Player::camera = glm::vec3(0.0, 0.0, 1.0) * (Globe::size * 5);
+			Player::lookPos = glm::vec3(Player::camera.x, Player::camera.y, Player::camera.z - 1.0);
+			mvMatrix = glm::lookAt(Player::camera, Player::lookPos, Player::up) * Globe::rtYawMatrix * Globe::rtRollMatrix;
 		}
 
 		sphereUtil.mvpMatrix(perspectiveMatrix * mvMatrix);

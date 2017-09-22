@@ -86,7 +86,7 @@ target_link_libraries(Globe
     assimp
 )
 
-add_executable(PlanetSys
+add_executable(PlanetSystem
     comp/LoadTextures.cpp
     comp/LoadShaders.cpp
     comp/LoadData.cpp
@@ -94,14 +94,14 @@ add_executable(PlanetSys
     comp/Geometry.cpp
     pipeline/LitEnv.cpp
     pipeline/Sphere.cpp
-    main/PlanetSys.cpp
+    main/PlanetSystem.cpp
 )
 
-target_include_directories(PlanetSys
+target_include_directories(PlanetSystem
     PUBLIC include
 )
 
-target_link_libraries(PlanetSys
+target_link_libraries(PlanetSystem
     GLEW::glew_s
     glfw
     gli
