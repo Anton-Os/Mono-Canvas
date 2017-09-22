@@ -21,9 +21,9 @@ namespace Key {
 
 namespace Globe {;
 	GLfloat size = 300.0f;
-	GLuint slices = 63;
-	GLuint stacks = 60;
-	GLboolean redraw = false;
+	GLuint slices = 38;
+	GLuint stacks = 38;
+	GLboolean redraw = true;
 	glm::mat4 rtRollMatrix(1);
 	glm::mat4 rtYawMatrix(1);
 }
@@ -33,7 +33,8 @@ namespace Player {
 	GLfloat height = 3.0f; 
 	GLfloat movementSpeed = 10.0f / Globe::size;
 	// GLuint steps = 100;
-	GLuint steps = 100;
+	GLuint mvDegree = 300;
+	std::array<GLint, 2> steps;
 	GLuint yRotationSpeed = 120;
 	GLuint xRotationSpeed = 90;
 	glm::vec2 pos = glm::vec2(0.0, 0.0);
@@ -56,7 +57,7 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
 		if(xpos != Mouse::xInit) Mouse::xOffset -= GLfloat((xpos - Mouse::xInit) / Player::xRotationSpeed);
 		if(ypos != Mouse::yInit) Mouse::yOffset -= GLfloat((ypos - Mouse::yInit) / Player::yRotationSpeed);
 
-		std::cout << "Horizontal Angle: " << Mouse::xOffset << " Vertical Angle: " << Mouse::yOffset << std::endl;
+		// std::cout << "Horizontal Angle: " << Mouse::xOffset << " Vertical Angle: " << Mouse::yOffset << std::endl;
 	}
 
 	Mouse::xInit = xpos;
@@ -90,20 +91,26 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_K && action == GLFW_RELEASE) Key::K = false;
 	if (key == GLFW_KEY_L && action == GLFW_RELEASE) Key::L = false;
 
-	if(Key::W) Player::pos.y += (2 * glm::pi<float>()) / Player::steps;
-	if(Key::A) Player::pos.x += (2 * glm::pi<float>()) / Player::steps;
-	if(Key::S) Player::pos.y -= (2 * glm::pi<float>()) / Player::steps;
-	if(Key::D) Player::pos.x -= (2 * glm::pi<float>()) / Player::steps;
-	if(Key::W || Key::A || Key::S || Key::D)
-	Globe::redraw = true;
-	if(Key::Q) Player::camera.y -= Player::movementSpeed;
-	if(Key::E) Player::camera.y += Player::movementSpeed;
+	if(Key::W) Player::steps[0]++;
+	if(Key::A) Player::steps[1]++;
+	if(Key::S) Player::steps[0]--;
+	if(Key::D) Player::steps[1]--;
+	if(Key::W || Key::S)
+	Player::pos.x = Player::steps[0] * (2 * glm::pi<float>() / Player::mvDegree);
+	if(Key::A || Key::D)
+	Player::pos.y = Player::steps[1] * ( 2 * glm::pi<float>() / Player::mvDegree);
+
+	if(Key::Q) Player::mvDegree++;
+	if(Key::E) Player::mvDegree--;
+	if(Key::Q || Key::E) std::cout << "Player steps: " << Player::mvDegree << std::endl;
 	if(Key::O) Globe::slices++;
 	if(Key::P) Globe::slices--;
 	if(Key::K) Globe::stacks++;
 	if(Key::L) Globe::stacks--;
-	if(Key::O || Key::P || Key::K || Key::L) 
-	std::cout << "Size: " << Globe::size << " Slices: " << Globe::slices << " Stacks: " << Globe::stacks << std::endl;
+	if(Key::O || Key::P || Key::K || Key::L){
+		Globe::redraw = true;
+		std::cout << "Size: " << Globe::size << " Slices: " << Globe::slices << " Stacks: " << Globe::stacks << std::endl;
+	}
 }
 
 
@@ -179,11 +186,12 @@ int main(int argc, char** argv){
 		{0.76f, 0.913f, 0.96f}
 	};
 
-	std::string sphereTex_filePath = parentDir + "\\..\\..\\data\\MipTest.ktx";
+	std::string sphereTex_filePath = parentDir + "\\..\\..\\data\\SandTex1.ktx";
 	GLuint sphereTex = createTexture(sphereTex_filePath.c_str());
 
 	ModelComposite Sphere;
-	sphereUtil.renderMode(3);
+	std::array<GLuint, 2> sphereDrawVals;
+	sphereUtil.renderMode(2);
 	sphereUtil.colorPalette(&coolPalette);
 	std::array<GLuint, 2> sphereParams = {Globe::slices, Globe::stacks};
 	sphereUtil.sphereParams(sphereParams);
@@ -199,10 +207,13 @@ int main(int argc, char** argv){
 		// Before variables are influenced by pollEvents
 
 		glfwPollEvents();
-		glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
+		glClearColor(0.478, 0.274, 0.313, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		createSphere(&Sphere, Globe::size, Globe::slices, Globe::stacks);
+		if(Globe::redraw){
+			sphereDrawVals = createSphere(Globe::size, Globe::slices, Globe::stacks);
+			Globe::redraw = false;
+		}
 
 		Globe::rtYawMatrix = glm::rotate(glm::mat4(1), Player::pos.y, glm::vec3(1.0, 0.0, 0.0));
 		Globe::rtRollMatrix = glm::rotate(glm::mat4(1), Player::pos.x, glm::vec3(0.0, 0.0, 1.0));
@@ -221,8 +232,8 @@ int main(int argc, char** argv){
 
 		sphereUtil.mvpMatrix(perspectiveMatrix * mvMatrix);
 		sphereUtil.nMatrix(glm::mat3(glm::transpose(glm::inverse(mvMatrix))));
-		glBindVertexArray(Sphere.VertexArray);
-		glDrawElements(GL_TRIANGLES, Sphere.modelIndices.size(), GL_UNSIGNED_INT, 0);
+		glBindVertexArray(sphereDrawVals[0]);
+		glDrawElements(GL_TRIANGLES, sphereDrawVals[1], GL_UNSIGNED_INT, 0);
 
         glBindVertexArray(0);
 		glfwSwapBuffers(window);

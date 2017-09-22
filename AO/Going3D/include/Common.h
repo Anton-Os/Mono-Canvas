@@ -89,5 +89,6 @@ GLuint loadModelData(ModelComposite* Model);
 
 unsigned int createRevLine(GLuint length, std::array<GLfloat, 2> posInit, std::array<GLfloat, 2> posChange);
 void createSphere(ModelComposite* sphereModel, GLfloat radius, GLuint sliceCount, GLuint stackCount);
+std::array<GLuint, 2> createSphere(GLfloat radius, GLuint sliceCount, GLuint stackCount);
 
 #include "ShaderCtrl.h"

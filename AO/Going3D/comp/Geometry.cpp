@@ -56,8 +56,8 @@ void createSphere(ModelComposite* sphereModel, GLfloat radius, GLuint sliceCount
     sphereModel->VertexArray = loadModelData(sphereModel);
 }
 
-GLuint createSphere(GLfloat radius, GLuint sliceCount, GLuint stackCount){
-    ModelComposite* sphereModel;
+std::array<GLuint, 2> createSphere(GLfloat radius, GLuint sliceCount, GLuint stackCount){
+    ModelComposite sphereModel;
     GLfloat uTex = 0.0; GLfloat vTex = 0.0;
     GLfloat uTexInc = 1 / (GLfloat)sliceCount; GLfloat vTexInc = 1 / (GLfloat)stackCount;
     GLuint vertexID = 0;
@@ -74,14 +74,14 @@ GLuint createSphere(GLfloat radius, GLuint sliceCount, GLuint stackCount){
 			if (vertexID % 2 == 0) vTex = 0.0;
 			else vTex = 1.0;
             spherePoint.texCoord = { uTex, vTex };
-            sphereModel->modelMeshes.push_back(spherePoint);
+            sphereModel.modelMeshes.push_back(spherePoint);
             
-            sphereModel->modelIndices.push_back(vertexID); // SHARED LOWER LEFT
-            sphereModel->modelIndices.push_back(vertexID + 1);
-            sphereModel->modelIndices.push_back(vertexID + stackCount + 1); // SHARED UPPER RIGHT
-            sphereModel->modelIndices.push_back(vertexID);
-            sphereModel->modelIndices.push_back(vertexID + stackCount);
-            sphereModel->modelIndices.push_back(vertexID + stackCount + 1);
+            sphereModel.modelIndices.push_back(vertexID); // SHARED LOWER LEFT
+            sphereModel.modelIndices.push_back(vertexID + 1);
+            sphereModel.modelIndices.push_back(vertexID + stackCount + 1); // SHARED UPPER RIGHT
+            sphereModel.modelIndices.push_back(vertexID);
+            sphereModel.modelIndices.push_back(vertexID + stackCount);
+            sphereModel.modelIndices.push_back(vertexID + stackCount + 1);
 
 			vertexID++;
 			// vTex += vTexInc;
@@ -89,10 +89,11 @@ GLuint createSphere(GLfloat radius, GLuint sliceCount, GLuint stackCount){
         // uTex += uTexInc;
     }
     
-    sphereModel->relativePos = glm::mat4(1);
+    sphereModel.relativePos = glm::mat4(1);
     std::string sphereBits = "10110";
-	sphereModel->renderParams = std::bitset<5>(sphereBits);
-    sphereModel->VertexArray = loadModelData(sphereModel);
-    return sphereModel->VertexArray;
+	sphereModel.renderParams = std::bitset<5>(sphereBits);
+    sphereModel.VertexArray = loadModelData(&sphereModel);
+    std::array<GLuint, 2> returnVar = {sphereModel.VertexArray, sphereModel.modelIndices.size()};
+    return returnVar;
 }
 
