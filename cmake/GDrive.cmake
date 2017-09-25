@@ -21,6 +21,7 @@ list(APPEND GDRIVE_URLS
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzcFo1MTQ4b2t2NlE"
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzZ1gzekJXZVh4UDg"
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzRk1MSGNNOUg0WGM"
+    "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzNzUxRkR6cnk4aVU"
 )
 
 list(APPEND GDRIVE_NAMES
@@ -41,16 +42,17 @@ list(APPEND GDRIVE_NAMES
     "SeamlessSand.ktx"
     "SandTex1.ktx"
     "MipTest.ktx"
+    "Centaur.fbx"
 )
 
 foreach(currentFile ${GDRIVE_NAMES})
     list(FIND GDRIVE_NAMES ${currentFile} currentIndex)
     list(GET GDRIVE_URLS ${currentIndex} currentUrl)
-    if(NOT EXISTS D:/AntonDocs/MonoCanvas/MSVC-2017/AO/AO/data/${currentFile})
+    if(NOT EXISTS @CMAKE_CURRENT_BINARY_DIR@/AO/data/${currentFile})
         message(STATUS "Downloading ${currentFile}")
         file(DOWNLOAD
             "${currentUrl}"
-            D:/AntonDocs/MonoCanvas/MSVC-2017/AO/AO/data/${currentFile}
+            @CMAKE_CURRENT_BINARY_DIR@/AO/data/${currentFile}
             SHOW_PROGRESS
         )
     else()

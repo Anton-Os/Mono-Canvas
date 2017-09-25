@@ -6,7 +6,7 @@ layout(location = 2) in vec3 normal;
 
 // layout(binding = 0) uniform sampler2D currentTexture;
 
-layout(std430, binding = 1) buffer materialBlock {
+layout(std430, binding = 2) buffer materialBlock {
     vec4 ambientColor;
     vec4 diffuseColor;
     vec4 specularColor;

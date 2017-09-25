@@ -19,7 +19,7 @@ void LitEnv::materialBlock(MaterialBlock* materialBlock){
 	glGenBuffers(1, &LitEnv::SSBO[0]);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, LitEnv::SSBO[0]);
     glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(MaterialBlock), materialBlock, GL_STATIC_DRAW);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, LitEnv::SSBO[0]);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, LitEnv::SSBO[0]);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
