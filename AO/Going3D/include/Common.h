@@ -78,7 +78,7 @@ struct ModelComposite {
 };
 
 int assimpImportCPP(const std::string& pFile);
-int assimpImportCPP(const std::string &pFile, std::vector<ModelComposite>* MPerComponent);
+int assimpImportCPP(const std::string& pFile, std::vector<ModelComposite>* MPerComponent);
 
 // From LoadData.cpp
 

@@ -1,7 +1,7 @@
 add_executable(AssimpModels
-    comp/LoadTextures.cpp
-    comp/LoadShaders.cpp
-    comp/LoadData.cpp
+    loaders/LoadTextures.cpp
+    loaders/LoadShaders.cpp
+    loaders/LoadData.cpp
     comp/Model3D.cpp
     # comp/ShaderCtrl.cpp
     pipeline/NoBlocks.cpp
@@ -21,9 +21,9 @@ target_link_libraries(AssimpModels
 )
 
 add_executable(Textureless
-    comp/LoadTextures.cpp
-    comp/LoadShaders.cpp
-    comp/LoadData.cpp
+    loaders/LoadTextures.cpp
+    loaders/LoadShaders.cpp
+    loaders/LoadData.cpp
     comp/Model3D.cpp
     # comp/ShaderCtrl.cpp
     pipeline/LitEnv.cpp
@@ -43,9 +43,9 @@ target_link_libraries(Textureless
 )
 
 add_executable(FluidCamera
-    comp/LoadTextures.cpp
-    comp/LoadShaders.cpp
-    comp/LoadData.cpp
+    loaders/LoadTextures.cpp
+    loaders/LoadShaders.cpp
+    loaders/LoadData.cpp
     comp/Model3D.cpp
     pipeline/LitEnv.cpp
     main/FluidCamera.cpp
@@ -64,9 +64,9 @@ target_link_libraries(FluidCamera
 )
 
 add_executable(Globe
-    comp/LoadTextures.cpp
-    comp/LoadShaders.cpp
-    comp/LoadData.cpp
+    loaders/LoadTextures.cpp
+    loaders/LoadShaders.cpp
+    loaders/LoadData.cpp
     # comp/Model3D.cpp
     comp/Geometry.cpp
     pipeline/LitEnv.cpp
@@ -86,11 +86,12 @@ target_link_libraries(Globe
     assimp
 )
 
+
 add_executable(PlanetSystem
-    comp/LoadTextures.cpp
-    comp/LoadShaders.cpp
-    comp/LoadData.cpp
-    # comp/Model3D.cpp
+    loaders/LoadTextures.cpp
+    loaders/LoadShaders.cpp
+    loaders/LoadData.cpp
+#    comp/Model3D.cpp
     comp/Geometry.cpp
     pipeline/LitEnv.cpp
     pipeline/Sphere.cpp
@@ -109,6 +110,28 @@ target_link_libraries(PlanetSystem
     assimp
 )
 
+add_executable(GlobeFigures
+    loaders/LoadTextures.cpp
+    loaders/LoadShaders.cpp
+    loaders/LoadData.cpp
+    comp/Model3D.cpp
+    comp/Geometry.cpp
+    pipeline/LitEnv.cpp
+    pipeline/Sphere.cpp
+    main/GlobeFigures.cpp
+)
+
+target_include_directories(GlobeFigures
+    PUBLIC include
+)
+
+target_link_libraries(GlobeFigures
+    GLEW::glew_s
+    glfw
+    gli
+    glm
+    assimp
+)
 
 # WORK WITH SHADER FILES
 

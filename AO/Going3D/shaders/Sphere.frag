@@ -19,7 +19,7 @@ layout(std430, binding = 1) buffer colorPalette {
 layout(location = 0) out vec4 frag_out;
 
 void main(){
-	vec4 colorPreset = vec4(0.258, 0.525, 0.956, 1.0);
+	vec4 colorPreset = vec4(0.258, 0.525, 0.956, 0.8);
 	if(renderMode == 1){
 		if(vertexID % 12 >= 9) frag_out = vec4(color1[0], color1[1], color1[2], 1.0);
 		else if(vertexID % 12 >= 6) frag_out = vec4(color2[0], color2[1], color2[2], 1.0);

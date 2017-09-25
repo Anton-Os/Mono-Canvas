@@ -90,7 +90,8 @@ int main(int argc, char** argv){
     GLuint litEnv_glsl = compileShaders(litEnv_vert, litEnv_frag);
 
     std::vector<ModelComposite> MPerComponent;
-    std::string LowPolyMill_filePath = parentDir + "\\..\\..\\data\\LowPolyMill.fbx";
+    std::string LowPolyMill_filePath = parentDir + "\\..\\..\\data\\Centaur.fbx";
+	// std::string LowPolyMill_filePath = parentDir + "\\..\\..\\data\\LowPolyMill.fbx";
 	// std::string LowPolyMill_filePath = parentDir + "\\..\\..\\data\\KSR-29-SniperRifle.fbx";
 
     assimpImportCPP(LowPolyMill_filePath, &MPerComponent);
