@@ -1,6 +1,6 @@
 
 add_executable(Prime
-    -/Prime.cpp
+    dev/Prime.cpp
 )
 
 target_link_libraries(Prime

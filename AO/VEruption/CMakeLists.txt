@@ -1,4 +1,4 @@
-add_executable(VEruption src/Prime.cpp)
+add_executable(VEruption src/Instance.cpp)
 
 target_include_directories(VEruption PUBLIC ${Vulkan_INCLUDE_DIR})
 
