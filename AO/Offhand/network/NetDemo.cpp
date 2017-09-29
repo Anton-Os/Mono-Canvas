@@ -18,27 +18,22 @@ void asyncCallback(const boost::system::error_code&, boost::asio::deadline_timer
 
 int main(int argc, char** argv){
     try {
+        if(argc != 2) return -1;
         boost::asio::io_service netIO;
-        boost::asio::deadline_timer netDeadline(netIO, boost::posix_time::seconds(4));
-        unsigned int count = 0;
-        // netDeadline.async_wait(boost::bind(asyncCallback, boost::asio::placeholders::error, &netDeadline, &count));
-        boost::asio::ip::tcp::resolver tcpResolver(netIO);
-        boost::asio::ip::tcp::resolver::query tcpResolverQuery(argv[1], "daytime");
-        boost::asio::ip::tcp::resolver::iterator endPt_It = tcpResolver.resolve(tcpResolverQuery);
-        boost::asio::ip::tcp::socket ioSocket(netIO);
-        boost::asio::connect(ioSocket, endPt_It);
+        boost::asio::ip::tcp::resolver netResolver(netIO);
+        boost::asio::ip::tcp::resolver::query resolverQuery(argv[1], "daytime");
+        boost::asio::ip::tcp::resolver::iterator resolverEndItr = netResolver.resolve(resolverQuery);
+        boost::asio::ip::tcp::socket tcpSocket(netIO);
+        boost::asio::connect(tcpSocket, resolverEndItr);
         while(true){
-            char clientBuffer[300];
+            char cliBuffer[128];
             boost::system::error_code error;
-
-            size_t dataLen = ioSocket.read_some(boost::asio::buffer(clientBuffer), error);
-
+            size_t cliBufferLen = tcpSocket.read_some(boost::asio::buffer(cliBuffer), error);
             if(error == boost::asio::error::eof) break;
             else if(error) throw boost::system::system_error(error);
-
-            std::cout.write(clientBuffer, dataLen);
-        } 
-    } catch (std::exception& e) {
+            std::cout.write(cliBuffer, cliBufferLen);
+        }
+    } catch(std::exception& e){
         std::cerr << e.what() << std::endl;
     }
     return 0;

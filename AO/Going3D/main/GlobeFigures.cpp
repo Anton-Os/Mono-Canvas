@@ -162,7 +162,7 @@ int main(int argc, char** argv){
 	GLuint Sphere_glsl = compileShaders(Sphere_vert, Sphere_frag);
 
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
-	glm::mat4 mvMatrix(1);
+	glm::mat4 mvMatrix(1); glm::mat4 mvCentaur(1);
 
 	glUseProgram(litEnv_glsl);
 	LitEnv litEnvUtil(litEnv_glsl);
@@ -173,7 +173,7 @@ int main(int argc, char** argv){
 
     assimpImportCPP(Centaur_filePath, &Centaur);
 	for(unsigned int mCount = 0; mCount < Centaur.size(); mCount++)
-	Centaur[mCount].relativePos = glm::translate(glm::mat4(1), glm::vec3(0.0, 1.0, 0.0) * Globe::size);
+	// Centaur[mCount].relativePos = glm::translate(glm::mat4(1), glm::vec3(0.0, 1.0, 0.0) * Globe::size);
 	// Centaur[mCount].relativePos = glm::scale(glm::mat4(1), glm::vec3(1000.0f, 1000.0f, 1000.0f)) * glm::translate(glm::mat4(1), glm::vec3(0.0, 1.0, 0.0) * Globe::size);
 	
 	glUseProgram(Sphere_glsl);
@@ -248,12 +248,14 @@ int main(int argc, char** argv){
 
 		Player::viewMatrix = glm::lookAt(Player::camera, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 		glUseProgram(litEnv_glsl);
+		mvMatrix = Globe::rtYawMatrix * Globe::rtRollMatrix;
 		for(unsigned int mCount = 0; mCount < Centaur.size(); mCount++){
-			mvMatrix = Player::viewMatrix * Centaur.at(mCount).relativePos;
+			Centaur[mCount].relativePos = glm::translate(glm::mat4(1), glm::vec3(0.0, 1.0, 0.0) * Globe::size) * mvMatrix;
+			mvCentaur = Player::viewMatrix * Centaur.at(mCount).relativePos;
 			// mvMatrix = Player::viewMatrix * glm::mat4(1);
-			litEnvUtil.mvMatrix(mvMatrix);
-			litEnvUtil.mvpMatrix(perspectiveMatrix * mvMatrix);
-			litEnvUtil.nMatrix(glm::mat3(glm::transpose(glm::inverse(mvMatrix))));
+			litEnvUtil.mvMatrix(mvCentaur);
+			litEnvUtil.mvpMatrix(perspectiveMatrix * mvCentaur);
+			litEnvUtil.nMatrix(glm::mat3(glm::transpose(glm::inverse(mvCentaur))));
 			litEnvUtil.materialBlock(&Centaur.at(mCount).materialBlock);
 			glBindVertexArray(Centaur[mCount].VertexArray);
 			glDrawElements(GL_TRIANGLES, Centaur[mCount].modelIndices.size(), GL_UNSIGNED_INT, 0);
