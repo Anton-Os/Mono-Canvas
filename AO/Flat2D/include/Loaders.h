@@ -35,7 +35,6 @@ public:
     std::vector<GLenum> usage;
     std::vector<GLsizeiptr> size;
     std::vector<GLvoid*> data;
-    void init(GLuint buffFeedsCount);
     void cycle();
 };
 
@@ -46,26 +45,23 @@ public:
     std::vector<GLubyte> compCount;
     std::vector<GLenum> dataType;
     std::vector<GLboolean> isNrm;
-    void init(GLuint vAttribCount);
     void cycle();
-    // void init(std::bitset< vAttribBits);
 };
 
 class GL4_BufferFeeder {
 public:
-    GL4_BufferFeeder(GLuint vao, GLuint buffFeedsCount){
+    GL4_BufferFeeder(GLuint vao, GLuint buffFeedsCount, GL4_BufferFeed buffFeedArg, GL4_VAttribFeed vAttrFeedArg){
         GL4_BufferFeeder::VAO = vao;
-        bufferFeed.init(buffFeedsCount);
+        bufferFeed = buffFeedArg;
+        vAttribFeed = vAttrFeedArg;
+        // bufferFeed.init(buffFeedsCount);
+        init(buffFeedsCount);
     }
-    /* GL4_BufferFeeder(GLuint buffFeedsCount){
-        glGenVertexArrays(1, &this.VAO);
-        glBindVertexArray(this.VAO);
-        bufferFeed.init(buffFeedsCount);
-    } */
     GLuint VAO;
     GL4_BufferFeed bufferFeed;
     GL4_VAttribFeed vAttribFeed;
-    // void init();
+private:
+    void init(GLuint buffFeedsCount);
 };
 
 GLuint loadData(GLuint VAO, GLuint vertexCount, GLenum drawUsage, GLfloat* pos, GLfloat* color, GLfloat* normal, GLfloat* texCoord);

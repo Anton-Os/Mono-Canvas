@@ -1,12 +1,9 @@
 #include "Loaders.h"
 
-void GL4_BufferFeed::init(GLuint buffFeedsCount) {
-    GL4_BufferFeed::VBO.resize(buffFeedsCount);
-    GL4_BufferFeed::name.resize(buffFeedsCount);
-    GL4_BufferFeed::target.resize(buffFeedsCount);
-    GL4_BufferFeed:usage.resize(buffFeedsCount);
-    GL4_BufferFeed::size.resize(buffFeedsCount);
-    GL4_BufferFeed::data.resize(buffFeedsCount);
+void GL4_BufferFeeder::init(GLuint buffFeedsCount){
+    if (buffFeedsCount != GL4_BufferFeeder::bufferFeed.VBO.size())
+        std::cerr << "When calling GL_BufferFeeder constructor arg 'buffFeedsCount' must match GL_BufferFeed VBO vector in size" << std::endl;
+    else glGenBuffers(buffFeedsCount, &GL4_BufferFeeder::bufferFeed.VBO[0]);
 }
 
 void GL4_BufferFeed::cycle(){
@@ -14,14 +11,6 @@ void GL4_BufferFeed::cycle(){
         glBindBuffer(GL4_BufferFeed::target[fb], GL4_BufferFeed::VBO[fb]);
         glBufferData(GL4_BufferFeed::target[fb], GL4_BufferFeed::size[fb], GL4_BufferFeed::data[fb], GL4_BufferFeed::usage[fb]);
     }
-}
-
-void GL4_VAttribFeed::init(GLuint vAttribCount){
-    GL4_VAttribFeed::VBO.resize(vAttribCount);
-    GL4_VAttribFeed::attribID.resize(vAttribCount);
-    GL4_VAttribFeed::compCount.resize(vAttribCount);
-    GL4_VAttribFeed::dataType.resize(vAttribCount);
-    GL4_VAttribFeed::isNrm.resize(vAttribCount);
 }
 
 void GL4_VAttribFeed::cycle(){
