@@ -11,6 +11,7 @@
 
 #include "PipelineCtrl.h"
 #include "Loaders.h"
+#include "GeomProto.h"
 
 const std::string getParentDirectory(const char* path) {
 	const char* ptr = path + strlen(path);
@@ -81,8 +82,10 @@ int main(int argc, char** argv){
 	std::string Locked_frag = parentDir + "//shaders//Locked.frag";
 	GLuint Locked_uiID = compileShaders(Locked_vert, Locked_frag);
 	glUseProgram(Locked_uiID);
-	Locked Locked_GLSL(Locked_uiID);
-	Locked_GLSL.initUniforms();
+	Locked Locked_glsl(Locked_uiID);
+	Locked_glsl.initUniforms();
+
+	GL4_Sphere sphere0(100, 99, 100);
 
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
 	glm::mat4 mvMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -10.0f));
@@ -92,7 +95,7 @@ int main(int argc, char** argv){
 		glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		Locked_GLSL.mvpMatrix(perspectiveMatrix * mvMatrix);
+		Locked_glsl.mvpMatrix(perspectiveMatrix * mvMatrix);
 
 		glBindVertexArray(testVAO);
 		glDrawElements(GL_TRIANGLES, sizeof(squareIndices) / sizeof(GLuint), GL_UNSIGNED_INT, 0); 

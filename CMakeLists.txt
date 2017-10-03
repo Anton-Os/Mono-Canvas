@@ -51,7 +51,7 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
     file(GLOB BOOST_LIBS "${BOOST_LIBRARYDIR}/*.lib")
 
     add_subdirectory("AO/Going3D")
-    add_subdirectory("AO/Flat2D")
+    add_subdirectory("AO/Rework")
     add_subdirectory("AO/Offhand")
     if(Vulkan_FOUND)
         add_subdirectory("AO/VEruption")

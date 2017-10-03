@@ -2,14 +2,12 @@ add_executable(Demo2D
     loaders/LoadShaders.cpp
     loaders/LoadData.cpp
     pipeline/Locked.cpp
-    feed/GL4-BufferFeeder.cpp
+    proto/Sphere.cpp
     Demo2D.cpp
 )
 
 target_include_directories(Demo2D
-    PUBLIC 
-    include
-    ${BOOST_INCLUDEDIR}
+    PUBLIC include
 )
 
 target_link_libraries(Demo2D
@@ -18,7 +16,6 @@ target_link_libraries(Demo2D
     gli
     glm
     assimp
-    ${BOOST_LIBS}
 )
 
 # WORK WITH SHADER FILES
