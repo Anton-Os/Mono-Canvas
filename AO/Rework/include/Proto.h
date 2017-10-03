@@ -16,4 +16,6 @@ public:
     glm::mat4 relMatrix;
     void create(GLuint radius, GLuint sliceCount, GLuint stackCount);
     void draw();
+private:
+    GLuint indexCount;
 };

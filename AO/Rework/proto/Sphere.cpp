@@ -1,4 +1,4 @@
-#include "Prototypes.h"
+#include "Proto.h"
 
 void GL4_Sphere::create(GLuint radius, GLuint sliceCount, GLuint stackCount){
     GLuint VAO;
@@ -80,6 +80,7 @@ void GL4_Sphere::create(GLuint radius, GLuint sliceCount, GLuint stackCount){
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
     glEnableVertexAttribArray(1);
 
+    GL4_Sphere::indexCount = vertexID * 6;
     GL4_Sphere::feed.push_back(feedBuffers[0]);
     GL4_Sphere::feed.push_back(feedBuffers[1]);
     GL4_Sphere::feed.push_back(feedBuffers[2]);
@@ -89,6 +90,6 @@ void GL4_Sphere::create(GLuint radius, GLuint sliceCount, GLuint stackCount){
 
 void GL4_Sphere::draw(){
     glBindVertexArray(GL4_Sphere::feed[0]);
-    // glDrawElements(GL_TRIANGLES, );
+    glDrawElements(GL_TRIANGLES, GL4_Sphere::indexCount, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
