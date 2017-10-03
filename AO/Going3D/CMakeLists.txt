@@ -152,10 +152,10 @@ foreach(current_shader "LitEnv.vert" "LitEnv.frag"
     list(APPEND OUTPUT_SHADER_LIST "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}")
     list(APPEND SRC_SHADER_LIST "${CMAKE_CURRENT_SOURCE_DIR}/shaders/${current_shader}")
 endforeach(current_shader)
-add_custom_target(MonoShaders
+add_custom_target(Going3D_Shaders
     SOURCES ${SRC_SHADER_LIST}
     DEPENDS ${OUTPUT_SHADER_LIST}
 )
 
-add_dependencies(AssimpModels MonoShaders)
-add_dependencies(Textureless MonoShaders)
+add_dependencies(AssimpModels Going3D_Shaders)
+# add_dependencies(Textureless Going3D_Shaders)
