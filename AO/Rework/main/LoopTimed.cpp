@@ -35,6 +35,13 @@ namespace Mouse {
 	GLfloat xOffset, yOffset;
 }
 
+namespace Time {
+	std::chrono::steady_clock::time_point sceneSetup;
+	std::chrono::steady_clock::time_point sceneUpdate;
+	std::chrono::duration<double> secResCount;
+	std::chrono::duration<double, std::milli> milliResCount;
+}
+
 int main(int argc, char** argv){
     /* -- -- -- Creation of OpenGL Context, Windowing, and Handling User Input -- -- -- */
     if(glfwInit() == GLFW_TRUE)  std::cout << "GLFW initialized successfuly" << std::endl;
@@ -89,39 +96,28 @@ int main(int argc, char** argv){
 	Locked Locked_glsl(Locked_uiID);
 	Locked_glsl.initUniforms();
 
-	// GL4_Sphere sphere0(100, 99, 100);
-	GL4_Sphere sphere0(100, 20, 20);
+	GL4_Sphere sphere0(100, 23, 20);
 
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
 	glm::mat4 mvMatrix(1);
 
-	// std::chrono::time_point sceneSetupEnd(std::chrono::duration<int, std::milli>(0));
-	// std::cout << "Scene Setup End time: " << sceneSetupEnd.duration.count() << std::endl;
 	GLuint sphereDrawInterval = 50;
 	GLuint sphereDrawFraction = 1;
 	
-	std::clock_t sceneSetupTime = clock();
+	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
-		std::clock_t loopTime = clock() - sceneSetupTime;
+		Time::sceneUpdate = std::chrono::steady_clock::now();
+		Time::secResCount = std::chrono::duration_cast<std::chrono::duration<double>>((Time::sceneUpdate - Time::sceneSetup) / 1000000000.0);
+		Time::milliResCount = std::chrono::duration_cast<std::chrono::duration<double>>((Time::sceneUpdate - Time::sceneSetup) / 1000000.0);
 		glfwPollEvents();
 		glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// mvMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -10.0f));
-		// glBindVertexArray(testVAO);
-		// glDrawElements(GL_TRIANGLES, sizeof(squareIndices) / sizeof(GLuint), GL_UNSIGNED_INT, 0); 
-		// glDrawArrays(GL_LINES, 0, sizeof(squarePos) / sizeof(GLfloat));
-
 		sphere0.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0, 0, -300.0f));
 		Locked_glsl.mvpMatrix(perspectiveMatrix * mvMatrix * sphere0.relMatrix);
-		// sphere0.draw();
+		sphere0.draw();
+		// sphere0.drawPartial(sphereDrawFraction * 3);
 		// if(sphereDrawInterval * sphereDrawFraction > GLuint(loopTime)) sphereDrawFraction++;
-		sphere0.drawPartial(sphereDrawFraction * 3);
-		if(sphereDrawInterval * sphereDrawFraction > GLuint(loopTime)){
-			// std::cout << "Every 200 Milli" << GLuint(loopTime) << std::endl;
-			sphereDrawFraction++;
-			// std::cout << "Sphere Draw Fraction is " << sphereDrawFraction << std::endl;
-		}
 
         glBindVertexArray(0);
 		glfwSwapBuffers(window);
