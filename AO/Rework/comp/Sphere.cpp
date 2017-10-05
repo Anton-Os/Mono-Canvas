@@ -1,4 +1,6 @@
-#include "Proto.h"
+// #include <boost/chrono.hpp>
+
+#include "CompositeGeo.h"
 
 void GL4_Sphere::create(GLuint radius, GLuint sliceCount, GLuint stackCount){
     GLuint VAO;
@@ -14,6 +16,9 @@ void GL4_Sphere::create(GLuint radius, GLuint sliceCount, GLuint stackCount){
     std::vector<GLfloat> texCoordAccum;
     std::vector<GLuint> indexAccum;
 
+    GLuint stackIt = 0; GLuint sliceIt = 0;
+
+    // boost::chrono::system_clock::time_point start = boost::chrono::system_clock::now();
     for(double phi = 0; phi < glm::pi<float>() * 2; phi += glm::pi<float>() / sliceCount){
         for(double theta = 0; theta < glm::pi<float>(); theta += glm::pi<float>() / stackCount){
             posAccum.push_back(radius * (GLfloat)std::cos(phi) * (GLfloat)std::sin(theta));
@@ -38,35 +43,6 @@ void GL4_Sphere::create(GLuint radius, GLuint sliceCount, GLuint stackCount){
 		}
     }
 
-    /* GLuint vertexCount = sliceCount * stackCount;
-    posAccum.resize(vertexCount * 3);
-    texCoordAccum.resize(vertexCount * 2);
-    indexAccum.resize(vertexCount * 6);
-
-    for(double phi = 0; phi < glm::pi<float>() * 2; phi += glm::pi<float>() / sliceCount){
-        for(double theta = 0; theta < glm::pi<float>(); theta += glm::pi<float>() / stackCount){
-            posAccum[vertexID * 3] = radius * (GLfloat)std::cos(phi) * (GLfloat)std::sin(theta);
-            posAccum[(vertexID * 3) + 1] = radius * (GLfloat)std::sin(phi) * (GLfloat)std::sin(theta);
-            posAccum[(vertexID * 3) + 2] = radius * (GLfloat)std::cos(theta);
-
-			if (vertexID % (stackCount * 2) < stackCount) uTex = 0.0;
-			else uTex = 1.0;
-            texCoordAccum[vertexID * 2] = uTex;
-			if (vertexID % 2 == 0) vTex = 0.0;
-			else vTex = 1.0;
-            texCoordAccum[(vertexID * 2) + 1] = vTex;
-            
-            indexAccum[vertexID * 6] = vertexID;
-            indexAccum[(vertexID * 6) + 1] = vertexID + 1;
-            indexAccum[(vertexID * 6) + 2] = vertexID + stackCount + 1;
-            indexAccum[(vertexID * 6) + 3] = vertexID;
-            indexAccum[(vertexID * 6) + 4] = vertexID + stackCount;
-            indexAccum[(vertexID * 6) + 5] = vertexID + stackCount + 1;
-
-			vertexID++;
-		}
-    } */
-
     GLuint feedBuffers[3];
     glGenBuffers(3, feedBuffers);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, feedBuffers[0]);
@@ -80,7 +56,7 @@ void GL4_Sphere::create(GLuint radius, GLuint sliceCount, GLuint stackCount){
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
     glEnableVertexAttribArray(1);
 
-    GL4_Sphere::indexCount = vertexID * 6;
+    GL4_Sphere::vertexCount = vertexID;
     GL4_Sphere::feed.push_back(feedBuffers[0]);
     GL4_Sphere::feed.push_back(feedBuffers[1]);
     GL4_Sphere::feed.push_back(feedBuffers[2]);
@@ -90,6 +66,30 @@ void GL4_Sphere::create(GLuint radius, GLuint sliceCount, GLuint stackCount){
 
 void GL4_Sphere::draw(){
     glBindVertexArray(GL4_Sphere::feed[0]);
-    glDrawElements(GL_TRIANGLES, GL4_Sphere::indexCount, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, GL4_Sphere::vertexCount * 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
+
+void GL4_Sphere::drawPartial(GLuint indexCount){
+    glBindVertexArray(GL4_Sphere::feed[0]);
+    if(indexCount > GL4_Sphere::vertexCount * 6) glDrawElements(GL_TRIANGLES, GL4_Sphere::vertexCount * 6, GL_UNSIGNED_INT, 0);
+    else glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+}
+
+/* void GL4_Sphere::drawTimed(std::chrono::duration<int, std::milli> currentTime, GLuint speedInc){
+    GLuint syncTime = currentTime.count() / speedInc;
+    glBindVertexArray(GL4_Sphere::feed[0]);
+    glDrawElements(GL_TRIANGLES, (GL4_Sphere::vertexCount * 6) / syncTime, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+} */
+
+/* void GL4_Sphere::drawTimed(GLuint phases, GLuint seconds) {
+    // for(std::time_t currentTime = std::chrono::system_clock::now(); currentTime < std::chrono::duration<int,)
+    std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
+    std::chrono::steady_clock::time_point endTime = startTime + std::chrono::steady_clock::duration(std::chrono::duration<int>(seconds));
+    std::chrono::steady_clock::duration intervalTime = std::chrono::steady_clock::duration(std::chrono::duration<int>(seconds / phases));
+    for(std::chrono::steady_clock::time_point elapsedTime = startTime; elapsedTime < endTime; elapsedTime += intervalTime){
+        std::cout << "Time elapsed: " << elapsedTime << std::endl;
+    }
+} */

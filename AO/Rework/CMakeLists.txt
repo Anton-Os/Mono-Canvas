@@ -1,21 +1,23 @@
-add_executable(Demo2D
+add_executable(LoopTimed
     loaders/LoadShaders.cpp
     loaders/LoadData.cpp
     pipeline/Locked.cpp
-    proto/Sphere.cpp
-    Demo2D.cpp
+    comp/Sphere.cpp
+    main/LoopTimed.cpp
 )
 
-target_include_directories(Demo2D
+target_include_directories(LoopTimed
     PUBLIC include
+    ${BOOST_INCLUDEDIR}
 )
 
-target_link_libraries(Demo2D
+target_link_libraries(LoopTimed
     GLEW::glew_s
     glfw
     gli
     glm
     assimp
+    ${BOOST_LIBS} 
 )
 
 # WORK WITH SHADER FILES
@@ -39,4 +41,4 @@ add_custom_target(Flat2D_Shaders
     DEPENDS ${OUTPUT_SHADER_LIST}
 )
 
-add_dependencies(Demo2D Flat2D_Shaders)
+add_dependencies(LoopTimed Flat2D_Shaders)

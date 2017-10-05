@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <chrono>
+#include <ctime>
 // #include <cstring>
 
 #include <GL/glew.h>
@@ -9,9 +11,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "ManualSets.h"
 #include "PipelineCtrl.h"
 #include "Loaders.h"
-#include "Proto.h"
+#include "CompositeGeo.h"
 
 const std::string getParentDirectory(const char* path) {
 	const char* ptr = path + strlen(path);
@@ -67,6 +70,7 @@ int main(int argc, char** argv){
 	}
 
 	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -74,7 +78,7 @@ int main(int argc, char** argv){
 
 	GLuint testVAO;
 	glGenVertexArrays(1, &testVAO);
-	#include "ManualEtrSets.h"
+
 	loadData(testVAO, sizeof(squarePos) / sizeof(GLfloat), GL_STATIC_DRAW, &squarePos[0], nullptr, nullptr, nullptr);
 	loadIndices(testVAO, sizeof(squareIndices) / sizeof(GLuint), GL_STATIC_DRAW, &squareIndices[0]);
 
@@ -85,12 +89,20 @@ int main(int argc, char** argv){
 	Locked Locked_glsl(Locked_uiID);
 	Locked_glsl.initUniforms();
 
-	GL4_Sphere sphere0(100, 99, 100);
+	// GL4_Sphere sphere0(100, 99, 100);
+	GL4_Sphere sphere0(100, 20, 20);
 
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
 	glm::mat4 mvMatrix(1);
 
+	// std::chrono::time_point sceneSetupEnd(std::chrono::duration<int, std::milli>(0));
+	// std::cout << "Scene Setup End time: " << sceneSetupEnd.duration.count() << std::endl;
+	GLuint sphereDrawInterval = 50;
+	GLuint sphereDrawFraction = 1;
+	
+	std::clock_t sceneSetupTime = clock();
 	while(!glfwWindowShouldClose(window)){
+		std::clock_t loopTime = clock() - sceneSetupTime;
 		glfwPollEvents();
 		glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -102,7 +114,14 @@ int main(int argc, char** argv){
 
 		sphere0.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0, 0, -300.0f));
 		Locked_glsl.mvpMatrix(perspectiveMatrix * mvMatrix * sphere0.relMatrix);
-		sphere0.draw();
+		// sphere0.draw();
+		// if(sphereDrawInterval * sphereDrawFraction > GLuint(loopTime)) sphereDrawFraction++;
+		sphere0.drawPartial(sphereDrawFraction * 3);
+		if(sphereDrawInterval * sphereDrawFraction > GLuint(loopTime)){
+			// std::cout << "Every 200 Milli" << GLuint(loopTime) << std::endl;
+			sphereDrawFraction++;
+			// std::cout << "Sphere Draw Fraction is " << sphereDrawFraction << std::endl;
+		}
 
         glBindVertexArray(0);
 		glfwSwapBuffers(window);
