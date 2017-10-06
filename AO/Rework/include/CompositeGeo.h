@@ -17,8 +17,10 @@ public:
     glm::mat4 relMatrix;
     void create(GLuint radius, GLuint sliceCount, GLuint stackCount);
     void draw();
+    void draw(GLenum drawMode);
     // void drawTimed(std::chrono::duration<int, std::milli> currTime, GLuint speedPer100);
-    void drawPartial(GLuint indexCount);
+    void drawFixed(GLenum drawMode, GLuint indexCount);
+    void drawPart(GLuint part, GLuint whole);
 private:
     GLuint vertexCount;
 };

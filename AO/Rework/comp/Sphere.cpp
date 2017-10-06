@@ -70,11 +70,29 @@ void GL4_Sphere::draw(){
     glBindVertexArray(0);
 }
 
-void GL4_Sphere::drawPartial(GLuint indexCount){
+void GL4_Sphere::draw(GLenum drawMode){
+    glBindVertexArray(GL4_Sphere::feed[0]);
+    glDrawElements(drawMode, GL4_Sphere::vertexCount * 6, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+}
+
+/* void GL4_Sphere::drawFixed(GLuint triangleCount){
+    GLuint triangleTotal = vertexCount * 3;
+    glBindVertexArray(GL4_Sphere::feed[0]);
+    if(triangleCount > triangleTotal) glDrawElements(GL_TRIANGLES, GL4_Sphere::vertexCount * 6, GL_UNSIGNED_INT, 0);
+    else glDrawElements(GL_TRIANGLES, triangleCount * 3, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+} */
+
+void GL4_Sphere::drawFixed(GLenum drawMode, GLuint indexCount){
     glBindVertexArray(GL4_Sphere::feed[0]);
     if(indexCount > GL4_Sphere::vertexCount * 6) glDrawElements(GL_TRIANGLES, GL4_Sphere::vertexCount * 6, GL_UNSIGNED_INT, 0);
-    else glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+    else glDrawElements(drawMode, indexCount, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
+}
+
+void GL4_Sphere::drawPart(GLuint part, GLuint whole){
+    GLuint indicesAmount;
 }
 
 /* void GL4_Sphere::drawTimed(std::chrono::duration<int, std::milli> currentTime, GLuint speedInc){

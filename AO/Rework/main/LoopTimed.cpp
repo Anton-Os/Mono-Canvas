@@ -38,8 +38,9 @@ namespace Mouse {
 namespace Time {
 	std::chrono::steady_clock::time_point sceneSetup;
 	std::chrono::steady_clock::time_point sceneUpdate;
-	std::chrono::duration<double> secResCount;
-	std::chrono::duration<double, std::milli> milliResCount;
+	std::chrono::duration<double> secCount;
+	std::chrono::duration<double, std::milli> milliCount;
+	GLuint frameCount = 1;
 }
 
 int main(int argc, char** argv){
@@ -107,17 +108,18 @@ int main(int argc, char** argv){
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
 		Time::sceneUpdate = std::chrono::steady_clock::now();
-		Time::secResCount = std::chrono::duration_cast<std::chrono::duration<double>>((Time::sceneUpdate - Time::sceneSetup) / 1000000000.0);
-		Time::milliResCount = std::chrono::duration_cast<std::chrono::duration<double>>((Time::sceneUpdate - Time::sceneSetup) / 1000000.0);
+		Time::secCount = std::chrono::duration_cast<std::chrono::duration<double>>(Time::sceneUpdate - Time::sceneSetup);
+		Time::milliCount = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(Time::sceneUpdate - Time::sceneSetup);
+		
+		std::cout << "secCount " << Time::secCount.count() << " milliCount " << Time::milliCount.count() << std::endl;
+
 		glfwPollEvents();
 		glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		sphere0.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0, 0, -300.0f));
 		Locked_glsl.mvpMatrix(perspectiveMatrix * mvMatrix * sphere0.relMatrix);
-		sphere0.draw();
-		// sphere0.drawPartial(sphereDrawFraction * 3);
-		// if(sphereDrawInterval * sphereDrawFraction > GLuint(loopTime)) sphereDrawFraction++;
+		sphere0.drawFixed(GL_TRIANGLES, Time::secCount.count() * 3 * 5); // Every Second 5 Triangles are drawn
 
         glBindVertexArray(0);
 		glfwSwapBuffers(window);
