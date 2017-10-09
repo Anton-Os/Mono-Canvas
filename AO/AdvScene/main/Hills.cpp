@@ -79,8 +79,8 @@ int main(int argc, char** argv){
 		return -1;
 	}
 
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
+	// glEnable(GL_DEPTH_TEST);
+	//glDepthFunc(GL_LESS);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -99,11 +99,18 @@ int main(int argc, char** argv){
 	GLSL_Idle Idle(Idle_uiID);
 	Idle.initUniforms();
 
-	GL4_Sphere Sphere(100, 23, 20);
+	std::string HeightRange_vert = parentDir + "//shaders//HeightRange.vert";
+	std::string HeightRange_frag = parentDir + "//shaders//HeightRange.frag";
+	GLuint HeightRange_uiID = compileShaders(HeightRange_vert, HeightRange_frag);
+	glUseProgram(HeightRange_uiID);
+	GLSL_HeightRange HeightRange(HeightRange_uiID);
+	HeightRange.initUniforms();
+
+	GL4_BumpGrid BumpGrid(10.0f, 100, 10, 100, 10);
 
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
 	glm::mat4 mvMatrix(1);
-
+	
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
 		Time::sceneUpdate = std::chrono::steady_clock::now();
@@ -115,11 +122,14 @@ int main(int argc, char** argv){
 
 		glPointSize(10.0f);
 		glLineWidth(4.0f);
-		Sphere.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0, 0, -300.0f));
-		Idle.set_mvpMatrix(perspectiveMatrix * mvMatrix * Sphere.relMatrix);
-		// Sphere.draw();
-		// Sphere.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 3 * 20); // Every Second 5 Triangles are drawn
-		Sphere.drawFixed(GL_LINES, Time::secSpan.count() * 2 * 50);
+		BumpGrid.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -200.0f));
+		//BumpGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(70.0), glm::vec3(1.0, 0.0, 0.0));
+		glUseProgram(Idle_uiID);
+		Idle.set_mvpMatrix(perspectiveMatrix * mvMatrix * BumpGrid.relMatrix);
+		// BumpGrid.draw();
+		// BumpGrid.drawFixed(GL_POINTS, Time::secSpan.count());
+		// BumpGrid.drawFixed(GL_LINES, Time::secSpan.count() * 2);
+		BumpGrid.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 3 * 40);
 
         glBindVertexArray(0);
 		glfwSwapBuffers(window);

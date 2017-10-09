@@ -13,7 +13,7 @@ void main(){
 
     vec3 color1 = vec3(0.0, 1.0, 0.6);
     vec3 color2 = vec3(1.0, 0.4, 0.4);
-    vec3 color3 = vec3(0.4, 0.4, 0.6);
+    vec3 color3 = vec3(0.3, 0.5, 0.9);
     
     // frag_out = vec4(0.258, 0.525, 0.956, 0.7);
 

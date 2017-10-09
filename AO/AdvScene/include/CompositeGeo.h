@@ -16,7 +16,7 @@ protected:
     GLuint vertexCount;
 };
 
-class GL4_Sphere : GL4_Object {
+class GL4_Sphere : public GL4_Object {
 public:
     GL4_Sphere(GLuint radius, GLuint sliceCount, GLuint stackCount){
         create(radius, sliceCount, stackCount);
@@ -32,13 +32,15 @@ public:
 
 class GL4_BumpGrid : public GL4_Object {
 public:
-    GL4_BumpGrid(GLfloat smoothness, GLuint xDimension, GLuint stackCount, GLuint yDimension, GLuint sliceCount){
-        create(smoothness, xDimension, stackCount, yDimension, sliceCount);
+    GL4_BumpGrid(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount){
+        create(rise, xDimension, rowCount, yDimension, colCount);
     }
     enum feedParams { VAO, EBO, feedPos, feedTexCoord, feedNormal };
     GLuint feed[5];
-    void create(GLfloat smoothness, GLuint xDimension, GLuint stackCount, GLuint yDimension, GLuint sliceCount);
+    void create(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount);
+    void layer(GLuint feedPos, GLfloat rise, GLuint rowrowCount);
     void draw();
     void draw(GLenum drawMode);
+    
     void drawFixed(GLenum drawMode, GLuint indexCount);
 };
