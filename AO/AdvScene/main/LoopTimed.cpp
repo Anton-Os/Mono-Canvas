@@ -99,8 +99,8 @@ int main(int argc, char** argv){
 	Locked Locked_glsl(Locked_uiID);
 	Locked_glsl.initUniforms();
 
-	// GL4_Sphere Sphere(100, 23, 20);
-	GL4_BumpGrid BumpGrid(100.0, 100, 10, 100, 10);
+	//GL4_Sphere Sphere(100, 23, 20);
+	GL4_BumpGrid BumpGrid(2.0, 100, 3, 100, 3);
 
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
 	glm::mat4 mvMatrix(1);
@@ -117,14 +117,18 @@ int main(int argc, char** argv){
 		glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		glLineWidth(4.0f);
 		// Sphere.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0, 0, -300.0f));
 		// Locked_glsl.mvpMatrix(perspectiveMatrix * mvMatrix * Sphere.relMatrix);
+		// Sphere.draw();
 		// Sphere.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 3 * 20); // Every Second 5 Triangles are drawn
-		glLineWidth(5.0f);
 		// Sphere.drawFixed(GL_LINES, Time::secSpan.count() * 2 * 50);
-		BumpGrid.relMatrix = glm::mat4(1);
+		BumpGrid.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -200.0f));
+		//BumpGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(70.0), glm::vec3(1.0, 0.0, 0.0));
 		Locked_glsl.mvpMatrix(perspectiveMatrix * mvMatrix * BumpGrid.relMatrix);
-		BumpGrid.draw();
+		// BumpGrid.draw(GL_LINES);
+		// BumpGrid.drawFixed(GL_LINES, Time::secSpan.count() * 2 * 3);
+		BumpGrid.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 3 * 3);
 
         glBindVertexArray(0);
 		glfwSwapBuffers(window);

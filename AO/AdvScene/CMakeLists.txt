@@ -37,9 +37,9 @@ foreach(current_shader "Locked.vert" "Locked.frag"
     list(APPEND OUTPUT_SHADER_LIST "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}")
     list(APPEND SRC_SHADER_LIST "${CMAKE_CURRENT_SOURCE_DIR}/shaders/${current_shader}")
 endforeach(current_shader)
-add_custom_target(Flat2D_Shaders
+add_custom_target(AdvScene_Shaders
     SOURCES ${SRC_SHADER_LIST}
     DEPENDS ${OUTPUT_SHADER_LIST}
 )
 
-add_dependencies(LoopTimed Flat2D_Shaders)
+add_dependencies(LoopTimed AdvScene_Shaders)
