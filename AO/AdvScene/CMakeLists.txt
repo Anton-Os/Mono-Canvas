@@ -3,6 +3,7 @@ add_executable(LoopTimed
     loaders/LoadData.cpp
     pipeline/Locked.cpp
     comp/Sphere.cpp
+    comp/BumpGrid.cpp
     main/LoopTimed.cpp
 )
 

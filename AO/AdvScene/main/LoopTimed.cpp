@@ -38,8 +38,10 @@ namespace Mouse {
 namespace Time {
 	std::chrono::steady_clock::time_point sceneSetup;
 	std::chrono::steady_clock::time_point sceneUpdate;
-	std::chrono::duration<double> secCount;
-	std::chrono::duration<double, std::milli> milliCount;
+	std::chrono::duration<double> secSpan;
+	std::chrono::duration<double, std::milli> milliSpan;
+	std::chrono::duration<double, std::micro> microSpan;
+	std::chrono::duration<double, std::nano> nanoSpan;
 	GLuint frameCount = 1;
 }
 
@@ -97,7 +99,8 @@ int main(int argc, char** argv){
 	Locked Locked_glsl(Locked_uiID);
 	Locked_glsl.initUniforms();
 
-	GL4_Sphere sphere0(100, 23, 20);
+	// GL4_Sphere Sphere(100, 23, 20);
+	GL4_BumpGrid BumpGrid(100.0, 100, 10, 100, 10);
 
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
 	glm::mat4 mvMatrix(1);
@@ -108,18 +111,20 @@ int main(int argc, char** argv){
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
 		Time::sceneUpdate = std::chrono::steady_clock::now();
-		Time::secCount = std::chrono::duration_cast<std::chrono::duration<double>>(Time::sceneUpdate - Time::sceneSetup);
-		Time::milliCount = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(Time::sceneUpdate - Time::sceneSetup);
-		
-		std::cout << "secCount " << Time::secCount.count() << " milliCount " << Time::milliCount.count() << std::endl;
+		Time::secSpan = std::chrono::duration_cast<std::chrono::duration<double>>(Time::sceneUpdate - Time::sceneSetup);
 
 		glfwPollEvents();
 		glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		sphere0.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0, 0, -300.0f));
-		Locked_glsl.mvpMatrix(perspectiveMatrix * mvMatrix * sphere0.relMatrix);
-		sphere0.drawFixed(GL_TRIANGLES, Time::secCount.count() * 3 * 5); // Every Second 5 Triangles are drawn
+		// Sphere.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0, 0, -300.0f));
+		// Locked_glsl.mvpMatrix(perspectiveMatrix * mvMatrix * Sphere.relMatrix);
+		// Sphere.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 3 * 20); // Every Second 5 Triangles are drawn
+		glLineWidth(5.0f);
+		// Sphere.drawFixed(GL_LINES, Time::secSpan.count() * 2 * 50);
+		BumpGrid.relMatrix = glm::mat4(1);
+		Locked_glsl.mvpMatrix(perspectiveMatrix * mvMatrix * BumpGrid.relMatrix);
+		BumpGrid.draw();
 
         glBindVertexArray(0);
 		glfwSwapBuffers(window);
