@@ -82,6 +82,7 @@ void GL4_BumpGrid::create(GLfloat smoothness, GLuint xDimension, GLuint stackCou
     GLfloat uTex = 0.0; GLfloat vTex = 0.0;
     GLfloat sliceSize = (GLfloat)yDimension / (GLfloat)sliceCount;
     GLfloat stackSize = (GLfloat)xDimension / (GLfloat)stackCount;
+    bool lastStack = false; bool lastSlice = false;
 
     std::vector<GLfloat> posAccum;
     std::vector<GLfloat> texCoordAccum;
@@ -91,8 +92,8 @@ void GL4_BumpGrid::create(GLfloat smoothness, GLuint xDimension, GLuint stackCou
     srand(time(NULL));
 
     // boost::chrono::system_clock::time_point start = boost::chrono::system_clock::now();
-    for(GLfloat currentSlice = -1 * (GLfloat)yDimension / 2; currentSlice < (GLfloat)yDimension / 2; currentSlice += sliceSize){
-        for(GLfloat currentStack = -1 * (GLfloat)xDimension / 2; currentStack < (GLfloat)xDimension / 2; currentStack += stackSize){
+    for(GLfloat currentSlice = -1 * (GLfloat)yDimension / 2; currentSlice <= (GLfloat)yDimension / 2; currentSlice += sliceSize){
+        for(GLfloat currentStack = -1 * (GLfloat)xDimension / 2; currentStack <= (GLfloat)xDimension / 2; currentStack += stackSize){
             posAccum.push_back(currentStack);
             posAccum.push_back(currentSlice);
             posAccum.push_back((static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX)) * smoothness);
@@ -103,18 +104,37 @@ void GL4_BumpGrid::create(GLfloat smoothness, GLuint xDimension, GLuint stackCou
 			if (vertexID % 2 == 0) vTex = 0.0;
 			else vTex = 1.0;
             texCoordAccum.push_back(vTex);
-            
-            indexAccum.push_back(vertexID);
-            indexAccum.push_back(vertexID + 1);
-            indexAccum.push_back(vertexID + stackCount + 1);
-            indexAccum.push_back(vertexID);
-            indexAccum.push_back(vertexID + stackCount);
-            indexAccum.push_back(vertexID + stackCount + 1);
+
+            /* if(! lastStack || ! lastSlice){
+                indexAccum.push_back(vertexID);
+                indexAccum.push_back(vertexID + 1);
+                indexAccum.push_back(vertexID + stackCount + 1);
+                indexAccum.push_back(vertexID + 1);
+                indexAccum.push_back(vertexID + stackCount + 2);
+                indexAccum.push_back(vertexID + stackCount + 1);
+            } */
+            if(currentSlice >= (yDimension / 2) - sliceSize) lastSlice = true;
+            else std::cout << "Last Slice: " << yDimension / 2 - sliceSize << " Current: " << currentSlice << std::endl;
+            if(lastSlice == true) std::cout << "LAST SLICE!" << std::endl;
+            if(currentStack >= (xDimension / 2) - stackSize) lastStack = true;
+            else std::cout << "Last Stack: " << xDimension / 2 - stackSize << " Current: " << currentStack << std::endl;
+            if(lastStack == true) std::cout << "LAST STACK!" << std::endl;
+
+            if(! lastStack && ! lastSlice){
+                indexAccum.push_back(vertexID + 1);
+                indexAccum.push_back(vertexID);
+                indexAccum.push_back(vertexID + stackCount + 1);
+                indexAccum.push_back(vertexID + 1);
+                indexAccum.push_back(vertexID + stackCount + 2);
+                indexAccum.push_back(vertexID + stackCount + 1);
+                std::cout << "Yes" << std::endl;
+            } else lastStack = false;
 
 			vertexID++;
 		}
     }
 
+    std::cout << "Vertex Count" << vertexID << std::endl;
     GLuint feedBuffers[3];
     glGenBuffers(3, feedBuffers);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, feedBuffers[0]);
