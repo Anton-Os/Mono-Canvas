@@ -68,3 +68,4 @@ add_custom_target(AdvScene_Shaders
 )
 
 add_dependencies(LoopTimed AdvScene_Shaders)
+add_dependencies(Hills AdvScene_Shaders)

@@ -27,10 +27,11 @@ private:
 class GLSL_HeightRange : public GLSL_Base {
 public:
     GLSL_HeightRange(GLuint shaderProg) : GLSL_Base(shaderProg){}
-    enum unifID { mvpMatrix, heightRange };
+    enum unifID { mvpMatrix, heightRange, rise };
     void set_mvpMatrix(glm::mat4 mvpMatrix);
     void set_heightRange(GLfloat min, GLfloat max);
+    void set_rise(GLfloat rise);
     void initUniforms();
 private:
-    GLuint unifLoc[2];
+    GLuint unifLoc[3];
 };
