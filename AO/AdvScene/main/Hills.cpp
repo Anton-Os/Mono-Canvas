@@ -26,7 +26,7 @@ const std::string getParentDirectory(const char* path) {
 }
 
 namespace Key {
-	GLboolean W, A, S, D = false;
+	GLboolean P, W, A, S, D = false;
 }
 
 namespace Mouse {
@@ -35,8 +35,15 @@ namespace Mouse {
 	GLfloat xOffset, yOffset;
 }
 
+namespace Player {
+	GLboolean isGod = true;
+	glm::mat4 viewMatrix(1);
+}
+
 namespace Terrain {
-	GLfloat rise = 20.0f;
+	GLfloat rise = 30.0f;
+	GLfloat xDegree = 0.0f;
+	GLfloat zDegree = 0.0f;
 }
 
 namespace Time {
@@ -47,6 +54,28 @@ namespace Time {
 	std::chrono::duration<double, std::micro> microSpan;
 	std::chrono::duration<double, std::nano> nanoSpan;
 	GLuint frameCount = 1;
+}
+
+void God_keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
+	if(key == GLFW_KEY_P && action == GLFW_PRESS) Key::P = true;
+	if(key == GLFW_KEY_P && action == GLFW_RELEASE) Key::P = false;
+	if(Key::P) Player::isGod = false;
+
+	if(key == GLFW_KEY_W && action == GLFW_PRESS) Key::W = true;
+	if(key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
+	if(Key::W) Terrain::xDegree += 3.0f;
+
+	if(key == GLFW_KEY_A && action == GLFW_PRESS) Key::A = true;
+	if(key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
+	if(Key::A) Terrain::zDegree += 3.0f;
+
+	if(key == GLFW_KEY_S && action == GLFW_PRESS) Key::S = true;
+	if(key == GLFW_KEY_S && action == GLFW_RELEASE) Key::S = false;
+	if(Key::S) Terrain::xDegree -= 3.0f;
+
+	if(key == GLFW_KEY_D && action == GLFW_PRESS) Key::D = true;
+	if(key == GLFW_KEY_D && action == GLFW_RELEASE) Key::D = false;
+	if(Key::D) Terrain::zDegree -= 3.0f;
 }
 
 int main(int argc, char** argv){
@@ -74,7 +103,7 @@ int main(int argc, char** argv){
 
 	glfwMakeContextCurrent(window);
 	glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
-	// glfwSetKeyCallback(window, keyCallback);
+	glfwSetKeyCallback(window, God_keyCallback);
 	// glfwSetCursorPosCallback(window, cursorPosCallback);
 
 	if (glewInit() == GLEW_OK) std::cout << "GLEW initialized successfuly" << std::endl;
@@ -83,8 +112,8 @@ int main(int argc, char** argv){
 		return -1;
 	}
 
-	// glEnable(GL_DEPTH_TEST);
-	//glDepthFunc(GL_LESS);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -110,10 +139,10 @@ int main(int argc, char** argv){
 	GLSL_HeightRange HeightRange(HeightRange_uiID);
 	HeightRange.initUniforms();
 
-	GL4_BumpGrid BumpGrid(Terrain::rise, 100, 10, 100, 10);
+	GL4_BumpGrid BumpGrid(Terrain::rise, 100, 20, 100, 20);
+	GL4_BumpGrid FlatGrid(3.0, 100, 20, 100, 20);
 
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
-	glm::mat4 viewMatrix(1);
 	
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -126,20 +155,28 @@ int main(int argc, char** argv){
 
 		glPointSize(10.0f);
 		glLineWidth(4.0f);
-		BumpGrid.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -200.0f));
-		//BumpGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(70.0), glm::vec3(1.0, 0.0, 0.0));
-		/* glUseProgram(Idle_uiID);
-		Idle.set_mvpMatrix(perspectiveMatrix * viewMatrix * BumpGrid.relMatrix); */
 		glUseProgram(HeightRange_uiID);
-		HeightRange.set_mvpMatrix(perspectiveMatrix * viewMatrix * BumpGrid.relMatrix);
-		HeightRange.set_heightRange(-1 * Terrain::rise / 2, Terrain::rise / 2);
+		BumpGrid.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -200.0f));
+		BumpGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::xDegree), glm::vec3(1.0, 0.0, 0.0));
+		BumpGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::zDegree), glm::vec3(0.0, 0.0, 1.0));
+		HeightRange.set_mvpMatrix(perspectiveMatrix * Player::viewMatrix * BumpGrid.relMatrix);
 		HeightRange.set_rise(Terrain::rise);
+		HeightRange.set_renderMode(4);
+		/* glUseProgram(Idle_uiID);
+		Idle.set_mvpMatrix(perspectiveMatrix * Player::viewMatrix * BumpGrid.relMatrix); */
 		// BumpGrid.draw();
 		// BumpGrid.drawFixed(GL_POINTS, Time::secSpan.count());
 		// BumpGrid.drawFixed(GL_LINES, Time::secSpan.count() * 2);
 		BumpGrid.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 3 * 40);
 
-        glBindVertexArray(0);
+		FlatGrid.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -185.0f));
+		FlatGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::xDegree), glm::vec3(1.0, 0.0, 0.0));
+		FlatGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::zDegree), glm::vec3(0.0, 0.0, 1.0));
+		HeightRange.set_mvpMatrix(perspectiveMatrix * Player::viewMatrix * FlatGrid.relMatrix);
+		HeightRange.set_rise(3.0 * 2);
+		HeightRange.set_renderMode(3);
+		FlatGrid.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 3 * 40);
+
 		glfwSwapBuffers(window);
 	}
 

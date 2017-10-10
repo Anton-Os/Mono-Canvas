@@ -38,9 +38,8 @@ public:
     enum feedParams { VAO, EBO, feedPos, feedTexCoord, feedNormal };
     GLuint feed[5];
     void create(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount);
-    void layer(GLuint feedPos, GLfloat rise, GLuint rowrowCount);
+    void create(GL4_BumpGrid* bumpGrid, GLfloat rise, GLuint rowColCount);
     void draw();
     void draw(GLenum drawMode);
-    
     void drawFixed(GLenum drawMode, GLuint indexCount);
 };
