@@ -145,6 +145,20 @@ void GL4_BumpGrid::create(GLfloat rise, GLuint xDimension, GLuint rowCount, GLui
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+void GL4_BumpGrid::map(std::vector<GLfloat>* posAccum){
+    glBindVertexArray(GL4_BumpGrid::feed[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, GL4_BumpGrid::feed[GL4_BumpGrid::feedPos]);
+    GLfloat* posData = (GLfloat*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
+	posAccum->resize(GL4_BumpGrid::vertexCount * 3);
+
+    for(GLuint posElem = 0; posElem < posAccum->size(); posElem++){
+		posAccum->at(posElem) = *(posData + posElem);
+    }
+
+    glUnmapBuffer(GL_ARRAY_BUFFER);
+    glBindVertexArray(0);
+}
+
 void GL4_BumpGrid::draw(){
     glBindVertexArray(GL4_BumpGrid::feed[0]);
     glDrawElements(GL_TRIANGLES, GL4_BumpGrid::vertexCount * 6, GL_UNSIGNED_INT, 0);

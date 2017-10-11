@@ -12,6 +12,10 @@ layout(location = 0) out vec4 frag_out;
 
 void main(){
     vec3 white = vec3(1.0, 1.0, 1.0);
+    vec3 lightGrey = vec3(0.8, 0.8, 0.8);
+    vec3 medGrey = vec3(0.5, 0.5, 0.5);
+    vec3 darkGrey = vec3(0.2, 0.2, 0.2);
+
     vec3 color1 = vec3(0.0, 1.0, 0.6);
     vec3 color2 = vec3(1.0, 0.4, 0.4);
     vec3 color3 = vec3(0.3, 0.5, 0.9);
@@ -30,18 +34,12 @@ void main(){
     float heightMax = rise / 2;
     float heightMin = -1 * heightMax;
     if(renderMode == 1){
-        vec3 colorClamp = color2 + vec3(color1 * ((posZ + heightMax) / (heightMax - heightMin)));
-        frag_out = vec4(color2 * colorClamp, 1.0);
-    } else if(renderMode == 2) {
         float heightClamp = (posZ + heightMax) / (heightMax - heightMin);
-        frag_out = vec4(white * heightClamp, 1.0);
-    } else if(renderMode == 3){
-        float heightClamp = (posZ + heightMax) / (heightMax - heightMin);
-        vec3 colorClamp = bloodRed + ((lightRed - bloodRed) * heightClamp);
+        vec3 colorClamp = medGrey + (vec3(0.1, 0.1, 0.1) * heightClamp);
         frag_out = vec4(colorClamp, 1.0);
-    } else if(renderMode == 4){
+    } else if(renderMode == 2){
         float heightClamp = (posZ + heightMax) / (heightMax - heightMin);
-        vec3 colorClamp = darkRed + ((lightRed - darkRed) * heightClamp);
+        vec3 colorClamp = darkGrey + ((lightGrey - darkGrey) * heightClamp);
         frag_out = vec4(colorClamp, 1.0);
     } else {
         if(vertexID % 3 == 1) frag_out = vec4(color1.r, color1.g, color1.b, 1.0);

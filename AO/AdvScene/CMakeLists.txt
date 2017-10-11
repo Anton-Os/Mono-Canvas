@@ -9,7 +9,6 @@ add_executable(LoopTimed
 
 target_include_directories(LoopTimed
     PUBLIC include
-    ${BOOST_INCLUDEDIR}
 )
 
 target_link_libraries(LoopTimed
@@ -18,7 +17,6 @@ target_link_libraries(LoopTimed
     gli
     glm
     assimp
-    ${BOOST_LIBS} 
 )
 
 add_executable(Hills
@@ -26,17 +24,38 @@ add_executable(Hills
     loaders/LoadData.cpp
     pipeline/Idle.cpp
     pipeline/HeightRange.cpp
-    comp/Sphere.cpp
     comp/BumpGrid.cpp
     main/Hills.cpp
 )
 
 target_include_directories(Hills
     PUBLIC include
-    ${BOOST_INCLUDEDIR}
 )
 
 target_link_libraries(Hills
+    GLEW::glew_s
+    glfw
+    gli
+    glm
+    assimp
+)
+
+add_executable(CollisionTest
+    loaders/LoadShaders.cpp
+    loaders/LoadData.cpp
+    pipeline/Idle.cpp
+    pipeline/HeightRange.cpp
+    comp/Sphere.cpp
+    comp/BumpGrid.cpp
+    main/CollisionTest.cpp
+)
+
+target_include_directories(CollisionTest
+    PUBLIC include
+    ${BOOST_INCLUDEDIR}
+)
+
+target_link_libraries(CollisionTest
     GLEW::glew_s
     glfw
     gli

@@ -151,6 +151,11 @@ int main(int argc, char** argv){
 	GL4_BumpGrid BumpGrid(Terrain::rise, 100, 20, 100, 20);
 	GL4_BumpGrid FlatGrid(3.0, 100, 20, 100, 20);
 
+	// glBindBuffer(GL_ARRAY_BUFFER, FlatGrid.feed[FlatGrid.feedPos]);
+	// GLvoid* collisionPos = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
+	std::vector<GLfloat> collisionPos;
+	FlatGrid.map(&collisionPos);
+
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
 	
 	Time::sceneSetup = std::chrono::steady_clock::now();
@@ -165,26 +170,15 @@ int main(int argc, char** argv){
 		glPointSize(10.0f);
 		glLineWidth(4.0f);
 		glUseProgram(HeightRange_uiID);
-		BumpGrid.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance));
-		BumpGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::xDegree), glm::vec3(1.0, 0.0, 0.0));
-		BumpGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::zDegree), glm::vec3(0.0, 0.0, 1.0));
-		HeightRange.set_mvpMatrix(perspectiveMatrix * Player::viewMatrix * BumpGrid.relMatrix);
-		HeightRange.set_rise(Terrain::rise);
-		HeightRange.set_renderMode(2);
-		/* glUseProgram(Idle_uiID);
-		Idle.set_mvpMatrix(perspectiveMatrix * Player::viewMatrix * BumpGrid.relMatrix); */
-		// BumpGrid.draw();
-		// BumpGrid.drawFixed(GL_POINTS, Time::secSpan.count());
-		// BumpGrid.drawFixed(GL_LINES, Time::secSpan.count() * 2);
-		BumpGrid.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 3 * 40);
 
-		FlatGrid.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance + 15.0f));
+		FlatGrid.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance));
 		FlatGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::xDegree), glm::vec3(1.0, 0.0, 0.0));
 		FlatGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::zDegree), glm::vec3(0.0, 0.0, 1.0));
 		HeightRange.set_mvpMatrix(perspectiveMatrix * Player::viewMatrix * FlatGrid.relMatrix);
 		HeightRange.set_rise(3.0 * 2);
 		HeightRange.set_renderMode(1);
-		FlatGrid.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 3 * 40);
+		// FlatGrid.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 3 * 40);
+		FlatGrid.draw();
 
 		glfwSwapBuffers(window);
 	}
