@@ -1,30 +1,29 @@
 #include "Utility.h"
 
-/* std::array<unsigned int, 4> compFourClosest(glm::vec2* pos, std::vector<float>* posAccum){
-    std::array<unsigned int, 4> fourClosest;
-    GLuint fourClosestElem = 0;
-    for(GLuint posElem = 0; posElem < posAccum->size(); posElem++){
-        if(pos->x > posAccum->at(fourClosest[fourClosestElem % 4] * 3) && pos->y > posAccum->at(fourClosest[fourClosestElem % 4] * 3 + 1)){
-            fourClosestElem++;
-            fourClosest[fourClosestElem % 4] = posElem;
-        }
-    }
-    return fourClosest;
-} */
-
 void compFourProx(std::array<float, 12>* fourProx, const glm::vec2* pos, const std::vector<float>* posAccum){
-    GLuint fourProxElem = 0;
-    for(GLuint posElem = 0; posElem < posAccum->size() / 3; posElem++){
-        // if(posAccum->at(posElem * 3) > fourProx->at((fourProxElem % 4) * 3) && posAccum->at(posElem * 3 + 1) > fourProx->at((fourProxElem % 4) * 3 + 1)){
-        float distanceNext = glm::distance(*pos, glm::vec2(posAccum->at(posElem * 3), posAccum->at(posElem * 3 + 1)));
-        float distancePrev = glm::distance(*pos, glm::vec2(fourProx->at((fourProxElem % 4) * 3), posAccum->at(posElem * 3 + 1)));
-        if(distanceNext > distancePrev){
-            fourProxElem++;
-            fourProx->at((fourProxElem % 4) * 3) = posAccum->at(posElem * 3);
-            fourProx->at((fourProxElem % 4) * 3 + 1) = posAccum->at(posElem * 3 + 1);
-            fourProx->at((fourProxElem % 4) * 3 + 2) = posAccum->at(posElem * 3 + 2);
+    std::vector<float> distAccum;
+    distAccum.resize(posAccum->size() / 3);
+    std::array<unsigned int, 4> fourProxIndices;
+    for(GLuint distElem = 0; distElem < distAccum.size(); distElem++)
+        distAccum[distElem] = glm::distance(*pos, glm::vec2(posAccum->at(distElem * 3), posAccum->at(distElem * 3 + 1)));
+   
+    for(unsigned int fourProxElem = 0; fourProxElem < 4; fourProxElem++){
+        float distLow = FLT_MAX;
+        unsigned int indexLow = 0;
+        for(unsigned int distElem = 0; distElem < distAccum.size(); distElem++){
+            if(distAccum[distElem] < distLow && distElem != fourProxIndices[0] && distElem != fourProxIndices[1] && distElem != fourProxIndices[2]){
+                distLow = distAccum[distElem];
+                indexLow = distElem;
+            }
         }
-    }
+        fourProxIndices[fourProxElem] = indexLow;
+        fourProx->at(fourProxElem * 3) = posAccum->at(indexLow * 3);
+		fourProx->at(fourProxElem * 3 + 1) = posAccum->at(indexLow * 3 + 1);
+		fourProx->at(fourProxElem * 3 + 2) = posAccum->at(indexLow * 3 + 2);
+
+    } 
+
+	// for(unsigned int fourProxElem = 0; fourProxElem < 
 }
 
 /* float compHeight(std::array<unsigned int, 4> fourClosest){

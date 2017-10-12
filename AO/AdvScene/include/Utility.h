@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <cfloat>
 
 #include <GL/glew.h>
 
