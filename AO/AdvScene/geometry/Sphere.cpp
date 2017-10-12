@@ -1,6 +1,4 @@
-// #include <boost/chrono.hpp>
-
-#include "CompositeGeo.h"
+#include "Geometry.h"
 
 void GL4_Sphere::create(GLuint radius, GLuint sliceCount, GLuint stackCount){
     GLuint VAO;

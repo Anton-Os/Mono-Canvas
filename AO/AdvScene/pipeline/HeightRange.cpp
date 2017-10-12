@@ -1,4 +1,4 @@
-#include "PipelineCtrl.h"
+#include "Pipeline.h"
 
 void GLSL_HeightRange::set_mvpMatrix(glm::mat4 mvpMatrix){
     glUniformMatrix4fv(GLSL_HeightRange::unifLoc[GLSL_HeightRange::mvpMatrix], 1, GL_FALSE, glm::value_ptr(mvpMatrix));

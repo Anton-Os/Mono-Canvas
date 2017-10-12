@@ -11,10 +11,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "ManualSets.h"
-#include "PipelineCtrl.h"
+#include "Geometry.h"
 #include "Loaders.h"
-#include "CompositeGeo.h"
+#include "ManualSets.h"
+#include "Pipeline.h"
+
 
 const std::string getParentDirectory(const char* path) {
 	const char* ptr = path + strlen(path);

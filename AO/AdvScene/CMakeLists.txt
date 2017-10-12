@@ -2,8 +2,8 @@ add_executable(LoopTimed
     loaders/LoadShaders.cpp
     loaders/LoadData.cpp
     pipeline/Idle.cpp
-    comp/Sphere.cpp
-    comp/BumpGrid.cpp
+    geometry/Sphere.cpp
+    geometry/BumpGrid.cpp
     main/LoopTimed.cpp
 )
 
@@ -24,7 +24,7 @@ add_executable(Hills
     loaders/LoadData.cpp
     pipeline/Idle.cpp
     pipeline/HeightRange.cpp
-    comp/BumpGrid.cpp
+    geometry/BumpGrid.cpp
     main/Hills.cpp
 )
 
@@ -42,11 +42,11 @@ target_link_libraries(Hills
 
 add_executable(CollisionTest
     loaders/LoadShaders.cpp
-    loaders/LoadData.cpp
     pipeline/Idle.cpp
     pipeline/HeightRange.cpp
-    comp/Sphere.cpp
-    comp/BumpGrid.cpp
+    geometry/Sphere.cpp
+    geometry/BumpGrid.cpp
+    utility/Compute.cpp
     main/CollisionTest.cpp
 )
 

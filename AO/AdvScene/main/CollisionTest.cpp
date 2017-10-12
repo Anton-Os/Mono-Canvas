@@ -11,10 +11,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "ManualSets.h"
-#include "PipelineCtrl.h"
+#include "Geometry.h"
 #include "Loaders.h"
-#include "CompositeGeo.h"
+#include "ManualSets.h"
+#include "Pipeline.h"
+#include "Utility.h"
 
 const std::string getParentDirectory(const char* path) {
 	const char* ptr = path + strlen(path);
@@ -38,6 +39,7 @@ namespace Mouse {
 namespace Player {
 	GLboolean isGod = true;
 	glm::mat4 viewMatrix(1);
+	glm::vec2 steps(0);
 }
 
 namespace Terrain {
@@ -131,9 +133,6 @@ int main(int argc, char** argv){
 	GLuint testVAO;
 	glGenVertexArrays(1, &testVAO);
 
-	loadData(testVAO, sizeof(squarePos) / sizeof(GLfloat), GL_STATIC_DRAW, &squarePos[0], nullptr, nullptr, nullptr);
-	loadIndices(testVAO, sizeof(squareIndices) / sizeof(GLuint), GL_STATIC_DRAW, &squareIndices[0]);
-
 	std::string Idle_vert = parentDir + "//shaders//Idle.vert";
 	std::string Idle_frag = parentDir + "//shaders//Idle.frag";
 	GLuint Idle_uiID = compileShaders(Idle_vert, Idle_frag);
@@ -151,10 +150,12 @@ int main(int argc, char** argv){
 	GL4_BumpGrid BumpGrid(Terrain::rise, 100, 20, 100, 20);
 	GL4_BumpGrid FlatGrid(3.0, 100, 20, 100, 20);
 
-	// glBindBuffer(GL_ARRAY_BUFFER, FlatGrid.feed[FlatGrid.feedPos]);
-	// GLvoid* collisionPos = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
 	std::vector<GLfloat> collisionPos;
 	FlatGrid.map(&collisionPos);
+	// std::array<GLuint, 4> fourClosest = compFourClosest(&Player::steps, &collisionPos);
+	std::array<float, 12> fourProx;
+	fourProx.fill(0.0);
+	compFourProx(&fourProx, &Player::steps, &collisionPos);
 
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
 	

@@ -1,5 +1,4 @@
-
-#include "CompositeGeo.h"
+#include "Geometry.h"
 
 /* void GL4_BumpGrid::create(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount){
     GLuint VAO;
