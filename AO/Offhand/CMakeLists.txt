@@ -1,18 +1,3 @@
-
-add_executable(TickTock
-    dev/TickTock.cpp
-)
-
-target_link_libraries(TickTock
-    ${BOOST_LIBS}
-)
-
-target_include_directories(TickTock
-    PUBLIC ${BOOST_INCLUDEDIR}
-)
-
-# # # # # # # # # # # # # # # # # # # # # # # #
-
 add_executable(NetDemo
     network/NetDemo.cpp
 )

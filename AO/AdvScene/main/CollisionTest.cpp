@@ -39,7 +39,8 @@ namespace Mouse {
 namespace Player {
 	GLboolean isGod = true;
 	glm::mat4 viewMatrix(1);
-	glm::vec2 steps(0);
+	// glm::vec2 steps(0);
+	glm::vec2 steps = glm::vec2(-1.0, -1.0);
 }
 
 namespace Terrain {
@@ -155,7 +156,9 @@ int main(int argc, char** argv){
 	// std::array<GLuint, 4> fourClosest = compFourClosest(&Player::steps, &collisionPos);
 	std::array<float, 12> fourProx;
 	fourProx.fill(0.0);
-	compFourProx(&fourProx, &Player::steps, &collisionPos);
+	// compFourProx(&fourProx, &Player::steps, &collisionPos);
+	compFourProxAbs(&fourProx, &Player::steps, &collisionPos);
+	float newHeight = compLocalZ(&fourProx, &Player::steps);
 
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
 	

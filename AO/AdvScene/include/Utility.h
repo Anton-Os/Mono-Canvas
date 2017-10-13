@@ -9,7 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-// std::array<unsigned int, 4> compFourClosest(glm::vec2* pos, std::vector<float>* posAccum);
 void compFourProx(std::array<float, 12>* fourProx, const glm::vec2* pos, const std::vector<float>* posAccum);
-// float compHeight(std::array<unsigned int, 4> fourClosest);
+void compFourProxAbs(std::array<float, 12>* fourProxAbs, const glm::vec2* pos, const std::vector<float>* posAccum);
+// After determining the four closest points orders them by bottom left, bottom right, upper left, and then upper right
 float compLocalZ(std::array<float, 12>* fourProx, const glm::vec2* pos);

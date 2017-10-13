@@ -36,3 +36,8 @@ public:
 private:
     GLuint unifLoc[4];
 };
+
+class GLSL_Mandlebrot : public GLSL_Base {
+public:
+    GLSL_Mandlebrot(GLuint shaderProg) : GLSL_Base(shaderProg){}
+};

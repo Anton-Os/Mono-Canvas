@@ -50,13 +50,11 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
     set(BOOST_LIBS)
     file(GLOB BOOST_LIBS "${BOOST_LIBRARYDIR}/*.lib")
 
-    add_subdirectory("AO/Going3D")
     add_subdirectory("AO/AdvScene")
     add_subdirectory("AO/Offhand")
     if(Vulkan_FOUND)
         add_subdirectory("AO/VEruption")
     endif()
-
 else ()
     include("cmake/BuildExtlibs.cmake")
     add_custom_target(BuildExtlibHelp ALL
