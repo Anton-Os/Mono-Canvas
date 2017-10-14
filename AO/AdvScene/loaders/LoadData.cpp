@@ -34,11 +34,6 @@
   return VAO;
 } */
 
-/* GLuint sendVertexPos(std::vector<GLuint> bufferList){
-  size_t bufferListSize = bufferList.size();
-  bufferList.push_back();
-} */
-
 GLuint loadData(GLuint VAO, GLuint vertexCount, GLenum drawUsage, GLfloat* pos, GLfloat* color, GLfloat* normal, GLfloat* texCoord){
   glBindVertexArray(VAO);
   GLuint VBOs[4];
@@ -51,7 +46,7 @@ GLuint loadData(GLuint VAO, GLuint vertexCount, GLenum drawUsage, GLfloat* pos, 
     glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(GLfloat), pos, drawUsage);
     glVertexAttribPointer(vAttrib, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
     glEnableVertexAttribArray(vAttrib);
-    std::cout << "pos attrib location: " << vAttrib << std::endl;
+    // std::cout << "pos attrib location: " << vAttrib << std::endl;
     vAttrib++;
   }
   if(nullptr != color){

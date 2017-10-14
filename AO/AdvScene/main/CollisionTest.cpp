@@ -15,7 +15,7 @@
 #include "Loaders.h"
 #include "ManualSets.h"
 #include "Pipeline.h"
-#include "Utility.h"
+#include "Scene.h"
 
 const std::string getParentDirectory(const char* path) {
 	const char* ptr = path + strlen(path);
@@ -27,7 +27,7 @@ const std::string getParentDirectory(const char* path) {
 }
 
 namespace Key {
-	GLboolean P, W, A, S, D, Q, E = false;
+	GLboolean W, A, S, D, Q, E = false;
 }
 
 namespace Mouse {
@@ -38,9 +38,9 @@ namespace Mouse {
 
 namespace Player {
 	GLboolean isGod = true;
+	glm::mat4 persMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
 	glm::mat4 viewMatrix(1);
-	// glm::vec2 steps(0);
-	glm::vec2 steps = glm::vec2(-1.0, -1.0);
+	glm::vec3 pos = glm::vec3(-11.0, -11.0, 0.0);
 }
 
 namespace Terrain {
@@ -57,33 +57,35 @@ namespace Time {
 	std::chrono::duration<double, std::milli> milliSpan;
 	std::chrono::duration<double, std::micro> microSpan;
 	std::chrono::duration<double, std::nano> nanoSpan;
-	GLuint frameCount = 1;
 }
 
 void God_keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
-	if(key == GLFW_KEY_P && action == GLFW_PRESS) Key::P = true;
-	if(key == GLFW_KEY_P && action == GLFW_RELEASE) Key::P = false;
-	if(Key::P) Player::isGod = false;
+	if(key == GLFW_KEY_P && action == GLFW_PRESS && Player::isGod) Player::isGod = false;
+	else if(key == GLFW_KEY_P && action == GLFW_PRESS && !Player::isGod) Player::isGod = true;
 
 	if(key == GLFW_KEY_W && action == GLFW_PRESS) Key::W = true;
 	if(key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
-	if(Key::W) Terrain::xDegree += 3.0f;
+	if(Key::W && Player::isGod) Terrain::xDegree += 3.0f;
+	if(Key::W && !Player::isGod) Player::pos.y += 1.0f;
 
 	if(key == GLFW_KEY_A && action == GLFW_PRESS) Key::A = true;
 	if(key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
-	if(Key::A) Terrain::zDegree += 3.0f;
+	if(Key::A && Player::isGod) Terrain::zDegree += 3.0f;
+	if(Key::A && !Player::isGod) Player::pos.x -= 1.0f;
 
 	if(key == GLFW_KEY_S && action == GLFW_PRESS) Key::S = true;
 	if(key == GLFW_KEY_S && action == GLFW_RELEASE) Key::S = false;
-	if(Key::S) Terrain::xDegree -= 3.0f;
+	if(Key::S && Player::isGod) Terrain::xDegree -= 3.0f;
+	if(Key::S && !Player::isGod) Player::pos.y -= 1.0f;
 
 	if(key == GLFW_KEY_D && action == GLFW_PRESS) Key::D = true;
 	if(key == GLFW_KEY_D && action == GLFW_RELEASE) Key::D = false;
-	if(Key::D) Terrain::zDegree -= 3.0f;
+	if(Key::D && Player::isGod) Terrain::zDegree -= 3.0f;
+	if(Key::D && !Player::isGod) Player::pos.x += 1.0f;
 
 	if(key == GLFW_KEY_Q && action == GLFW_PRESS) Key::Q = true;
 	if(key == GLFW_KEY_Q && action == GLFW_RELEASE) Key::Q = false;
-	if(Key::Q) Terrain::distance += 20.0f;
+	if(Key::Q && Player::isGod) Terrain::distance += 20.0f;
 
 	if(key == GLFW_KEY_E && action == GLFW_PRESS) Key::E = true;
 	if(key == GLFW_KEY_E && action == GLFW_RELEASE) Key::E = false;
@@ -150,17 +152,20 @@ int main(int argc, char** argv){
 
 	GL4_BumpGrid BumpGrid(Terrain::rise, 100, 20, 100, 20);
 	GL4_BumpGrid FlatGrid(3.0, 100, 20, 100, 20);
+	// GL4_BumpGrid FlatGrid(3.0, 100, 4, 100, 4);
 
 	std::vector<GLfloat> collisionPos;
 	FlatGrid.map(&collisionPos);
-	// std::array<GLuint, 4> fourClosest = compFourClosest(&Player::steps, &collisionPos);
-	std::array<float, 12> fourProx;
-	fourProx.fill(0.0);
-	// compFourProx(&fourProx, &Player::steps, &collisionPos);
-	compFourProxAbs(&fourProx, &Player::steps, &collisionPos);
-	float newHeight = compLocalZ(&fourProx, &Player::steps);
-
-	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
+	std::array<float, 12> fourProxPos;
+	std::array<float, 4> fourProxDist;
+	// compFourProx(&fourProxPos, &fourProxDist, &glm::vec2(Player::pos.x, Player::pos.y), &collisionPos);
+	// Player::pos.z = compLocalZ(&fourProxPos, &fourProxDist);
+	
+	GLuint tileLit;
+	glGenVertexArrays(1, &tileLit);
+	// loadData(tileLit, 12, GL_STATIC_DRAW, fourProxPos.data(), nullptr, nullptr, nullptr);
+	std::array<unsigned int, 6> squareIndices = { 0, 1, 2, 3, 1, 2};
+	loadIndices(tileLit, 6, GL_STATIC_DRAW, squareIndices.data());
 	
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -169,6 +174,7 @@ int main(int argc, char** argv){
 
 		glfwPollEvents();
 		glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
+		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glPointSize(10.0f);
@@ -178,11 +184,25 @@ int main(int argc, char** argv){
 		FlatGrid.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance));
 		FlatGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::xDegree), glm::vec3(1.0, 0.0, 0.0));
 		FlatGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::zDegree), glm::vec3(0.0, 0.0, 1.0));
-		HeightRange.set_mvpMatrix(perspectiveMatrix * Player::viewMatrix * FlatGrid.relMatrix);
+		HeightRange.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * FlatGrid.relMatrix);
 		HeightRange.set_rise(3.0 * 2);
 		HeightRange.set_renderMode(1);
 		// FlatGrid.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 3 * 40);
 		FlatGrid.draw();
+
+		glDisable(GL_DEPTH_TEST);
+
+		// Perform drawing without depth testing
+		// Collision computation... Anton Says Hi
+
+		compFourProx(&fourProxPos, &fourProxDist, &glm::vec2(Player::pos.x, Player::pos.y), &collisionPos);
+		Player::pos.z = compLocalZ(&fourProxPos, &fourProxDist);
+		loadData(tileLit, 12, GL_STATIC_DRAW, fourProxPos.data(), nullptr, nullptr, nullptr);
+
+		glUseProgram(Idle_uiID);
+		glBindVertexArray(tileLit);
+		Idle.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * FlatGrid.relMatrix);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
 		glfwSwapBuffers(window);
 	}

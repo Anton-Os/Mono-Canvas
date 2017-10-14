@@ -42,11 +42,12 @@ target_link_libraries(Hills
 
 add_executable(CollisionTest
     loaders/LoadShaders.cpp
+    loaders/LoadData.cpp
     pipeline/Idle.cpp
     pipeline/HeightRange.cpp
     geometry/Sphere.cpp
     geometry/BumpGrid.cpp
-    utility/Compute.cpp
+    scene/Collision.cpp
     main/CollisionTest.cpp
 )
 
