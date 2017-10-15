@@ -150,20 +150,15 @@ int main(int argc, char** argv){
 	GLSL_HeightRange HeightRange(HeightRange_uiID);
 	HeightRange.initUniforms();
 
-	//GL4_BumpGrid BumpGrid(Terrain::rise, 100, 20, 100, 20);
 	GL4_BumpGrid FlatGrid(3.0, 100, 4, 100, 4);
-	// GL4_BumpGrid FlatGrid(3.0, 100, 4, 100, 4);
 
 	std::vector<GLfloat> collisionPos;
 	FlatGrid.map(&collisionPos);
 	std::array<float, 12> fourProxPos;
 	std::array<float, 4> fourProxDist;
-	// compFourProx(&fourProxPos, &fourProxDist, &glm::vec2(Player::pos.x, Player::pos.y), &collisionPos);
-	// Player::pos.z = compLocalZ(&fourProxPos, &fourProxDist);
 	
 	GLuint tileLit;
 	glGenVertexArrays(1, &tileLit);
-	// loadData(tileLit, 12, GL_STATIC_DRAW, fourProxPos.data(), nullptr, nullptr, nullptr);
 	std::array<unsigned int, 6> squareIndices = { 0, 1, 2, 3, 1, 2};
 	loadIndices(tileLit, 6, GL_STATIC_DRAW, squareIndices.data());
 	

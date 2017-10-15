@@ -179,7 +179,6 @@ void GL4_BumpGrid::create_v2(GLfloat rise, GLuint xDimension, GLuint rowCount, G
             texCoordAccum.push_back(vTex);
             
             if(currentRow >= (xDimension / 2) - rowSize) lastRow = true;
-
             if(! lastRow && ! lastCol){
                 indexAccum.push_back(vertexID + 1);
                 indexAccum.push_back(vertexID);
@@ -201,7 +200,7 @@ void GL4_BumpGrid::create_v2(GLfloat rise, GLuint xDimension, GLuint rowCount, G
     std::vector<GLfloat> mpointAccum;
 	mpointAccum.push_back(0.0f);
 	
-    /* for(GLuint mpointIndexElem = 0; mpointIndexElem < indexID; mpointIndexElem++){
+    for(GLuint mpointIndexElem = 0; mpointIndexElem < indexID; mpointIndexElem++){
         float avrgX = ( posAccum[mpointIndexAccum[mpointIndexElem * 4] * 3] +
                         posAccum[mpointIndexAccum[mpointIndexElem * 4 + 1] * 3] +
                         posAccum[mpointIndexAccum[mpointIndexElem * 4 + 2] * 3] +
@@ -217,8 +216,14 @@ void GL4_BumpGrid::create_v2(GLfloat rise, GLuint xDimension, GLuint rowCount, G
         mpointAccum.push_back(avrgX);
         mpointAccum.push_back(avrgY);
         mpointAccum.push_back(avrgZ);
-		std::cout << mpointIndexElem << " Element number" << std::endl;
-    } */
+    }
+
+	std::vector<GLfloat> nrmAccum;
+	for (GLuint mpointIndexElem = 0; mpointIndexElem < vertexID; mpointIndexElem++) {
+		nrmAccum.push_back(0.0f);
+		nrmAccum.push_back(1.0f);
+		nrmAccum.push_back(0.0f);
+	}
 
     GLuint feedBuffers[5];
     glGenBuffers(5, feedBuffers);
@@ -232,13 +237,10 @@ void GL4_BumpGrid::create_v2(GLfloat rise, GLuint xDimension, GLuint rowCount, G
     glBufferData(GL_ARRAY_BUFFER, texCoordAccum.size() * sizeof(GLfloat), &texCoordAccum[0], GL_STATIC_DRAW);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 	glEnableVertexAttribArray(1);
-	// SAVE FOR NORMALS
-	/* * * * * * * * * * * * * * * * * * * * * * * * 
 	glBindBuffer(GL_ARRAY_BUFFER, feedBuffers[3]);
-    glBufferData(GL_ARRAY_BUFFER, normalAccum.size() * sizeof(GLfloat), &normalAccum[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, nrmAccum.size() * sizeof(GLfloat), &nrmAccum[0], GL_STATIC_DRAW);
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 	glEnableVertexAttribArray(2);
-	* * * * * * * * * * * * * * * * * * * * * * * */
 	glBindBuffer(GL_ARRAY_BUFFER, feedBuffers[4]);
 	glBufferData(GL_ARRAY_BUFFER, mpointAccum.size() * sizeof(GLfloat), &mpointAccum[0], GL_STATIC_DRAW);
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);

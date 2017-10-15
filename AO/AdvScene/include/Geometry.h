@@ -37,7 +37,7 @@ public:
         create_v2(rise, xDimension, rowCount, yDimension, colCount);
     }
     enum feedParams { VAO, EBO, feedPos, feedTexCoord, feedNormal, feedMidpoint };
-    GLuint feed[5];
+    GLuint feed[6];
     void create(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount);
     void create_v2(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount);
     void map(std::vector<GLfloat>* posAccum);
