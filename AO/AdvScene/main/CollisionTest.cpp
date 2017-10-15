@@ -89,7 +89,7 @@ void God_keyCallback(GLFWwindow* window, int key, int scancode, int action, int 
 
 	if(key == GLFW_KEY_E && action == GLFW_PRESS) Key::E = true;
 	if(key == GLFW_KEY_E && action == GLFW_RELEASE) Key::E = false;
-	if(Key::E) Terrain::distance -= 20.0f;
+	if(Key::E && Player::isGod) Terrain::distance -= 20.0f;
 }
 
 int main(int argc, char** argv){
@@ -150,8 +150,8 @@ int main(int argc, char** argv){
 	GLSL_HeightRange HeightRange(HeightRange_uiID);
 	HeightRange.initUniforms();
 
-	GL4_BumpGrid BumpGrid(Terrain::rise, 100, 20, 100, 20);
-	GL4_BumpGrid FlatGrid(3.0, 100, 20, 100, 20);
+	//GL4_BumpGrid BumpGrid(Terrain::rise, 100, 20, 100, 20);
+	GL4_BumpGrid FlatGrid(3.0, 100, 4, 100, 4);
 	// GL4_BumpGrid FlatGrid(3.0, 100, 4, 100, 4);
 
 	std::vector<GLfloat> collisionPos;
