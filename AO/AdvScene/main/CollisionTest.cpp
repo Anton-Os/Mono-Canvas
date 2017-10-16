@@ -152,6 +152,8 @@ int main(int argc, char** argv){
 
 	GL4_BumpGrid FlatGrid(3.0, 100, 4, 100, 4);
 
+	std::vector<MidPoint> midPoints;
+	FlatGrid.get_midPoint(&midPoints);
 	std::vector<GLfloat> collisionPos;
 	FlatGrid.map(&collisionPos);
 	std::array<float, 12> fourProxPos;

@@ -196,26 +196,42 @@ void GL4_BumpGrid::create_v2(GLfloat rise, GLuint xDimension, GLuint rowCount, G
 			vertexID++;
 		}
     }
+
 	std::cout << "Vertex ID: " << vertexID << std::endl;
-    std::vector<GLfloat> mpointAccum;
-	mpointAccum.push_back(0.0f);
-	
+    MidPoint midPoint;
+    /* std::array<float, 3> midPointPos;
+    std::array<float, 12> midPointFourProx; */
+
     for(GLuint mpointIndexElem = 0; mpointIndexElem < indexID; mpointIndexElem++){
+        midPoint.fourProx[0] = posAccum[mpointIndexAccum[mpointIndexElem * 4] * 3];
+        midPoint.fourProx[1] = posAccum[mpointIndexAccum[mpointIndexElem * 4] * 3 + 1];
+        midPoint.fourProx[2] = posAccum[mpointIndexAccum[mpointIndexElem * 4] * 3 + 2];
+        midPoint.fourProx[3] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 1] * 3];
+        midPoint.fourProx[4] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 1] * 3 + 1];
+        midPoint.fourProx[5] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 1] * 3 + 2];
+        midPoint.fourProx[6] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 2] * 3];
+        midPoint.fourProx[7] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 2] * 3 + 1];
+        midPoint.fourProx[8] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 2] * 3 + 2];
+        midPoint.fourProx[9] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 3] * 3];
+        midPoint.fourProx[10] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 3] * 3 + 1];
+        midPoint.fourProx[11] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 3] * 3 + 2];
+        
         float avrgX = ( posAccum[mpointIndexAccum[mpointIndexElem * 4] * 3] +
                         posAccum[mpointIndexAccum[mpointIndexElem * 4 + 1] * 3] +
                         posAccum[mpointIndexAccum[mpointIndexElem * 4 + 2] * 3] +
                         posAccum[mpointIndexAccum[mpointIndexElem * 4 + 3] * 3] ) / 4;
+        midPoint.pos[0] = avrgX;
         float avrgY = ( posAccum[mpointIndexAccum[mpointIndexElem * 4] * 3 + 1] + 
                         posAccum[mpointIndexAccum[mpointIndexElem * 4 + 1] * 3 + 1] +
                         posAccum[mpointIndexAccum[mpointIndexElem * 4 + 2] * 3 + 1] +
                         posAccum[mpointIndexAccum[mpointIndexElem * 4 + 3] * 3 + 1] ) / 4;
+        midPoint.pos[1] = avrgY;
         float avrgZ = ( posAccum[mpointIndexAccum[mpointIndexElem * 4] * 3 + 2] + 
                         posAccum[mpointIndexAccum[mpointIndexElem * 4 + 1] * 3 + 2] +
                         posAccum[mpointIndexAccum[mpointIndexElem * 4 + 2] * 3 + 2] +
                         posAccum[mpointIndexAccum[mpointIndexElem * 4 + 3] * 3 + 2] ) / 4;
-        mpointAccum.push_back(avrgX);
-        mpointAccum.push_back(avrgY);
-        mpointAccum.push_back(avrgZ);
+        midPoint.pos[2] = avrgZ;
+        GL4_BumpGrid::midPointAccum.push_back(midPoint);
     }
 
 	std::vector<GLfloat> nrmAccum;
@@ -225,8 +241,8 @@ void GL4_BumpGrid::create_v2(GLfloat rise, GLuint xDimension, GLuint rowCount, G
 		nrmAccum.push_back(0.0f);
 	}
 
-    GLuint feedBuffers[5];
-    glGenBuffers(5, feedBuffers);
+    GLuint feedBuffers[4];
+    glGenBuffers(4, feedBuffers);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, feedBuffers[0]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexAccum.size() * sizeof(GLuint), &indexAccum[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, feedBuffers[1]);
@@ -241,17 +257,12 @@ void GL4_BumpGrid::create_v2(GLfloat rise, GLuint xDimension, GLuint rowCount, G
     glBufferData(GL_ARRAY_BUFFER, nrmAccum.size() * sizeof(GLfloat), &nrmAccum[0], GL_STATIC_DRAW);
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 	glEnableVertexAttribArray(2);
-	glBindBuffer(GL_ARRAY_BUFFER, feedBuffers[4]);
-	glBufferData(GL_ARRAY_BUFFER, mpointAccum.size() * sizeof(GLfloat), &mpointAccum[0], GL_STATIC_DRAW);
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
-	glEnableVertexAttribArray(3);
 
     GL4_BumpGrid::vertexCount = vertexID;
     GL4_BumpGrid::feed[GL4_BumpGrid::EBO] = feedBuffers[0];
     GL4_BumpGrid::feed[GL4_BumpGrid::feedPos] = feedBuffers[1];
     GL4_BumpGrid::feed[GL4_BumpGrid::feedTexCoord] = feedBuffers[2];
 	GL4_BumpGrid::feed[GL4_BumpGrid::feedNormal] = feedBuffers[3];
-	GL4_BumpGrid::feed[GL4_BumpGrid::feedMidpoint] = feedBuffers[4];
 
     glBindVertexArray(0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);

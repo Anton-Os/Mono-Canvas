@@ -3,7 +3,6 @@
 layout(location = 0) in vec3 pos;
 layout(location = 1) in vec2 texCoord;
 layout(location = 2) in vec3 nrm;
-layout(location = 3) in vec3 midPos;
 
 uniform mat4 mvpMatrix;
 

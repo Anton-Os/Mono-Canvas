@@ -98,8 +98,7 @@ int main(int argc, char** argv){
 	glUseProgram(Idle_uiID);
 	GLSL_Idle Idle(Idle_uiID);
 	Idle.initUniforms();
-
-	GL4_Sphere Sphere(100, 23, 20);
+	GL4_Sphere Sphere(100, 5000, 5000);
 
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
 	glm::mat4 mvMatrix(1);
@@ -117,9 +116,9 @@ int main(int argc, char** argv){
 		glLineWidth(4.0f);
 		Sphere.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0, 0, -300.0f));
 		Idle.set_mvpMatrix(perspectiveMatrix * mvMatrix * Sphere.relMatrix);
-		// Sphere.draw();
+		Sphere.draw();
 		// Sphere.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 3 * 20); // Every Second 5 Triangles are drawn
-		Sphere.drawFixed(GL_LINES, Time::secSpan.count() * 2 * 50);
+		//Sphere.drawFixed(GL_LINES, Time::secSpan.count() * 2 * 50);
 
         glBindVertexArray(0);
 		glfwSwapBuffers(window);
