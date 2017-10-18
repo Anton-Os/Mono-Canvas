@@ -140,7 +140,7 @@ int main(int argc, char** argv){
 	GLuint Idle_uiID = compileShaders(Idle_vert, Idle_frag);
 	glUseProgram(Idle_uiID);
 	GLSL_Idle Idle(Idle_uiID);
-	Idle.initUniforms();
+	// Idle.initUniforms();
 
 	std::string HeightRange_vert = parentDir + "//shaders//HeightRange.vert";
 	std::string HeightRange_frag = parentDir + "//shaders//HeightRange.frag";

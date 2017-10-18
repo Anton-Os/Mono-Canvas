@@ -31,9 +31,14 @@ public:
     void drawPart(GLenum drawMode, GLuint part, GLuint whole);
 };
 
-struct MidPoint {
-    std::array<float, 3> pos;
-    std::array<float, 12> fourProx;
+struct MidPointQ {
+    float pos[3];
+    float fourProx[12];
+};
+
+struct MidPointT {
+    float pos[3];
+    float fourProx[9];
 };
 
 class GL4_BumpGrid : public GL4_Object {
@@ -42,16 +47,16 @@ public:
         // create(rise, xDimension, rowCount, yDimension, colCount);
         create_v2(rise, xDimension, rowCount, yDimension, colCount);
     }
-    enum feedParams { VAO, EBO, feedPos, feedTexCoord, feedNormal};
+    enum feedParams {VAO, EBO, feedPos, feedTexCoord, feedNormal};
     GLuint feed[5];
     void create(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount);
     void create_v2(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount);
     void map(std::vector<GLfloat>* posAccum);
     void map(std::vector<GLuint>* indexAccum);
-    void get_midPoint(std::vector<MidPoint>* midPoints){ midPoints->swap(midPointAccum); }
+    void get_midPoint(std::vector<MidPointQ>* midPoints){ midPoints->swap(midPointQ_Accum); }
     void draw();
     void draw(GLenum drawMode);
     void drawFixed(GLenum drawMode, GLuint indexCount);
 private:
-    std::vector<MidPoint> midPointAccum;
+    std::vector<MidPointQ> midPointQ_Accum;
 };

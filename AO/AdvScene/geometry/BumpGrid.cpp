@@ -197,42 +197,40 @@ void GL4_BumpGrid::create_v2(GLfloat rise, GLuint xDimension, GLuint rowCount, G
 		}
     }
 
-	std::cout << "Vertex ID: " << vertexID << std::endl;
-    MidPoint midPoint;
-    /* std::array<float, 3> midPointPos;
-    std::array<float, 12> midPointFourProx; */
+    MidPointQ midPointQ;
+	GL4_BumpGrid::midPointQ_Accum.resize(indexID);
 
-    for(GLuint mpointIndexElem = 0; mpointIndexElem < indexID; mpointIndexElem++){
-        midPoint.fourProx[0] = posAccum[mpointIndexAccum[mpointIndexElem * 4] * 3];
-        midPoint.fourProx[1] = posAccum[mpointIndexAccum[mpointIndexElem * 4] * 3 + 1];
-        midPoint.fourProx[2] = posAccum[mpointIndexAccum[mpointIndexElem * 4] * 3 + 2];
-        midPoint.fourProx[3] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 1] * 3];
-        midPoint.fourProx[4] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 1] * 3 + 1];
-        midPoint.fourProx[5] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 1] * 3 + 2];
-        midPoint.fourProx[6] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 2] * 3];
-        midPoint.fourProx[7] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 2] * 3 + 1];
-        midPoint.fourProx[8] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 2] * 3 + 2];
-        midPoint.fourProx[9] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 3] * 3];
-        midPoint.fourProx[10] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 3] * 3 + 1];
-        midPoint.fourProx[11] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 3] * 3 + 2];
-        
-        float avrgX = ( posAccum[mpointIndexAccum[mpointIndexElem * 4] * 3] +
-                        posAccum[mpointIndexAccum[mpointIndexElem * 4 + 1] * 3] +
-                        posAccum[mpointIndexAccum[mpointIndexElem * 4 + 2] * 3] +
-                        posAccum[mpointIndexAccum[mpointIndexElem * 4 + 3] * 3] ) / 4;
-        midPoint.pos[0] = avrgX;
-        float avrgY = ( posAccum[mpointIndexAccum[mpointIndexElem * 4] * 3 + 1] + 
-                        posAccum[mpointIndexAccum[mpointIndexElem * 4 + 1] * 3 + 1] +
-                        posAccum[mpointIndexAccum[mpointIndexElem * 4 + 2] * 3 + 1] +
-                        posAccum[mpointIndexAccum[mpointIndexElem * 4 + 3] * 3 + 1] ) / 4;
-        midPoint.pos[1] = avrgY;
-        float avrgZ = ( posAccum[mpointIndexAccum[mpointIndexElem * 4] * 3 + 2] + 
-                        posAccum[mpointIndexAccum[mpointIndexElem * 4 + 1] * 3 + 2] +
-                        posAccum[mpointIndexAccum[mpointIndexElem * 4 + 2] * 3 + 2] +
-                        posAccum[mpointIndexAccum[mpointIndexElem * 4 + 3] * 3 + 2] ) / 4;
-        midPoint.pos[2] = avrgZ;
-        GL4_BumpGrid::midPointAccum.push_back(midPoint);
-    }
+	for (GLuint mpointIndexElem = 0; mpointIndexElem < indexID; mpointIndexElem++) {
+		midPointQ.fourProx[0] = posAccum[mpointIndexAccum[mpointIndexElem * 4] * 3];
+		midPointQ.fourProx[1] = posAccum[mpointIndexAccum[mpointIndexElem * 4] * 3 + 1];
+		midPointQ.fourProx[2] = posAccum[mpointIndexAccum[mpointIndexElem * 4] * 3 + 2];
+		midPointQ.fourProx[3] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 1] * 3];
+		midPointQ.fourProx[4] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 1] * 3 + 1];
+		midPointQ.fourProx[5] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 1] * 3 + 2];
+		midPointQ.fourProx[6] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 2] * 3];
+		midPointQ.fourProx[7] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 2] * 3 + 1];
+		midPointQ.fourProx[8] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 2] * 3 + 2];
+		midPointQ.fourProx[9] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 3] * 3];
+		midPointQ.fourProx[10] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 3] * 3 + 1];
+		midPointQ.fourProx[11] = posAccum[mpointIndexAccum[mpointIndexElem * 4 + 3] * 3 + 2];
+
+		float avrgX = (posAccum[mpointIndexAccum[mpointIndexElem * 4] * 3] +
+			posAccum[mpointIndexAccum[mpointIndexElem * 4 + 1] * 3] +
+			posAccum[mpointIndexAccum[mpointIndexElem * 4 + 2] * 3] +
+			posAccum[mpointIndexAccum[mpointIndexElem * 4 + 3] * 3]) / 4;
+		midPointQ.pos[0] = avrgX;
+		float avrgY = (posAccum[mpointIndexAccum[mpointIndexElem * 4] * 3 + 1] +
+			posAccum[mpointIndexAccum[mpointIndexElem * 4 + 1] * 3 + 1] +
+			posAccum[mpointIndexAccum[mpointIndexElem * 4 + 2] * 3 + 1] +
+			posAccum[mpointIndexAccum[mpointIndexElem * 4 + 3] * 3 + 1]) / 4;
+		midPointQ.pos[1] = avrgY;
+		float avrgZ = (posAccum[mpointIndexAccum[mpointIndexElem * 4] * 3 + 2] +
+			posAccum[mpointIndexAccum[mpointIndexElem * 4 + 1] * 3 + 2] +
+			posAccum[mpointIndexAccum[mpointIndexElem * 4 + 2] * 3 + 2] +
+			posAccum[mpointIndexAccum[mpointIndexElem * 4 + 3] * 3 + 2]) / 4;
+		midPointQ.pos[2] = avrgZ;
+		GL4_BumpGrid::midPointQ_Accum[mpointIndexElem] = midPointQ;
+	}
 
 	std::vector<GLfloat> nrmAccum;
 	for (GLuint mpointIndexElem = 0; mpointIndexElem < vertexID; mpointIndexElem++) {

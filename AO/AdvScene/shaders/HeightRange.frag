@@ -20,13 +20,6 @@ void main(){
     vec3 color2 = vec3(1.0, 0.4, 0.4);
     vec3 color3 = vec3(0.3, 0.5, 0.9);
 
-    vec3 sunsetOrange = vec3(1.0, 0.6, 0.4);
-    vec3 carrotOrange = vec3(1.0, 0.466, 0.2);
-    vec3 tomatoRed = vec3(1.0, 0.301, 0.301);
-    vec3 bloodRed = vec3(1.0, 0.101, 0.101);
-    vec3 lightRed = vec3(1.0, 0.401, 0.401);
-    vec3 darkRed = vec3(0.7, 0.0, 0.0);
-
     /* if(vertexID % 3 == 1) frag_out = vec4(color1.r, color1.g, color1.b, 1.0);
     else if(vertexID % 3 == 2) frag_out = vec4(color2.r, color2.g, color2.b, 1.0);
 	else frag_out = vec4(color3.r, color3.g, color3.b, 1.0); */

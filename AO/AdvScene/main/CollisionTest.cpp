@@ -92,28 +92,28 @@ void God_keyCallback(GLFWwindow* window, int key, int scancode, int action, int 
 	if(Key::E && Player::isGod) Terrain::distance -= 20.0f;
 }
 
-int main(int argc, char** argv){
-    /* -- -- -- Creation of OpenGL Context, Windowing, and Handling User Input -- -- -- */
-    if(glfwInit() == GLFW_TRUE)  std::cout << "GLFW initialized successfuly" << std::endl;
-    else {
-        std::cerr << "GLFW failed to initialize" << std::endl;
-        return -1;
-    }
+int main(int argc, char** argv) {
+	/* -- -- -- Creation of OpenGL Context, Windowing, and Handling User Input -- -- -- */
+	if (glfwInit() == GLFW_TRUE)  std::cout << "GLFW initialized successfuly" << std::endl;
+	else {
+		std::cerr << "GLFW failed to initialize" << std::endl;
+		return -1;
+	}
 
-    int windowHeight = 900;
-    int windowWidth = 1100;
+	int windowHeight = 900;
+	int windowWidth = 1100;
 
-    glfwWindowHint(GLFW_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE); 
-    glViewport(0, 0, windowHeight, windowWidth);
+	glfwWindowHint(GLFW_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glViewport(0, 0, windowHeight, windowWidth);
 
-    GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "Asset Import", nullptr, nullptr);
-    if(nullptr != window) std::cout << "GLFW window created successfuly" << std::endl;
-    else {
-        std::cerr << "GLFW failed to create window" << std::endl;
-        return -1;
-    }
+	GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "Asset Import", nullptr, nullptr);
+	if (nullptr != window) std::cout << "GLFW window created successfuly" << std::endl;
+	else {
+		std::cerr << "GLFW failed to create window" << std::endl;
+		return -1;
+	}
 
 	glfwMakeContextCurrent(window);
 	glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
@@ -133,15 +133,10 @@ int main(int argc, char** argv){
 
 	std::string parentDir = getParentDirectory(argv[0]);
 
-	GLuint testVAO;
-	glGenVertexArrays(1, &testVAO);
-
 	std::string Idle_vert = parentDir + "//shaders//Idle.vert";
 	std::string Idle_frag = parentDir + "//shaders//Idle.frag";
 	GLuint Idle_uiID = compileShaders(Idle_vert, Idle_frag);
-	glUseProgram(Idle_uiID);
 	GLSL_Idle Idle(Idle_uiID);
-	Idle.initUniforms();
 
 	std::string HeightRange_vert = parentDir + "//shaders//HeightRange.vert";
 	std::string HeightRange_frag = parentDir + "//shaders//HeightRange.frag";
@@ -150,20 +145,20 @@ int main(int argc, char** argv){
 	GLSL_HeightRange HeightRange(HeightRange_uiID);
 	HeightRange.initUniforms();
 
-	GL4_BumpGrid FlatGrid(3.0, 100, 4, 100, 4);
+	GL4_BumpGrid FlatGrid(10.0, 100, 10, 100, 10);
 
-	std::vector<MidPoint> midPoints;
+	std::vector<MidPointQ> midPoints;
 	FlatGrid.get_midPoint(&midPoints);
-	std::vector<GLfloat> collisionPos;
-	FlatGrid.map(&collisionPos);
-	std::array<float, 12> fourProxPos;
-	std::array<float, 4> fourProxDist;
-	
-	GLuint tileLit;
-	glGenVertexArrays(1, &tileLit);
-	std::array<unsigned int, 6> squareIndices = { 0, 1, 2, 3, 1, 2};
-	loadIndices(tileLit, 6, GL_STATIC_DRAW, squareIndices.data());
-	
+	GLuint testVAO[3];
+	glGenVertexArrays(3, testVAO);
+	glBindVertexArray(testVAO[0]);
+	GLuint testVBO[3];
+	glGenBuffers(3, testVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, testVBO[0]);
+	glBufferData(GL_ARRAY_BUFFER, midPoints.size() * sizeof(MidPointQ), midPoints.data(), GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MidPointQ), offsetof(MidPointQ, pos));
+	glEnableVertexAttribArray(0);
+
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
 		Time::sceneUpdate = std::chrono::steady_clock::now();
@@ -176,15 +171,13 @@ int main(int argc, char** argv){
 
 		glPointSize(10.0f);
 		glLineWidth(4.0f);
-		glUseProgram(HeightRange_uiID);
-
+		// glUseProgram(HeightRange_uiID);
+		glUseProgram(Idle_uiID);
 		FlatGrid.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance));
 		FlatGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::xDegree), glm::vec3(1.0, 0.0, 0.0));
 		FlatGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::zDegree), glm::vec3(0.0, 0.0, 1.0));
-		HeightRange.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * FlatGrid.relMatrix);
-		HeightRange.set_rise(3.0 * 2);
-		HeightRange.set_renderMode(1);
-		// FlatGrid.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 3 * 40);
+		Idle.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * FlatGrid.relMatrix);
+		Idle.set_renderMode(2);
 		FlatGrid.draw();
 
 		glDisable(GL_DEPTH_TEST);
@@ -192,14 +185,11 @@ int main(int argc, char** argv){
 		// Perform drawing without depth testing
 		// Collision computation... Anton Says Hi
 
-		compFourProx(&fourProxPos, &fourProxDist, &glm::vec2(Player::pos.x, Player::pos.y), &collisionPos);
-		Player::pos.z = compLocalZ(&fourProxPos, &fourProxDist);
-		loadData(tileLit, 12, GL_STATIC_DRAW, fourProxPos.data(), nullptr, nullptr, nullptr);
-
 		glUseProgram(Idle_uiID);
-		glBindVertexArray(tileLit);
 		Idle.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * FlatGrid.relMatrix);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+		Idle.set_renderMode(1);
+		glBindVertexArray(testVAO[0]);
+		glDrawArrays(GL_POINTS, 0, midPoints.size());
 
 		glfwSwapBuffers(window);
 	}

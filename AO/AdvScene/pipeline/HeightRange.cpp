@@ -25,5 +25,4 @@ void GLSL_HeightRange::initUniforms(){
     if(GLSL_HeightRange::unifLoc[GLSL_HeightRange::rise] == -1) std::cout << "uniform rise failed to initialize" << std::endl;
     GLSL_HeightRange::unifLoc[GLSL_HeightRange::renderMode] = glGetUniformLocation(GLSL_HeightRange::shaderProgID, "renderMode");
     if(GLSL_HeightRange::unifLoc[GLSL_HeightRange::renderMode] == -1) std::cout << "uniform renderMode failed to initialize" << std::endl;
-
 }

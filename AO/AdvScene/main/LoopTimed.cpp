@@ -97,7 +97,7 @@ int main(int argc, char** argv){
 	GLuint Idle_uiID = compileShaders(Idle_vert, Idle_frag);
 	glUseProgram(Idle_uiID);
 	GLSL_Idle Idle(Idle_uiID);
-	Idle.initUniforms();
+	// Idle.initUniforms();
 	GL4_Sphere Sphere(100, 5000, 5000);
 
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);

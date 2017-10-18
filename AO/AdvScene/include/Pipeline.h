@@ -16,12 +16,16 @@ protected:
 
 class GLSL_Idle : public GLSL_Base {
 public:
-    GLSL_Idle(GLuint shaderProg) : GLSL_Base(shaderProg){}
-    enum unifID { mvpMatrix };
+    GLSL_Idle(GLuint shaderProg) : GLSL_Base(shaderProg){
+        glUseProgram(GLSL_Idle::shaderProgID);
+        initUniforms();
+    }
+    enum unifID { mvpMatrix, renderMode };
     void set_mvpMatrix(glm::mat4 mvpMatrix);
-    void initUniforms();
+    void set_renderMode(GLuint renderMode);
 private:
-    GLuint unifLoc[1];
+    GLuint unifLoc[2];
+    void initUniforms();
 };
 
 class GLSL_HeightRange : public GLSL_Base {
@@ -35,9 +39,4 @@ public:
     void initUniforms();
 private:
     GLuint unifLoc[4];
-};
-
-class GLSL_Mandlebrot : public GLSL_Base {
-public:
-    GLSL_Mandlebrot(GLuint shaderProg) : GLSL_Base(shaderProg){}
 };
