@@ -257,6 +257,7 @@ void GL4_BumpGrid::create_v2(GLfloat rise, GLuint xDimension, GLuint rowCount, G
 	glEnableVertexAttribArray(2);
 
     GL4_BumpGrid::vertexCount = vertexID;
+    GL4_BumpGrid::indexCount = indexID;
     GL4_BumpGrid::feed[GL4_BumpGrid::EBO] = feedBuffers[0];
     GL4_BumpGrid::feed[GL4_BumpGrid::feedPos] = feedBuffers[1];
     GL4_BumpGrid::feed[GL4_BumpGrid::feedTexCoord] = feedBuffers[2];
@@ -265,6 +266,33 @@ void GL4_BumpGrid::create_v2(GLfloat rise, GLuint xDimension, GLuint rowCount, G
     glBindVertexArray(0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void GL4_BumpGrid::gen_midPointQuads(std::vector<MidPointQ>* midPoints){
+    std::vector<float> posAccum;
+    GL4_BumpGrid::map(&posAccum);
+    std::vector<unsigned int> indexAccum;
+    GL4_BumpGrid::map(&indexAccum);
+
+    GLuint indexCount = indexAccum.size() / 6;
+    std::vector<unsigned int> midPointIndexAccum;
+    midPointIndexAccum.resize(indexCount * 4);
+
+    for(GLuint indexSetElem = 0; indexSetElem < indexCount; indexSetElem++){
+        std::array<unsigned int, 6> indexSet = {indexAccum[indexSetElem * 6], indexAccum[indexSetElem * 6 + 1], indexAccum[indexSetElem * 6 + 2], indexAccum[indexSetElem * 6 + 3], indexAccum[indexSetElem * 6 + 4], indexAccum[indexSetElem * 6 + 5] };
+        std::array<unsigned int, 4> midPointIndexSet = {UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX};
+        unsigned int indexInc = 0;
+        for(unsigned int indexElem = 0; indexInc < 4; indexElem++){
+            if(indexSet[indexElem] != midPointIndexSet[0] && indexSet[indexElem] != midPointIndexSet[1] && indexSet[indexElem] != midPointIndexSet[2] && indexSet[indexElem] != midPointIndexSet[3]){
+                midPointIndexSet[indexInc] = indexSet[indexElem];
+                indexInc++;
+            }
+        }
+        midPointIndexAccum[indexSetElem * 4] = midPointIndexSet[0];
+        midPointIndexAccum[indexSetElem * 4 + 1] = midPointIndexSet[1];
+        midPointIndexAccum[indexSetElem * 4 + 2] = midPointIndexSet[2];
+        midPointIndexAccum[indexSetElem * 4 + 3] = midPointIndexSet[3];
+    }
 }
 
 void GL4_BumpGrid::map(std::vector<GLfloat>* posAccum){
@@ -285,7 +313,7 @@ void GL4_BumpGrid::map(std::vector<GLuint>* indexAccum){
     glBindVertexArray(GL4_BumpGrid::feed[0]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL4_BumpGrid::feed[GL4_BumpGrid::EBO]);
     GLuint* indexData = (GLuint*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_READ_ONLY);
-	indexAccum->resize(GL4_BumpGrid::vertexCount * 6);
+	indexAccum->resize(GL4_BumpGrid::indexCount * 6);
 
     for(GLuint indexElem = 0; indexElem < indexAccum->size(); indexElem++){
 		indexAccum->at(indexElem) = *(indexData + indexElem);

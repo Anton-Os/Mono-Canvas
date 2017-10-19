@@ -4,6 +4,7 @@
 #include <chrono>
 #include <cstdlib>
 #include <array>
+#include <limits>
 
 #include <GL/glew.h>
 
@@ -54,9 +55,11 @@ public:
     void map(std::vector<GLfloat>* posAccum);
     void map(std::vector<GLuint>* indexAccum);
     void get_midPoint(std::vector<MidPointQ>* midPoints){ midPoints->swap(midPointQ_Accum); }
+    void gen_midPointQuads(std::vector<MidPointQ>* midPoints);
     void draw();
     void draw(GLenum drawMode);
     void drawFixed(GLenum drawMode, GLuint indexCount);
 private:
+    GLuint indexCount;
     std::vector<MidPointQ> midPointQ_Accum;
 };

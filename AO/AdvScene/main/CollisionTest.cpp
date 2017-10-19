@@ -145,10 +145,11 @@ int main(int argc, char** argv) {
 	GLSL_HeightRange HeightRange(HeightRange_uiID);
 	HeightRange.initUniforms();
 
-	GL4_BumpGrid FlatGrid(10.0, 100, 10, 100, 10);
+	GL4_BumpGrid FlatGrid(10.0, 100, 4, 100, 4);
 
 	std::vector<MidPointQ> midPoints;
-	FlatGrid.get_midPoint(&midPoints);
+	// FlatGrid.get_midPoint(&midPoints);
+	FlatGrid.gen_midPointQuads(&midPoints);
 	GLuint testVAO[3];
 	glGenVertexArrays(3, testVAO);
 	glBindVertexArray(testVAO[0]);
