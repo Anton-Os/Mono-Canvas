@@ -32,35 +32,31 @@ public:
     void drawPart(GLenum drawMode, GLuint part, GLuint whole);
 };
 
-struct MidPointQ {
+struct MidPointQuad {
     float pos[3];
     float fourProx[12];
 };
 
-struct MidPointT {
+struct MidPointTrig {
     float pos[3];
-    float fourProx[9];
+    float threeProx[9];
 };
 
 class GL4_BumpGrid : public GL4_Object {
 public:
     GL4_BumpGrid(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount){
-        // create(rise, xDimension, rowCount, yDimension, colCount);
-        create_v3(rise, xDimension, rowCount, yDimension, colCount);
+        create(rise, xDimension, rowCount, yDimension, colCount);
     }
     enum feedParams {VAO, EBO, feedPos, feedTexCoord, feedNormal};
     GLuint feed[5];
     void create(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount);
-    void create_v2(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount);
-    void create_v3(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount);
     void map(std::vector<GLfloat>* posAccum);
     void map(std::vector<GLuint>* indexAccum);
-    void get_midPoint(std::vector<MidPointQ>* midPoints){ midPoints->swap(midPointQ_Accum); }
-    void gen_midPointQuads(std::vector<MidPointQ>* midPoints);
+    void gen_midPointQ(std::vector<MidPointQuad>* midPoints);
+    void gen_midPointT(std::vector<MidPointTrig>* midPoints);
     void draw();
     void draw(GLenum drawMode);
     void drawFixed(GLenum drawMode, GLuint indexCount);
 private:
     GLuint indexCount;
-    std::vector<MidPointQ> midPointQ_Accum;
 };

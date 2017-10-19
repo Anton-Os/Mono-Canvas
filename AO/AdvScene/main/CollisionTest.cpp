@@ -147,17 +147,18 @@ int main(int argc, char** argv) {
 
 	GL4_BumpGrid FlatGrid(10.0, 100, 4, 100, 4);
 
-	std::vector<MidPointQ> midPoints;
-	// FlatGrid.get_midPoint(&midPoints);
-	FlatGrid.gen_midPointQuads(&midPoints);
+	std::vector<MidPointQuad> midPointsQ;
+	FlatGrid.gen_midPointQ(&midPointsQ);
+	std::vector<MidPointTrig> midPointsT;
+	FlatGrid.gen_midPointT(&midPointsT);
 	GLuint testVAO[3];
 	glGenVertexArrays(3, testVAO);
 	glBindVertexArray(testVAO[0]);
 	GLuint testVBO[3];
 	glGenBuffers(3, testVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, testVBO[0]);
-	glBufferData(GL_ARRAY_BUFFER, midPoints.size() * sizeof(MidPointQ), midPoints.data(), GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MidPointQ), offsetof(MidPointQ, pos));
+	glBufferData(GL_ARRAY_BUFFER, midPointsQ.size() * sizeof(MidPointQuad), midPointsQ.data(), GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MidPointQuad), offsetof(MidPointQuad, pos));
 	glEnableVertexAttribArray(0);
 
 	Time::sceneSetup = std::chrono::steady_clock::now();
@@ -190,7 +191,7 @@ int main(int argc, char** argv) {
 		Idle.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * FlatGrid.relMatrix);
 		Idle.set_renderMode(1);
 		glBindVertexArray(testVAO[0]);
-		glDrawArrays(GL_POINTS, 0, midPoints.size());
+		glDrawArrays(GL_POINTS, 0, midPointsQ.size());
 
 		glfwSwapBuffers(window);
 	}
