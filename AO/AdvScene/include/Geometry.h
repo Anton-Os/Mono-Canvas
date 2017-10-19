@@ -46,12 +46,13 @@ class GL4_BumpGrid : public GL4_Object {
 public:
     GL4_BumpGrid(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount){
         // create(rise, xDimension, rowCount, yDimension, colCount);
-        create_v2(rise, xDimension, rowCount, yDimension, colCount);
+        create_v3(rise, xDimension, rowCount, yDimension, colCount);
     }
     enum feedParams {VAO, EBO, feedPos, feedTexCoord, feedNormal};
     GLuint feed[5];
     void create(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount);
     void create_v2(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount);
+    void create_v3(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount);
     void map(std::vector<GLfloat>* posAccum);
     void map(std::vector<GLuint>* indexAccum);
     void get_midPoint(std::vector<MidPointQ>* midPoints){ midPoints->swap(midPointQ_Accum); }
