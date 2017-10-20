@@ -6,6 +6,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Loaders.h"
+
 class GLSL_Base {
 protected:
     GLSL_Base(GLuint shaderProg){ 
@@ -16,7 +18,7 @@ protected:
 
 class GLSL_Idle : public GLSL_Base {
 public:
-    GLSL_Idle(GLuint shaderProg) : GLSL_Base(shaderProg){
+    GLSL_Idle(GLuint shaderProg) : GLSL_Base(shaderProg) {
         glUseProgram(GLSL_Idle::shaderProgID);
         initUniforms();
     }

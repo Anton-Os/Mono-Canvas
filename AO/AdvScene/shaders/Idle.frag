@@ -21,12 +21,14 @@ void main(){
     vec3 blue = vec3(0.3, 0.5, 0.9);
     
     if(renderMode == 1){
-        if(vertexID % 2 == 1) frag_out = vec4(grey0, 1.0);
-        else frag_out = vec4(grey4, 1.0);
+        frag_out = vec4(grey4, 1.0);
     } else if (renderMode == 2){
-        if(vertexID % 2 == 1) frag_out = vec4(red, 1.0);
-        else frag_out = vec4(blue, 1.0);
+        frag_out = vec4(grey0, 1.0);
+    } else if (renderMode == 3){
+        frag_out = vec4(grey2, 1.0);
     } else {
-        frag_out = vec4(green, 1.0);
+        if(vertexID % 3 == 1) frag_out = vec4(red, 1.0);
+        else if(vertexID % 3 == 2) frag_out = vec4(green, 1.0);
+        else frag_out = vec4(blue, 1.0);
     }
 }

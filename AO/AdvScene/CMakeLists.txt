@@ -1,9 +1,9 @@
 add_executable(LoopTimed
     loaders/LoadShaders.cpp
     loaders/LoadData.cpp
-    pipeline/Idle.cpp
-    geometry/Sphere.cpp
-    geometry/BumpGrid.cpp
+    pipeline/GLSL_Idle.cpp
+    geometry/GL4_Sphere.cpp
+    geometry/GL4_BumpGrid.cpp
     main/LoopTimed.cpp
 )
 
@@ -22,9 +22,9 @@ target_link_libraries(LoopTimed
 add_executable(Hills
     loaders/LoadShaders.cpp
     loaders/LoadData.cpp
-    pipeline/Idle.cpp
-    pipeline/HeightRange.cpp
-    geometry/BumpGrid.cpp
+    pipeline/GLSL_Idle.cpp
+    pipeline/GLSL_HeightRange.cpp
+    geometry/GL4_BumpGrid.cpp
     main/Hills.cpp
 )
 
@@ -40,14 +40,39 @@ target_link_libraries(Hills
     assimp
 )
 
+add_executable(MidPoints
+    loaders/LoadShaders.cpp
+    loaders/LoadData.cpp
+    pipeline/GLSL_Idle.cpp
+    pipeline/GLSL_HeightRange.cpp
+    geometry/GL4_Sphere.cpp
+    geometry/GL4_BumpGrid.cpp
+    geometry/GL4_Dots.cpp
+    scene/Scene_PlaneCollision.cpp
+    main/MidPoints.cpp
+)
+
+target_include_directories(MidPoints
+    PUBLIC include
+)
+
+target_link_libraries(MidPoints
+    GLEW::glew_s
+    glfw
+    gli
+    glm
+    assimp
+)
+
 add_executable(CollisionTest
     loaders/LoadShaders.cpp
     loaders/LoadData.cpp
-    pipeline/Idle.cpp
-    pipeline/HeightRange.cpp
-    geometry/Sphere.cpp
-    geometry/BumpGrid.cpp
-    scene/PlaneCollision.cpp
+    pipeline/GLSL_Idle.cpp
+    pipeline/GLSL_HeightRange.cpp
+    geometry/GL4_Sphere.cpp
+    geometry/GL4_BumpGrid.cpp
+    geometry/GL4_Dots.cpp
+    scene/Scene_PlaneCollision.cpp
     main/CollisionTest.cpp
 )
 

@@ -151,8 +151,27 @@ int main(int argc, char** argv) {
 	FlatGrid.gen_midPointQ(&midPointsQ);
 	std::vector<MidPointTrig> midPointsT;
 	FlatGrid.gen_midPointT(&midPointsT);
+	GLuint testVAO[3];
+	glGenVertexArrays(3, testVAO);
+	glBindVertexArray(testVAO[0]);
+	GLuint testVBO[3];
+	glGenBuffers(3, testVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, testVBO[0]);
+	glBufferData(GL_ARRAY_BUFFER, midPointsQ.size() * sizeof(MidPointQuad), midPointsQ.data(), GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MidPointQuad), offsetof(MidPointQuad, pos));
+	glEnableVertexAttribArray(0);
+	glBindVertexArray(testVAO[1]);
+	glBindBuffer(GL_ARRAY_BUFFER, testVBO[1]);
+	glBufferData(GL_ARRAY_BUFFER, midPointsT.size() * sizeof(MidPointTrig), midPointsT.data(), GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MidPointTrig), offsetof(MidPointTrig, pos));
+	glEnableVertexAttribArray(0);
 	Scene_PlaneCollision planeCollision;
 	MidPointTrig proxMidPointT = planeCollision.proxMidPoint(&midPointsT, &glm::vec2(Player::pos.x, Player::pos.y));
+	glBindVertexArray(testVAO[2]);
+	glBindBuffer(GL_ARRAY_BUFFER, testVBO[2]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3, &proxMidPointT.pos[0], GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, offsetof(MidPointTrig, pos));
+	glEnableVertexAttribArray(0);
 
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -179,6 +198,22 @@ int main(int argc, char** argv) {
 
 		// Perform drawing without depth testing
 		// Collision computation... Anton Says Hi
+
+		glUseProgram(Idle_uiID);
+		Idle.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * FlatGrid.relMatrix);
+		Idle.set_renderMode(3);
+		glBindVertexArray(testVAO[0]);
+		glDrawArrays(GL_POINTS, 0, midPointsQ.size());
+		Idle.set_renderMode(2);
+		glBindVertexArray(testVAO[1]);
+		glDrawArrays(GL_POINTS, 0, midPointsT.size());
+		Idle.set_renderMode(1);
+		glBindVertexArray(testVAO[2]);
+		proxMidPointT = planeCollision.proxMidPoint(&midPointsT, &glm::vec2(Player::pos.x, Player::pos.y));
+		glBindBuffer(GL_ARRAY_BUFFER, testVBO[2]);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3, &proxMidPointT.pos[0], GL_STATIC_DRAW);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, offsetof(MidPointTrig, pos));
+		glDrawArrays(GL_POINTS, 0, 1);
 
 		glfwSwapBuffers(window);
 	}
