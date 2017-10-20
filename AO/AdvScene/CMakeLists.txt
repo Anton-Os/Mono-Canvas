@@ -47,7 +47,7 @@ add_executable(CollisionTest
     pipeline/HeightRange.cpp
     geometry/Sphere.cpp
     geometry/BumpGrid.cpp
-    scene/Collision.cpp
+    scene/PlaneCollision.cpp
     main/CollisionTest.cpp
 )
 

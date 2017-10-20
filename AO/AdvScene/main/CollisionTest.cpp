@@ -11,7 +11,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Geometry.h"
+// #include "Geometry.h"
 #include "Loaders.h"
 #include "ManualSets.h"
 #include "Pipeline.h"
@@ -145,7 +145,9 @@ int main(int argc, char** argv) {
 	GLSL_HeightRange HeightRange(HeightRange_uiID);
 	HeightRange.initUniforms();
 
-	GL4_BumpGrid FlatGrid(10.0, 100, 4, 100, 4);
+	GL4_BumpGrid FlatGrid(10.0, 100, 6, 100, 6);
+	MidPointTrig proxMidPointT;
+	Scene_PlaneCollision planeCollision;
 
 	std::vector<MidPointQuad> midPointsQ;
 	FlatGrid.gen_midPointQ(&midPointsQ);
@@ -160,6 +162,11 @@ int main(int argc, char** argv) {
 	glBufferData(GL_ARRAY_BUFFER, midPointsQ.size() * sizeof(MidPointQuad), midPointsQ.data(), GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MidPointQuad), offsetof(MidPointQuad, pos));
 	glEnableVertexAttribArray(0);
+	glBindVertexArray(testVAO[1]);
+	glBindBuffer(GL_ARRAY_BUFFER, testVBO[1]);
+	glBufferData(GL_ARRAY_BUFFER, midPointsT.size() * sizeof(MidPointTrig), midPointsT.data(), GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MidPointTrig), offsetof(MidPointTrig, pos));
+	glEnableVertexAttribArray(0);
 
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -170,6 +177,8 @@ int main(int argc, char** argv) {
 		glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		proxMidPointT = planeCollision.proxMidPoint(&midPointsT, &glm::vec2(Player::pos.x, Player::pos.y));
 
 		glPointSize(10.0f);
 		glLineWidth(4.0f);
@@ -189,9 +198,12 @@ int main(int argc, char** argv) {
 
 		glUseProgram(Idle_uiID);
 		Idle.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * FlatGrid.relMatrix);
-		Idle.set_renderMode(1);
+		Idle.set_renderMode(0);
 		glBindVertexArray(testVAO[0]);
 		glDrawArrays(GL_POINTS, 0, midPointsQ.size());
+		Idle.set_renderMode(1);
+		glBindVertexArray(testVAO[1]);
+		glDrawArrays(GL_POINTS, 0, midPointsT.size());
 
 		glfwSwapBuffers(window);
 	}

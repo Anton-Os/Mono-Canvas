@@ -157,15 +157,15 @@ void GL4_BumpGrid::gen_midPointT(std::vector<MidPointTrig>* midPoints){
 	midPoints->resize(GL4_BumpGrid::indexCount * 2);
 
 	for (GLuint midPointIndexElem = 0; midPointIndexElem < GL4_BumpGrid::indexCount * 2; midPointIndexElem++) {
-		midPointT.threeProx[0] = posAccum[indexAccum[midPointIndexElem * 3] * 3];
-		midPointT.threeProx[1] = posAccum[indexAccum[midPointIndexElem * 3] * 3 + 1];
-		midPointT.threeProx[2] = posAccum[indexAccum[midPointIndexElem * 3] * 3 + 2];
-		midPointT.threeProx[3] = posAccum[indexAccum[midPointIndexElem * 3 + 1] * 3];
-		midPointT.threeProx[4] = posAccum[indexAccum[midPointIndexElem * 3 + 1] * 3 + 1];
-		midPointT.threeProx[5] = posAccum[indexAccum[midPointIndexElem * 3 + 1] * 3 + 2];
-		midPointT.threeProx[6] = posAccum[indexAccum[midPointIndexElem * 3 + 2] * 3];
-		midPointT.threeProx[7] = posAccum[indexAccum[midPointIndexElem * 3 + 2] * 3 + 1];
-		midPointT.threeProx[8] = posAccum[indexAccum[midPointIndexElem * 3 + 2] * 3 + 2];
+		midPointT.threeProx[0] = posAccum[indexAccum[midPointIndexElem * 3]];
+		midPointT.threeProx[1] = posAccum[indexAccum[midPointIndexElem * 3] + 1];
+		midPointT.threeProx[2] = posAccum[indexAccum[midPointIndexElem * 3] + 2];
+		midPointT.threeProx[3] = posAccum[indexAccum[midPointIndexElem * 3 + 1]];
+		midPointT.threeProx[4] = posAccum[indexAccum[midPointIndexElem * 3 + 1] + 1];
+		midPointT.threeProx[5] = posAccum[indexAccum[midPointIndexElem * 3 + 1] + 2];
+		midPointT.threeProx[6] = posAccum[indexAccum[midPointIndexElem * 3 + 2]];
+		midPointT.threeProx[7] = posAccum[indexAccum[midPointIndexElem * 3 + 2] + 1];
+		midPointT.threeProx[8] = posAccum[indexAccum[midPointIndexElem * 3 + 2] + 2];
 
 		float avrgX = (posAccum[indexAccum[midPointIndexElem * 3] * 3] +
 			posAccum[indexAccum[midPointIndexElem * 3 + 1] * 3] +
