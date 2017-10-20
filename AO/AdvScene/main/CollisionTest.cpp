@@ -153,6 +153,8 @@ int main(int argc, char** argv) {
 	FlatGrid.gen_midPointT(&midPointsT);
 	Scene_PlaneCollision planeCollision;
 	MidPointTrig proxMidPointT = planeCollision.proxMidPoint(&midPointsT, &glm::vec2(Player::pos.x, Player::pos.y));
+	GL4_Dots midPointQ_Dots(&midPointsQ[0], midPointsQ.size() * sizeof(MidPointQuad), sizeof(MidPointQuad), offsetof(MidPointQuad, pos));
+	GL4_Dots midPointT_Dots(&midPointsT[0], midPointsT.size() * sizeof(MidPointTrig), sizeof(MidPointTrig), offsetof(MidPointTrig, pos));
 
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -179,6 +181,11 @@ int main(int argc, char** argv) {
 
 		// Perform drawing without depth testing
 		// Collision computation... Anton Says Hi
+
+		Idle.set_renderMode(1);
+		midPointQ_Dots.draw(9.0f, midPointsQ.size());
+		Idle.set_renderMode(2);
+		midPointT_Dots.draw(9.0f, midPointsT.size());
 
 		glfwSwapBuffers(window);
 	}

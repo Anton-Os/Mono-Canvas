@@ -1,8 +1,12 @@
 #include "Geometry.h"
 
 void GL4_Dots::init(){
-    glGenVertexArrays(1, &GL4_Dots::feed[GL4_Dots::VAO]);    
-    glGenBuffers(1, &GL4_Dots::feed[GL4_Dots::feedPos]);
+    GLuint VAO;
+    glGenVertexArrays(1, &VAO);
+    GL4_Dots::feed[GL4_Dots::VAO] = VAO;
+    GLuint VBO;
+    glGenBuffers(1, &VBO);
+    GL4_Dots::feed[GL4_Dots::feedPos] = VBO;
 }
 
 void GL4_Dots::create(GLvoid* data, GLint dataSize){

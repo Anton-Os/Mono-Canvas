@@ -40,6 +40,16 @@ private:
     GLuint feed[2];
 };
 
+class GL4_Trigs {
+public:
+    void init();
+    void create();
+    void draw();
+private:
+    enum feedParams {VAO, feedPos};
+    GLuint feed[2];
+};
+
 class GL4_Object3D {
 public:
     glm::mat4 relMatrix;
