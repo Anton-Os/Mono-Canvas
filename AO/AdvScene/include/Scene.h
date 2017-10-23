@@ -15,11 +15,8 @@
 class Scene_PlaneCollision {
 public:
     MidPointTrig proxMidPoint(const std::vector<MidPointTrig>* midPoints, const glm::vec2* posXY);
+    // MidPointTrig proxMidPoint(const std::vector<MidPointQuad>* midPoints, const glm::vec2* posXY);
+    MidPointQuad proxMidPoint(const std::vector<MidPointQuad>* midPoints, const glm::vec2* posXY);
+    MidPoint45 proxMidPoint(const std::vector<MidPoint45>* midPoints, const glm::vec2* posXY);
+    void calcZ(MidPointQuad* midPoint, const glm::vec2* posXY);
 };
-
-void compFourProx(std::array<float, 12>* fourProx, const glm::vec2* pos, const std::vector<float>* posAccum);
-void compFourProx(std::array<float, 12>* fourProxPos, std::array<float, 4>* fourProxDist, const glm::vec2* pos, const std::vector<float>* posAccum);
-void compFourProxAbs(std::array<float, 12>* fourProxAbs, const glm::vec2* pos, const std::vector<float>* posAccum);
-// After determining the four closest points orders them by bottom left, bottom right, upper left, and then upper right
-float compLocalZ(std::array<float, 12>* fourProx, const glm::vec2* pos);
-float compLocalZ(std::array<float, 12>* fourProxPos, std::array<float, 4>* fourProxDist);

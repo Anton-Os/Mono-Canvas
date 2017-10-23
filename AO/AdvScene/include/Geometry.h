@@ -11,14 +11,25 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+struct MidPointTrig {
+    float pos[3];
+    float threeProx[9];
+};
+
 struct MidPointQuad {
     float pos[3];
     float fourProx[12];
 };
 
-struct MidPointTrig {
+struct MidPoint45 {
     float pos[3];
-    float threeProx[9];
+    float fourProx[12];
+
+    float t1[3];
+    short unsigned int threeIndex1[3];
+
+    float t2[3];
+    short unsigned int threeIndex2[3];
 };
 
 class GL4_DataSet {
@@ -73,6 +84,7 @@ public:
     void map(std::vector<GLuint>* indexAccum);
     void gen_midPointQ(std::vector<MidPointQuad>* midPoints);
     void gen_midPointT(std::vector<MidPointTrig>* midPoints);
+    void gen_midPoint45(std::vector<MidPoint45>* midPoints);
     void draw();
     void draw(GLenum drawMode);
     void drawFixed(GLenum drawMode, GLuint indexCount);

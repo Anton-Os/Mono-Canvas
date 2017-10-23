@@ -146,9 +146,9 @@ int main(int argc, char** argv) {
 	GL4_DataSet midPointT_DataSet(&midPointsT[0], midPointsT.size() * sizeof(MidPointTrig), sizeof(MidPointTrig), offsetof(MidPointTrig, pos));
 	GL4_DataSet playerDot(glm::value_ptr(Player::pos), sizeof(float) * 3);
 	Scene_PlaneCollision planeCollision;
-	MidPointTrig proxMidPointT = planeCollision.proxMidPoint(&midPointsT, &glm::vec2(Player::pos.x, Player::pos.y));
-	GL4_DataSet proxMidPointPos(&proxMidPointT.pos[0], sizeof(float) * 3);
-	GL4_DataSet proxMidPointTrig(&proxMidPointT.threeProx[0], sizeof(float) * 9);
+	MidPointQuad proxMidPointQ = planeCollision.proxMidPoint(&midPointsQ, &glm::vec2(Player::pos.x, Player::pos.y));
+	GL4_DataSet proxMidPointPos(&proxMidPointQ.pos[0], sizeof(float) * 3);
+	GL4_DataSet proxMidPointQuad(&proxMidPointQ.fourProx[0], sizeof(float) * 12);
 
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -160,8 +160,6 @@ int main(int argc, char** argv) {
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glPointSize(10.0f);
-		glLineWidth(4.0f);
 		// glUseProgram(HeightRange.shaderProgID);
 		glUseProgram(Idle.shaderProgID);
 		FlatGrid.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance));
@@ -176,18 +174,18 @@ int main(int argc, char** argv) {
 		// Perform drawing without depth testing
 		// Collision computation... Anton Says Hi
 
-		proxMidPointT = planeCollision.proxMidPoint(&midPointsT, &glm::vec2(Player::pos.x, Player::pos.y));
-		Idle.set_renderMode(3);
-		proxMidPointTrig.create(&proxMidPointT.threeProx[0], sizeof(float) * 9);
-		proxMidPointTrig.draw(GL_TRIANGLES, 3);
-
 		glPointSize(7.0f);
+		proxMidPointQ = planeCollision.proxMidPoint(&midPointsQ, &glm::vec2(Player::pos.x, Player::pos.y));
+		Idle.set_renderMode(3);
+		proxMidPointQuad.create(&proxMidPointQ.fourProx[0], sizeof(float) * 12);
+		proxMidPointQuad.draw(GL_POINTS, 4);
+
 		/* Idle.set_renderMode(1);
-		midPointQ_DataSet.draw(GL_POINTS, midPointsQ.size()); */
+		midPointDataSet.draw(GL_POINTS, midPointsQ.size()); */
 		Idle.set_renderMode(1);
-		midPointT_DataSet.draw(GL_POINTS, midPointsT.size());
+		midPointQ_DataSet.draw(GL_POINTS, midPointsQ.size());
 		Idle.set_renderMode(2);
-		proxMidPointPos.create(&proxMidPointT.pos[0], sizeof(float) * 3);
+		proxMidPointPos.create(&proxMidPointQ.pos[0], sizeof(float) * 3);
 		proxMidPointPos.draw(GL_POINTS, 1);
 		Idle.set_renderMode(4);
 		playerDot.create(glm::value_ptr(Player::pos), sizeof(float) * 3);

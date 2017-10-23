@@ -48,7 +48,7 @@ add_executable(MidPoints
     geometry/GL4_Sphere.cpp
     geometry/GL4_BumpGrid.cpp
     geometry/GL4_DataSet.cpp
-    scene/Scene_PlaneCollision.cpp
+    scene/PlaneCollision.cpp
     main/MidPoints.cpp
 )
 
@@ -72,7 +72,7 @@ add_executable(CollisionTest
     geometry/GL4_Sphere.cpp
     geometry/GL4_BumpGrid.cpp
     geometry/GL4_DataSet.cpp
-    scene/Scene_PlaneCollision.cpp
+    scene/PlaneCollision.cpp
     main/CollisionTest.cpp
 )
 

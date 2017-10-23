@@ -14,7 +14,6 @@ void GL4_BumpGrid::create(GLfloat rise, GLuint xDimension, GLuint rowCount, GLui
 	std::vector<GLfloat> posAccum;
 	std::vector<GLfloat> texCoordAccum;
 	std::vector<GLuint> indexAccum;
-	std::vector<GLuint> mpointIndexAccum;
 
 	GLuint vertexID = 0;
 	GLuint indexID = 0;
