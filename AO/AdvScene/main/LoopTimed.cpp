@@ -92,12 +92,8 @@ int main(int argc, char** argv){
 	loadData(testVAO, sizeof(squarePos) / sizeof(GLfloat), GL_STATIC_DRAW, &squarePos[0], nullptr, nullptr, nullptr);
 	loadIndices(testVAO, sizeof(squareIndices) / sizeof(GLuint), GL_STATIC_DRAW, &squareIndices[0]);
 
-	std::string Idle_vert = parentDir + "//shaders//Idle.vert";
-	std::string Idle_frag = parentDir + "//shaders//Idle.frag";
-	GLuint Idle_uiID = compileShaders(Idle_vert, Idle_frag);
-	glUseProgram(Idle_uiID);
-	GLSL_Idle Idle(Idle_uiID);
-	// Idle.initUniforms();
+	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
+	
 	GL4_Sphere Sphere(100, 5000, 5000);
 
 	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
@@ -114,6 +110,7 @@ int main(int argc, char** argv){
 
 		glPointSize(10.0f);
 		glLineWidth(4.0f);
+		glUseProgram(Idle.shaderProgID);
 		Sphere.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0, 0, -300.0f));
 		Idle.set_mvpMatrix(perspectiveMatrix * mvMatrix * Sphere.relMatrix);
 		Sphere.draw();

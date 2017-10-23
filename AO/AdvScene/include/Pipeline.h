@@ -9,16 +9,14 @@
 #include "Loaders.h"
 
 class GLSL_Base {
-protected:
-    GLSL_Base(GLuint shaderProg){ 
-        shaderProgID = shaderProg;
-    }
+public:
     GLuint shaderProgID;
 };
 
 class GLSL_Idle : public GLSL_Base {
 public:
-    GLSL_Idle(GLuint shaderProg) : GLSL_Base(shaderProg) {
+    GLSL_Idle(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath) {
+        GLSL_Idle::shaderProgID = compileShaders(vertexShaderFilePath, fragmentShaderFilePath);
         glUseProgram(GLSL_Idle::shaderProgID);
         initUniforms();
     }
@@ -32,7 +30,12 @@ private:
 
 class GLSL_HeightRange : public GLSL_Base {
 public:
-    GLSL_HeightRange(GLuint shaderProg) : GLSL_Base(shaderProg){}
+    GLSL_HeightRange(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath) {
+        GLSL_HeightRange::shaderProgID = compileShaders(vertexShaderFilePath, fragmentShaderFilePath);
+        glUseProgram(GLSL_HeightRange::shaderProgID);
+        initUniforms();
+    }
+    // GLSL_HeightRange(GLuint shaderProg) : GLSL_Base(shaderProg){}
     enum unifID { mvpMatrix, heightRange, rise, renderMode };
     void set_mvpMatrix(glm::mat4 mvpMatrix);
     void set_heightRange(GLfloat min, GLfloat max);

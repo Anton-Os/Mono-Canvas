@@ -133,17 +133,8 @@ int main(int argc, char** argv) {
 
 	std::string parentDir = getParentDirectory(argv[0]);
 
-	std::string Idle_vert = parentDir + "//shaders//Idle.vert";
-	std::string Idle_frag = parentDir + "//shaders//Idle.frag";
-	GLuint Idle_uiID = compileShaders(Idle_vert, Idle_frag);
-	GLSL_Idle Idle(Idle_uiID);
-
-	std::string HeightRange_vert = parentDir + "//shaders//HeightRange.vert";
-	std::string HeightRange_frag = parentDir + "//shaders//HeightRange.frag";
-	GLuint HeightRange_uiID = compileShaders(HeightRange_vert, HeightRange_frag);
-	glUseProgram(HeightRange_uiID);
-	GLSL_HeightRange HeightRange(HeightRange_uiID);
-	HeightRange.initUniforms();
+	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
+	GLSL_HeightRange HeightRange(parentDir + "//shaders//HeightRange.vert", parentDir + "//shaders//HeightRange.frag");
 
 	GL4_BumpGrid FlatGrid(10.0, 100, 6, 100, 6);
 
@@ -185,8 +176,8 @@ int main(int argc, char** argv) {
 
 		glPointSize(10.0f);
 		glLineWidth(4.0f);
-		// glUseProgram(HeightRange_uiID);
-		glUseProgram(Idle_uiID);
+		// glUseProgram(HeightRange.shaderProgID);
+		glUseProgram(Idle.shaderProgID);
 		FlatGrid.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance));
 		FlatGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::xDegree), glm::vec3(1.0, 0.0, 0.0));
 		FlatGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::zDegree), glm::vec3(0.0, 0.0, 1.0));
@@ -199,7 +190,7 @@ int main(int argc, char** argv) {
 		// Perform drawing without depth testing
 		// Collision computation... Anton Says Hi
 
-		glUseProgram(Idle_uiID);
+		glUseProgram(Idle.shaderProgID);
 		Idle.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * FlatGrid.relMatrix);
 		Idle.set_renderMode(3);
 		glBindVertexArray(testVAO[0]);

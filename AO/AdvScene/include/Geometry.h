@@ -21,30 +21,20 @@ struct MidPointTrig {
     float threeProx[9];
 };
 
-class GL4_Dots {
+class GL4_DataSet {
 public:
-    GL4_Dots(GLvoid* data, GLint dataSize){
+    GL4_DataSet(GLvoid* data, GLint dataSize){
         init();
         create(data, dataSize);
     }
-    GL4_Dots(GLvoid* data, GLint dataSize, GLsizei stride, const GLvoid* offset){
+    GL4_DataSet(GLvoid* data, GLint dataSize, GLsizei stride, const GLvoid* offset){
         init();
         create(data, dataSize, stride, offset);
     }
     void init();
     void create(GLvoid* data, GLint dataSize);
     void create(GLvoid* data, GLint dataSize, GLsizei stride, const GLvoid* offset);
-    void draw(float pointSize, GLuint drawCount);
-private:
-    enum feedParams {VAO, feedPos};
-    GLuint feed[2];
-};
-
-class GL4_Trigs {
-public:
-    void init();
-    void create();
-    void draw();
+    void draw(GLenum drawMode, GLuint drawCount);
 private:
     enum feedParams {VAO, feedPos};
     GLuint feed[2];

@@ -133,17 +133,8 @@ int main(int argc, char** argv) {
 
 	std::string parentDir = getParentDirectory(argv[0]);
 
-	std::string Idle_vert = parentDir + "//shaders//Idle.vert";
-	std::string Idle_frag = parentDir + "//shaders//Idle.frag";
-	GLuint Idle_uiID = compileShaders(Idle_vert, Idle_frag);
-	GLSL_Idle Idle(Idle_uiID);
-
-	std::string HeightRange_vert = parentDir + "//shaders//HeightRange.vert";
-	std::string HeightRange_frag = parentDir + "//shaders//HeightRange.frag";
-	GLuint HeightRange_uiID = compileShaders(HeightRange_vert, HeightRange_frag);
-	glUseProgram(HeightRange_uiID);
-	GLSL_HeightRange HeightRange(HeightRange_uiID);
-	HeightRange.initUniforms();
+	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
+	GLSL_HeightRange HeightRange(parentDir + "//shaders//HeightRange.vert", parentDir + "//shaders//HeightRange.frag");
 
 	GL4_BumpGrid FlatGrid(10.0, 100, 6, 100, 6);
 
@@ -151,10 +142,13 @@ int main(int argc, char** argv) {
 	FlatGrid.gen_midPointQ(&midPointsQ);
 	std::vector<MidPointTrig> midPointsT;
 	FlatGrid.gen_midPointT(&midPointsT);
+	GL4_DataSet midPointQ_DataSet(&midPointsQ[0], midPointsQ.size() * sizeof(MidPointQuad), sizeof(MidPointQuad), offsetof(MidPointQuad, pos));
+	GL4_DataSet midPointT_DataSet(&midPointsT[0], midPointsT.size() * sizeof(MidPointTrig), sizeof(MidPointTrig), offsetof(MidPointTrig, pos));
+	GL4_DataSet playerDot(glm::value_ptr(Player::pos), sizeof(float) * 3);
 	Scene_PlaneCollision planeCollision;
 	MidPointTrig proxMidPointT = planeCollision.proxMidPoint(&midPointsT, &glm::vec2(Player::pos.x, Player::pos.y));
-	GL4_Dots midPointQ_Dots(&midPointsQ[0], midPointsQ.size() * sizeof(MidPointQuad), sizeof(MidPointQuad), offsetof(MidPointQuad, pos));
-	GL4_Dots midPointT_Dots(&midPointsT[0], midPointsT.size() * sizeof(MidPointTrig), sizeof(MidPointTrig), offsetof(MidPointTrig, pos));
+	GL4_DataSet proxMidPointPos(&proxMidPointT.pos[0], sizeof(float) * 3);
+	GL4_DataSet proxMidPointTrig(&proxMidPointT.threeProx[0], sizeof(float) * 9);
 
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -168,8 +162,8 @@ int main(int argc, char** argv) {
 
 		glPointSize(10.0f);
 		glLineWidth(4.0f);
-		// glUseProgram(HeightRange_uiID);
-		glUseProgram(Idle_uiID);
+		// glUseProgram(HeightRange.shaderProgID);
+		glUseProgram(Idle.shaderProgID);
 		FlatGrid.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance));
 		FlatGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::xDegree), glm::vec3(1.0, 0.0, 0.0));
 		FlatGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::zDegree), glm::vec3(0.0, 0.0, 1.0));
@@ -182,10 +176,22 @@ int main(int argc, char** argv) {
 		// Perform drawing without depth testing
 		// Collision computation... Anton Says Hi
 
+		proxMidPointT = planeCollision.proxMidPoint(&midPointsT, &glm::vec2(Player::pos.x, Player::pos.y));
+		Idle.set_renderMode(3);
+		proxMidPointTrig.create(&proxMidPointT.threeProx[0], sizeof(float) * 9);
+		proxMidPointTrig.draw(GL_TRIANGLES, 3);
+
+		glPointSize(7.0f);
+		/* Idle.set_renderMode(1);
+		midPointQ_DataSet.draw(GL_POINTS, midPointsQ.size()); */
 		Idle.set_renderMode(1);
-		midPointQ_Dots.draw(9.0f, midPointsQ.size());
+		midPointT_DataSet.draw(GL_POINTS, midPointsT.size());
 		Idle.set_renderMode(2);
-		midPointT_Dots.draw(9.0f, midPointsT.size());
+		proxMidPointPos.create(&proxMidPointT.pos[0], sizeof(float) * 3);
+		proxMidPointPos.draw(GL_POINTS, 1);
+		Idle.set_renderMode(4);
+		playerDot.create(glm::value_ptr(Player::pos), sizeof(float) * 3);
+		playerDot.draw(GL_POINTS, 1);
 
 		glfwSwapBuffers(window);
 	}

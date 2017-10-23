@@ -135,20 +135,9 @@ int main(int argc, char** argv){
 	loadData(testVAO, sizeof(squarePos) / sizeof(GLfloat), GL_STATIC_DRAW, &squarePos[0], nullptr, nullptr, nullptr);
 	loadIndices(testVAO, sizeof(squareIndices) / sizeof(GLuint), GL_STATIC_DRAW, &squareIndices[0]);
 
-	std::string Idle_vert = parentDir + "//shaders//Idle.vert";
-	std::string Idle_frag = parentDir + "//shaders//Idle.frag";
-	GLuint Idle_uiID = compileShaders(Idle_vert, Idle_frag);
-	glUseProgram(Idle_uiID);
-	GLSL_Idle Idle(Idle_uiID);
-	// Idle.initUniforms();
-
-	std::string HeightRange_vert = parentDir + "//shaders//HeightRange.vert";
-	std::string HeightRange_frag = parentDir + "//shaders//HeightRange.frag";
-	GLuint HeightRange_uiID = compileShaders(HeightRange_vert, HeightRange_frag);
-	glUseProgram(HeightRange_uiID);
-	GLSL_HeightRange HeightRange(HeightRange_uiID);
-	HeightRange.initUniforms();
-
+	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
+	GLSL_HeightRange HeightRange(parentDir + "//shaders//HeightRange.vert", parentDir + "//shaders//HeightRange.frag");
+	
 	GL4_BumpGrid BumpGrid(Terrain::rise, 100, 20, 100, 20);
 	GL4_BumpGrid FlatGrid(3.0, 100, 20, 100, 20);
 
@@ -165,14 +154,14 @@ int main(int argc, char** argv){
 
 		glPointSize(10.0f);
 		glLineWidth(4.0f);
-		glUseProgram(HeightRange_uiID);
+		glUseProgram(HeightRange.shaderProgID);
 		BumpGrid.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance));
 		BumpGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::xDegree), glm::vec3(1.0, 0.0, 0.0));
 		BumpGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::zDegree), glm::vec3(0.0, 0.0, 1.0));
 		HeightRange.set_mvpMatrix(perspectiveMatrix * Player::viewMatrix * BumpGrid.relMatrix);
 		HeightRange.set_rise(Terrain::rise);
 		HeightRange.set_renderMode(2);
-		/* glUseProgram(Idle_uiID);
+		/* glUseProgram(Idle.shaderProgID);
 		Idle.set_mvpMatrix(perspectiveMatrix * Player::viewMatrix * BumpGrid.relMatrix); */
 		// BumpGrid.draw();
 		// BumpGrid.drawFixed(GL_POINTS, Time::secSpan.count());

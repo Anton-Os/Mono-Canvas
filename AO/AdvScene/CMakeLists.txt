@@ -47,7 +47,7 @@ add_executable(MidPoints
     pipeline/GLSL_HeightRange.cpp
     geometry/GL4_Sphere.cpp
     geometry/GL4_BumpGrid.cpp
-    geometry/GL4_Dots.cpp
+    geometry/GL4_DataSet.cpp
     scene/Scene_PlaneCollision.cpp
     main/MidPoints.cpp
 )
@@ -71,7 +71,7 @@ add_executable(CollisionTest
     pipeline/GLSL_HeightRange.cpp
     geometry/GL4_Sphere.cpp
     geometry/GL4_BumpGrid.cpp
-    geometry/GL4_Dots.cpp
+    geometry/GL4_DataSet.cpp
     scene/Scene_PlaneCollision.cpp
     main/CollisionTest.cpp
 )
