@@ -72,3 +72,52 @@ MidPoint45 Scene_PlaneCollision::proxMidPoint(const std::vector<MidPoint45>* mid
     }
     return midPoints->at(midPointIndex);
 }
+
+/* void Scene_PlaneCollision::calcZ(MidPointTrig* midPoint, const glm::vec2* posXY){
+    float v1 = glm::distance(glm::vec2(midPoint->threeProx[0], midPoint->threeProx[1]), glm::vec2(midPoint->pos[0], midPoint->pos[1]));
+    float v2 = glm::distance(glm::vec2(midPoint->threeProx[3], midPoint->threeProx[4]), glm::vec2(midPoint->pos[0], midPoint->pos[1]));    
+    float v3 = glm::distance(glm::vec2(midPoint->threeProx[6], midPoint->threeProx[7]), glm::vec2(midPoint->pos[0], midPoint->pos[1]));
+    unsigned int closeIndex;
+    unsigned int farIndices[2];
+
+    if(v1 < v2 && v1 < v3){ 
+        closeIndex = 0;
+        farIndices[0] = 1;
+        farIndices[1] = 2;
+    }
+    else if(v2 < v1 && v2 < v3){ 
+        closeIndex = 1;
+        farIndices[0] = 0;
+        farIndices[1] = 2;
+    }
+    else if(v3 < v1 && v3 < v2){
+        closeIndex = 2;
+        farIndices[0] = 0;
+        farIndices[1] = 1;
+    }
+   
+    glm::vec2 vec90 = glm::vec2(midPoint->threeProx[closeIndex * 3], midPoint->threeProx[closeIndex * 3 + 1]);
+    glm::vec2 farX = glm::vec2(midPoint->threeProx[farIndices[0] * 3], midPoint->threeProx[farIndices[0] * 3 + 1]);
+    glm::vec2 farY = glm::vec2(midPoint->threeProx[farIndices[1] * 3], midPoint->threeProx[farIndices[1] * 3 + 1]);
+
+    if(farX.x != vec90.x){
+        farX = glm::vec2(midPoint->threeProx[farIndices[1] * 3], midPoint->threeProx[farIndices[1] * 3 + 1]);
+        farY = glm::vec2(midPoint->threeProx[farIndices[0] * 3], midPoint->threeProx[farIndices[0] * 3 + 1]);
+    }
+
+    return;
+} */
+
+
+glm::vec3 Scene_PlaneCollision::calcV90(MidPointTrig* midPoint){
+    float v1 = glm::distance(glm::vec2(midPoint->threeProx[0], midPoint->threeProx[1]), glm::vec2(midPoint->pos[0], midPoint->pos[1]));
+    float v2 = glm::distance(glm::vec2(midPoint->threeProx[3], midPoint->threeProx[4]), glm::vec2(midPoint->pos[0], midPoint->pos[1]));    
+    float v3 = glm::distance(glm::vec2(midPoint->threeProx[6], midPoint->threeProx[7]), glm::vec2(midPoint->pos[0], midPoint->pos[1]));
+    unsigned int closeIndex;
+
+    if(v1 < v2 && v1 < v3) closeIndex = 0;
+    else if(v2 < v1 && v2 < v3) closeIndex = 1;
+    else if(v3 < v1 && v3 < v2) closeIndex = 2;
+
+    return glm::vec3(midPoint->threeProx[closeIndex * 3], midPoint->threeProx[closeIndex * 3 + 1], midPoint->threeProx[closeIndex * 3 + 2]);
+}
