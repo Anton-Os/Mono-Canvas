@@ -138,10 +138,12 @@ int main(int argc, char** argv) {
 
 	GL4_BumpGrid FlatGrid(10.0, 100, 6, 100, 6);
 
-	std::vector<MidPointQuad> midPointsQ;
-	FlatGrid.gen_midPointQ(&midPointsQ);
 	std::vector<MidPointTrig> midPointsT;
 	FlatGrid.gen_midPointT(&midPointsT);
+	std::vector<MidPointQuad> midPointsQ;
+	FlatGrid.gen_midPointQ(&midPointsQ);
+	std::vector<MidPoint45> midPoints45;
+	FlatGrid.gen_midPoint45(&midPoints45);
 	GL4_DataSet midPointQ_DataSet(&midPointsQ[0], midPointsQ.size() * sizeof(MidPointQuad), sizeof(MidPointQuad), offsetof(MidPointQuad, pos));
 	GL4_DataSet midPointT_DataSet(&midPointsT[0], midPointsT.size() * sizeof(MidPointTrig), sizeof(MidPointTrig), offsetof(MidPointTrig, pos));
 	GL4_DataSet playerDot(glm::value_ptr(Player::pos), sizeof(float) * 3);

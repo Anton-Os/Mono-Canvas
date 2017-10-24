@@ -146,6 +146,102 @@ void GL4_BumpGrid::gen_midPointQ(std::vector<MidPointQuad>* midPoints){
 	}
 }
 
+void GL4_BumpGrid::gen_midPoint45(std::vector<MidPoint45>* midPoints){
+	std::vector<float> posAccum;
+    GL4_BumpGrid::map(&posAccum);
+    std::vector<unsigned int> indexAccum;
+    GL4_BumpGrid::map(&indexAccum);
+
+    std::vector<unsigned int> midPointIndexAccum;
+    midPointIndexAccum.resize(GL4_BumpGrid::indexCount * 4);
+
+    for(GLuint indexSetElem = 0; indexSetElem < GL4_BumpGrid::indexCount; indexSetElem++){
+        std::array<unsigned int, 6> indexSet = {indexAccum[indexSetElem * 6], indexAccum[indexSetElem * 6 + 1], indexAccum[indexSetElem * 6 + 2], indexAccum[indexSetElem * 6 + 3], indexAccum[indexSetElem * 6 + 4], indexAccum[indexSetElem * 6 + 5] };
+        std::array<unsigned int, 4> midPointIndexSet = {UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX};
+        unsigned int indexInc = 0;
+        for(unsigned int indexElem = 0; indexInc < 4; indexElem++){
+            if(indexSet[indexElem] != midPointIndexSet[0] && indexSet[indexElem] != midPointIndexSet[1] && indexSet[indexElem] != midPointIndexSet[2] && indexSet[indexElem] != midPointIndexSet[3]){
+                midPointIndexSet[indexInc] = indexSet[indexElem];
+                indexInc++;
+            }
+        }
+        midPointIndexAccum[indexSetElem * 4] = midPointIndexSet[0];
+        midPointIndexAccum[indexSetElem * 4 + 1] = midPointIndexSet[1];
+        midPointIndexAccum[indexSetElem * 4 + 2] = midPointIndexSet[2];
+        midPointIndexAccum[indexSetElem * 4 + 3] = midPointIndexSet[3];
+    }
+
+	// MidPointQuad midPointQ;
+	MidPoint45 midPoint45;
+	midPoint45.threeIndex1[0] = 0;
+	midPoint45.threeIndex1[1] = 1;
+	midPoint45.threeIndex1[2] = 2;
+	midPoint45.threeIndex2[0] = 1;
+	midPoint45.threeIndex2[1] = 2;
+	midPoint45.threeIndex2[2] = 3;
+
+	midPoints->resize(GL4_BumpGrid::indexCount);
+
+	for (GLuint midPointIndexElem = 0; midPointIndexElem < GL4_BumpGrid::indexCount; midPointIndexElem++) {
+		midPoint45.fourProx[0] = posAccum[midPointIndexAccum[midPointIndexElem * 4] * 3];
+		midPoint45.fourProx[1] = posAccum[midPointIndexAccum[midPointIndexElem * 4] * 3 + 1];
+		midPoint45.fourProx[2] = posAccum[midPointIndexAccum[midPointIndexElem * 4] * 3 + 2];
+		midPoint45.fourProx[3] = posAccum[midPointIndexAccum[midPointIndexElem * 4 + 1] * 3];
+		midPoint45.fourProx[4] = posAccum[midPointIndexAccum[midPointIndexElem * 4 + 1] * 3 + 1];
+		midPoint45.fourProx[5] = posAccum[midPointIndexAccum[midPointIndexElem * 4 + 1] * 3 + 2];
+		midPoint45.fourProx[6] = posAccum[midPointIndexAccum[midPointIndexElem * 4 + 2] * 3];
+		midPoint45.fourProx[7] = posAccum[midPointIndexAccum[midPointIndexElem * 4 + 2] * 3 + 1];
+		midPoint45.fourProx[8] = posAccum[midPointIndexAccum[midPointIndexElem * 4 + 2] * 3 + 2];
+		midPoint45.fourProx[9] = posAccum[midPointIndexAccum[midPointIndexElem * 4 + 3] * 3];
+		midPoint45.fourProx[10] = posAccum[midPointIndexAccum[midPointIndexElem * 4 + 3] * 3 + 1];
+		midPoint45.fourProx[11] = posAccum[midPointIndexAccum[midPointIndexElem * 4 + 3] * 3 + 2];
+
+		float avrgX = (posAccum[midPointIndexAccum[midPointIndexElem * 4] * 3] +
+			posAccum[midPointIndexAccum[midPointIndexElem * 4 + 1] * 3] +
+			posAccum[midPointIndexAccum[midPointIndexElem * 4 + 2] * 3] +
+			posAccum[midPointIndexAccum[midPointIndexElem * 4 + 3] * 3]) / 4;
+		midPoint45.pos[0] = avrgX;
+		float avrgY = (posAccum[midPointIndexAccum[midPointIndexElem * 4] * 3 + 1] +
+			posAccum[midPointIndexAccum[midPointIndexElem * 4 + 1] * 3 + 1] +
+			posAccum[midPointIndexAccum[midPointIndexElem * 4 + 2] * 3 + 1] +
+			posAccum[midPointIndexAccum[midPointIndexElem * 4 + 3] * 3 + 1]) / 4;
+		midPoint45.pos[1] = avrgY;
+		float avrgZ = (posAccum[midPointIndexAccum[midPointIndexElem * 4] * 3 + 2] +
+			posAccum[midPointIndexAccum[midPointIndexElem * 4 + 1] * 3 + 2] +
+			posAccum[midPointIndexAccum[midPointIndexElem * 4 + 2] * 3 + 2] +
+			posAccum[midPointIndexAccum[midPointIndexElem * 4 + 3] * 3 + 2]) / 4;
+		midPoint45.pos[2] = avrgZ;
+
+		avrgX =  (midPoint45.fourProx[midPoint45.threeIndex1[0] * 3] + 
+			midPoint45.fourProx[midPoint45.threeIndex1[1] * 3] +
+			midPoint45.fourProx[midPoint45.threeIndex1[2] * 3]) / 3;
+		midPoint45.t1[0] = avrgX;
+		avrgY =  (midPoint45.fourProx[midPoint45.threeIndex1[0] * 3 + 1] + 
+			midPoint45.fourProx[midPoint45.threeIndex1[1] * 3 + 1] +
+			midPoint45.fourProx[midPoint45.threeIndex1[2] * 3 + 1]) / 3;
+		midPoint45.t1[1] = avrgY;
+		avrgZ =  (midPoint45.fourProx[midPoint45.threeIndex1[0] * 3 + 2] + 
+			midPoint45.fourProx[midPoint45.threeIndex1[1] * 3 + 2] +
+			midPoint45.fourProx[midPoint45.threeIndex1[2] * 3 + 2]) / 3;	
+		midPoint45.t1[2] = avrgZ;
+
+		avrgX =  (midPoint45.fourProx[midPoint45.threeIndex2[0] * 3] + 
+			midPoint45.fourProx[midPoint45.threeIndex2[1] * 3] +
+			midPoint45.fourProx[midPoint45.threeIndex2[2] * 3]) / 3;
+		midPoint45.t2[0] = avrgX;
+		avrgY =  (midPoint45.fourProx[midPoint45.threeIndex2[0] * 3 + 1] + 
+			midPoint45.fourProx[midPoint45.threeIndex2[1] * 3 + 1] +
+			midPoint45.fourProx[midPoint45.threeIndex2[2] * 3 + 1]) / 3;
+		midPoint45.t2[1] = avrgY;
+		avrgZ =  (midPoint45.fourProx[midPoint45.threeIndex2[0] * 3 + 2] + 
+			midPoint45.fourProx[midPoint45.threeIndex2[1] * 3 + 2] +
+			midPoint45.fourProx[midPoint45.threeIndex2[2] * 3 + 2]) / 3;	
+		midPoint45.t2[2] = avrgZ;
+
+		midPoints->at(midPointIndexElem) = midPoint45;
+	}
+}
+
 void GL4_BumpGrid::gen_midPointT(std::vector<MidPointTrig>* midPoints){
     std::vector<float> posAccum;
     GL4_BumpGrid::map(&posAccum);
