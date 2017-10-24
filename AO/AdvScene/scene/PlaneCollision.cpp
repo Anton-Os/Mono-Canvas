@@ -13,7 +13,41 @@ MidPointTrig Scene_PlaneCollision::proxMidPoint(const std::vector<MidPointTrig>*
     return midPoints->at(midPointIndex);
 }
 
-/* MidPointTrig Scene_PlaneCollision::proxMidPointT(const std::vector<MidPointQuad>* midPoints, const glm::vec2* posXY){
+MidPointTrig Scene_PlaneCollision::proxMidPoint(const MidPoint45* midPoint, const glm::vec2* posXY){
+    MidPointTrig midPointT;
+    if(glm::distance(glm::vec2(midPoint->t1[0], midPoint->t1[1]), *posXY) < glm::distance(glm::vec2(midPoint->t2[0], midPoint->t2[1]), *posXY)){
+        midPointT.pos[0] = midPoint->t1[0];
+        midPointT.pos[1] = midPoint->t1[1];
+        midPointT.pos[2] = midPoint->t1[2];
+
+        midPointT.threeProx[0] = midPoint->fourProx[midPoint->threeIndex1[0] * 3];
+        midPointT.threeProx[1] = midPoint->fourProx[midPoint->threeIndex1[0] * 3 + 1];
+        midPointT.threeProx[2] = midPoint->fourProx[midPoint->threeIndex1[0] * 3 + 2];
+        midPointT.threeProx[3] = midPoint->fourProx[midPoint->threeIndex1[1] * 3];
+        midPointT.threeProx[4] = midPoint->fourProx[midPoint->threeIndex1[1] * 3 + 1];
+        midPointT.threeProx[5] = midPoint->fourProx[midPoint->threeIndex1[1] * 3 + 2];
+        midPointT.threeProx[6] = midPoint->fourProx[midPoint->threeIndex1[2] * 3];
+        midPointT.threeProx[7] = midPoint->fourProx[midPoint->threeIndex1[2] * 3 + 1];
+        midPointT.threeProx[8] = midPoint->fourProx[midPoint->threeIndex1[2] * 3 + 2];
+    } else {
+        midPointT.pos[0] = midPoint->t2[0];
+        midPointT.pos[1] = midPoint->t2[1];
+        midPointT.pos[2] = midPoint->t2[2];
+
+        midPointT.threeProx[0] = midPoint->fourProx[midPoint->threeIndex2[0] * 3];
+        midPointT.threeProx[1] = midPoint->fourProx[midPoint->threeIndex2[0] * 3 + 1];
+        midPointT.threeProx[2] = midPoint->fourProx[midPoint->threeIndex2[0] * 3 + 2];
+        midPointT.threeProx[3] = midPoint->fourProx[midPoint->threeIndex2[1] * 3];
+        midPointT.threeProx[4] = midPoint->fourProx[midPoint->threeIndex2[1] * 3 + 1];
+        midPointT.threeProx[5] = midPoint->fourProx[midPoint->threeIndex2[1] * 3 + 2];
+        midPointT.threeProx[6] = midPoint->fourProx[midPoint->threeIndex2[2] * 3];
+        midPointT.threeProx[7] = midPoint->fourProx[midPoint->threeIndex2[2] * 3 + 1];
+        midPointT.threeProx[8] = midPoint->fourProx[midPoint->threeIndex2[2] * 3 + 2];
+    }
+    return midPointT;
+}
+
+MidPointQuad Scene_PlaneCollision::proxMidPoint(const std::vector<MidPointQuad>* midPoints, const glm::vec2* posXY){
     GLuint midPointIndex = 0;
     float minDistance = FLT_MAX;
     for(GLuint midPointElem = 0; midPointElem < midPoints->size(); midPointElem++){
@@ -23,35 +57,10 @@ MidPointTrig Scene_PlaneCollision::proxMidPoint(const std::vector<MidPointTrig>*
             midPointIndex = midPointElem;
         }
     }
-    MidPointQuad midPointQ = midPoints->at(midPointIndex);
-    glm::vec3 mpointT1(1);
-    mpointT1.x = (midPointQ.fourProx[0] + midPointQ.fourProx[4] + midPointQ.fourProx[8]) / 3;
-    mpointT1.y = (midPointQ.fourProx[1] + midPointQ.fourProx[5] + midPointQ.fourProx[9]) / 3;
-    mpointT1.z = (midPointQ.fourProx[2] + midPointQ.fourProx[6] + midPointQ.fourProx[10]) / 3;
-    glm::vec3 mpointT2(1);
-    mpointT2.x = (midPointQ.fourProx[1] + midPointQ.fourProx[5] + midPointQ.fourProx[9]) / 3;
-    mpointT2.y = (midPointQ.fourProx[2] + midPointQ.fourProx[6] + midPointQ.fourProx[10]) / 3;
-    mpointT2.z = (midPointQ.fourProx[3] + midPointQ.fourProx[7] + midPointQ.fourProx[11]) / 3;
-    MidPointTrig midPointT;
-    if(glm::distance(midPointT1, *posXY) < glm::distance(midPointtT2, *posXY)){
-        midPointT = { {mpointT1.x, mpointT1.y, mpointT1.z}, 
-            { midPointQ.fourProx[0] + midPointQ.fourProx[4] + midPointQ.fourProx[8],
-              midPointQ.fourProx[1] + midPointQ.fourProx[5] + midPointQ.fourProx[9],
-              midPointQ.fourProx[2] + midPointQ.fourProx[6] + midPointQ.fourProx[10]
-            }
-        };
-    } else {
-        midPointT = { {mpointT2.x, mpointT2.y, mpointT2.z}, 
-            { midPointQ.fourProx[1] + midPointQ.fourProx[5] + midPointQ.fourProx[9],
-              midPointQ.fourProx[2] + midPointQ.fourProx[6] + midPointQ.fourProx[10],
-              midPointQ.fourProx[3] + midPointQ.fourProx[7] + midPointQ.fourProx[11]
-            }
-        };
-    }
-    return midPointT;
-} */
+    return midPoints->at(midPointIndex);
+}
 
-MidPointQuad Scene_PlaneCollision::proxMidPoint(const std::vector<MidPointQuad>* midPoints, const glm::vec2* posXY){
+MidPoint45 Scene_PlaneCollision::proxMidPoint(const std::vector<MidPoint45>* midPoints, const glm::vec2* posXY){
     GLuint midPointIndex = 0;
     float minDistance = FLT_MAX;
     for(GLuint midPointElem = 0; midPointElem < midPoints->size(); midPointElem++){

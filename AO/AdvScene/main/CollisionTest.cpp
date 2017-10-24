@@ -151,6 +151,14 @@ int main(int argc, char** argv) {
 	MidPointQuad proxMidPointQ = planeCollision.proxMidPoint(&midPointsQ, &glm::vec2(Player::pos.x, Player::pos.y));
 	GL4_DataSet proxMidPointPos(&proxMidPointQ.pos[0], sizeof(float) * 3);
 	GL4_DataSet proxMidPointQuad(&proxMidPointQ.fourProx[0], sizeof(float) * 12);
+	MidPoint45 proxMidPoint45 = planeCollision.proxMidPoint(&midPoints45, &glm::vec2(Player::pos.x, Player::pos.y));
+	GL4_DataSet proxMidPoint45_Q(&proxMidPoint45.pos[0], sizeof(float) * 3);
+	GL4_DataSet proxMidPoint45_T1(&proxMidPoint45.t1[0], sizeof(float) * 3);
+	GL4_DataSet proxMidPoint45_T2(&proxMidPoint45.t2[0], sizeof(float) * 3);
+	GL4_DataSet proxMidPoint45_Four(&proxMidPoint45.fourProx[0], sizeof(float) * 12);
+	MidPointTrig proxMidPointT = planeCollision.proxMidPoint(&proxMidPoint45, &glm::vec2(Player::pos.x, Player::pos.y));
+	GL4_DataSet proxMidPointT_Pos(&proxMidPointT.pos[0], sizeof(float) * 3);
+	GL4_DataSet proxMidPointT_Three(&proxMidPointT.threeProx[0], sizeof(float) * 9);
 
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -177,18 +185,27 @@ int main(int argc, char** argv) {
 		// Collision computation... Anton Says Hi
 
 		glPointSize(7.0f);
-		proxMidPointQ = planeCollision.proxMidPoint(&midPointsQ, &glm::vec2(Player::pos.x, Player::pos.y));
-		Idle.set_renderMode(3);
-		proxMidPointQuad.create(&proxMidPointQ.fourProx[0], sizeof(float) * 12);
-		proxMidPointQuad.draw(GL_POINTS, 4);
+		proxMidPoint45 = planeCollision.proxMidPoint(&midPoints45, &glm::vec2(Player::pos.x, Player::pos.y));
+		proxMidPointT = planeCollision.proxMidPoint(&proxMidPoint45, &glm::vec2(Player::pos.x, Player::pos.y));
+
+		Idle.set_renderMode(1);
+		proxMidPointT_Pos.create(&proxMidPointT.pos[0], sizeof(float) * 3);
+		proxMidPointT_Pos.draw(GL_POINTS, 1);
+		Idle.set_renderMode(2);
+		proxMidPointT_Pos.create(&proxMidPointT.threeProx[0], sizeof(float) * 9);
+		proxMidPointT_Pos.draw(GL_POINTS, 3);
+
 
 		/* Idle.set_renderMode(1);
-		midPointDataSet.draw(GL_POINTS, midPointsQ.size()); */
-		Idle.set_renderMode(1);
-		midPointQ_DataSet.draw(GL_POINTS, midPointsQ.size());
+		proxMidPoint45_Q.create(&proxMidPoint45.pos[0], sizeof(float) * 3);
+		proxMidPoint45_Q.draw(GL_POINTS, 1);
 		Idle.set_renderMode(2);
-		proxMidPointPos.create(&proxMidPointQ.pos[0], sizeof(float) * 3);
-		proxMidPointPos.draw(GL_POINTS, 1);
+		proxMidPoint45_Q.create(&proxMidPoint45.t1[0], sizeof(float) * 3);
+		proxMidPoint45_Q.draw(GL_POINTS, 1);
+		Idle.set_renderMode(2);
+		proxMidPoint45_Q.create(&proxMidPoint45.t2[0], sizeof(float) * 3);
+		proxMidPoint45_Q.draw(GL_POINTS, 1); */
+
 		Idle.set_renderMode(4);
 		playerDot.create(glm::value_ptr(Player::pos), sizeof(float) * 3);
 		playerDot.draw(GL_POINTS, 1);

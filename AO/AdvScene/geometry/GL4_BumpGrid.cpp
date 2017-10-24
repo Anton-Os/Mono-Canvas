@@ -176,7 +176,7 @@ void GL4_BumpGrid::gen_midPoint45(std::vector<MidPoint45>* midPoints){
 	midPoint45.threeIndex1[0] = 0;
 	midPoint45.threeIndex1[1] = 1;
 	midPoint45.threeIndex1[2] = 2;
-	midPoint45.threeIndex2[0] = 1;
+	midPoint45.threeIndex2[0] = 0;
 	midPoint45.threeIndex2[1] = 2;
 	midPoint45.threeIndex2[2] = 3;
 
