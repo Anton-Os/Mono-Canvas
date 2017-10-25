@@ -11,10 +11,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Geometry.h"
+// #include "Geometry.h"
 #include "Loaders.h"
 #include "ManualSets.h"
 #include "Pipeline.h"
+#include "Scene.h"
 
 const std::string getParentDirectory(const char* path) {
 	const char* ptr = path + strlen(path);
@@ -31,13 +32,20 @@ namespace UI {
 }
 
 namespace Key {
-	GLboolean W, A, S, D = false;
+	GLboolean W, A, S, D, Q, E = false;
 }
 
 namespace Mouse {
 	GLboolean appears = true;	
 	GLdouble xInit, yInit;
 	GLfloat xOffset, yOffset;
+}
+
+namespace Player {
+	glm::mat4 persMatrix = glm::ortho(-1 * ((float)UI::width / 108), ((float)UI::width / 108), -1 * ((float)UI::height / 108), ((float)UI::height / 108), -10.0f, 10.0f);
+	glm::mat4 viewMatrix = glm::lookAt(glm::vec3(0.0, 0.0, -10.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+	glm::vec3 pos = glm::vec3(-4.0, -4.0, 0.0);
+	float mvSpeed = 0.5f;
 }
 
 namespace Time {
@@ -47,32 +55,35 @@ namespace Time {
 	std::chrono::duration<double, std::milli> milliSpan;
 	std::chrono::duration<double, std::micro> microSpan;
 	std::chrono::duration<double, std::nano> nanoSpan;
-	GLuint frameCount = 1;
 }
 
-int main(int argc, char** argv){
+void God_keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
+	return;
+}
 
-    if(glfwInit() == GLFW_TRUE)  std::cout << "GLFW initialized successfuly" << std::endl;
-    else {
-        std::cerr << "GLFW failed to initialize" << std::endl;
-        return -1;
-    }
+int main(int argc, char** argv) {
 
-    glfwWindowHint(GLFW_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE); 
-    glViewport(0, 0, UI::height, UI::width);
+	if (glfwInit() == GLFW_TRUE)  std::cout << "GLFW initialized successfuly" << std::endl;
+	else {
+		std::cerr << "GLFW failed to initialize" << std::endl;
+		return -1;
+	}
 
-    GLFWwindow* window = glfwCreateWindow(UI::width, UI::height, argv[0], nullptr, nullptr);
-    if(nullptr != window) std::cout << "GLFW window created successfuly" << std::endl;
-    else {
-        std::cerr << "GLFW failed to create window" << std::endl;
-        return -1;
-    }
+	glfwWindowHint(GLFW_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glViewport(0, 0, UI::height, UI::width);
+
+	GLFWwindow* window = glfwCreateWindow(UI::width, UI::height, argv[0], nullptr, nullptr);
+	if (nullptr != window) std::cout << "GLFW window created successfuly" << std::endl;
+	else {
+		std::cerr << "GLFW failed to create window" << std::endl;
+		return -1;
+	}
 
 	glfwMakeContextCurrent(window);
 	glfwGetFramebufferSize(window, &UI::width, &UI::height);
-	// glfwSetKeyCallback(window, keyCallback);
+	glfwSetKeyCallback(window, God_keyCallback);
 	// glfwSetCursorPosCallback(window, cursorPosCallback);
 
 	if (glewInit() == GLEW_OK) std::cout << "GLEW initialized successfuly" << std::endl;
@@ -81,25 +92,15 @@ int main(int argc, char** argv){
 		return -1;
 	}
 
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	std::string parentDir = getParentDirectory(argv[0]);
 
-	GLuint testVAO;
-	glGenVertexArrays(1, &testVAO);
-
-	loadData(testVAO, sizeof(squarePos) / sizeof(GLfloat), GL_STATIC_DRAW, &squarePos[0], nullptr, nullptr, nullptr);
-	loadIndices(testVAO, sizeof(squareIndices) / sizeof(GLuint), GL_STATIC_DRAW, &squareIndices[0]);
-
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
-	
-	GL4_Sphere Sphere(100, 30, 30);
+	GLSL_Flatscape Flatscape(parentDir + "//shaders//Flatscape.vert", parentDir + "//shaders//Flatscape.frag");
 
-	glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
-	glm::mat4 mvMatrix(1);
+	GL4_DataSet square0(2, &square2D_Pos[0], sizeof(float) * 12);
 
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -107,19 +108,16 @@ int main(int argc, char** argv){
 		Time::secSpan = std::chrono::duration_cast<std::chrono::duration<double>>(Time::sceneUpdate - Time::sceneSetup);
 
 		glfwPollEvents();
-		glClearColor(1.0f, 1.0f, 0.9f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glPointSize(10.0f);
-		glLineWidth(4.0f);
-		glUseProgram(Idle.shaderProgID);
-		Sphere.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0, 0, -300.0f));
-		Idle.set_mvpMatrix(perspectiveMatrix * mvMatrix * Sphere.relMatrix);
-		// Sphere.draw();
-		// Sphere.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 3 * 20); // Every Second 5 Triangles are drawn
-		Sphere.drawFixed(GL_LINES, Time::secSpan.count() * 2 * 50);
+		glUseProgram(Flatscape.shaderProgID);
+		Flatscape.set_mvpMatrix(Player::persMatrix * Player::viewMatrix);
+		Flatscape.set_renderMode(1);
 
-        glBindVertexArray(0);
+		glPointSize(8.0f);
+		square0.draw(GL_POINTS, 4);
+
 		glfwSwapBuffers(window);
 	}
 

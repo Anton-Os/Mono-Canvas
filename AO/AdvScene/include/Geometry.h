@@ -42,9 +42,19 @@ public:
         init();
         create(data, dataSize, stride, offset);
     }
+    GL4_DataSet(GLint attribCount, GLvoid* data, GLint dataSize){
+        init();
+        create(attribCount, data, dataSize);
+    }
+    GL4_DataSet(GLint attribCount, GLvoid* data, GLint dataSize, GLsizei stride, const GLvoid* offset){
+        init();
+        create(attribCount, data, dataSize, stride, offset);
+    }
     void init();
     void create(GLvoid* data, GLint dataSize);
+    void create(GLint attribCount, GLvoid* data, GLint dataSize);
     void create(GLvoid* data, GLint dataSize, GLsizei stride, const GLvoid* offset);
+    void create(GLint attribCount, GLvoid* data, GLint dataSize, GLsizei stride, const GLvoid* offset);
     void draw(GLenum drawMode, GLuint drawCount);
 private:
     enum feedParams {VAO, feedPos};

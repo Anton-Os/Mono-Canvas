@@ -26,6 +26,11 @@ const std::string getParentDirectory(const char* path) {
 	return result;
 }
 
+namespace UI {
+	int height = 1080;
+	int width = 1320;
+}
+
 namespace Key {
 	GLboolean P, W, A, S, D, Q, E = false;
 }
@@ -89,22 +94,19 @@ void God_keyCallback(GLFWwindow* window, int key, int scancode, int action, int 
 }
 
 int main(int argc, char** argv){
-    /* -- -- -- Creation of OpenGL Context, Windowing, and Handling User Input -- -- -- */
+
     if(glfwInit() == GLFW_TRUE)  std::cout << "GLFW initialized successfuly" << std::endl;
     else {
         std::cerr << "GLFW failed to initialize" << std::endl;
         return -1;
     }
 
-    int windowHeight = 900;
-    int windowWidth = 1100;
-
     glfwWindowHint(GLFW_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE); 
-    glViewport(0, 0, windowHeight, windowWidth);
+    glViewport(0, 0, UI::height, UI::width);
 
-    GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "Asset Import", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(UI::width, UI::height, argv[0], nullptr, nullptr);
     if(nullptr != window) std::cout << "GLFW window created successfuly" << std::endl;
     else {
         std::cerr << "GLFW failed to create window" << std::endl;
@@ -112,7 +114,7 @@ int main(int argc, char** argv){
     }
 
 	glfwMakeContextCurrent(window);
-	glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
+	glfwGetFramebufferSize(window, &UI::width, &UI::height);
 	glfwSetKeyCallback(window, God_keyCallback);
 	// glfwSetCursorPosCallback(window, cursorPosCallback);
 
@@ -163,10 +165,10 @@ int main(int argc, char** argv){
 		HeightRange.set_renderMode(2);
 		/* glUseProgram(Idle.shaderProgID);
 		Idle.set_mvpMatrix(perspectiveMatrix * Player::viewMatrix * BumpGrid.relMatrix); */
-		// BumpGrid.draw();
+		BumpGrid.draw();
 		// BumpGrid.drawFixed(GL_POINTS, Time::secSpan.count());
 		// BumpGrid.drawFixed(GL_LINES, Time::secSpan.count() * 2);
-		BumpGrid.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 3 * 40);
+		// BumpGrid.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 3 * 40);
 
 		FlatGrid.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance + 15.0f));
 		FlatGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::xDegree), glm::vec3(1.0, 0.0, 0.0));
@@ -174,12 +176,11 @@ int main(int argc, char** argv){
 		HeightRange.set_mvpMatrix(perspectiveMatrix * Player::viewMatrix * FlatGrid.relMatrix);
 		HeightRange.set_rise(3.0 * 2);
 		HeightRange.set_renderMode(1);
-		FlatGrid.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 3 * 40);
+		// FlatGrid.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 3 * 40);
+		FlatGrid.draw();
 
 		glfwSwapBuffers(window);
 	}
-
-    /* -- -- -- Deallocation and deletion of resourcdes -- -- -- */
 
     glfwTerminate();
     return 0;

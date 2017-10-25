@@ -26,6 +26,11 @@ const std::string getParentDirectory(const char* path) {
 	return result;
 }
 
+namespace UI {
+	int height = 1080;
+	int width = 1320;
+}
+
 namespace Key {
 	GLboolean W, A, S, D, Q, E = false;
 }
@@ -94,22 +99,19 @@ void God_keyCallback(GLFWwindow* window, int key, int scancode, int action, int 
 }
 
 int main(int argc, char** argv) {
-	/* -- -- -- Creation of OpenGL Context, Windowing, and Handling User Input -- -- -- */
+
 	if (glfwInit() == GLFW_TRUE)  std::cout << "GLFW initialized successfuly" << std::endl;
 	else {
 		std::cerr << "GLFW failed to initialize" << std::endl;
 		return -1;
 	}
 
-	int windowHeight = 900;
-	int windowWidth = 1100;
-
 	glfwWindowHint(GLFW_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-	glViewport(0, 0, windowHeight, windowWidth);
+	glViewport(0, 0, UI::width, UI::height);
 
-	GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "Asset Import", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(UI::width,  UI::height, argv[0], nullptr, nullptr);
 	if (nullptr != window) std::cout << "GLFW window created successfuly" << std::endl;
 	else {
 		std::cerr << "GLFW failed to create window" << std::endl;
@@ -117,7 +119,7 @@ int main(int argc, char** argv) {
 	}
 
 	glfwMakeContextCurrent(window);
-	glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
+	glfwGetFramebufferSize(window, &UI::width, &UI::height);
 	glfwSetKeyCallback(window, God_keyCallback);
 	// glfwSetCursorPosCallback(window, cursorPosCallback);
 
