@@ -49,6 +49,13 @@ namespace Player {
 	float mvSpeed = 0.5f;
 }
 
+namespace Terrain {
+	GLfloat rise = 1.0f;
+	GLfloat segCount = 40;
+	GLfloat xLength = 0.5f;
+	GLfloat lengthTotal = segCount * xLength;
+}
+
 namespace Time {
 	std::chrono::steady_clock::time_point sceneSetup;
 	std::chrono::steady_clock::time_point sceneUpdate;
@@ -102,7 +109,8 @@ int main(int argc, char** argv) {
 	GLSL_Flatscape Flatscape(parentDir + "//shaders//Flatscape.vert", parentDir + "//shaders//Flatscape.frag");
 
 	GL4_DataSet square0(2, &square2D_Pos[0], sizeof(float) * 12);
-	GL4_BumpLine bumpLine0(0.0, 4, 1.0, 0.2);
+	GL4_BumpLine bumpLine0(Terrain::rise, Terrain::segCount, Terrain::xLength, 0.2);
+	bumpLine0.relMatrix = glm::translate(glm::mat4(1), glm::vec3(-1 * (Terrain::lengthTotal / 2), 0.0, 0.0));
 
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -114,10 +122,10 @@ int main(int argc, char** argv) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(Flatscape.shaderProgID);
-		Flatscape.set_mvpMatrix(Player::persMatrix * Player::viewMatrix);
+		Flatscape.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * bumpLine0.relMatrix);
 
 		glPointSize(8.0f);
-		glLineWidth(6.0f);
+		glLineWidth(11.0f);
 
 		// Flatscape.set_renderMode(1);
 		// square0.draw(GL_TRIANGLE_STRIP, 4);

@@ -12,12 +12,15 @@ void GL4_BumpLine::create(GLfloat rise, GLuint segCount, GLfloat xLength, GLfloa
 
     GLuint vertexID = 0;
 
-    for(GLuint lineSegElem = 0; lineSegElem < segCount; lineSegElem++){
-        posAccum.push_back((xLength * lineSegElem) + (((static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX)) * xVariance) - xVariance / 2));
+    for(GLuint lineSegElem = 0; lineSegElem <= segCount; lineSegElem++){
+        // posAccum.push_back((xLength * lineSegElem) + (((static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX)) * xVariance) - xVariance / 2));
+        posAccum.push_back(xLength * lineSegElem);
         posAccum.push_back(((static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX)) * rise) - rise / 2);
     
-        indexAccum.push_back(vertexID);
-        indexAccum.push_back(vertexID + 1);
+        if(lineSegElem != segCount){
+            indexAccum.push_back(vertexID);
+            indexAccum.push_back(vertexID + 1);
+        }
 
         vertexID++;
     }
