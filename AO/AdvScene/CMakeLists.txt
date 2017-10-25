@@ -93,6 +93,7 @@ add_executable(Two
     pipeline/GLSL_Idle.cpp
     pipeline/GLSL_Flatscape.cpp
     geometry/GL4_DataSet.cpp
+    geometry/GL4_BumpLine.cpp
     scene/PlaneCollision.cpp
     main/Two.cpp
 )

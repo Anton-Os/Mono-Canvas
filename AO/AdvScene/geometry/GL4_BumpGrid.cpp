@@ -1,11 +1,6 @@
 #include "Geometry.h"
 
 void GL4_BumpGrid::create(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount) {
-	GLuint VAO;
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
-	GL4_BumpGrid::feed[GL4_BumpGrid::VAO] = VAO;
-
 	GLfloat uTex = 0.0; GLfloat vTex = 0.0;
 	GLfloat colSize = (GLfloat)yDimension / (GLfloat)colCount;
 	GLfloat rowSize = (GLfloat)xDimension / (GLfloat)rowCount;
@@ -55,6 +50,11 @@ void GL4_BumpGrid::create(GLfloat rise, GLuint xDimension, GLuint rowCount, GLui
 		nrmAccum.push_back(1.0f);
 		nrmAccum.push_back(0.0f);
 	}
+
+	GLuint VAO;
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+	GL4_BumpGrid::feed[GL4_BumpGrid::VAO] = VAO;
 
 	GLuint feedBuffers[4];
 	glGenBuffers(4, feedBuffers);

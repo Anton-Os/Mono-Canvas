@@ -42,6 +42,7 @@ namespace Mouse {
 }
 
 namespace Player {
+	// glm::mat4 persMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 10.0f);
 	glm::mat4 persMatrix = glm::ortho(-1 * ((float)UI::width / 108), ((float)UI::width / 108), -1 * ((float)UI::height / 108), ((float)UI::height / 108), -10.0f, 10.0f);
 	glm::mat4 viewMatrix = glm::lookAt(glm::vec3(0.0, 0.0, -10.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 	glm::vec3 pos = glm::vec3(-4.0, -4.0, 0.0);
@@ -101,6 +102,7 @@ int main(int argc, char** argv) {
 	GLSL_Flatscape Flatscape(parentDir + "//shaders//Flatscape.vert", parentDir + "//shaders//Flatscape.frag");
 
 	GL4_DataSet square0(2, &square2D_Pos[0], sizeof(float) * 12);
+	GL4_BumpLine bumpLine0(0.0, 4, 1.0, 0.2);
 
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -113,10 +115,15 @@ int main(int argc, char** argv) {
 
 		glUseProgram(Flatscape.shaderProgID);
 		Flatscape.set_mvpMatrix(Player::persMatrix * Player::viewMatrix);
-		Flatscape.set_renderMode(1);
 
 		glPointSize(8.0f);
-		square0.draw(GL_POINTS, 4);
+		glLineWidth(6.0f);
+
+		// Flatscape.set_renderMode(1);
+		// square0.draw(GL_TRIANGLE_STRIP, 4);
+		
+		Flatscape.set_renderMode(0);
+		bumpLine0.draw();
 
 		glfwSwapBuffers(window);
 	}

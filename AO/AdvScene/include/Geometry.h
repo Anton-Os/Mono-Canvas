@@ -101,3 +101,17 @@ public:
 private:
     GLuint indexCount;
 };
+
+class GL4_BumpLine : public GL4_Object3D {
+public:
+    GL4_BumpLine(GLfloat rise, GLuint segCount, GLfloat xLength, GLfloat xVariance){
+        create(rise, segCount, xLength, xVariance); 
+    }
+    enum feedParams {VAO, EBO, feedPos};
+    GLuint feed[3];
+    void create(GLfloat rise, GLuint segCount, GLfloat xLength, GLfloat xVariance);
+    void gen_midPoint45(std::vector<MidPoint45>* midPoints);
+    void draw();
+private:
+    GLuint indexCount;
+};
