@@ -107,11 +107,17 @@ public:
     GL4_BumpLine(GLfloat rise, GLuint segCount, GLfloat xLength, GLfloat xVariance){
         create(rise, segCount, xLength, xVariance); 
     }
+    GL4_BumpLine(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength, GLfloat xVariance){
+        create(rise, thickness, segCount, xLength, xVariance); 
+    }
     enum feedParams {VAO, EBO, feedPos};
     GLuint feed[3];
     void create(GLfloat rise, GLuint segCount, GLfloat xLength, GLfloat xVariance);
-    void gen_midPoint45(std::vector<MidPoint45>* midPoints);
+    void create(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength, GLfloat xVariance);
     void draw();
+    void draw(GLenum drawMode);
+    GLfloat get_length(){ return length; }
 private:
-    GLuint indexCount;
+    GLfloat length = 0.0;
+    GLuint indices = 0; 
 };

@@ -51,9 +51,9 @@ namespace Player {
 
 namespace Terrain {
 	GLfloat rise = 1.0f;
-	GLfloat segCount = 40;
-	GLfloat xLength = 0.5f;
-	GLfloat lengthTotal = segCount * xLength;
+	GLfloat segCount = 29;
+	GLfloat xLength = 0.6f;
+	GLfloat length = segCount * xLength;
 }
 
 namespace Time {
@@ -109,8 +109,12 @@ int main(int argc, char** argv) {
 	GLSL_Flatscape Flatscape(parentDir + "//shaders//Flatscape.vert", parentDir + "//shaders//Flatscape.frag");
 
 	GL4_DataSet square0(2, &square2D_Pos[0], sizeof(float) * 12);
-	GL4_BumpLine bumpLine0(Terrain::rise, Terrain::segCount, Terrain::xLength, 0.2);
-	bumpLine0.relMatrix = glm::translate(glm::mat4(1), glm::vec3(-1 * (Terrain::lengthTotal / 2), 0.0, 0.0));
+	GL4_BumpLine bumpLine0(Terrain::rise, Terrain::segCount, Terrain::xLength, 0.4);
+	Terrain::length = bumpLine0.get_length();
+	bumpLine0.relMatrix = glm::translate(glm::mat4(1), glm::vec3(-1 * (Terrain::length / 2), 0.0, 0.0));
+	GL4_BumpLine bumpLine1(Terrain::rise, 2.0f, Terrain::segCount, Terrain::xLength, 0.4);
+	Terrain::length = bumpLine1.get_length();
+	bumpLine1.relMatrix = glm::translate(glm::mat4(1), glm::vec3(-1 * (Terrain::length / 2), 0.0, 0.0));
 
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -131,6 +135,10 @@ int main(int argc, char** argv) {
 		// square0.draw(GL_TRIANGLE_STRIP, 4);
 		
 		Flatscape.set_renderMode(0);
+		bumpLine1.draw(GL_TRIANGLES);
+		Flatscape.set_renderMode(2);
+		bumpLine1.draw(GL_POINTS);
+		Flatscape.set_renderMode(1);
 		bumpLine0.draw();
 
 		glfwSwapBuffers(window);
