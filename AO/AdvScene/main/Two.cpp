@@ -51,7 +51,7 @@ namespace Player {
 
 namespace Terrain {
 	GLfloat rise = 1.0f;
-	GLfloat segCount = 29;
+	GLfloat segCount = 28;
 	GLfloat xLength = 0.6f;
 	GLfloat length = segCount * xLength;
 }
@@ -109,12 +109,12 @@ int main(int argc, char** argv) {
 	GLSL_Flatscape Flatscape(parentDir + "//shaders//Flatscape.vert", parentDir + "//shaders//Flatscape.frag");
 
 	GL4_DataSet square0(2, &square2D_Pos[0], sizeof(float) * 12);
-	GL4_BumpLine bumpLine0(Terrain::rise, Terrain::segCount, Terrain::xLength, 0.4);
-	Terrain::length = bumpLine0.get_length();
-	bumpLine0.relMatrix = glm::translate(glm::mat4(1), glm::vec3(-1 * (Terrain::length / 2), 0.0, 0.0));
-	GL4_BumpLine bumpLine1(Terrain::rise, 2.0f, Terrain::segCount, Terrain::xLength, 0.4);
-	Terrain::length = bumpLine1.get_length();
-	bumpLine1.relMatrix = glm::translate(glm::mat4(1), glm::vec3(-1 * (Terrain::length / 2), 0.0, 0.0));
+	GL4_RigidLine rigidLine0(Terrain::rise, Terrain::segCount, Terrain::xLength, 0.4);
+	Terrain::length = rigidLine0.get_length();
+	rigidLine0.relMatrix = glm::translate(glm::mat4(1), glm::vec3(-1 * (Terrain::length / 2), 0.0, 0.0));
+	GL4_RigidLine rigidLine1(Terrain::rise, 2.0f, Terrain::segCount, Terrain::xLength, 0.4);
+	Terrain::length = rigidLine1.get_length();
+	rigidLine1.relMatrix = glm::translate(glm::mat4(1), glm::vec3(-1 * (Terrain::length / 2), 0.0, 0.0));
 
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -126,7 +126,7 @@ int main(int argc, char** argv) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(Flatscape.shaderProgID);
-		Flatscape.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * bumpLine0.relMatrix);
+		Flatscape.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * rigidLine0.relMatrix);
 
 		glPointSize(8.0f);
 		glLineWidth(11.0f);
@@ -135,11 +135,15 @@ int main(int argc, char** argv) {
 		// square0.draw(GL_TRIANGLE_STRIP, 4);
 		
 		Flatscape.set_renderMode(0);
-		bumpLine1.draw(GL_TRIANGLES);
+		// rigidLine1.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 2);
+		// rigidLine1.drawXI(GL_TRIANGLES, Time::secSpan.count() * 2);
+		rigidLine1.drawXI(GL_TRIANGLE_STRIP, Time::secSpan.count() * 8);
+		// rigidLine1.drawXI(GL_TRIANGLE_STRIP);
 		Flatscape.set_renderMode(2);
-		bumpLine1.draw(GL_POINTS);
+		// rigidLine1.drawFixed(GL_POINTS, Time::secSpan.count() * 2);
+		rigidLine1.drawXI(GL_POINTS, Time::secSpan.count() * 8);
 		Flatscape.set_renderMode(1);
-		bumpLine0.draw();
+		rigidLine0.draw();
 
 		glfwSwapBuffers(window);
 	}

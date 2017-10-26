@@ -102,12 +102,12 @@ private:
     GLuint indexCount;
 };
 
-class GL4_BumpLine : public GL4_Object3D {
+class GL4_RigidLine : public GL4_Object3D {
 public:
-    GL4_BumpLine(GLfloat rise, GLuint segCount, GLfloat xLength, GLfloat xVariance){
+    GL4_RigidLine(GLfloat rise, GLuint segCount, GLfloat xLength, GLfloat xVariance){
         create(rise, segCount, xLength, xVariance); 
     }
-    GL4_BumpLine(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength, GLfloat xVariance){
+    GL4_RigidLine(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength, GLfloat xVariance){
         create(rise, thickness, segCount, xLength, xVariance); 
     }
     enum feedParams {VAO, EBO, feedPos};
@@ -116,6 +116,9 @@ public:
     void create(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength, GLfloat xVariance);
     void draw();
     void draw(GLenum drawMode);
+    void drawXI(GLenum drawMode);
+    void drawFixed(GLenum drawMode, GLuint indexCount);
+    void drawXI(GLenum drawMode, GLuint indexCount);
     GLfloat get_length(){ return length; }
 private:
     GLfloat length = 0.0;

@@ -1,6 +1,6 @@
 #include "Geometry.h"
 
-void GL4_BumpLine::create(GLfloat rise, GLuint segCount, GLfloat xLength, GLfloat xVariance){
+void GL4_RigidLine::create(GLfloat rise, GLuint segCount, GLfloat xLength, GLfloat xVariance){
     if(xVariance > xLength * 2){
         std::cerr << "xVariance cannot exceed xLength by a factor of 2" << std::endl;
         return;
@@ -16,7 +16,7 @@ void GL4_BumpLine::create(GLfloat rise, GLuint segCount, GLfloat xLength, GLfloa
     for(GLuint lineSegElem = 0; lineSegElem <= segCount; lineSegElem++){
         xRand = (static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX) * xVariance) - (xVariance / 2);
         posAccum.push_back((xLength * lineSegElem) + xRand);
-        GL4_BumpLine::length += xLength + xRand;
+        GL4_RigidLine::length += xLength + xRand;
         posAccum.push_back((static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX) * rise) - (rise / 2));
 
         if(lineSegElem != segCount){
@@ -32,7 +32,7 @@ void GL4_BumpLine::create(GLfloat rise, GLuint segCount, GLfloat xLength, GLfloa
     GLuint VAO;
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
-	GL4_BumpLine::feed[GL4_BumpLine::VAO] = VAO;
+	GL4_RigidLine::feed[GL4_RigidLine::VAO] = VAO;
 
     GLuint feedBuffers[2];
 	glGenBuffers(2, feedBuffers);
@@ -43,16 +43,16 @@ void GL4_BumpLine::create(GLfloat rise, GLuint segCount, GLfloat xLength, GLfloa
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 	glEnableVertexAttribArray(0);
 
-    GL4_BumpLine::vertexCount = vertexID;
-	GL4_BumpLine::feed[GL4_BumpLine::EBO] = feedBuffers[0];
-	GL4_BumpLine::feed[GL4_BumpLine::feedPos] = feedBuffers[1];
+    GL4_RigidLine::vertexCount = vertexID;
+	GL4_RigidLine::feed[GL4_RigidLine::EBO] = feedBuffers[0];
+	GL4_RigidLine::feed[GL4_RigidLine::feedPos] = feedBuffers[1];
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void GL4_BumpLine::create(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength, GLfloat xVariance){
+void GL4_RigidLine::create(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength, GLfloat xVariance){
     if(xVariance > xLength * 2){
         std::cerr << "xVariance cannot exceed xLength by a factor of 2" << std::endl;
         return;
@@ -72,9 +72,9 @@ void GL4_BumpLine::create(GLfloat rise, GLfloat thickness, GLuint segCount, GLfl
         posAccum.push_back(yRand - (thickness / 2));
         posAccum.push_back((xLength * lineSegElem) + xRand);
         posAccum.push_back(yRand + (thickness / 2));
-        GL4_BumpLine::length += xLength + xRand;
+        GL4_RigidLine::length += xLength + xRand;
 
-        if(lineSegElem < segCount){
+        if(lineSegElem != segCount){
             indexAccum.push_back(vertexID * 4);
             indexAccum.push_back(vertexID * 4 + 1);
             indexAccum.push_back(vertexID * 4 + 2);
@@ -91,7 +91,7 @@ void GL4_BumpLine::create(GLfloat rise, GLfloat thickness, GLuint segCount, GLfl
     GLuint VAO;
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
-	GL4_BumpLine::feed[GL4_BumpLine::VAO] = VAO;
+	GL4_RigidLine::feed[GL4_RigidLine::VAO] = VAO;
 
     GLuint feedBuffers[2];
 	glGenBuffers(2, feedBuffers);
@@ -102,23 +102,43 @@ void GL4_BumpLine::create(GLfloat rise, GLfloat thickness, GLuint segCount, GLfl
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 	glEnableVertexAttribArray(0);
 
-    GL4_BumpLine::vertexCount = vertexID;
-	GL4_BumpLine::feed[GL4_BumpLine::EBO] = feedBuffers[0];
-	GL4_BumpLine::feed[GL4_BumpLine::feedPos] = feedBuffers[1];
+    GL4_RigidLine::vertexCount = vertexID * 2;
+	GL4_RigidLine::feed[GL4_RigidLine::EBO] = feedBuffers[0];
+	GL4_RigidLine::feed[GL4_RigidLine::feedPos] = feedBuffers[1];
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void GL4_BumpLine::draw(){
-    glBindVertexArray(GL4_BumpLine::feed[0]);
-    glDrawElements(GL_POINTS, GL4_BumpLine::vertexCount * GL4_BumpLine::indices, GL_UNSIGNED_INT, 0);
+void GL4_RigidLine::draw(){
+    glBindVertexArray(GL4_RigidLine::feed[0]);
+    glDrawElements(GL_POINTS, GL4_RigidLine::indices, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 
-void GL4_BumpLine::draw(GLenum drawMode){
-    glBindVertexArray(GL4_BumpLine::feed[0]);
-    glDrawElements(drawMode, GL4_BumpLine::vertexCount * GL4_BumpLine::indices, GL_UNSIGNED_INT, 0);
+void GL4_RigidLine::draw(GLenum drawMode){
+    glBindVertexArray(GL4_RigidLine::feed[0]);
+    glDrawElements(drawMode, GL4_RigidLine::indices, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+}
+
+void GL4_RigidLine::drawXI(GLenum drawMode){
+    glBindVertexArray(GL4_RigidLine::feed[0]);
+    glDrawArrays(drawMode, 0, GL4_RigidLine::vertexCount);
+    glBindVertexArray(0);
+}
+
+void GL4_RigidLine::drawFixed(GLenum drawMode, GLuint indexCount){
+    glBindVertexArray(GL4_RigidLine::feed[0]);
+    if(indexCount >= GL4_RigidLine::vertexCount * 6) glDrawElements(drawMode, GL4_RigidLine::indices, GL_UNSIGNED_INT, 0);
+    else glDrawElements(drawMode, indexCount, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+}
+
+void GL4_RigidLine::drawXI(GLenum drawMode, GLuint indexCount){
+    glBindVertexArray(GL4_RigidLine::feed[0]);
+    if(indexCount >= GL4_RigidLine::vertexCount) glDrawArrays(drawMode, 0, GL4_RigidLine::vertexCount);
+    else glDrawArrays(drawMode, 0, indexCount);
     glBindVertexArray(0);
 }
