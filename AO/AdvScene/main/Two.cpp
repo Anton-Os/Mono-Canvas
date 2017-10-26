@@ -44,7 +44,7 @@ namespace Mouse {
 namespace Player {
 	// glm::mat4 persMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 10.0f);
 	glm::mat4 persMatrix = glm::ortho(-1 * ((float)UI::width / 108), ((float)UI::width / 108), -1 * ((float)UI::height / 108), ((float)UI::height / 108), -10.0f, 10.0f);
-	glm::mat4 viewMatrix = glm::lookAt(glm::vec3(0.0, 0.0, -10.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+	glm::mat4 viewMatrix = glm::lookAt(glm::vec3(0.0, 0.0, 10.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 	glm::vec3 pos = glm::vec3(-4.0, -4.0, 0.0);
 	float mvSpeed = 0.5f;
 }
@@ -134,7 +134,7 @@ int main(int argc, char** argv) {
 		// Flatscape.set_renderMode(1);
 		// square0.draw(GL_TRIANGLE_STRIP, 4);
 		
-		Flatscape.set_renderMode(0);
+		Flatscape.set_renderMode(3);
 		// rigidLine1.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 2);
 		// rigidLine1.drawXI(GL_TRIANGLES, Time::secSpan.count() * 2);
 		rigidLine1.drawXI(GL_TRIANGLE_STRIP, Time::secSpan.count() * 8);
@@ -143,7 +143,7 @@ int main(int argc, char** argv) {
 		// rigidLine1.drawFixed(GL_POINTS, Time::secSpan.count() * 2);
 		rigidLine1.drawXI(GL_POINTS, Time::secSpan.count() * 8);
 		Flatscape.set_renderMode(1);
-		rigidLine0.draw();
+		rigidLine0.drawFixed(GL_POINTS, Time::secSpan.count() * 8);
 
 		glfwSwapBuffers(window);
 	}

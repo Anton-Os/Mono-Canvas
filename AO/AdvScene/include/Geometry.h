@@ -114,13 +114,18 @@ public:
     GLuint feed[3];
     void create(GLfloat rise, GLuint segCount, GLfloat xLength, GLfloat xVariance);
     void create(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength, GLfloat xVariance);
+    void extendLeft(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength, GLfloat xVariance);
+    void extendRight(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength, GLfloat xVariance);
+    void map(GLubyte feedLoc, std::vector<GLfloat>* fltAccum);
+    GLfloat get_length(){ return length; }
+    std::array<float, 4> get_endPoints();
+    std::array<float, 4> get_startPoints();
     void draw();
     void draw(GLenum drawMode);
-    void drawXI(GLenum drawMode);
     void drawFixed(GLenum drawMode, GLuint indexCount);
+    void drawXI(GLenum drawMode);
     void drawXI(GLenum drawMode, GLuint indexCount);
-    GLfloat get_length(){ return length; }
 private:
     GLfloat length = 0.0;
-    GLuint indices = 0; 
+    GLuint indices = 0;
 };

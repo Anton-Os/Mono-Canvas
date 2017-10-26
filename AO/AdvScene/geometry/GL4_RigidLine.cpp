@@ -111,6 +111,35 @@ void GL4_RigidLine::create(GLfloat rise, GLfloat thickness, GLuint segCount, GLf
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+void GL4_RigidLine::map(GLubyte feedLoc, std::vector<GLfloat>* fltAccum){
+    glBindVertexArray(GL4_RigidLine::feed[GL4_RigidLine::VAO]);
+    glBindBuffer(GL_ARRAY_BUFFER, GL4_RigidLine::feed[GL4_RigidLine::feedPos]);
+    GLfloat* fltData = (GLfloat*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
+	fltAccum->resize(GL4_RigidLine::vertexCount * 3);
+
+    for(GLuint fltElem = 0; fltElem < fltAccum->size(); fltElem++){
+		fltAccum->at(fltElem) = *(fltData + fltElem);
+    }
+
+    glUnmapBuffer(GL_ARRAY_BUFFER);
+    glBindVertexArray(0);
+}
+
+std::array<float, 4> GL4_RigidLine::get_endPoints(){
+    std::vector<float> posAccum;
+    GL4_RigidLine::map(GL4_RigidLine::feedPos, &posAccum);
+    GLuint vertexCount = GL4_RigidLine::vertexCount;
+    std::array<float, 4> endPoints = {posAccum[vertexCount], posAccum[vertexCount - 1], posAccum[vertexCount - 2], posAccum[vertexCount - 3]};
+    return endPoints;
+}
+
+std::array<float, 4> GL4_RigidLine::get_startPoints(){
+    std::vector<float> posAccum;
+    GL4_RigidLine::map(GL4_RigidLine::feedPos, &posAccum);
+    std::array<float, 4> startPoints = {posAccum[0], posAccum[1], posAccum[2], posAccum[3]};
+    return startPoints;
+}
+
 void GL4_RigidLine::draw(){
     glBindVertexArray(GL4_RigidLine::feed[0]);
     glDrawElements(GL_POINTS, GL4_RigidLine::indices, GL_UNSIGNED_INT, 0);
@@ -123,16 +152,16 @@ void GL4_RigidLine::draw(GLenum drawMode){
     glBindVertexArray(0);
 }
 
-void GL4_RigidLine::drawXI(GLenum drawMode){
-    glBindVertexArray(GL4_RigidLine::feed[0]);
-    glDrawArrays(drawMode, 0, GL4_RigidLine::vertexCount);
-    glBindVertexArray(0);
-}
-
 void GL4_RigidLine::drawFixed(GLenum drawMode, GLuint indexCount){
     glBindVertexArray(GL4_RigidLine::feed[0]);
     if(indexCount >= GL4_RigidLine::vertexCount * 6) glDrawElements(drawMode, GL4_RigidLine::indices, GL_UNSIGNED_INT, 0);
     else glDrawElements(drawMode, indexCount, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+}
+
+void GL4_RigidLine::drawXI(GLenum drawMode){
+    glBindVertexArray(GL4_RigidLine::feed[0]);
+    glDrawArrays(drawMode, 0, GL4_RigidLine::vertexCount);
     glBindVertexArray(0);
 }
 
