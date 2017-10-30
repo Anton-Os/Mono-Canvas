@@ -102,21 +102,26 @@ private:
     GLuint indexCount;
 };
 
-class GL4_RigidLine : public GL4_Object3D {
+class GL4_RigidPath : public GL4_Object3D {
 public:
-    GL4_RigidLine(GLfloat rise, GLuint segCount, GLfloat xLength, GLfloat xVariance){
-        create(rise, segCount, xLength, xVariance); 
+    GL4_RigidPath(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength){
+        create(rise, thickness, segCount, xLength); 
     }
-    GL4_RigidLine(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength, GLfloat xVariance){
+    GL4_RigidPath(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength, GLfloat xVariance){
         create(rise, thickness, segCount, xLength, xVariance); 
     }
     enum feedParams {VAO, EBO, feedPos};
     GLuint feed[3];
-    void create(GLfloat rise, GLuint segCount, GLfloat xLength, GLfloat xVariance);
+    void create(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength);
     void create(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength, GLfloat xVariance);
+    void extendLine(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength, GLfloat xVariance);
     void map(GLubyte feedLoc, std::vector<GLfloat>* fltAccum);
+    void map(GLubyte feedLoc, std::vector<GLuint>* uintAccum);
+    // void extendLine();
     std::array<float, 4> get_startPoints();
     std::array<float, 4> get_endPoints();
+    void set_startPoints(std::array<float, 4>* startPoints);
+    void set_endPoints(std::array<float, 4>* endPoints);
     // void startPoints(float x1, float y1, float x2, float y2);
     // void endPoints(float x1, float y1, float x2, float y2);
     GLfloat get_length(){ return length; }

@@ -51,9 +51,10 @@ namespace Player {
 
 namespace Terrain {
 	GLfloat rise = 1.0f;
-	GLfloat segCount = 28;
-	GLfloat xLength = 0.6f;
+	GLfloat segCount = 8;
+	GLfloat xLength = 0.9f;
 	GLfloat length = segCount * xLength;
+	GLfloat prevLength = length;
 }
 
 namespace Time {
@@ -109,14 +110,18 @@ int main(int argc, char** argv) {
 	GLSL_Flatscape Flatscape(parentDir + "//shaders//Flatscape.vert", parentDir + "//shaders//Flatscape.frag");
 
 	GL4_DataSet square0(2, &square2D_Pos[0], sizeof(float) * 12);
-	GL4_RigidLine rigidLine0(Terrain::rise, Terrain::segCount, Terrain::xLength, 0.4);
-	Terrain::length = rigidLine0.get_length();
-	rigidLine0.relMatrix = glm::translate(glm::mat4(1), glm::vec3(-1 * (Terrain::length / 2), 0.0, 0.0));
-	GL4_RigidLine rigidLine1(Terrain::rise, 2.0f, Terrain::segCount, Terrain::xLength, 0.4);
-	Terrain::length = rigidLine1.get_length();
-	rigidLine1.relMatrix = glm::translate(glm::mat4(1), glm::vec3(-1 * (Terrain::length / 2), 0.0, 0.0));
-	std::array<float, 4> startPoints = rigidLine1.get_startPoints();
-	std::array<float, 4> endPoints = rigidLine1.get_endPoints();
+	GL4_RigidPath rigidPath0(Terrain::rise, 10.0f, Terrain::segCount, Terrain::xLength, 0.0);
+	Terrain::length = rigidPath0.get_length();
+	// rigidPath0.relMatrix = glm::translate(glm::mat4(1), glm::vec3(-1 * (Terrain::length / 2), 0.0, 0.0));
+	// rigidPath0.relMatrix = glm::mat4(1);
+	std::array<float, 4> startPoints = rigidPath0.get_startPoints();
+	std::array<float, 4> endPoints = rigidPath0.get_endPoints();
+	GL4_RigidPath rigidPath1(Terrain::rise, 0.5f, Terrain::segCount, Terrain::xLength, 0.0);
+	Terrain::prevLength = Terrain::length;
+	Terrain::length = rigidPath1.get_length();
+    rigidPath1.relMatrix = glm::translate(glm::mat4(1), glm::vec3(-1 * Terrain::length, 0.0, 0.0));
+	// rigidPath1.relMatrix = glm::mat4(1);
+	// rigidPath1.set_endPoints(&startPoints);
 
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -128,7 +133,6 @@ int main(int argc, char** argv) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(Flatscape.shaderProgID);
-		Flatscape.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * rigidLine0.relMatrix);
 
 		glPointSize(8.0f);
 		glLineWidth(11.0f);
@@ -136,13 +140,16 @@ int main(int argc, char** argv) {
 		// Flatscape.set_renderMode(1);
 		// square0.draw(GL_TRIANGLE_STRIP, 4);
 		
-		Flatscape.set_renderMode(3);
-		rigidLine1.drawXI(GL_TRIANGLE_STRIP, Time::secSpan.count() * 8);
+		Flatscape.set_mvpMatrix(Player::persMatrix * Player::viewMatrix);
+		Flatscape.set_renderMode(0);
+		rigidPath0.drawXI(GL_TRIANGLE_STRIP, Time::secSpan.count() * 8);
 		Flatscape.set_renderMode(2);
-		rigidLine1.drawXI(GL_POINTS, Time::secSpan.count() * 8);
-		Flatscape.set_renderMode(1);
-		rigidLine0.drawFixed(GL_POINTS, Time::secSpan.count() * 8);
+		rigidPath0.drawXI(GL_POINTS, Time::secSpan.count() * 8);
 
+		Flatscape.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * rigidPath1.relMatrix);
+		Flatscape.set_renderMode(1);
+		rigidPath1.drawXI(GL_TRIANGLE_STRIP, Time::secSpan.count() * 8);
+		
 		glfwSwapBuffers(window);
 	}
 
