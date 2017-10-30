@@ -125,19 +125,33 @@ void GL4_RigidLine::map(GLubyte feedLoc, std::vector<GLfloat>* fltAccum){
     glBindVertexArray(0);
 }
 
-std::array<float, 4> GL4_RigidLine::get_endPoints(){
-    std::vector<float> posAccum;
-    GL4_RigidLine::map(GL4_RigidLine::feedPos, &posAccum);
-    GLuint vertexCount = GL4_RigidLine::vertexCount;
-    std::array<float, 4> endPoints = {posAccum[vertexCount], posAccum[vertexCount - 1], posAccum[vertexCount - 2], posAccum[vertexCount - 3]};
-    return endPoints;
+std::array<float, 4> GL4_RigidLine::get_startPoints(){
+    glBindVertexArray(GL4_RigidLine::feed[GL4_RigidLine::VAO]);
+    glBindBuffer(GL_ARRAY_BUFFER, GL4_RigidLine::feed[GL4_RigidLine::feedPos]);
+    GLfloat* fltData = (GLfloat*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
+
+    std::array<float, 4> startPoints;
+    startPoints = { *(fltData), *(fltData + 1), *(fltData + 2), *(fltData + 3) };
+
+    glUnmapBuffer(GL_ARRAY_BUFFER);
+    glBindVertexArray(0);
+    return startPoints;
 }
 
-std::array<float, 4> GL4_RigidLine::get_startPoints(){
-    std::vector<float> posAccum;
-    GL4_RigidLine::map(GL4_RigidLine::feedPos, &posAccum);
-    std::array<float, 4> startPoints = {posAccum[0], posAccum[1], posAccum[2], posAccum[3]};
-    return startPoints;
+std::array<float, 4> GL4_RigidLine::get_endPoints(){
+    GLuint vertexCount = GL4_RigidLine::vertexCount;
+	GLuint vAttribCount = 2;
+
+    glBindVertexArray(GL4_RigidLine::feed[GL4_RigidLine::VAO]);
+    glBindBuffer(GL_ARRAY_BUFFER, GL4_RigidLine::feed[GL4_RigidLine::feedPos]);
+    GLfloat* fltData = (GLfloat*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
+
+    std::array<float, 4> endPoints;
+    endPoints = { *(fltData + ((vertexCount * vAttribCount) - 4)), *(fltData + ((vertexCount * vAttribCount) - 3)), *(fltData + ((vertexCount * vAttribCount) - 2)), *(fltData + ((vertexCount * vAttribCount) - 1)) };
+
+    glUnmapBuffer(GL_ARRAY_BUFFER);
+    glBindVertexArray(0);
+    return endPoints;
 }
 
 void GL4_RigidLine::draw(){

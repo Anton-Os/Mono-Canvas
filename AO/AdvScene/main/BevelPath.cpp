@@ -115,6 +115,8 @@ int main(int argc, char** argv) {
 	GL4_RigidLine rigidLine1(Terrain::rise, 2.0f, Terrain::segCount, Terrain::xLength, 0.4);
 	Terrain::length = rigidLine1.get_length();
 	rigidLine1.relMatrix = glm::translate(glm::mat4(1), glm::vec3(-1 * (Terrain::length / 2), 0.0, 0.0));
+	std::array<float, 4> startPoints = rigidLine1.get_startPoints();
+	std::array<float, 4> endPoints = rigidLine1.get_endPoints();
 
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -135,12 +137,8 @@ int main(int argc, char** argv) {
 		// square0.draw(GL_TRIANGLE_STRIP, 4);
 		
 		Flatscape.set_renderMode(3);
-		// rigidLine1.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 2);
-		// rigidLine1.drawXI(GL_TRIANGLES, Time::secSpan.count() * 2);
 		rigidLine1.drawXI(GL_TRIANGLE_STRIP, Time::secSpan.count() * 8);
-		// rigidLine1.drawXI(GL_TRIANGLE_STRIP);
 		Flatscape.set_renderMode(2);
-		// rigidLine1.drawFixed(GL_POINTS, Time::secSpan.count() * 2);
 		rigidLine1.drawXI(GL_POINTS, Time::secSpan.count() * 8);
 		Flatscape.set_renderMode(1);
 		rigidLine0.drawFixed(GL_POINTS, Time::secSpan.count() * 8);

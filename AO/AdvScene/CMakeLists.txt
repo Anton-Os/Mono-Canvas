@@ -88,21 +88,21 @@ target_link_libraries(CollisionTest
     assimp
 )
 
-add_executable(Two
+add_executable(BevelPath
     loaders/LoadShaders.cpp
     pipeline/GLSL_Idle.cpp
     pipeline/GLSL_Flatscape.cpp
     geometry/GL4_DataSet.cpp
     geometry/GL4_RigidLine.cpp
     scene/PlaneCollision.cpp
-    main/Two.cpp
+    main/BevelPath.cpp
 )
 
-target_include_directories(Two
+target_include_directories(BevelPath
     PUBLIC include
 )
 
-target_link_libraries(Two
+target_link_libraries(BevelPath
     GLEW::glew_s
     glfw
     gli
