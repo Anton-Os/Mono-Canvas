@@ -112,24 +112,14 @@ public:
     }
     enum feedParams {VAO, EBO, feedPos};
     GLuint feed[3];
+    GLfloat get_length(){ return length; }
     void create(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength);
     void create(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength, GLfloat xVariance);
-    void extendLine(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength, GLfloat xVariance);
     void map(GLubyte feedLoc, std::vector<GLfloat>* fltAccum);
     void map(GLubyte feedLoc, std::vector<GLuint>* uintAccum);
-    // void extendLine();
-    std::array<float, 4> get_startPoints();
-    std::array<float, 4> get_endPoints();
-    void set_startPoints(std::array<float, 4>* startPoints);
-    void set_endPoints(std::array<float, 4>* endPoints);
-    // void startPoints(float x1, float y1, float x2, float y2);
-    // void endPoints(float x1, float y1, float x2, float y2);
-    GLfloat get_length(){ return length; }
     void draw();
     void draw(GLenum drawMode);
     void drawFixed(GLenum drawMode, GLuint indexCount);
-    void drawXI(GLenum drawMode);
-    void drawXI(GLenum drawMode, GLuint indexCount);
 private:
     GLfloat length = 0.0;
     GLuint indices = 0;

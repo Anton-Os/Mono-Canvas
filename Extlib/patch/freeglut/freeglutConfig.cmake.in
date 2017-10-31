@@ -1,8 +1,0 @@
-# FREEGLUT_CMAKE_DIR - location next to freeglutTargets.cmake
-# FREEGLUT_INCLUDE_DIRS - include directories for FreeGLUT
-
-get_filename_component(FREEGLUT_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
-set(FREEGLUT_INCLUDE_DIRS "@CONF_INCLUDE_DIRS@")
-
-# our libray targets
-include("${FREEGLUT_CMAKE_DIR}/freeglutTargets.cmake")
