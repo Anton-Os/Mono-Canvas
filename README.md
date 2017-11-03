@@ -1,7 +1,7 @@
 # Mono-Canvas
 Just dabbling in OpenGL
 
-# Build Instructions
+### Build Instructions
 
 1. First create a cmake project with with the source directory pointing to Anton-Os/Mono-Canvas/Extlib and lets call the build directory ${EXTLIB_DIR}
 2. Set CACHE variable CMAKE_INSTALL_PREFIX to a custom install directory, lets call it ${INSTALL_DIR}
