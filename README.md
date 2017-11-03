@@ -1,5 +1,4 @@
 # Mono-Canvas
-Just dabbling in OpenGL
 
 ### Build Instructions
 
