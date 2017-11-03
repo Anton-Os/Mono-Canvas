@@ -61,8 +61,15 @@ add_custom_target(GDrive_Extlib ALL
     COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_BINARY_DIR}/Img2KTX.tar" 
     COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_BINARY_DIR}/python-3.6.1-embed.tar"
     DEPENDS "${CMAKE_BINARY_DIR}/GDrive.cmake"
-    WORKING_DIRECTORY ${UTILITIES_DIR}
+    # WORKING_DIRECTORY ${UTILITIES_DIR}
 )
+
+#add_custom_command(TARGET GDrive_Extlib
+#    POST_BUILD
+#    COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_BINARY_DIR}/Img2KTX.tar" 
+#    COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_BINARY_DIR}/python-3.6.1-embed.tar"
+#    WORKING_DIRECTORY ${UTILITIES_DIR}
+#)
 
 ExternalProject_Add(SQLite
     URL "${CMAKE_BINARY_DIR}/sqlite-amalgamation-3180000.tar"

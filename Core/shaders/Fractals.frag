@@ -11,7 +11,7 @@ const float threshold = 10.0;
 
 void main() {
     vec4 start_color = vec4(0.219f, 0.447f, 0.819f, 1.0);
-    vec4 end_color = vec4(1.0f, 0.701f, 0.854f, 1.0);
+    vec4 end_color = vec4(1.0f, 0.313f, 0.313f, 1.0);
 
     vec2 z = vec2(0, 0);
     int count = -1;
