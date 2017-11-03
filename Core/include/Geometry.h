@@ -101,26 +101,3 @@ public:
 private:
     GLuint indexCount;
 };
-
-class GL4_RigidPath : public GL4_Object3D {
-public:
-    GL4_RigidPath(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength){
-        create(rise, thickness, segCount, xLength); 
-    }
-    GL4_RigidPath(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength, GLfloat xVariance){
-        create(rise, thickness, segCount, xLength, xVariance); 
-    }
-    enum feedParams {VAO, EBO, feedPos};
-    GLuint feed[3];
-    GLfloat get_length(){ return length; }
-    void create(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength);
-    void create(GLfloat rise, GLfloat thickness, GLuint segCount, GLfloat xLength, GLfloat xVariance);
-    void map(GLubyte feedLoc, std::vector<GLfloat>* fltAccum);
-    void map(GLubyte feedLoc, std::vector<GLuint>* uintAccum);
-    void draw();
-    void draw(GLenum drawMode);
-    void drawFixed(GLenum drawMode, GLuint indexCount);
-private:
-    GLfloat length = 0.0;
-    GLuint indices = 0;
-};

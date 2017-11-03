@@ -14,9 +14,7 @@ target_include_directories(LoopTimed
 target_link_libraries(LoopTimed
     GLEW::glew_s
     glfw
-    gli
     glm
-    assimp
 )
 
 add_executable(Hills
@@ -35,14 +33,11 @@ target_include_directories(Hills
 target_link_libraries(Hills
     GLEW::glew_s
     glfw
-    gli
     glm
-    assimp
 )
 
 add_executable(MidPoints
     loaders/LoadShaders.cpp
-    loaders/LoadData.cpp
     pipeline/GLSL_Idle.cpp
     pipeline/GLSL_HeightRange.cpp
     geometry/GL4_Sphere.cpp
@@ -59,14 +54,11 @@ target_include_directories(MidPoints
 target_link_libraries(MidPoints
     GLEW::glew_s
     glfw
-    gli
     glm
-    assimp
 )
 
 add_executable(CollisionTest
     loaders/LoadShaders.cpp
-    loaders/LoadData.cpp
     pipeline/GLSL_Idle.cpp
     pipeline/GLSL_HeightRange.cpp
     geometry/GL4_Sphere.cpp
@@ -83,26 +75,24 @@ target_include_directories(CollisionTest
 target_link_libraries(CollisionTest
     GLEW::glew_s
     glfw
-    gli
     glm
-    assimp
 )
 
-add_executable(BevelGround
+add_executable(MandlebrotSet
     loaders/LoadShaders.cpp
     pipeline/GLSL_Idle.cpp
     pipeline/GLSL_Flatscape.cpp
+    pipeline/GLSL_Fractals.cpp
     geometry/GL4_DataSet.cpp
-    geometry/GL4_RigidPath.cpp
     scene/PlaneCollision.cpp
-    main/BevelGround.cpp
+    main/MandlebrotSet.cpp
 )
 
-target_include_directories(BevelGround
+target_include_directories(MandlebrotSet
     PUBLIC include
 )
 
-target_link_libraries(BevelGround
+target_link_libraries(MandlebrotSet
     GLEW::glew_s
     glfw
     gli
@@ -117,6 +107,7 @@ set(OUTPUT_SHADER_LIST)
 foreach(current_shader "Idle.vert" "Idle.frag"
                        "HeightRange.vert" "HeightRange.frag"
                        "Flatscape.vert" "Flatscape.frag"
+                       "Fractals.vert" "Fractals.frag"
 )
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}"
         DEPENDS "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"
@@ -128,10 +119,10 @@ foreach(current_shader "Idle.vert" "Idle.frag"
     list(APPEND OUTPUT_SHADER_LIST "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${current_shader}")
     list(APPEND SRC_SHADER_LIST "${CMAKE_CURRENT_SOURCE_DIR}/shaders/${current_shader}")
 endforeach(current_shader)
-add_custom_target(AdvScene_Shaders
+add_custom_target(Core_Shaders
     SOURCES ${SRC_SHADER_LIST}
     DEPENDS ${OUTPUT_SHADER_LIST}
 )
 
-add_dependencies(LoopTimed AdvScene_Shaders)
-add_dependencies(Hills AdvScene_Shaders)
+add_dependencies(LoopTimed Core_Shaders)
+add_dependencies(Hills Core_Shaders)

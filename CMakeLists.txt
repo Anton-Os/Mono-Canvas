@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(Mono_Canvas)
+project(MonoCanvas)
 
 if(NOT EXTLIB_BUILD_PATH)
     set(EXTLIB_BUILD_PATH "${CMAKE_BINARY_DIR}/Extlib-Build" CACHE PATH "Route Exlib Build here")
@@ -50,23 +50,10 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
     set(BOOST_LIBS)
     file(GLOB BOOST_LIBS "${BOOST_LIBRARYDIR}/*.lib")
 
-    add_subdirectory("AO/AdvScene")
-    add_subdirectory("AO/Offhand")
+    add_subdirectory("Core")
     if(Vulkan_FOUND)
-        add_subdirectory("AO/VEruption")
+        message(STATUS "Vulkan was found")
     endif()
-else ()
-    include("cmake/BuildExtlibs.cmake")
-    add_custom_target(BuildExtlibHelp ALL
-        COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan
-            "The Project Build Systme is not ready."
-        COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan --no-newline
-            "Use "
-        COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --red --no-newline
-            "BuildExtlib "
-        COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan
-            "target to build extlib"
-      )
 endif()
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake" 

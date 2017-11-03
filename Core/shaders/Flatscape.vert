@@ -13,5 +13,6 @@ void main(){
     texCoord_out = texCoord;
     vertexID_out = gl_VertexID;
 
-    gl_Position = mvpMatrix * wPos;
+    // gl_Position = mvpMatrix * wPos;
+    gl_Position = wPos;
 }
