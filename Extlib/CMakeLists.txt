@@ -266,21 +266,6 @@ ExternalProject_Add(ASSIMP
 
 list(APPEND EXTLIB_TARGETS ASSIMP)
 
-ExternalProject_Add(DXFIO
-    GIT_REPOSITORY "https://github.com/MeshGeometry/dxfio.git"
-    GIT_TAG "cb0b01e43cf57990673e6fc37f62d91dca3debd4"
-
-    INSTALL_COMMAND ""
-    # CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-
-    PREFIX ${DXFIO_PROJECT_DIR}
-    BINARY_DIR "${DXFIO_PROJECT_DIR}/build"
-    TMP_DIR "${DXFIO_PROJECT_DIR}/temp"
-    STAMP_DIR "${DXFIO_PROJECT_DIR}/stamp"
-) 
-
-list(APPEND EXTLIB_TARGETS DXFIO)
-
 ExternalProject_Add(GoogleTest
     GIT_REPOSITORY "https://github.com/google/googletest.git"
     GIT_TAG "4bab34d2084259cba67f3bfb51217c10d606e175"

@@ -2,8 +2,8 @@
 
 ### Supported generators:
 
-- Visual Studio 15 2017, 
-- Visual Studio 14 2015,
+- Visual Studio 15 2017
+- Visual Studio 14 2015
 - MinGW Makefiles
 
 ### Build Instructions:

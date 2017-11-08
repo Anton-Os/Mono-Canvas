@@ -101,3 +101,15 @@ public:
 private:
     GLuint indexCount;
 };
+
+class GL4_CellGrid : public GL4_Object3D {
+public:
+    GL4_CellGrid(GLfloat cellSize, GLfloat spacing, GLuint xCount, GLuint yCount){
+        create(cellSize, spacing, xCount, yCount);
+    }
+    enum feedParams {VAO, EBO, feedPos};
+    GLuint feed[3];
+    void create(GLfloat cellSize, GLfloat spacing, GLuint xCount, GLuint yCount);
+    void drawXI();
+    void drawFixedXI(GLenum drawMode, GLuint indexCount);
+};

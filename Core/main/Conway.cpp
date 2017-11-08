@@ -41,20 +41,11 @@ namespace Mouse {
 	GLfloat xOffset, yOffset;
 }
 
-namespace Player {
-	// glm::mat4 persMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 10.0f);
-	glm::mat4 persMatrix = glm::ortho(-1 * ((float)UI::width / 108), ((float)UI::width / 108), -1 * ((float)UI::height / 108), ((float)UI::height / 108), -10.0f, 10.0f);
+namespace Camera {
+	glm::mat4 perspectiveMatrix = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -10.0f, 10.0f);
 	glm::mat4 viewMatrix = glm::lookAt(glm::vec3(0.0, 0.0, 10.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 	glm::vec3 pos = glm::vec3(-4.0, -4.0, 0.0);
 	float mvSpeed = 0.5f;
-}
-
-namespace Terrain {
-	GLfloat rise = 3.0f;
-	GLfloat segCount = 10;
-	GLfloat xLength = 4.0f;
-	GLfloat thickness = 14.0f;
-	GLfloat length = segCount * xLength;
 }
 
 namespace Time {
@@ -66,7 +57,7 @@ namespace Time {
 	std::chrono::duration<double, std::nano> nanoSpan;
 }
 
-void God_keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
 	return;
 }
 
@@ -92,8 +83,7 @@ int main(int argc, char** argv) {
 
 	glfwMakeContextCurrent(window);
 	glfwGetFramebufferSize(window, &UI::width, &UI::height);
-	glfwSetKeyCallback(window, God_keyCallback);
-	// glfwSetCursorPosCallback(window, cursorPosCallback);
+	glfwSetKeyCallback(window, keyCallback);
 
 	if (glewInit() == GLEW_OK) std::cout << "GLEW initialized successfuly" << std::endl;
 	else {
@@ -107,12 +97,11 @@ int main(int argc, char** argv) {
 	std::string parentDir = getParentDirectory(argv[0]);
 
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
-	GLSL_Flatscape Flatscape(parentDir + "//shaders//Flatscape.vert", parentDir + "//shaders//Flatscape.frag");
+	// GLSL_Flatscape Flatscape(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
 
-	GL4_DataSet square0(2, &square2D_Pos[0], sizeof(float) * 12);
-	GL4_RigidPath rigidPath0(Terrain::rise, Terrain::thickness, Terrain::segCount, Terrain::xLength, 0.0);
-	Terrain::length = rigidPath0.get_length();
-	rigidPath0.relMatrix = glm::translate(glm::mat4(1), glm::vec3(-1 * Terrain::length, -1 * (Terrain::thickness / 2), 0.0));
+	GLfloat stupidDot3f[3] = {0.0f, 0.0f, 0.0f};
+	GL4_DataSet stupidDot(&stupidDot3f[0], 3);
+	GL4_CellGrid cellGrid(0.08, 0.03, 100, 100);
 
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -123,20 +112,15 @@ int main(int argc, char** argv) {
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glUseProgram(Flatscape.shaderProgID);
+		glPointSize(7.0f);
 
-		glPointSize(8.0f);
-		glLineWidth(11.0f);
+		glUseProgram(Idle.shaderProgID);
+		Idle.set_mvpMatrix(glm::mat4(1));
+		
+		// 	zstupidDot.draw(GL_POINTS, 1);
+		cellGrid.drawXI();
+		//cellGrid.drawFixedXI(GL_TRIANGLES, Time::secSpan.count() * 3000);
 
-		// Flatscape.set_renderMode(1);
-		// square0.draw(GL_TRIANGLE_STRIP, 4);
-		
-		Flatscape.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * rigidPath0.relMatrix);
-		Flatscape.set_renderMode(0);
-		rigidPath0.draw(GL_TRIANGLE_STRIP);
-		Flatscape.set_renderMode(2);
-		rigidPath0.draw(GL_POINTS);
-		
 		glfwSwapBuffers(window);
 	}
 

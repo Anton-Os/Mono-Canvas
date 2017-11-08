@@ -97,9 +97,28 @@ target_link_libraries(MandlebrotSet
     glfw
     gli
     glm
-    assimp
 )
 
+add_executable(Conway
+    loaders/LoadShaders.cpp
+    pipeline/GLSL_Idle.cpp
+    pipeline/GLSL_Flatscape.cpp
+    geometry/GL4_DataSet.cpp
+    geometry/GL4_CellGrid.cpp
+    scene/PlaneCollision.cpp
+    main/Conway.cpp
+)
+
+target_include_directories(Conway
+    PUBLIC include
+)
+
+target_link_libraries(Conway
+    GLEW::glew_s
+    glfw
+    gli
+    glm
+)
 
 set(SRC_SHADER_LIST)
 set(OUTPUT_SHADER_LIST)
