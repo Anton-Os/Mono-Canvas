@@ -25,10 +25,10 @@ foreach(currentFile ${GDRIVE_NAMES})
     message(STATUS "Downloading ${currentFile}")
     list(FIND GDRIVE_NAMES ${currentFile} currentIndex)
     list(GET GDRIVE_URLS ${currentIndex} currentUrl)
-    if(NOT EXISTS D:/AntonDocs/MonoCanvas/MSVC-2017/Extlib/${currentFile})
+    if(NOT EXISTS @CMAKE_SOURCE_DIR@/${currentFile})
         file(DOWNLOAD
             "${currentUrl}"
-             D:/AntonDocs/MonoCanvas/MSVC-2017/Extlib/${currentFile}
+             @CMAKE_BINARY_DIR@/${currentFile}
             SHOW_PROGRESS
         )
     endif()

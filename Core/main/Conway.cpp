@@ -101,7 +101,11 @@ int main(int argc, char** argv) {
 
 	GLfloat stupidDot3f[3] = {0.0f, 0.0f, 0.0f};
 	GL4_DataSet stupidDot(&stupidDot3f[0], 3);
-	GL4_CellGrid cellGrid(0.08, 0.03, 100, 100);
+	GL4_BumpGrid bumpGrid(0.0, 100, 100, 100, 100);
+
+	bumpGrid.relMatrix *= glm::scale(glm::mat4(1), glm::vec3(-50.0, 50.0, -50.0));
+	/* bumpGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(90), glm::vec3(1.0, 0.0, 0.0));
+	bumpGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::zDegree), glm::vec3(0.0, 0.0, 1.0)); */
 
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -115,10 +119,11 @@ int main(int argc, char** argv) {
 		glPointSize(7.0f);
 
 		glUseProgram(Idle.shaderProgID);
-		Idle.set_mvpMatrix(glm::mat4(1));
+		Idle.set_mvpMatrix(Camera::perspectiveMatrix * Camera::viewMatrix * bumpGrid.relMatrix);
+		// Idle.set_mvpMatrix(glm::mat4(1));
 		
 		// 	zstupidDot.draw(GL_POINTS, 1);
-		cellGrid.drawXI();
+		bumpGrid.draw();
 		//cellGrid.drawFixedXI(GL_TRIANGLES, Time::secSpan.count() * 3000);
 
 		glfwSwapBuffers(window);

@@ -99,21 +99,22 @@ target_link_libraries(MandlebrotSet
     glm
 )
 
-add_executable(Conway
+add_executable(ConwaysGOL
     loaders/LoadShaders.cpp
     pipeline/GLSL_Idle.cpp
     pipeline/GLSL_Flatscape.cpp
+    pipeline/GLSL_HeightRange.cpp
     geometry/GL4_DataSet.cpp
-    geometry/GL4_CellGrid.cpp
+    geometry/GL4_BumpGrid.cpp
     scene/PlaneCollision.cpp
-    main/Conway.cpp
+    main/ConwaysGOL.cpp
 )
 
-target_include_directories(Conway
+target_include_directories(ConwaysGOL
     PUBLIC include
 )
 
-target_link_libraries(Conway
+target_link_libraries(ConwaysGOL
     GLEW::glew_s
     glfw
     gli

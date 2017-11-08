@@ -84,11 +84,15 @@ public:
 
 class GL4_BumpGrid : public GL4_Object3D {
 public:
+    GL4_BumpGrid(GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount){
+        create(xDimension, rowCount, yDimension, colCount);
+    }
     GL4_BumpGrid(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount){
         create(rise, xDimension, rowCount, yDimension, colCount);
     }
     enum feedParams {VAO, EBO, feedPos, feedTexCoord, feedNormal};
     GLuint feed[5];
+    void create(GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount);
     void create(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount);
     void map(std::vector<GLfloat>* posAccum);
     void map(std::vector<GLuint>* indexAccum);
@@ -100,16 +104,4 @@ public:
     void drawFixed(GLenum drawMode, GLuint indexCount);
 private:
     GLuint indexCount;
-};
-
-class GL4_CellGrid : public GL4_Object3D {
-public:
-    GL4_CellGrid(GLfloat cellSize, GLfloat spacing, GLuint xCount, GLuint yCount){
-        create(cellSize, spacing, xCount, yCount);
-    }
-    enum feedParams {VAO, EBO, feedPos};
-    GLuint feed[3];
-    void create(GLfloat cellSize, GLfloat spacing, GLuint xCount, GLuint yCount);
-    void drawXI();
-    void drawFixedXI(GLenum drawMode, GLuint indexCount);
 };
