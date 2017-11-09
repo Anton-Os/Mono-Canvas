@@ -102,11 +102,11 @@ target_link_libraries(MandlebrotSet
 add_executable(ConwaysGOL
     loaders/LoadShaders.cpp
     pipeline/GLSL_Idle.cpp
-    pipeline/GLSL_Flatscape.cpp
-    pipeline/GLSL_HeightRange.cpp
+    pipeline/GLSL_StateStream.cpp
     geometry/GL4_DataSet.cpp
     geometry/GL4_BumpGrid.cpp
     scene/PlaneCollision.cpp
+    scene/CellSim.cpp
     main/ConwaysGOL.cpp
 )
 
@@ -127,6 +127,7 @@ foreach(current_shader "Idle.vert" "Idle.frag"
                        "HeightRange.vert" "HeightRange.frag"
                        "Flatscape.vert" "Flatscape.frag"
                        "Fractals.vert" "Fractals.frag"
+                       "StateStream.vert" "StateStream.frag"
 )
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/shaders/${current_shader}"
         DEPENDS "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"

@@ -22,3 +22,18 @@ public:
     bool trigFlip(const MidPointTrig* midPoint, const glm::vec2* posXY);
     glm::vec3 calcV90(const MidPointTrig* midPoint);
 };
+
+class Scene_CellSim {
+public:
+    Scene_CellSim(GL4_BumpGrid* bumpGrid, unsigned int count){
+        VAO = bumpGrid->feed[bumpGrid->VAO];
+        gen_startPoints(count);
+    }
+    enum stateParams { dead, alive };
+    void gen_startPoints(unsigned int count);
+    void scanGrid();
+    void updateStates();
+private:
+    unsigned int VAO;
+    std::vector<unsigned int> cellStates;
+};
