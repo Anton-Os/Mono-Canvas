@@ -64,6 +64,7 @@ private:
 class GL4_Object3D {
 public:
     glm::mat4 relMatrix;
+    GLuint get_vertexCount() { return vertexCount; }
 protected:
     GLuint vertexCount;
 };

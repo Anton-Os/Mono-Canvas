@@ -25,12 +25,24 @@ public:
 
 class Scene_CellSim {
 public:
-    Scene_CellSim(GL4_BumpGrid* bumpGrid, unsigned int count){
+    Scene_CellSim(GL4_BumpGrid* bumpGrid){
         VAO = bumpGrid->feed[bumpGrid->VAO];
-        gen_startPoints(count);
+        Scene_CellSim::cellStates.resize(bumpGrid->get_vertexCount());
+        gen_startPoints(bumpGrid->get_vertexCount());
     }
+    Scene_CellSim(GL4_BumpGrid* bumpGrid, unsigned int sparsity){
+        VAO = bumpGrid->feed[bumpGrid->VAO];
+        Scene_CellSim::cellStates.resize(bumpGrid->get_vertexCount());
+        gen_startPoints(bumpGrid->get_vertexCount(), sparsity);
+    }
+    /* Scene_CellSim(GL4_BumpGrid* bumpGrid, unsigned int count){
+        VAO = bumpGrid->feed[bumpGrid->VAO];
+        Scene_CellSim::cellStates.resize(count);
+        gen_startPoints(count);
+    } */
     enum stateParams { dead, alive };
     void gen_startPoints(unsigned int count);
+    void gen_startPoints(unsigned int count, unsigned int sparsity);
     void scanGrid();
     void updateStates();
 private:
