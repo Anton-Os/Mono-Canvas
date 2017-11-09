@@ -72,6 +72,20 @@ void GL4_BumpGrid::create(GLuint xDimension, GLuint rowCount, GLuint yDimension,
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 	glEnableVertexAttribArray(2);
 
+	/* MARKED FOR DELETION */
+
+	std::vector<GLuint> cellStates(vertexID, 2);
+
+	GLuint cellStateBuffer;
+	glGenBuffers(1, &cellStateBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, cellStateBuffer);
+	glBufferData(GL_ARRAY_BUFFER, cellStates.size() * sizeof(GLuint), &cellStates[0], GL_STATIC_DRAW);
+	// glVertexAttribPointer(4, 1, GL_UNSIGNED_INT, GL_FALSE, 0, (GLvoid*)0);
+	glVertexAttribIPointer(4, 1, GL_UNSIGNED_INT, 0, (GLvoid*)0);
+	glEnableVertexAttribArray(4);
+
+	/* MARKED FOR DELETION */
+
 	GL4_BumpGrid::vertexCount = vertexID;
 	GL4_BumpGrid::indexCount = indexID;
 	GL4_BumpGrid::feed[GL4_BumpGrid::EBO] = feedBuffers[0];
