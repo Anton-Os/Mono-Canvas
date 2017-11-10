@@ -15,7 +15,7 @@ void main(){
     vec3 blue = vec3(0.3, 0.5, 0.9);
     
     if(state == 1){
-        frag_out = vec4(red, 1.0);
+        frag_out = vec4(white, 1.0);
     } else if (state == 2){
         frag_out = vec4(green, 1.0);
     } else if (state == 3){

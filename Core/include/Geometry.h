@@ -86,9 +86,13 @@ public:
 class GL4_BumpGrid : public GL4_Object3D {
 public:
     GL4_BumpGrid(GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount){
+        rows = rowCount;
+        columns = colCount;
         create(xDimension, rowCount, yDimension, colCount);
     }
     GL4_BumpGrid(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount){
+        rows = rowCount;
+        columns = colCount;
         create(rise, xDimension, rowCount, yDimension, colCount);
     }
     enum feedParams {VAO, EBO, feedPos, feedTexCoord, feedNormal};
@@ -97,6 +101,8 @@ public:
     void create(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount);
     void map(std::vector<GLfloat>* posAccum);
     void map(std::vector<GLuint>* indexAccum);
+    GLuint get_rowCount() { return rows; }
+    GLuint get_colCount() { return columns; }
     void gen_midPointQ(std::vector<MidPointQuad>* midPoints);
     void gen_midPointT(std::vector<MidPointTrig>* midPoints);
     void gen_midPoint45(std::vector<MidPoint45>* midPoints);
@@ -105,4 +111,5 @@ public:
     void drawFixed(GLenum drawMode, GLuint indexCount);
 private:
     GLuint indexCount;
+    GLuint rows; GLuint columns;
 };

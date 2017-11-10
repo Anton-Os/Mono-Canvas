@@ -1,8 +1,7 @@
 #version 430 core
 
 layout(location = 0) in vec3 pos;
-layout(location = 4) in uint state;
-// layout(location = 4) in float state;
+layout(location = 5) in uint state;
 
 uniform mat4 mvpMatrix;
 

@@ -2,25 +2,34 @@
 
 void Scene_CellSim::gen_startPoints(unsigned int count){
     for(unsigned int currentCell = 0; currentCell < count; currentCell++){
-        Scene_CellSim::cellStates[currentCell] = Scene_CellSim::alive;
+        if(currentCell % 5 == 0) // Marked for change, make relative to count arg
+            Scene_CellSim::cellStates[currentCell] = Scene_CellSim::alive;
+        else
+            Scene_CellSim::cellStates[currentCell] = Scene_CellSim::dead;
     }
 }
 
-/*void Scene_CellSim::gen_startPoints(unsigned int count, unsigned int sparsity){
-    unsigned int maxStride = count / sparsity;
-    unsigned int currentOffset = 0;
-
-    for(unsigned int currentStride = 0; currentStride < maxStride; currentOffset++){
-        if(currentOffset >= maxStride) currentOffset = 0;
-        
-        unsigned int randomCell = (unsigned int)((static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX)) * maxStride);
-        for(unsigned int currentCell = 0; currentCell < maxStride; currentCell++){
-            if(currentCell != randomCell) Scene_CellSim::cellStates[currentOffset * maxStride + currentCell] = Scene_CellSim::dead;
-            else Scene_CellSim::cellStates[currentOffset * maxStride + currentCell] = Scene_CellSim::alive;
-        }
+void Scene_CellSim::gen_startPoints(unsigned int count, float probability){
+    if(probability > 1.0 || probability < 0.0){
+        std::cerr << "Scene_CellSim::gen_startPoints() needs a probability between 0.0 (no chance) or 1.0 (always spawn)" << std::endl;
+        return;
     }
-} */
+    srand(time(NULL));
+    for(unsigned int currentCell = 0; currentCell < count; currentCell++){
+        float chance = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
+        if(chance < probability)
+            Scene_CellSim::cellStates[currentCell] = Scene_CellSim::alive;
+        else
+            Scene_CellSim::cellStates[currentCell] = Scene_CellSim::dead;
+    }
+    return;
+}
 
+void Scene_CellSim::scanGrid(){
+    std::cout << "Row Count: " << Scene_CellSim::rows << std::endl;
+    std::cout << "Column Count: " << Scene_CellSim::columns << std::endl;
+    return;
+}
 
 void Scene_CellSim::updateStates(){
     glBindVertexArray(Scene_CellSim::VAO);
@@ -29,7 +38,7 @@ void Scene_CellSim::updateStates(){
 	glGenBuffers(1, &cellStateBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, cellStateBuffer);
 	glBufferData(GL_ARRAY_BUFFER, Scene_CellSim::cellStates.size() * sizeof(GLuint), &Scene_CellSim::cellStates[0], GL_STATIC_DRAW);
-	glVertexAttribIPointer(4, 1, GL_UNSIGNED_INT, 0, (GLvoid*)0);
-	glEnableVertexAttribArray(4);
+	glVertexAttribIPointer(5, 1, GL_UNSIGNED_INT, 0, (GLvoid*)0);
+	glEnableVertexAttribArray(5);
     glBindVertexArray(0);
 }

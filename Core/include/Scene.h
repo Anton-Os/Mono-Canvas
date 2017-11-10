@@ -27,25 +27,25 @@ class Scene_CellSim {
 public:
     Scene_CellSim(GL4_BumpGrid* bumpGrid){
         VAO = bumpGrid->feed[bumpGrid->VAO];
+        rows = bumpGrid->get_rowCount();
+        columns = bumpGrid->get_colCount();
         Scene_CellSim::cellStates.resize(bumpGrid->get_vertexCount());
         gen_startPoints(bumpGrid->get_vertexCount());
     }
-    Scene_CellSim(GL4_BumpGrid* bumpGrid, unsigned int sparsity){
+    Scene_CellSim(GL4_BumpGrid* bumpGrid, float probability){
         VAO = bumpGrid->feed[bumpGrid->VAO];
+        rows = bumpGrid->get_rowCount();
+        columns = bumpGrid->get_colCount();
         Scene_CellSim::cellStates.resize(bumpGrid->get_vertexCount());
-        gen_startPoints(bumpGrid->get_vertexCount(), sparsity);
+        gen_startPoints(bumpGrid->get_vertexCount(), probability);
     }
-    /* Scene_CellSim(GL4_BumpGrid* bumpGrid, unsigned int count){
-        VAO = bumpGrid->feed[bumpGrid->VAO];
-        Scene_CellSim::cellStates.resize(count);
-        gen_startPoints(count);
-    } */
     enum stateParams { dead, alive };
-    void gen_startPoints(unsigned int count);
-    void gen_startPoints(unsigned int count, unsigned int sparsity);
     void scanGrid();
     void updateStates();
 private:
     unsigned int VAO;
+    unsigned int rows; unsigned int columns;
     std::vector<unsigned int> cellStates;
+    void gen_startPoints(unsigned int count);
+    void gen_startPoints(unsigned int count, float probability);
 };

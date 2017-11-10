@@ -112,7 +112,9 @@ int main(int argc, char** argv) {
 	GLSL_StateStream stateStream(parentDir + "//shaders//StateStream.vert", parentDir + "//shaders//StateStream.frag");
 
 	GL4_BumpGrid bumpGrid(196, 220, 196, 220);
-	Scene_CellSim cellSim(&bumpGrid, 100);
+	Scene_CellSim cellSim(&bumpGrid, 0.01);
+
+	cellSim.scanGrid();
 
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -124,9 +126,9 @@ int main(int argc, char** argv) {
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		cellSim.updateStates();
-
 		glUseProgram(stateStream.shaderProgID);
+
+		cellSim.updateStates();
 		stateStream.set_mvpMatrix(Player::perspectiveMatrix * Player::viewMatrix * bumpGrid.relMatrix);
 		bumpGrid.draw();
 
