@@ -5,7 +5,7 @@ void Scene_CellSim::gen_startPoints(unsigned int count){
         if(currentCell % 5 == 0) // Marked for change, make relative to count arg
             Scene_CellSim::cellStates[currentCell] = Scene_CellSim::alive;
         else
-            Scene_CellSim::cellStates[currentCell] = Scene_CellSim::dead;
+            Scene_CellSim::cellStates[currentCell] = Scene_CellSim::untouched;
     }
 }
 
@@ -20,14 +20,16 @@ void Scene_CellSim::gen_startPoints(unsigned int count, float probability){
         if(chance < probability)
             Scene_CellSim::cellStates[currentCell] = Scene_CellSim::alive;
         else
-            Scene_CellSim::cellStates[currentCell] = Scene_CellSim::dead;
+            Scene_CellSim::cellStates[currentCell] = Scene_CellSim::untouched;
     }
     return;
 }
 
 void Scene_CellSim::scanGrid(){
-    std::cout << "Row Count: " << Scene_CellSim::rows << std::endl;
-    std::cout << "Column Count: " << Scene_CellSim::columns << std::endl;
+    for(unsigned int currentCell = 0; currentCell < Scene_CellSim::cellStates.size(); currentCell++){
+        if(currentCell < rows) Scene_CellSim::cellStates[currentCell] = Scene_CellSim::dead;
+        // else if(currentCell > Scene_CellSim::cellStates.size() - rows) Scene_CellSim::cellStates[currentCell] = Scene_CellSim::born;
+    }
     return;
 }
 

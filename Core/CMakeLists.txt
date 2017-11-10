@@ -105,6 +105,7 @@ add_executable(ConwaysGOL
     pipeline/GLSL_StateStream.cpp
     geometry/GL4_DataSet.cpp
     geometry/GL4_BumpGrid.cpp
+    geometry/GL4_PointGrid.cpp
     scene/PlaneCollision.cpp
     scene/CellSim.cpp
     main/ConwaysGOL.cpp

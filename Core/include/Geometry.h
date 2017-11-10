@@ -113,3 +113,15 @@ private:
     GLuint indexCount;
     GLuint rows; GLuint columns;
 };
+
+class GL4_PointGrid : public GL4_Object3D {
+public:
+    GL4_PointGrid(GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount){
+        create(xDimension, rowCount, yDimension, colCount);
+    }
+    enum feedParams {VAO, feedPos};
+    GLuint feed[2];
+    void create(GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount);
+    void draw();
+    void draw(float pointSize);
+};

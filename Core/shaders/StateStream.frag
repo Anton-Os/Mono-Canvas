@@ -21,7 +21,7 @@ void main(){
     } else if (state == 3){
         frag_out = vec4(blue, 1.0);
     } else {
-        if(vertexID % 2 == 0) frag_out = vec4(lightGrey, 0.0);
-        else frag_out = vec4(white, 0.2);
+        if(vertexID % 2 == 0) frag_out = vec4(lightGrey, 1.0);
+        else frag_out = vec4(white, 1.0);
     }
 }

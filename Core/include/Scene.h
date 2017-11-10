@@ -39,7 +39,7 @@ public:
         Scene_CellSim::cellStates.resize(bumpGrid->get_vertexCount());
         gen_startPoints(bumpGrid->get_vertexCount(), probability);
     }
-    enum stateParams { dead, alive };
+    enum stateParams { untouched, alive, dead, born };
     void scanGrid();
     void updateStates();
 private:
@@ -48,4 +48,14 @@ private:
     std::vector<unsigned int> cellStates;
     void gen_startPoints(unsigned int count);
     void gen_startPoints(unsigned int count, float probability);
+};
+
+class Scene_CellSimV2 {
+public:
+    void createGrid();
+    void gen_startPoints();
+    void scanGrid();
+    void updateCells();
+private:
+    std::vector< std::vector<unsigned int>> cellStates;
 };

@@ -111,12 +111,10 @@ int main(int argc, char** argv) {
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
 	GLSL_StateStream stateStream(parentDir + "//shaders//StateStream.vert", parentDir + "//shaders//StateStream.frag");
 
-	// GL4_BumpGrid bumpGrid(196, 220, 196, 221);
-	// Scene_CellSim cellSim(&bumpGrid, 0.01);
+	GL4_BumpGrid bumpGrid(196, 220, 196, 221);
+	Scene_CellSim cellSim(&bumpGrid, 0.01);
 
-	GL4_PointGrid pointGrid(200, 100, 200, 100);
-
-	// cellSim.scanGrid();
+	cellSim.scanGrid();
 
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -130,11 +128,9 @@ int main(int argc, char** argv) {
 
 		glUseProgram(stateStream.shaderProgID);
 
-		// cellSim.updateStates();
-		// stateStream.set_mvpMatrix(Player::perspectiveMatrix * Player::viewMatrix * bumpGrid.relMatrix);
-		// bumpGrid.draw();
-
-		pointGrid.draw(20.0f);
+		cellSim.updateStates();
+		stateStream.set_mvpMatrix(Player::perspectiveMatrix * Player::viewMatrix * bumpGrid.relMatrix);
+		bumpGrid.draw();
 
 		glDisable(GL_DEPTH_TEST);
 

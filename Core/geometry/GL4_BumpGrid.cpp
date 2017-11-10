@@ -11,6 +11,7 @@ void GL4_BumpGrid::create(GLuint xDimension, GLuint rowCount, GLuint yDimension,
 	std::vector<GLuint> indexAccum;
 
 	GLuint vertexID = 0;
+	GLuint rows = 0; GLuint columns = 0;
 	GLuint indexID = 0;
 
 	for (GLfloat currentCol = -1 * (GLfloat)yDimension / 2; currentCol <= (GLfloat)yDimension / 2; currentCol += colSize) {
@@ -38,9 +39,11 @@ void GL4_BumpGrid::create(GLuint xDimension, GLuint rowCount, GLuint yDimension,
 
 				indexID++;
 			}
+			else if(lastCol == true) rows++;
 			else lastRow = false;
 			vertexID++;
 		}
+		columns++;
 	}
 
 	std::vector<GLfloat> nrmAccum;
@@ -73,6 +76,8 @@ void GL4_BumpGrid::create(GLuint xDimension, GLuint rowCount, GLuint yDimension,
 	glEnableVertexAttribArray(2);
 
 	GL4_BumpGrid::vertexCount = vertexID;
+	GL4_BumpGrid::rows = rows;
+	GL4_BumpGrid::columns = columns;
 	GL4_BumpGrid::indexCount = indexID;
 	GL4_BumpGrid::feed[GL4_BumpGrid::EBO] = feedBuffers[0];
 	GL4_BumpGrid::feed[GL4_BumpGrid::feedPos] = feedBuffers[1];
