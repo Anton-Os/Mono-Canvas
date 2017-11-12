@@ -42,7 +42,7 @@ void Scene_CellSim::gen_startPoints(unsigned int count, float probability){
 } */
 
 void Scene_CellSim::scanGrid(){
-    unsigned int proxEight[8];
+    std::array<unsigned int, 8> proxEight;
     for(unsigned int currentCell = 0; currentCell < Scene_CellSim::cellStates.size(); currentCell++){
         if(currentCell < Scene_CellSim::xyCount || 
            currentCell >= Scene_CellSim::cellStates.size() - Scene_CellSim::xyCount ||
@@ -50,8 +50,6 @@ void Scene_CellSim::scanGrid(){
            (currentCell + 1) % Scene_CellSim::xyCount == 0 ) {
                continue;
         }
-        uint8_t deadCount = 0;
-        uint8_t aliveCount = 0;
         proxEight[0] = Scene_CellSim::cellStates[currentCell - Scene_CellSim::xyCount - 1];
         proxEight[1] = Scene_CellSim::cellStates[currentCell - Scene_CellSim::xyCount];
         proxEight[2] = Scene_CellSim::cellStates[currentCell - Scene_CellSim::xyCount + 1];
@@ -60,13 +58,48 @@ void Scene_CellSim::scanGrid(){
         proxEight[5] = Scene_CellSim::cellStates[currentCell + Scene_CellSim::xyCount - 1];
         proxEight[6] = Scene_CellSim::cellStates[currentCell + Scene_CellSim::xyCount];
         proxEight[7] = Scene_CellSim::cellStates[currentCell + Scene_CellSim::xyCount + 1];
-        for(unsigned int proxElem = 0; proxElem < 8; proxElem++){
-            if(proxEight[proxElem] == Scene_CellSim::alive) aliveCount++;
-            else deadCount++;
-        }
-        if(aliveCount < deadCount) Scene_CellSim::cellStates[currentCell] = Scene_CellSim::born;
+        Scene_CellSim::cellStates[currentCell] = determineState_v2(Scene_CellSim::cellStates[currentCell], &proxEight);
     }
     return;
+}
+
+unsigned int Scene_CellSim::determineState(unsigned int cellState, const std::array<unsigned int, 8>* proxStates){
+    uint8_t goodNeighbors = 0;
+    uint8_t badNeighbors = 0;
+    for(unsigned int proxElem = 0; proxElem < 8; proxElem++){
+        if(proxStates->at(proxElem) == Scene_CellSim::alive) goodNeighbors++;
+        else badNeighbors++;
+    }
+    if(cellState == Scene_CellSim::alive){
+        if(goodNeighbors > 1 && goodNeighbors < 4) return cellState;
+        else return Scene_CellSim::dead;
+    } if(cellState == Scene_CellSim::untouched || cellState == Scene_CellSim::dead){
+        if(goodNeighbors > 1 && goodNeighbors < 4) return Scene_CellSim::alive;
+        else return cellState;
+    }
+}
+
+unsigned int Scene_CellSim::determineState_v2(unsigned int cellState, const std::array<unsigned int, 8>* proxStates){
+    uint8_t goodNeighbors = 0;
+    uint8_t badNeighbors = 0;
+    for(unsigned int proxElem = 0; proxElem < 8; proxElem++){
+        if(proxStates->at(proxElem) == Scene_CellSim::alive || 
+           proxStates->at(proxElem) == Scene_CellSim::born)
+           goodNeighbors++;
+        else badNeighbors++;
+    }
+    if(cellState == Scene_CellSim::alive){
+        if(goodNeighbors > 1 && goodNeighbors < 4) return cellState;
+        else return Scene_CellSim::dead;
+    } else if(cellState == Scene_CellSim::born){
+        if(goodNeighbors > 1 && goodNeighbors < 4) return Scene_CellSim::alive;
+        else return Scene_CellSim::quickDead;
+    } else if(cellState == Scene_CellSim::untouched || 
+              cellState == Scene_CellSim::dead || 
+              cellState == Scene_CellSim::quickDead){
+        if(goodNeighbors > 1 && goodNeighbors < 4) return Scene_CellSim::born;
+        else return cellState;
+    }
 }
 
 void Scene_CellSim::updateStates(){

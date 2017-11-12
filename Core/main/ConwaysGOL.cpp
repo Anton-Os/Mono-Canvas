@@ -51,13 +51,15 @@ namespace Player {
 }
 
 namespace Terrain {
-	GLfloat rise = 30.0f;
-	GLfloat distance = -200.0f;
-	GLfloat xDegree = 0.0f;
-	GLfloat zDegree = 0.0f;
+	bool firstCreation = true;
+	float pointSize = 4.5;
+	float probability = 0.04;
+	unsigned int xyCount = 150;
 }
 
 namespace Time {
+	float threshold = 2.0;
+	float pace = 1.0;
 	std::chrono::steady_clock::time_point sceneSetup;
 	std::chrono::steady_clock::time_point sceneUpdate;
 	std::chrono::duration<double> secSpan;
@@ -111,26 +113,30 @@ int main(int argc, char** argv) {
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
 	GLSL_StateStream stateStream(parentDir + "//shaders//StateStream.vert", parentDir + "//shaders//StateStream.frag");
 
-	GL4_BumpGrid bumpGrid(194, 100, 194, 100);
+	GL4_BumpGrid bumpGrid(194, Terrain::xyCount, 194, Terrain::xyCount);
 
-	Scene_CellSim cellSim(&bumpGrid, 0.5);
+	Scene_CellSim cellSim(&bumpGrid, Terrain::probability);
+	cellSim.updateStates();
 
-	cellSim.scanGrid();
-
-	glPointSize(6.0f);
+	glPointSize(Terrain::pointSize);
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
 		Time::sceneUpdate = std::chrono::steady_clock::now();
 		Time::secSpan = std::chrono::duration_cast<std::chrono::duration<double>>(Time::sceneUpdate - Time::sceneSetup);
 
 		glfwPollEvents();
-		glClearColor(0.949f, 0.917f, 0.803f, 1.0f);
+		// glClearColor(0.949f, 0.917f, 0.803f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(stateStream.shaderProgID);
 
-		cellSim.updateStates();
+		if(Time::secSpan.count() > Time::threshold){
+			Time::threshold = Time::secSpan.count() + Time::pace;
+			cellSim.scanGrid();
+			cellSim.updateStates();
+		}
 		stateStream.set_mvpMatrix(Player::perspectiveMatrix * Player::viewMatrix * bumpGrid.relMatrix);
 		bumpGrid.drawXI(GL_POINTS);
 

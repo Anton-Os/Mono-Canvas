@@ -41,7 +41,7 @@ public:
         xyCount = std::sqrt(bumpGrid->get_vertexCount());
         gen_startPoints(bumpGrid->get_vertexCount(), probability);
     }
-    enum stateParams { untouched, alive, dead, born };
+    enum stateParams { untouched, alive, dead, born, quickDead };
     void scanGrid();
     void updateStates();
 private:
@@ -50,4 +50,6 @@ private:
     std::vector<unsigned int> cellStates;
     void gen_startPoints(unsigned int count);
     void gen_startPoints(unsigned int count, float probability);
+    unsigned int determineState(unsigned int cellState, const std::array<unsigned int, 8>* proxStates);
+    unsigned int determineState_v2(unsigned int cellState, const std::array<unsigned int, 8>* proxStates);
 };
