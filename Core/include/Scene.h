@@ -26,17 +26,19 @@ public:
 class Scene_CellSim {
 public:
     Scene_CellSim(GL4_BumpGrid* bumpGrid){
+        if(! bumpGrid->get_isSquare())
+            std::cout << "! BumpGrid not a perfect square, use different constructor" << std::endl;
         VAO = bumpGrid->feed[bumpGrid->VAO];
-        rows = bumpGrid->get_rowCount();
-        columns = bumpGrid->get_colCount();
         Scene_CellSim::cellStates.resize(bumpGrid->get_vertexCount());
+        xyCount = std::sqrt(bumpGrid->get_vertexCount());
         gen_startPoints(bumpGrid->get_vertexCount());
     }
     Scene_CellSim(GL4_BumpGrid* bumpGrid, float probability){
+        if(! bumpGrid->get_isSquare())
+            std::cout << "! BumpGrid not a perfect square, use different constructor" << std::endl;
         VAO = bumpGrid->feed[bumpGrid->VAO];
-        rows = bumpGrid->get_rowCount();
-        columns = bumpGrid->get_colCount();
         Scene_CellSim::cellStates.resize(bumpGrid->get_vertexCount());
+        xyCount = std::sqrt(bumpGrid->get_vertexCount());
         gen_startPoints(bumpGrid->get_vertexCount(), probability);
     }
     enum stateParams { untouched, alive, dead, born };
@@ -44,18 +46,8 @@ public:
     void updateStates();
 private:
     unsigned int VAO;
-    unsigned int rows; unsigned int columns;
+    GLuint xyCount;
     std::vector<unsigned int> cellStates;
     void gen_startPoints(unsigned int count);
     void gen_startPoints(unsigned int count, float probability);
-};
-
-class Scene_CellSimV2 {
-public:
-    void createGrid();
-    void gen_startPoints();
-    void scanGrid();
-    void updateCells();
-private:
-    std::vector< std::vector<unsigned int>> cellStates;
 };

@@ -89,3 +89,4 @@ private:
     GLuint unifLoc[1];
     void initUniforms();
 };
+

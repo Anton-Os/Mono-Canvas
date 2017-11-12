@@ -7,6 +7,7 @@ layout(location = 1) in flat uint state;
 layout(location = 0) out vec4 frag_out;
 
 void main(){
+    vec3 black = vec3(0.0, 0.0, 0.0);
     vec3 lightGrey = vec3(0.95, 0.95, 0.95);
     vec3 white = vec3(1.0, 1.0, 1.0);
 
@@ -21,7 +22,7 @@ void main(){
     } else if (state == 3){
         frag_out = vec4(blue, 1.0);
     } else {
-        if(vertexID % 2 == 0) frag_out = vec4(lightGrey, 1.0);
-        else frag_out = vec4(white, 1.0);
+        if(vertexID % 2 == 0) frag_out = vec4(black, 1.0);
+        else frag_out = vec4(black, 0.5);
     }
 }

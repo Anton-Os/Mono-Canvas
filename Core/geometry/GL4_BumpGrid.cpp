@@ -11,15 +11,20 @@ void GL4_BumpGrid::create(GLuint xDimension, GLuint rowCount, GLuint yDimension,
 	std::vector<GLuint> indexAccum;
 
 	GLuint vertexID = 0;
-	GLuint rows = 0; GLuint columns = 0;
 	GLuint indexID = 0;
+	srand(time(NULL));
 
-	for (GLfloat currentCol = -1 * (GLfloat)yDimension / 2; currentCol <= (GLfloat)yDimension / 2; currentCol += colSize) {
+	GLfloat rowOffset = -1 * (GLfloat)xDimension / 2;	
+	GLfloat colOffset = -1 * (GLfloat)yDimension / 2;
+	for (GLuint currentCol = 0; currentCol < colCount; currentCol++) {
+		colOffset += colSize;
 		if (currentCol >= (yDimension / 2) - colSize) lastCol = true;
-		for (GLfloat currentRow = -1 * (GLfloat)xDimension / 2; currentRow <= (GLfloat)xDimension / 2; currentRow += rowSize) {
-			posAccum.push_back(currentRow);
-			posAccum.push_back(currentCol);
-			posAccum.push_back(0.0);
+		rowOffset = -1 * (GLfloat)xDimension / 2;
+		for (GLuint currentRow = 0; currentRow < rowCount; currentRow++) {
+			rowOffset += rowSize;
+			posAccum.push_back(rowOffset);
+			posAccum.push_back(colOffset);
+			posAccum.push_back(0.0f);
 
 			if (vertexID % (rowCount * 2) < rowCount) uTex = 0.0;
 			else uTex = 1.0;
@@ -39,11 +44,9 @@ void GL4_BumpGrid::create(GLuint xDimension, GLuint rowCount, GLuint yDimension,
 
 				indexID++;
 			}
-			else if(lastCol == true) rows++;
 			else lastRow = false;
 			vertexID++;
 		}
-		columns++;
 	}
 
 	std::vector<GLfloat> nrmAccum;
@@ -76,8 +79,6 @@ void GL4_BumpGrid::create(GLuint xDimension, GLuint rowCount, GLuint yDimension,
 	glEnableVertexAttribArray(2);
 
 	GL4_BumpGrid::vertexCount = vertexID;
-	GL4_BumpGrid::rows = rows;
-	GL4_BumpGrid::columns = columns;
 	GL4_BumpGrid::indexCount = indexID;
 	GL4_BumpGrid::feed[GL4_BumpGrid::EBO] = feedBuffers[0];
 	GL4_BumpGrid::feed[GL4_BumpGrid::feedPos] = feedBuffers[1];
@@ -368,7 +369,7 @@ void GL4_BumpGrid::gen_midPointT(std::vector<MidPointTrig>* midPoints){
 }
 
 void GL4_BumpGrid::map(std::vector<GLfloat>* posAccum){
-    glBindVertexArray(GL4_BumpGrid::feed[0]);
+    glBindVertexArray(GL4_BumpGrid::feed[GL4_BumpGrid::VAO]);
     glBindBuffer(GL_ARRAY_BUFFER, GL4_BumpGrid::feed[GL4_BumpGrid::feedPos]);
     GLfloat* posData = (GLfloat*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
 	posAccum->resize(GL4_BumpGrid::vertexCount * 3);
@@ -382,7 +383,7 @@ void GL4_BumpGrid::map(std::vector<GLfloat>* posAccum){
 }
 
 void GL4_BumpGrid::map(std::vector<GLuint>* indexAccum){
-    glBindVertexArray(GL4_BumpGrid::feed[0]);
+    glBindVertexArray(GL4_BumpGrid::feed[GL4_BumpGrid::VAO]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL4_BumpGrid::feed[GL4_BumpGrid::EBO]);
     GLuint* indexData = (GLuint*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_READ_ONLY);
 	indexAccum->resize(GL4_BumpGrid::indexCount * 6);
@@ -396,20 +397,26 @@ void GL4_BumpGrid::map(std::vector<GLuint>* indexAccum){
 }
 
 void GL4_BumpGrid::draw(){
-    glBindVertexArray(GL4_BumpGrid::feed[0]);
+    glBindVertexArray(GL4_BumpGrid::feed[GL4_BumpGrid::VAO]);
     glDrawElements(GL_TRIANGLES, GL4_BumpGrid::vertexCount * 6, GL_UNSIGNED_INT, 0);
     // glDrawArrays(GL_LINES, 0, GL4_BumpGrid::vertexCount);
     glBindVertexArray(0);
 }
 
 void GL4_BumpGrid::draw(GLenum drawMode){
-    glBindVertexArray(GL4_BumpGrid::feed[0]);
+    glBindVertexArray(GL4_BumpGrid::feed[GL4_BumpGrid::VAO]);
     glDrawElements(drawMode, GL4_BumpGrid::vertexCount * 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 
+void GL4_BumpGrid::drawXI(GLenum drawMode){
+	glBindVertexArray(GL4_BumpGrid::feed[GL4_BumpGrid::VAO]);
+    glDrawArrays(drawMode, 0, GL4_BumpGrid::vertexCount);
+    glBindVertexArray(0);
+}
+
 void GL4_BumpGrid::drawFixed(GLenum drawMode, GLuint indexCount){
-    glBindVertexArray(GL4_BumpGrid::feed[0]);
+    glBindVertexArray(GL4_BumpGrid::feed[GL4_BumpGrid::VAO]);
     if(indexCount > GL4_BumpGrid::vertexCount * 6) glDrawElements(drawMode, GL4_BumpGrid::vertexCount * 6, GL_UNSIGNED_INT, 0);
     else glDrawElements(drawMode, indexCount, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
