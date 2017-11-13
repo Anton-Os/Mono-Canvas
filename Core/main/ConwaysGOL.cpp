@@ -43,7 +43,6 @@ namespace Mouse {
 
 namespace Player {
 	GLboolean isGod = true;
-	// glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
 	glm::mat4 perspectiveMatrix = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, -10.0f, 10.0f);
 	glm::mat4 viewMatrix(1);
 	glm::vec3 pos = glm::vec3(-4.0, -4.0, 0.0);
@@ -53,7 +52,7 @@ namespace Player {
 namespace Terrain {
 	bool firstCreation = true;
 	float pointSize = 4.5;
-	float probability = 0.04;
+	float probability = 0.02;
 	unsigned int xyCount = 150;
 }
 

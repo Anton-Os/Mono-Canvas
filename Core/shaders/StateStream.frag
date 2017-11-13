@@ -7,7 +7,10 @@ layout(location = 1) in flat uint state;
 layout(location = 0) out vec4 frag_out;
 
 void main(){
+    float perishA = 0.75;
+
     vec3 black = vec3(0.0, 0.0, 0.0);
+    vec3 semiGrey = vec3(0.7, 0.7, 0.7);
     vec3 lightGrey = vec3(0.95, 0.95, 0.95);
     vec3 white = vec3(1.0, 1.0, 1.0);
 
@@ -21,11 +24,15 @@ void main(){
     if(state == 1){ // ALIVE
         frag_out = vec4(white, 1.0);
     } else if (state == 2){ // DEAD
-        frag_out = vec4(red, 1.0);
+        frag_out = vec4(red, perishA);
     } else if (state == 3){ // BORN
         frag_out = vec4(green, 1.0);
     } else if (state == 4){ // QUICKDEAD
-        frag_out = vec4(yellow, 1.0);
+        frag_out = vec4(yellow, perishA);
+    } else if (state == 5){ // SECOND GENERATION
+        frag_out = vec4(lightGrey, 1.0);
+    } else if (state == 6){ // THIRD GENERATION
+        frag_out = vec4(semiGrey, 1.0);
     } else { // UNTOUCHED
         if(vertexID % 2 == 0) frag_out = vec4(white, 0.2);
         else frag_out = vec4(white, 0.15);

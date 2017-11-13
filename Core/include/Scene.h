@@ -30,6 +30,7 @@ public:
             std::cout << "! BumpGrid not a perfect square, use different constructor" << std::endl;
         VAO = bumpGrid->feed[bumpGrid->VAO];
         Scene_CellSim::cellStates.resize(bumpGrid->get_vertexCount());
+        Scene_CellSim::prevCellStates.resize(bumpGrid->get_vertexCount());
         xyCount = std::sqrt(bumpGrid->get_vertexCount());
         gen_startPoints(bumpGrid->get_vertexCount());
     }
@@ -38,16 +39,18 @@ public:
             std::cout << "! BumpGrid not a perfect square, use different constructor" << std::endl;
         VAO = bumpGrid->feed[bumpGrid->VAO];
         Scene_CellSim::cellStates.resize(bumpGrid->get_vertexCount());
+        Scene_CellSim::prevCellStates.resize(bumpGrid->get_vertexCount());
         xyCount = std::sqrt(bumpGrid->get_vertexCount());
         gen_startPoints(bumpGrid->get_vertexCount(), probability);
     }
-    enum stateParams { untouched, alive, dead, born, quickDead };
+    enum stateParams { untouched, alive, dead, born, quickDead, secondGen, thirdGen };
     void scanGrid();
     void updateStates();
 private:
     unsigned int VAO;
     GLuint xyCount;
     std::vector<unsigned int> cellStates;
+    std::vector<unsigned int> prevCellStates;
     void gen_startPoints(unsigned int count);
     void gen_startPoints(unsigned int count, float probability);
     unsigned int determineState(unsigned int cellState, const std::array<unsigned int, 8>* proxStates);
