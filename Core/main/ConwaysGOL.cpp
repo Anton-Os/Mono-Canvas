@@ -51,14 +51,15 @@ namespace Player {
 
 namespace Terrain {
 	bool firstCreation = true;
-	float pointSize = 4.5;
-	float probability = 0.02;
-	unsigned int xyCount = 150;
+	float pointSize = 3.0;
+	// 	float probability = 0.02;
+	float probability = 0.4;
+	unsigned int xyCount = 200;
 }
 
 namespace Time {
 	float threshold = 2.0;
-	float pace = 1.0;
+	float pace = 0.05f;
 	std::chrono::steady_clock::time_point sceneSetup;
 	std::chrono::steady_clock::time_point sceneUpdate;
 	std::chrono::duration<double> secSpan;
@@ -115,6 +116,7 @@ int main(int argc, char** argv) {
 	GL4_BumpGrid bumpGrid(194, Terrain::xyCount, 194, Terrain::xyCount);
 
 	Scene_CellSim cellSim(&bumpGrid, Terrain::probability);
+	// cellSim.gen_proxPoints();
 	cellSim.updateStates();
 
 	glPointSize(Terrain::pointSize);

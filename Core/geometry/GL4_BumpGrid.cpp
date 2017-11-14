@@ -12,7 +12,6 @@ void GL4_BumpGrid::create(GLuint xDimension, GLuint rowCount, GLuint yDimension,
 
 	GLuint vertexID = 0;
 	GLuint indexID = 0;
-	srand(time(NULL));
 
 	GLfloat rowOffset = -1 * (GLfloat)xDimension / 2;	
 	GLfloat colOffset = -1 * (GLfloat)yDimension / 2;

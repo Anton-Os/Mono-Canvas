@@ -30,9 +30,9 @@ void main(){
     } else if (state == 4){ // QUICKDEAD
         frag_out = vec4(yellow, perishA);
     } else if (state == 5){ // SECOND GENERATION
-        frag_out = vec4(lightGrey, 1.0);
+        frag_out = vec4(pink, 1.0);
     } else if (state == 6){ // THIRD GENERATION
-        frag_out = vec4(semiGrey, 1.0);
+        frag_out = vec4(brown, 1.0);
     } else { // UNTOUCHED
         if(vertexID % 2 == 0) frag_out = vec4(white, 0.2);
         else frag_out = vec4(white, 0.15);

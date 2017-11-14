@@ -4,14 +4,8 @@
 
 void Scene_CellSim::gen_startPoints(unsigned int count){
     for(unsigned int currentCell = 0; currentCell < count; currentCell++){
-        if(currentCell % 5 == 0){
-            Scene_CellSim::prevCellStates[currentCell] = Scene_CellSim::alive;
-            Scene_CellSim::cellStates[currentCell] = Scene_CellSim::alive;
-        }
-        else {
-            Scene_CellSim::prevCellStates[currentCell] = Scene_CellSim::untouched;
-            Scene_CellSim::cellStates[currentCell] = Scene_CellSim::untouched;
-        }
+        if(currentCell % 5 == 0) Scene_CellSim::cellStates[currentCell] = Scene_CellSim::alive;
+        else Scene_CellSim::cellStates[currentCell] = Scene_CellSim::untouched;
     }
 }
 
@@ -29,15 +23,35 @@ void Scene_CellSim::gen_startPoints(unsigned int count, float probability){
                continue;
         }
         float chance = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
-        if(chance < probability){
-            Scene_CellSim::prevCellStates[currentCell] = Scene_CellSim::alive;
-            Scene_CellSim::cellStates[currentCell] = Scene_CellSim::alive;
-        }
-        else{
-            Scene_CellSim::cellStates[currentCell] = Scene_CellSim::untouched;
-        }
+        if(chance < probability) Scene_CellSim::cellStates[currentCell] = Scene_CellSim::alive;
+        else Scene_CellSim::cellStates[currentCell] = Scene_CellSim::untouched;
     }
     return;
+}
+
+/* void Scene_CellSim::gen_proxPoints(const std::array<unsigned int, 8>* proxStates){
+    Scene_CellSim::cellStates[proxStat]
+} */
+
+void Scene_CellSim::gen_proxPoints(){
+    for(unsigned int currentCell = 0; currentCell < Scene_CellSim::prevCellStates.size(); currentCell++){
+        if(currentCell < Scene_CellSim::xyCount || 
+           currentCell >= Scene_CellSim::prevCellStates.size() - Scene_CellSim::xyCount ||
+           currentCell % Scene_CellSim::xyCount == 0 ||
+           (currentCell + 1) % Scene_CellSim::xyCount == 0 ) {
+               continue;
+        }
+        if(Scene_CellSim::cellStates[currentCell] == Scene_CellSim::alive){
+            Scene_CellSim::cellStates[currentCell - Scene_CellSim::xyCount - 1] = Scene_CellSim::quickDead;
+            Scene_CellSim::cellStates[currentCell - Scene_CellSim::xyCount] = Scene_CellSim::quickDead;
+            Scene_CellSim::cellStates[currentCell - Scene_CellSim::xyCount + 1] = Scene_CellSim::quickDead;
+            Scene_CellSim::cellStates[currentCell - 1] = Scene_CellSim::quickDead;
+            Scene_CellSim::cellStates[currentCell + 1] = Scene_CellSim::quickDead;
+            Scene_CellSim::cellStates[currentCell + Scene_CellSim::xyCount - 1] = Scene_CellSim::quickDead;
+            Scene_CellSim::cellStates[currentCell + Scene_CellSim::xyCount] = Scene_CellSim::quickDead;
+            Scene_CellSim::cellStates[currentCell + Scene_CellSim::xyCount + 1] = Scene_CellSim::quickDead;
+        }   
+    }
 }
 
 void Scene_CellSim::scanGrid(){
@@ -57,7 +71,7 @@ void Scene_CellSim::scanGrid(){
         proxEight[5] = Scene_CellSim::prevCellStates[currentCell + Scene_CellSim::xyCount - 1];
         proxEight[6] = Scene_CellSim::prevCellStates[currentCell + Scene_CellSim::xyCount];
         proxEight[7] = Scene_CellSim::prevCellStates[currentCell + Scene_CellSim::xyCount + 1];
-        Scene_CellSim::cellStates[currentCell] = determineState(Scene_CellSim::cellStates[currentCell], &proxEight);
+        Scene_CellSim::cellStates[currentCell] = determineState(Scene_CellSim::prevCellStates[currentCell], &proxEight);
     }
     return;
 }
@@ -78,7 +92,8 @@ unsigned int Scene_CellSim::determineState(unsigned int cellState, const std::ar
         if(goodNeighbors > 1 && goodNeighbors < 4) return Scene_CellSim::alive;
         else return Scene_CellSim::untouched;
     } else if(cellState == Scene_CellSim::untouched){
-        if(goodNeighbors > 1 && goodNeighbors < 4) return Scene_CellSim::born;
+        // if(goodNeighbors > 1 && goodNeighbors < 4) return Scene_CellSim::born;
+        if(goodNeighbors == 3) return Scene_CellSim::born;
         else return cellState;
     }
 }
