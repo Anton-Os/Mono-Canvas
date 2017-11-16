@@ -64,6 +64,11 @@ private:
 class GL4_Object3D {
 public:
     glm::mat4 relMatrix;
+    GLuint get_vertexCount(){ return vertexCount; }
+    // drawXI();
+    // drawXI(GLenum drawMode);
+    // drawFixedXI(GLenum drawMode, GLuint vertexCount);
+    // drawPartXI(GLenum drawMode, GLuint part, GLuint whole);
 protected:
     GLuint vertexCount;
 };
@@ -82,12 +87,29 @@ public:
     void drawPart(GLenum drawMode, GLuint part, GLuint whole);
 };
 
-class GL4_BumpGrid : public GL4_Object3D {
+class GL4_Grid : public GL4_Object3D {
 public:
-    GL4_BumpGrid(GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount){
+    GL4_Grid(GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount){
         if(rowCount == colCount) isSquare = true;
         create(xDimension, rowCount, yDimension, colCount);
     }
+    enum feedParams { VAO, EBO, feedPos, feedTexCoord };
+    GLuint feed[5];
+    void create(GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount);
+    void map(std::vector<GLfloat>* posAccum);
+    void map(std::vector<GLuint>* indexAccum);
+    bool get_isSquare(){ return isSquare; }
+    void draw();
+    void draw(GLenum drawMode);
+    void drawXI(GLenum drawMode);
+    void drawFixed(GLenum drawMode, GLuint indexCount);
+private:
+    bool isSquare = false;
+    GLuint indexCount;
+};
+
+class GL4_BumpGrid : public GL4_Object3D {
+public:
     GL4_BumpGrid(GLfloat rise, GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount){
         if(rowCount == colCount) isSquare = true;
         create(rise, xDimension, rowCount, yDimension, colCount);
@@ -99,7 +121,6 @@ public:
     void map(std::vector<GLfloat>* posAccum);
     void map(std::vector<GLuint>* indexAccum);
     bool get_isSquare(){ return isSquare; }
-    GLuint get_vertexCount(){ return vertexCount; }
     void gen_midPointQ(std::vector<MidPointQuad>* midPoints);
     void gen_midPointT(std::vector<MidPointTrig>* midPoints);
     void gen_midPoint45(std::vector<MidPoint45>* midPoints);

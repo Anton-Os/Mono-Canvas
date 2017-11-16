@@ -51,12 +51,13 @@ namespace Player {
 
 namespace Terrain {
 	bool firstCreation = true;
-	float pointSize = 3.0;
-	// 	float probability = 0.02;
+	float pointSize = 12.0;
 	float probability = 0.2;
-	unsigned int xyCount = 200;
+	unsigned int xyCount = 50;
 	float xRotation = 0.0;
 	float zRotation = 0.0;
+	// float stackHeights[5] = {-3.0, -1.5, 0.0, 1.5, 3.0};
+	float stackHeights[] = {-9.0, 0.0, 9.0};
 }
 
 namespace Time {
@@ -129,11 +130,17 @@ int main(int argc, char** argv) {
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
 	GLSL_StateStream stateStream(parentDir + "//shaders//StateStream.vert", parentDir + "//shaders//StateStream.frag");
 
-	GL4_Grid bumpGrid(194, Terrain::xyCount, 194, Terrain::xyCount);
-
+	GL4_Grid bumpGrid(140, Terrain::xyCount, 140, Terrain::xyCount);
 	Scene_CellSim cellSim(&bumpGrid, Terrain::probability);
-	// cellSim.gen_proxPoints();
 	cellSim.updateStates();
+
+	GL4_Grid bumpGrid1(140, Terrain::xyCount, 140, Terrain::xyCount);
+	Scene_CellSim cellSim1(&bumpGrid1, Terrain::probability);
+	cellSim1.updateStates();
+
+	GL4_Grid bumpGrid2(140, Terrain::xyCount, 140, Terrain::xyCount);
+	Scene_CellSim cellSim2(&bumpGrid2, Terrain::probability);
+	cellSim2.updateStates();
 
 	glPointSize(Terrain::pointSize);
 	Time::sceneSetup = std::chrono::steady_clock::now();
@@ -142,7 +149,6 @@ int main(int argc, char** argv) {
 		Time::secSpan = std::chrono::duration_cast<std::chrono::duration<double>>(Time::sceneUpdate - Time::sceneSetup);
 
 		glfwPollEvents();
-		// glClearColor(0.949f, 0.917f, 0.803f, 1.0f);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -153,11 +159,30 @@ int main(int argc, char** argv) {
 			Time::threshold = Time::secSpan.count() + Time::pace;
 			cellSim.scanGrid();
 			cellSim.updateStates();
+			
+			cellSim1.scanGrid();
+			cellSim1.updateStates();
+
+			cellSim2.scanGrid();
+			cellSim2.updateStates();
 		}
 		bumpGrid.relMatrix = glm::rotate(glm::mat4(1), glm::radians(Terrain::xRotation), glm::vec3(0.0, 1.0, 0.0));
 		bumpGrid.relMatrix = glm::rotate(bumpGrid.relMatrix, glm::radians(Terrain::zRotation), glm::vec3(0.0, 0.0, 1.0));
+		bumpGrid.relMatrix = glm::translate(bumpGrid.relMatrix, glm::vec3(0.0, 0.0, Terrain::stackHeights[0]));
 		stateStream.set_mvpMatrix(Player::perspectiveMatrix * Player::viewMatrix * bumpGrid.relMatrix);
 		bumpGrid.drawXI(GL_POINTS);
+
+		bumpGrid1.relMatrix = glm::rotate(glm::mat4(1), glm::radians(Terrain::xRotation), glm::vec3(0.0, 1.0, 0.0));
+		bumpGrid1.relMatrix = glm::rotate(bumpGrid1.relMatrix, glm::radians(Terrain::zRotation), glm::vec3(0.0, 0.0, 1.0));
+		bumpGrid1.relMatrix = glm::translate(bumpGrid1.relMatrix, glm::vec3(0.0, 0.0, Terrain::stackHeights[1]));
+		stateStream.set_mvpMatrix(Player::perspectiveMatrix * Player::viewMatrix * bumpGrid1.relMatrix);
+		bumpGrid1.drawXI(GL_POINTS);
+
+		bumpGrid2.relMatrix = glm::rotate(glm::mat4(1), glm::radians(Terrain::xRotation), glm::vec3(0.0, 1.0, 0.0));
+		bumpGrid2.relMatrix = glm::rotate(bumpGrid2.relMatrix, glm::radians(Terrain::zRotation), glm::vec3(0.0, 0.0, 1.0));
+		bumpGrid2.relMatrix = glm::translate(bumpGrid2.relMatrix, glm::vec3(0.0, 0.0, Terrain::stackHeights[2]));
+		stateStream.set_mvpMatrix(Player::perspectiveMatrix * Player::viewMatrix * bumpGrid2.relMatrix);
+		bumpGrid2.drawXI(GL_POINTS);
 
 		glDisable(GL_DEPTH_TEST);
 

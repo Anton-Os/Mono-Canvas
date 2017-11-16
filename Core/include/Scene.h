@@ -25,23 +25,23 @@ public:
 
 class Scene_CellSim {
 public:
-    Scene_CellSim(GL4_BumpGrid* bumpGrid){
-        if(! bumpGrid->get_isSquare())
-            std::cout << "! BumpGrid not a perfect square, use different constructor" << std::endl;
-        VAO = bumpGrid->feed[bumpGrid->VAO];
-        Scene_CellSim::cellStates.resize(bumpGrid->get_vertexCount());
-        Scene_CellSim::prevCellStates.resize(bumpGrid->get_vertexCount());
-        xyCount = std::sqrt(bumpGrid->get_vertexCount());
-        gen_startPoints(bumpGrid->get_vertexCount());
+    Scene_CellSim(GL4_Grid* grid){
+        if(! grid->get_isSquare())
+            std::cout << "! Grid not a perfect square, use different constructor" << std::endl;
+        VAO = grid->feed[grid->VAO];
+        Scene_CellSim::cellStates.resize(grid->get_vertexCount());
+        Scene_CellSim::prevCellStates.resize(grid->get_vertexCount());
+        xyCount = std::sqrt(grid->get_vertexCount());
+        gen_startPoints(grid->get_vertexCount());
     }
-    Scene_CellSim(GL4_BumpGrid* bumpGrid, float probability){
-        if(! bumpGrid->get_isSquare())
-            std::cout << "! BumpGrid not a perfect square, use different constructor" << std::endl;
-        VAO = bumpGrid->feed[bumpGrid->VAO];
-        Scene_CellSim::cellStates.resize(bumpGrid->get_vertexCount());
-        Scene_CellSim::prevCellStates.resize(bumpGrid->get_vertexCount());
-        xyCount = std::sqrt(bumpGrid->get_vertexCount());
-        gen_startPoints(bumpGrid->get_vertexCount(), probability);
+    Scene_CellSim(GL4_Grid* grid, float probability){
+        if(! grid->get_isSquare())
+            std::cout << "! Grid not a perfect square, use different constructor" << std::endl;
+        VAO = grid->feed[grid->VAO];
+        Scene_CellSim::cellStates.resize(grid->get_vertexCount());
+        Scene_CellSim::prevCellStates.resize(grid->get_vertexCount());
+        xyCount = std::sqrt(grid->get_vertexCount());
+        gen_startPoints(grid->get_vertexCount(), probability);
     }
     enum stateParams { untouched, alive, dead, born, quickDead };
     void scanGrid();

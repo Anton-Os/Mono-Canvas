@@ -102,10 +102,11 @@ target_link_libraries(MandlebrotSet
 
 add_executable(ConwaysGOL
     loaders/LoadShaders.cpp
+    geometry/GL4_DataSet.cpp
+    geometry/GL4_Grid.cpp
     geometry/GL4_BumpGrid
     pipeline/GLSL_Idle.cpp
     pipeline/GLSL_StateStream.cpp
-    geometry/GL4_DataSet.cpp
     scene/CellSim.cpp
     main/ConwaysGOL.cpp
 )
@@ -120,6 +121,26 @@ target_link_libraries(ConwaysGOL
     glm
 )
 
+add_executable(StackedGOL
+    loaders/LoadShaders.cpp
+    geometry/GL4_DataSet.cpp
+    geometry/GL4_Grid.cpp
+    geometry/GL4_BumpGrid
+    pipeline/GLSL_Idle.cpp
+    pipeline/GLSL_StateStream.cpp
+    scene/CellSim.cpp
+    main/StackedGOL.cpp
+)
+
+target_include_directories(StackedGOL
+    PUBLIC include
+)
+
+target_link_libraries(StackedGOL
+    GLEW::glew_s
+    glfw
+    glm
+)
 
 set(SRC_SHADER_LIST)
 set(OUTPUT_SHADER_LIST)
