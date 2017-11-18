@@ -66,7 +66,7 @@ OPTION( ASSIMP_BUILD_ZLIB
 )
 option( ASSIMP_BUILD_ASSIMP_TOOLS
   "If the supplementary tools for Assimp are built in addition to the library."
-  ON
+  OFF
 )
 option ( ASSIMP_BUILD_SAMPLES
   "If the official samples are built as well (needs Glut)."
@@ -263,11 +263,11 @@ ENDIF( SYSTEM_IRRXML )
 # Search for zlib
 # IF ( NOT ASSIMP_BUILD_ZLIB )
 
-find_package(ZLIB)
+# find_package(ZLIB)
 
 # ENDIF( NOT ASSIMP_BUILD_ZLIB )
 
-IF( NOT ZLIB_FOUND )
+# IF( NOT ZLIB_FOUND )
   message(STATUS "compiling zlib from souces")
   include(CheckIncludeFile)
   include(CheckTypeSize)
@@ -277,10 +277,10 @@ IF( NOT ZLIB_FOUND )
   SET(ZLIB_FOUND 1)
   SET(ZLIB_LIBRARIES zlibstatic)
   SET(ZLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/contrib/zlib ${CMAKE_CURRENT_BINARY_DIR}/contrib/zlib)
-else(NOT ZLIB_FOUND)
+#[[ else(NOT ZLIB_FOUND)
   ADD_DEFINITIONS(-DASSIMP_BUILD_NO_OWN_ZLIB)
-  SET(ZLIB_LIBRARIES_LINKED -lz)
-ENDIF(NOT ZLIB_FOUND)
+  SET(ZLIB_LIBRARIES_LINKED -lz) #]]
+# ENDIF(NOT ZLIB_FOUND)
 INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIR})
 
 # Search for unzip
@@ -366,7 +366,7 @@ IF ( ASSIMP_BUILD_ASSIMP_TOOLS )
     ENDIF ( ASSIMP_BUILD_ASSIMP_VIEW )
   ENDIF ( WIN32 AND DirectX_D3DX9_LIBRARY )
 
-  ADD_SUBDIRECTORY( tools/assimp_cmd/ )
+  # ADD_SUBDIRECTORY( tools/assimp_cmd/ )
 
   # Check dependencies for assimp_qt_viewer.
   # Why here? Maybe user do not want Qt viewer and have no Qt.

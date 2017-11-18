@@ -32,7 +32,7 @@ namespace UI {
 }
 
 namespace Key {
-	GLboolean W, A, S, D, Q, E = false;
+	bool W, A, S, D, Q, E = false;
 }
 
 namespace Mouse {
@@ -42,28 +42,15 @@ namespace Mouse {
 }
 
 namespace Player {
-	GLboolean isGod = true;
-	glm::mat4 perspectiveMatrix = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, -10.0f, 10.0f);
-	glm::mat4 viewMatrix(1);
-	glm::vec3 pos = glm::vec3(-4.0, -4.0, 0.0);
-	float mvSpeed = 0.5f;
 }
 
 namespace Terrain {
-	bool firstCreation = true;
-	float pointSize = 3.0;
-	// 	float probability = 0.02;
-	float probability = 0.2;
-	unsigned int xyCount = 200;
-	float xRotation = 0.0;
-	float zRotation = 0.0;
 }
 
 namespace Time {
-	float threshold = 2.0;
-	float pace = 0.05f;
-	std::chrono::steady_clock::time_point sceneSetup;
-	std::chrono::steady_clock::time_point sceneUpdate;
+	std::chrono::steady_clock::time_point setupBegin;
+	std::chrono::steady_clock::time_point setupEnd;
+	std::chrono::steady_clock::time_point frameBegin;
 	std::chrono::duration<double> secSpan;
 	std::chrono::duration<double, std::milli> milliSpan;
 	std::chrono::duration<double, std::micro> microSpan;
@@ -71,24 +58,45 @@ namespace Time {
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
+	// State Switching
+
+	if(key == GLFW_KEY_1 && action == GLFW_PRESS) std::cout << "Key 1 Pressed" << std::endl;
+	if(key == GLFW_KEY_2 && action == GLFW_PRESS) std::cout << "Key 2 Pressed" << std::endl;
+	if(key == GLFW_KEY_3 && action == GLFW_PRESS) std::cout << "Key 3 Pressed" << std::endl;
+
+	// Continuous actions
+	
 	if(key == GLFW_KEY_A && action == GLFW_PRESS) Key::A = true;
 	if(key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
-	if(Key::A) Terrain::xRotation += 4.0;
+	if(Key::A) std::cout << "Key A Held..." << std::endl;
 
 	if(key == GLFW_KEY_D && action == GLFW_PRESS) Key::D = true;
 	if(key == GLFW_KEY_D && action == GLFW_RELEASE) Key::D = false;
-	if(Key::D) Terrain::xRotation -= 4.0;
+	if(Key::D) std::cout << "Key D Held..." << std::endl;
 
 	if(key == GLFW_KEY_W && action == GLFW_PRESS) Key::W = true;
 	if(key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
-	if(Key::W) Terrain::zRotation += 4.0;
+	if(Key::W) std::cout << "Key W Held..." << std::endl;
 
 	if(key == GLFW_KEY_S && action == GLFW_PRESS) Key::S = true;
 	if(key == GLFW_KEY_S && action == GLFW_RELEASE) Key::S = false;
-	if(Key::S) Terrain::zRotation -= 4.0;
+	if(Key::S) std::cout << "Key S Held..." << std::endl;
 }
 
+void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
+	if(Mouse::appears) Mouse::appears = false;
+	else {
+		if(xpos != Mouse::xInit) Mouse::xOffset -= GLfloat((xpos - Mouse::xInit));
+		if(ypos != Mouse::yInit) Mouse::yOffset -= GLfloat((ypos - Mouse::yInit));
+	}
+
+	Mouse::xInit = xpos;
+	Mouse::yInit = ypos;
+}
+
+
 int main(int argc, char** argv) {
+	Time::setupBegin = std::chrono::steady_clock::now();
 
 	if (glfwInit() == GLFW_TRUE)  std::cout << "GLFW initialized successfuly" << std::endl;
 	else {
@@ -111,7 +119,7 @@ int main(int argc, char** argv) {
 	glfwMakeContextCurrent(window);
 	glfwGetFramebufferSize(window, &UI::width, &UI::height);
 	glfwSetKeyCallback(window, keyCallback);
-	// glfwSetCursorPosCallback(window, cursorPosCallback);
+	glfwSetCursorPosCallback(window, cursorPosCallback);
 
 	if (glewInit() == GLEW_OK) std::cout << "GLEW initialized successfuly" << std::endl;
 	else {
@@ -121,45 +129,31 @@ int main(int argc, char** argv) {
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	std::string parentDir = getParentDirectory(argv[0]);
-
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
-	GLSL_StateStream stateStream(parentDir + "//shaders//StateStream.vert", parentDir + "//shaders//StateStream.frag");
+	
+	float dot[3] = {0.0f, 0.0f, 0.0f};
+	GL4_DataSet dataSet(&dot[0], 3);
 
-	GL4_Grid bumpGrid(194, Terrain::xyCount, 194, Terrain::xyCount);
-
-	Scene_CellSim cellSim(&bumpGrid, Terrain::probability);
-	// cellSim.gen_proxPoints();
-	cellSim.updateStates();
-
-	Time::sceneSetup = std::chrono::steady_clock::now();
+	Time::setupEnd = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
-		Time::sceneUpdate = std::chrono::steady_clock::now();
-		Time::secSpan = std::chrono::duration_cast<std::chrono::duration<double>>(Time::sceneUpdate - Time::sceneSetup);
+		Time::frameBegin = std::chrono::steady_clock::now();
+		Time::secSpan = std::chrono::duration_cast<std::chrono::duration<double>>(Time::frameBegin - Time::setupEnd);
 
 		glfwPollEvents();
-		// glClearColor(0.949f, 0.917f, 0.803f, 1.0f);
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glEnable(GL_DEPTH_TEST);
+		glClearColor(0.949f, 0.917f, 0.803f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glPointSize(Terrain::pointSize);
-		glUseProgram(stateStream.shaderProgID);
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_BLEND);
+		glPointSize(12.0f);
 
-		if(Time::secSpan.count() > Time::threshold){
-			Time::threshold = Time::secSpan.count() + Time::pace;
-			cellSim.scanGrid();
-			cellSim.updateStates();
-		}
-		bumpGrid.relMatrix = glm::rotate(glm::mat4(1), glm::radians(Terrain::xRotation), glm::vec3(0.0, 1.0, 0.0));
-		bumpGrid.relMatrix = glm::rotate(bumpGrid.relMatrix, glm::radians(Terrain::zRotation), glm::vec3(0.0, 0.0, 1.0));
-		stateStream.set_mvpMatrix(Player::perspectiveMatrix * Player::viewMatrix * bumpGrid.relMatrix);
-		bumpGrid.drawXI(GL_POINTS);
-
-		glDisable(GL_DEPTH_TEST);
+		glUseProgram(Idle.shaderProgID);
+		dataSet.draw(GL_POINTS, 1);
 
 		glfwSwapBuffers(window);
 	}

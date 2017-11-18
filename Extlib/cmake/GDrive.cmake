@@ -25,10 +25,10 @@ foreach(currentFile ${GDRIVE_NAMES})
     message(STATUS "Downloading ${currentFile}")
     list(FIND GDRIVE_NAMES ${currentFile} currentIndex)
     list(GET GDRIVE_URLS ${currentIndex} currentUrl)
-    if(NOT EXISTS @CMAKE_SOURCE_DIR@/${currentFile})
+    if(NOT EXISTS @CMAKE_BINARY_DIR@/${currentFile})
         file(DOWNLOAD
             "${currentUrl}"
-             @CMAKE_BINARY_DIR@/${currentFile}
+            @CMAKE_BINARY_DIR@/${currentFile}
             SHOW_PROGRESS
         )
     endif()

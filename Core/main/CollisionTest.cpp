@@ -145,15 +145,16 @@ int main(int argc, char** argv) {
 	FlatGrid.gen_midPoint45(&midPoints45);
 	GL4_DataSet playerDot(glm::value_ptr(Player::pos), sizeof(float) * 3); 
 	Scene_PlaneCollision planeCollision;
-	MidPoint45 proxMidPoint45 = planeCollision.proxMidPoint(&midPoints45, &glm::vec2(Player::pos.x, Player::pos.y));
-	MidPointTrig proxMidPointT = planeCollision.proxMidPoint(&proxMidPoint45, &glm::vec2(Player::pos.x, Player::pos.y));
+	glm::vec2 PlayerXY = glm::vec2(Player::pos.x, Player::pos.y);
+	MidPoint45 proxMidPoint45 = planeCollision.proxMidPoint(&midPoints45, &PlayerXY);
+	MidPointTrig proxMidPointT = planeCollision.proxMidPoint(&proxMidPoint45, &PlayerXY);
 	GL4_DataSet midPointT_Pos(&proxMidPointT.pos[0], sizeof(float) * 3);
 	GL4_DataSet midPointT_Three(&proxMidPointT.threeProx[0], sizeof(float) * 9);
 	glm::vec3 rightVertex = planeCollision.calcV90(&proxMidPointT);
 	GL4_DataSet rightVertex_Pos(glm::value_ptr(rightVertex), sizeof(float) * 3);
-	bool isUpper = planeCollision.trigFlip(&proxMidPointT, &glm::vec2(Player::pos.x, Player::pos.y));
+	bool isUpper = planeCollision.trigFlip(&proxMidPointT, &PlayerXY);
 	// float newZ = planeCollision.calcZ(&proxMidPointT, &glm::vec2(Player::pos.x, Player::pos.y));
-	Player::pos.z = planeCollision.calcZ(&proxMidPointT, &glm::vec2(Player::pos.x, Player::pos.y));
+	Player::pos.z = planeCollision.calcZ(&proxMidPointT, &PlayerXY);
 
 	Time::sceneSetup = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -180,11 +181,12 @@ int main(int argc, char** argv) {
 		// Collision computation... Anton Says Hi
 
 		glPointSize(7.0f);
-		proxMidPoint45 = planeCollision.proxMidPoint(&midPoints45, &glm::vec2(Player::pos.x, Player::pos.y));
-		proxMidPointT = planeCollision.proxMidPoint(&proxMidPoint45, &glm::vec2(Player::pos.x, Player::pos.y));
+		PlayerXY = glm::vec2(Player::pos.x, Player::pos.y);
+		proxMidPoint45 = planeCollision.proxMidPoint(&midPoints45, &PlayerXY);
+		proxMidPointT = planeCollision.proxMidPoint(&proxMidPoint45, &PlayerXY);
 		rightVertex = planeCollision.calcV90(&proxMidPointT);
-		isUpper = planeCollision.trigFlip(&proxMidPointT, &glm::vec2(Player::pos.x, Player::pos.y));
-		Player::pos.z = planeCollision.calcZ(&proxMidPointT, &glm::vec2(Player::pos.x, Player::pos.y));
+		isUpper = planeCollision.trigFlip(&proxMidPointT, &PlayerXY);
+		Player::pos.z = planeCollision.calcZ(&proxMidPointT, &PlayerXY);
 
 		Idle.set_renderMode(3);
 		midPointT_Three.create(&proxMidPointT.threeProx[0], sizeof(float) * 9);

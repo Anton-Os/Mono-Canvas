@@ -159,7 +159,8 @@ int main(int argc, char** argv) {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MidPointTrig), offsetof(MidPointTrig, pos));
 	glEnableVertexAttribArray(0);
 	Scene_PlaneCollision planeCollision;
-	MidPointTrig proxMidPointT = planeCollision.proxMidPoint(&midPointsT, &glm::vec2(Player::pos.x, Player::pos.y));
+	glm::vec2 PlayerXY = glm::vec2(Player::pos.x, Player::pos.y);
+	MidPointTrig proxMidPointT = planeCollision.proxMidPoint(&midPointsT, &PlayerXY);
 	glBindVertexArray(testVAO[2]);
 	glBindBuffer(GL_ARRAY_BUFFER, testVBO[2]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3, &proxMidPointT.pos[0], GL_STATIC_DRAW);
@@ -202,7 +203,8 @@ int main(int argc, char** argv) {
 		glDrawArrays(GL_POINTS, 0, midPointsT.size());
 		Idle.set_renderMode(1);
 		glBindVertexArray(testVAO[2]);
-		proxMidPointT = planeCollision.proxMidPoint(&midPointsT, &glm::vec2(Player::pos.x, Player::pos.y));
+		PlayerXY = glm::vec2(Player::pos.x, Player::pos.y);
+		proxMidPointT = planeCollision.proxMidPoint(&midPointsT, &PlayerXY);
 		glBindBuffer(GL_ARRAY_BUFFER, testVBO[2]);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3, &proxMidPointT.pos[0], GL_STATIC_DRAW);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, offsetof(MidPointTrig, pos));

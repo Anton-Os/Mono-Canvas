@@ -40,7 +40,6 @@ set(EIGEN_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/Eigen")
 set(SQLITE_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/SQLite")
 set(BOOST_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/Boost")
 set(OPENSSL_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/OpenSSL")
-set(DXFIO_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/DXFIO")
 
 set(UTILITIES_DIR "${CMAKE_BINARY_DIR}/Util")
 set(PYTHON_EMBEDDED_DIR "${UTILITIES_DIR}/python-3.6.1-embed")
@@ -61,7 +60,7 @@ add_custom_target(GDrive_Extlib ALL
     COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_BINARY_DIR}/Img2KTX.tar" 
     COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_BINARY_DIR}/python-3.6.1-embed.tar"
     DEPENDS "${CMAKE_BINARY_DIR}/GDrive.cmake"
-    # WORKING_DIRECTORY ${UTILITIES_DIR}
+    WORKING_DIRECTORY ${UTILITIES_DIR}
 )
 
 #add_custom_command(TARGET GDrive_Extlib
@@ -240,6 +239,9 @@ ExternalProject_Add(ASSIMP
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
 
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_SOURCE_DIR}/patch/Assimp/CMakeLists.txt"
+    "<SOURCE_DIR>/CMakeLists.txt"
+    COMMAND ${CMAKE_COMMAND} -E copy
         "${CMAKE_SOURCE_DIR}/patch/Assimp/code/CMakeLists.txt"
         "<SOURCE_DIR>/code/CMakeLists.txt"
     COMMAND ${CMAKE_COMMAND} -E copy

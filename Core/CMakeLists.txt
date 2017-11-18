@@ -1,3 +1,21 @@
+add_executable(Blank
+    loaders/LoadShaders.cpp
+    geometry/GL4_DataSet.cpp
+    pipeline/GLSL_Idle.cpp
+    main/Blank.cpp
+)
+
+target_include_directories(Blank
+    PUBLIC include
+)
+
+target_link_libraries(Blank
+    GLEW::glew_s
+    glfw
+    glm
+)
+
+
 add_executable(LoopTimed
     loaders/LoadShaders.cpp
     loaders/LoadData.cpp
@@ -121,26 +139,27 @@ target_link_libraries(ConwaysGOL
     glm
 )
 
-add_executable(StackedGOL
+add_executable(ConwaysHex
     loaders/LoadShaders.cpp
     geometry/GL4_DataSet.cpp
     geometry/GL4_Grid.cpp
-    geometry/GL4_BumpGrid
+    geometry/GL4_HexGrid.cpp
     pipeline/GLSL_Idle.cpp
     pipeline/GLSL_StateStream.cpp
     scene/CellSim.cpp
-    main/StackedGOL.cpp
+    main/ConwaysHex.cpp
 )
 
-target_include_directories(StackedGOL
+target_include_directories(ConwaysHex
     PUBLIC include
 )
 
-target_link_libraries(StackedGOL
+target_link_libraries(ConwaysHex
     GLEW::glew_s
     glfw
     glm
 )
+
 
 set(SRC_SHADER_LIST)
 set(OUTPUT_SHADER_LIST)
