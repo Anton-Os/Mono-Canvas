@@ -45,8 +45,23 @@ void GL4_DataSet::create(GLint attribCount, GLvoid* data, GLint dataSize, GLsize
     glBindVertexArray(0);
 }
 
+void GL4_DataSet::index(GLvoid* data, GLint dataSize){
+    glBindVertexArray(GL4_DataSet::feed[GL4_DataSet::VAO]);
+    GLuint EBO;
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, dataSize, data, GL_STATIC_DRAW);
+    glBindVertexArray(0);
+}
+
 void GL4_DataSet::draw(GLenum drawMode, GLuint drawCount){
     glBindVertexArray(GL4_DataSet::feed[GL4_DataSet::VAO]);
     glDrawArrays(drawMode, 0, drawCount);
+    glBindVertexArray(0);
+}
+
+void GL4_DataSet::drawIdx(GLenum drawMode, GLuint indexCount){
+    glBindVertexArray(GL4_DataSet::feed[GL4_DataSet::VAO]);
+    glDrawElements(drawMode, indexCount, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }

@@ -150,12 +150,27 @@ int main(int argc, char** argv) {
 	float dot[6] = {0.0f, 0.0f, 0.0f, 3.0f, 3.0f, 0.0};
 	GL4_DataSet dataSet(&dot[0], 6 * sizeof(float));
 
-	float initPos[2] = {10.0, 10.0};
-	Hexagon hexagon = createHex(5.0f, initPos);
-	GL4_DataSet hexDataSet(hexagon.sixProx.data(), sizeof(float) * 18);
+	float initPos[2] = {0.0, 0.0};
+	/* Hexagon hexagon = createHex(5.0f, initPos);
+	GL4_DataSet hexDataSet(&hexagon.sixProx[0], sizeof(float) * 18);
 	initPos[1] = 20.0f;
 	Hexagon hexagon2 = createHex(5.0f, initPos);
-	GL4_DataSet hexDataSet2(hexagon2.sixProx.data(), sizeof(float) * 18);
+	GL4_DataSet hexDataSet2(&hexagon2.sixProx[0], sizeof(float) * 18);
+	initPos[0] = 15.0f;
+	initPos[1] = 10.0f; */
+	HexagonIdx12 hexagon0 = createHexIdx12(12.0f, initPos, 0);
+	GL4_DataSet hexDataSet0(&hexagon0.sixProx[0], sizeof(float) * 18);
+	hexDataSet0.index(hexagon0.indices.data(), sizeof(GLuint) * 12);
+	initPos[0] = 24.0f;
+	initPos[1] = 24.0f;
+	HexagonIdx12 hexagon1 = createHexIdx12(12.0f, initPos, 1);
+	GL4_DataSet hexDataSet1(&hexagon1.sixProx[0], sizeof(float) * 18);
+	hexDataSet1.index(hexagon1.indices.data(), sizeof(GLuint) * 12);
+	initPos[0] = -24.0f;
+	initPos[1] = -24.0f;
+	HexagonIdx12 hexagon2 = createHexIdx12(12.0f, initPos, 3);
+	GL4_DataSet hexDataSet2(&hexagon2.sixProx[0], sizeof(float) * 18);
+	hexDataSet2.index(hexagon2.indices.data(), sizeof(GLuint) * 12);
 	// GL4_HexGrid hexGrid(5.0f, 1, 2);
 
 	Time::setupEnd = std::chrono::steady_clock::now();
@@ -170,15 +185,16 @@ int main(int argc, char** argv) {
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
 		glPointSize(6.0f);
+		glLineWidth(4.0f);
 
 		glUseProgram(Idle.shaderProgID);
 		Idle.set_mvpMatrix(Player::perspectiveMatrix * Player::viewMatrix);
 		Idle.set_renderMode(1);
-		// dataSet.draw(GL_POINTS, 2);
-		hexDataSet.draw(GL_POINTS, 6);
+		hexDataSet0.drawIdx(GL_LINES, 12);
 		Idle.set_renderMode(2);
-		hexDataSet2.draw(GL_POINTS, 6);
-		// hexGrid.drawXI(GL_POINTS);
+		hexDataSet1.drawIdx(GL_TRIANGLES, 12);
+		Idle.set_renderMode(3);
+		hexDataSet2.drawIdx(GL_TRIANGLES, 12);
 
 		glfwSwapBuffers(window);
 	}

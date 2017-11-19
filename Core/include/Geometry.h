@@ -55,7 +55,9 @@ public:
     void create(GLint attribCount, GLvoid* data, GLint dataSize);
     void create(GLvoid* data, GLint dataSize, GLsizei stride, const GLvoid* offset);
     void create(GLint attribCount, GLvoid* data, GLint dataSize, GLsizei stride, const GLvoid* offset);
+    void index(GLvoid* data, GLint dataSize);
     void draw(GLenum drawMode, GLuint drawCount);
+    void drawIdx(GLenum drawMode, GLuint indexCount);
 private:
     enum feedParams {VAO, feedPos};
     GLuint feed[2];
@@ -134,12 +136,21 @@ private:
 };
 
 struct Hexagon {
-    std::array<float, 18> sixProx;
-    std::array<float, 3> midPoint;
+    float sixProx[18];
+    float midPoint[3];
 };
 
 Hexagon createHex(float size);
 Hexagon createHex(float size, float initPos[]);
+
+// Hexagon Vertical Subdivision by 4
+struct HexagonIdx12 {
+    float sixProx[18];
+    float midPoint[3];
+    std::array<unsigned int, 12> indices;
+};
+
+HexagonIdx12 createHexIdx12(float size, float initPos[], unsigned short int mode);
 
 class GL4_HexGrid : public GL4_Object3D {
 public:

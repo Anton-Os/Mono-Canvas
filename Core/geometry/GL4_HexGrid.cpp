@@ -17,8 +17,8 @@ namespace HexAngle {
 
 Hexagon createHex(float size) {
     Hexagon hexagon;
-    std::fill(hexagon.midPoint.begin(), hexagon.midPoint.end(), 0.0f);
-    std::fill(hexagon.sixProx.begin(), hexagon.sixProx.end(), 0.0f);
+    std::fill(hexagon.midPoint, hexagon.midPoint + 3, 0.0f);
+    std::fill(hexagon.sixProx, hexagon.sixProx + 18, 0.0f);
 
     hexagon.sixProx[0] = size;
     hexagon.sixProx[3] = -1 * size;
@@ -36,8 +36,8 @@ Hexagon createHex(float size) {
 
 Hexagon createHex(float size, float initPos[]) {
     Hexagon hexagon;
-    std::fill(hexagon.midPoint.begin(), hexagon.midPoint.end(), 0.0f);
-    std::fill(hexagon.sixProx.begin(), hexagon.sixProx.end(), 0.0f);
+    std::fill(hexagon.midPoint, hexagon.midPoint + 3, 0.0f);
+    std::fill(hexagon.sixProx, hexagon.sixProx + 18, 0.0f);
 
     hexagon.sixProx[0] = size + initPos[0];
     hexagon.sixProx[1] = initPos[1];
@@ -57,6 +57,41 @@ Hexagon createHex(float size, float initPos[]) {
 
     return hexagon;
 }
+
+
+HexagonIdx12 createHexIdx12(float size, float initPos[], unsigned short int mode) {
+    HexagonIdx12 hexagon12;
+    std::fill(hexagon12.midPoint, hexagon12.midPoint + 3, 0.0f);
+    std::fill(hexagon12.sixProx, hexagon12.sixProx + 18, 0.0f);
+
+    hexagon12.sixProx[0] = size + initPos[0];
+    hexagon12.sixProx[1] = initPos[1];
+    hexagon12.sixProx[3] = -1 * size + initPos[0];
+    hexagon12.sixProx[4] = initPos[1];
+    hexagon12.sixProx[6] = HexAngle::sin30 * size + initPos[0];
+    hexagon12.sixProx[7] = HexAngle::cos30 * size + initPos[1];
+    hexagon12.sixProx[9] = HexAngle::sin150 * size + initPos[0];
+    hexagon12.sixProx[10] = HexAngle::cos150 * size + initPos[1];
+    hexagon12.sixProx[12] = -1 * HexAngle::sin30 * size + initPos[0];
+    hexagon12.sixProx[13] = -1 * HexAngle::cos30 * size + initPos[1];
+    hexagon12.sixProx[15] = -1 * HexAngle::sin150 * size + initPos[0]; 
+    hexagon12.sixProx[16] = -1 * HexAngle::cos150 * size + initPos[1];
+
+    hexagon12.midPoint[0] = initPos[0];
+    hexagon12.midPoint[1] = initPos[1];
+
+    if(mode == 0) // Outline
+        hexagon12.indices = { 1, 4, 4, 3, 3, 0, 0, 2, 2, 5, 5, 1 };
+    else if(mode == 1) // Vertical Fill
+        hexagon12.indices = { 1, 5, 4, 4, 3, 5, 5, 2, 3, 3, 0, 2};
+    else if(mode == 2) // Horizontal Fill
+        hexagon12.indices = { 1, 3, 4, 0, 3, 1, 1, 5, 0, 5, 2, 0};
+    else if(mode == 3) // Clockwise Fill with "pinhole"
+        hexagon12.indices = { 1, 5, 2, 5, 2, 0, 0, 4, 3, 1, 3, 4};
+
+    return hexagon12;
+}
+
 
 /* void GL4_HexGrid::create(GLuint xDimension, GLuint rowCount, GLuint yDimension, GLuint colCount){
 
@@ -82,7 +117,7 @@ Hexagon createHex(float size, float initPos[]) {
     GLuint feed[3];
     glGenBuffers(3, feed);
     glBindBuffer(GL_ARRAY_BUFFER, feed[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6, hexagon.sixProx.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6, hexagon.sixProx.data(), GL_STAT C_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
     glEnableVertexAttribArray(0);
 
