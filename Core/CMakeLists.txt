@@ -139,7 +139,7 @@ target_link_libraries(ConwaysGOL
     glm
 )
 
-add_executable(ConwaysHex
+add_executable(Hexes
     loaders/LoadShaders.cpp
     geometry/GL4_DataSet.cpp
     geometry/GL4_Grid.cpp
@@ -147,18 +147,40 @@ add_executable(ConwaysHex
     pipeline/GLSL_Idle.cpp
     pipeline/GLSL_StateStream.cpp
     scene/CellSim.cpp
-    main/ConwaysHex.cpp
+    main/Hexes.cpp
 )
 
-target_include_directories(ConwaysHex
+target_include_directories(Hexes
     PUBLIC include
 )
 
-target_link_libraries(ConwaysHex
+target_link_libraries(Hexes
     GLEW::glew_s
     glfw
     glm
 )
+
+add_executable(DropCollision
+    loaders/LoadShaders.cpp
+    pipeline/GLSL_Idle.cpp
+    pipeline/GLSL_HeightRange.cpp
+    geometry/GL4_Sphere.cpp
+    geometry/GL4_BumpGrid.cpp
+    geometry/GL4_DataSet.cpp
+    scene/PlaneCollision.cpp
+    main/DropCollision.cpp
+)
+
+target_include_directories(DropCollision
+    PUBLIC include
+)
+
+target_link_libraries(DropCollision
+    GLEW::glew_s
+    glfw
+    glm
+)
+
 
 
 set(SRC_SHADER_LIST)
