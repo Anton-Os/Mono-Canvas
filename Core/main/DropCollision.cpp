@@ -41,27 +41,28 @@ namespace Mouse {
 	GLfloat xOffset, yOffset;
 }
 
-namespace Player {
-	GLboolean isGod = true;
-	glm::mat4 persMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
-	glm::mat4 viewMatrix(1);
-	int pos[2] = {0, 0};
-	MidPointQuad quad;
-	float radius = 3.0f;
-	float mvSpeed = 0.5f;
-}
-
 namespace Terrain {
-	GLfloat rise = 30.0f;
+	GLfloat rise = 16.0f;
+	GLfloat waveInc = 0.0;
 	GLfloat distance = -200.0f;
 	GLfloat xDegree = 0.0f;
 	GLfloat zDegree = 0.0f;
 	unsigned int rowColCount = 42;
 }
 
+namespace Player {
+	GLboolean isGod = true;
+	glm::mat4 persMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
+	glm::mat4 viewMatrix(1);
+	unsigned int pos;
+	MidPointQuad quad;
+	float radius = 3.0f;
+	float mvSpeed = 0.5f;
+}
+
 namespace Time {
-	std::chrono::steady_clock::time_point sceneSetup;
-	std::chrono::steady_clock::time_point sceneUpdate;
+	std::chrono::steady_clock::time_point setupEnd;
+	std::chrono::steady_clock::time_point frameBegin;
 	std::chrono::duration<double> secSpan;
 	std::chrono::duration<double, std::milli> milliSpan;
 	std::chrono::duration<double, std::micro> microSpan;
@@ -75,22 +76,22 @@ void God_keyCallback(GLFWwindow* window, int key, int scancode, int action, int 
 	if(key == GLFW_KEY_W && action == GLFW_PRESS) Key::W = true;
 	if(key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
 	if(Key::W && Player::isGod) Terrain::xDegree += 3.0f;
-	if(Key::W && !Player::isGod) Player::pos[1]++;
+	if(Key::W && !Player::isGod) Player::pos += Terrain::rowColCount;
 
 	if(key == GLFW_KEY_A && action == GLFW_PRESS) Key::A = true;
 	if(key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
 	if(Key::A && Player::isGod) Terrain::zDegree += 3.0f;
-	if(Key::A && !Player::isGod) Player::pos[0]--;
+	if(Key::A && !Player::isGod) Player::pos--;
 
 	if(key == GLFW_KEY_S && action == GLFW_PRESS) Key::S = true;
 	if(key == GLFW_KEY_S && action == GLFW_RELEASE) Key::S = false;
 	if(Key::S && Player::isGod) Terrain::xDegree -= 3.0f;
-	if(Key::S && !Player::isGod) Player::pos[1]--;
+	if(Key::S && !Player::isGod) Player::pos -= Terrain::rowColCount;
 
 	if(key == GLFW_KEY_D && action == GLFW_PRESS) Key::D = true;
 	if(key == GLFW_KEY_D && action == GLFW_RELEASE) Key::D = false;
 	if(Key::D && Player::isGod) Terrain::zDegree -= 3.0f;
-	if(Key::D && !Player::isGod) Player::pos[0]++;
+	if(Key::D && !Player::isGod) Player::pos++;
 
 	if(key == GLFW_KEY_Q && action == GLFW_PRESS) Key::Q = true;
 	if(key == GLFW_KEY_Q && action == GLFW_RELEASE) Key::Q = false;
@@ -140,21 +141,25 @@ int main(int argc, char** argv) {
 	std::string parentDir = getParentDirectory(argv[0]);
 
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
+	GLSL_Waves Waves(parentDir + "//shaders//Waves.vert", parentDir + "//shaders//Waves.frag");
 
-	GL4_BumpGrid bumpGrid(10.0, 500, Terrain::rowColCount, 500, Terrain::rowColCount);
+	GL4_BumpGrid bumpGrid(Terrain::rise, 500, Terrain::rowColCount, 500, Terrain::rowColCount);
 	std::vector<MidPointQuad> midPointsQ;
 	bumpGrid.gen_midPointQ(&midPointsQ);
 	GL4_DataSet bumpGrid_midPointsQ(midPointsQ.data(), midPointsQ.size() * sizeof(MidPointQuad), sizeof(MidPointQuad), offsetof(MidPointQuad, pos));
 	GL4_Sphere playerSphere(Player::radius, 14, 14);
-	Player::quad = midPointsQ[midPointsQ.size() / 2 + Terrain::rowColCount / 2];
+	Player::pos = midPointsQ.size() / 2 + Terrain::rowColCount / 2;
+	Player::quad = midPointsQ[Player::pos];
 	// playerSphere.relMatrix = glm::translate(glm::mat4(1), glm::vec3(Player::quad.pos[0], Player::quad.pos[1], Player::quad.pos[2] + Player::radius));
 
 	Scene_PlaneCollision planeCollsion;
+	std::vector<float> clampedVals;
+	planeCollsion.waves(Terrain::rise, &midPointsQ, &clampedVals);
 
-	Time::sceneSetup = std::chrono::steady_clock::now();
+	Time::setupEnd = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
-		Time::sceneUpdate = std::chrono::steady_clock::now();
-		Time::secSpan = std::chrono::duration_cast<std::chrono::duration<double>>(Time::sceneUpdate - Time::sceneSetup);
+		Time::frameBegin = std::chrono::steady_clock::now();
+		Time::secSpan = std::chrono::duration_cast<std::chrono::duration<double>>(Time::frameBegin - Time::setupEnd);
 
 		glfwPollEvents();
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -162,24 +167,28 @@ int main(int argc, char** argv) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// glUseProgram(HeightRange.shaderProgID);
-		glUseProgram(Idle.shaderProgID);
+		glUseProgram(Waves.shaderProgID);
+		Waves.set_waveHeight(Terrain::rise / 2.0);
+		Waves.set_waveInc(Terrain::waveInc);
+
 		bumpGrid.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance));
 		bumpGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::xDegree), glm::vec3(1.0, 0.0, 0.0));
 		bumpGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::zDegree), glm::vec3(0.0, 0.0, 1.0));
-		Idle.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * bumpGrid.relMatrix);
-		Idle.set_renderMode(0);
+		Waves.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * bumpGrid.relMatrix);
+		Waves.set_renderMode(0);
 		bumpGrid.draw();
+		Player::quad = midPointsQ[Player::pos];
 		playerSphere.relMatrix = glm::translate(bumpGrid.relMatrix, glm::vec3(Player::quad.pos[0], Player::quad.pos[1], Player::quad.pos[2] + Player::radius));
 		// playerSphere.relMatrix = glm::translate(glm::mat4(1), glm::vec3(Player::quad.pos[0], Player::quad.pos[1], Player::quad.pos[2] + Player::radius));		
-		Idle.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * playerSphere.relMatrix);
-		Idle.set_renderMode(2);
+		Waves.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * playerSphere.relMatrix);
+		Waves.set_renderMode(2);
 		playerSphere.draw(GL_TRIANGLES);
 
 		glDisable(GL_DEPTH_TEST);
-		glPointSize(10.0f);
+		glPointSize(6.0f);
 
-		Idle.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * bumpGrid.relMatrix);
-		Idle.set_renderMode(1);
+		Waves.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * bumpGrid.relMatrix);
+		Waves.set_renderMode(1);
 		bumpGrid_midPointsQ.draw(GL_POINTS, midPointsQ.size());
 
 		glDisable(GL_DEPTH_TEST);

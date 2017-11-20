@@ -60,6 +60,13 @@ MidPointQuad Scene_PlaneCollision::proxMidPoint(const std::vector<MidPointQuad>*
     return midPoints->at(midPointIndex);
 }
 
+void Scene_PlaneCollision::waves(float rise, const std::vector<MidPointQuad>* midPoints, std::vector<float>* clampedVals){
+    float riseHalf = rise / 2.0;
+    clampedVals->resize(midPoints->size());
+    for(GLuint clampedElem = 0; clampedElem < clampedVals->size(); clampedElem++)
+        clampedVals->at(clampedElem) = midPoints->at(clampedElem).pos[2] / riseHalf;
+}
+
 MidPoint45 Scene_PlaneCollision::proxMidPoint(const std::vector<MidPoint45>* midPoints, const glm::vec2* posXY){
     GLuint midPointIndex = 0;
     float minDistance = FLT_MAX;

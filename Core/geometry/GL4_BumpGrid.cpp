@@ -85,6 +85,7 @@ void GL4_BumpGrid::create(GLfloat rise, GLuint xDimension, GLuint rowCount, GLui
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+
 void GL4_BumpGrid::gen_midPointQ(std::vector<MidPointQuad>* midPoints){
     std::vector<float> posAccum;
     GL4_BumpGrid::map(&posAccum);
