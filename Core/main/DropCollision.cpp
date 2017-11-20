@@ -46,7 +46,8 @@ namespace Player {
 	glm::mat4 persMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
 	glm::mat4 viewMatrix(1);
 	int pos[2] = {0, 0};
-	// glm::vec3 pos = glm::vec3(-4.0, -4.0, 0.0);
+	MidPointQuad quad;
+	float radius = 3.0f;
 	float mvSpeed = 0.5f;
 }
 
@@ -55,6 +56,7 @@ namespace Terrain {
 	GLfloat distance = -200.0f;
 	GLfloat xDegree = 0.0f;
 	GLfloat zDegree = 0.0f;
+	unsigned int rowColCount = 42;
 }
 
 namespace Time {
@@ -139,10 +141,13 @@ int main(int argc, char** argv) {
 
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
 
-	GL4_BumpGrid bumpGrid(10.0, 500, 42, 500, 42);
+	GL4_BumpGrid bumpGrid(10.0, 500, Terrain::rowColCount, 500, Terrain::rowColCount);
 	std::vector<MidPointQuad> midPointsQ;
 	bumpGrid.gen_midPointQ(&midPointsQ);
 	GL4_DataSet bumpGrid_midPointsQ(midPointsQ.data(), midPointsQ.size() * sizeof(MidPointQuad), sizeof(MidPointQuad), offsetof(MidPointQuad, pos));
+	GL4_Sphere playerSphere(Player::radius, 14, 14);
+	Player::quad = midPointsQ[midPointsQ.size() / 2 + Terrain::rowColCount / 2];
+	// playerSphere.relMatrix = glm::translate(glm::mat4(1), glm::vec3(Player::quad.pos[0], Player::quad.pos[1], Player::quad.pos[2] + Player::radius));
 
 	Scene_PlaneCollision planeCollsion;
 
@@ -164,10 +169,16 @@ int main(int argc, char** argv) {
 		Idle.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * bumpGrid.relMatrix);
 		Idle.set_renderMode(0);
 		bumpGrid.draw();
+		playerSphere.relMatrix = glm::translate(bumpGrid.relMatrix, glm::vec3(Player::quad.pos[0], Player::quad.pos[1], Player::quad.pos[2] + Player::radius));
+		// playerSphere.relMatrix = glm::translate(glm::mat4(1), glm::vec3(Player::quad.pos[0], Player::quad.pos[1], Player::quad.pos[2] + Player::radius));		
+		Idle.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * playerSphere.relMatrix);
+		Idle.set_renderMode(2);
+		playerSphere.draw(GL_TRIANGLES);
 
 		glDisable(GL_DEPTH_TEST);
 		glPointSize(10.0f);
 
+		Idle.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * bumpGrid.relMatrix);
 		Idle.set_renderMode(1);
 		bumpGrid_midPointsQ.draw(GL_POINTS, midPointsQ.size());
 
