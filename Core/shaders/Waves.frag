@@ -27,8 +27,8 @@ void main(){
     } else if (renderMode == 4){
         frag_out = vec4(grey4, 1.0);
     } else {
-        if(vertexID % 3 == 1) frag_out = vec4(blue.r, blue.g, blue.b, 1.0);
-        else if(vertexID % 3 == 2) frag_out = vec4(blue.r, blue.g, blue.b * 1.15, 1.0);
-        else frag_out = vec4(blue.r * 1.1, blue.g * 1.1, blue.b * 1.3, 1.0);
+        if(vertexID % 3 == 1) frag_out = vec4(blue.r, blue.g, blue.b, 0.4);
+        else if(vertexID % 3 == 2) frag_out = vec4(blue.r, blue.g, blue.b * 1.15, 0.4);
+        else frag_out = vec4(blue.r * 1.1, blue.g * 1.1, blue.b * 1.3, 0.4);
     }
 }

@@ -47,16 +47,21 @@ namespace Terrain {
 	GLfloat distance = -200.0f;
 	GLfloat xDegree = 0.0f;
 	GLfloat zDegree = 0.0f;
+	unsigned int xyLength = 1000;
 	unsigned int rowColCount = 42;
+	float stride = (float)xyLength / (float)rowColCount;
 }
 
 namespace Player {
 	GLboolean isGod = true;
+	glm::vec3 camPos(0.0, 0.0, 0.0);
+	glm::vec3 camLookPos(0.0, 0.0, -1.0);
 	glm::mat4 persMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
 	glm::mat4 viewMatrix(1);
-	unsigned int pos;
+	unsigned int location;
+	std::array<float, 3> pos;
 	MidPointQuad quad;
-	float radius = 3.0f;
+	float radius = 4.0f;
 	float mvSpeed = 0.5f;
 }
 
@@ -78,22 +83,22 @@ void God_keyCallback(GLFWwindow* window, int key, int scancode, int action, int 
 	if(key == GLFW_KEY_W && action == GLFW_PRESS) Key::W = true;
 	if(key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
 	if(Key::W && Player::isGod) Terrain::xDegree += 3.0f;
-	if(Key::W && !Player::isGod) Player::pos += Terrain::rowColCount;
+	if(Key::W && !Player::isGod) Player::location += (Terrain::rowColCount + 1) * 3;
 
 	if(key == GLFW_KEY_A && action == GLFW_PRESS) Key::A = true;
 	if(key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
 	if(Key::A && Player::isGod) Terrain::zDegree += 3.0f;
-	if(Key::A && !Player::isGod) Player::pos--;
+	if(Key::A && !Player::isGod) Player::location -= 3;
 
 	if(key == GLFW_KEY_S && action == GLFW_PRESS) Key::S = true;
 	if(key == GLFW_KEY_S && action == GLFW_RELEASE) Key::S = false;
 	if(Key::S && Player::isGod) Terrain::xDegree -= 3.0f;
-	if(Key::S && !Player::isGod) Player::pos -= Terrain::rowColCount;
+	if(Key::S && !Player::isGod) Player::location -= (Terrain::rowColCount + 1) * 3;
 
 	if(key == GLFW_KEY_D && action == GLFW_PRESS) Key::D = true;
 	if(key == GLFW_KEY_D && action == GLFW_RELEASE) Key::D = false;
 	if(Key::D && Player::isGod) Terrain::zDegree -= 3.0f;
-	if(Key::D && !Player::isGod) Player::pos++;
+	if(Key::D && !Player::isGod) Player::location += 3;
 
 	if(key == GLFW_KEY_Q && action == GLFW_PRESS) Key::Q = true;
 	if(key == GLFW_KEY_Q && action == GLFW_RELEASE) Key::Q = false;
@@ -145,23 +150,22 @@ int main(int argc, char** argv) {
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
 	GLSL_Waves Waves(parentDir + "//shaders//Waves.vert", parentDir + "//shaders//Waves.frag");
 
-	GL4_BumpGrid bumpGrid(Terrain::rise, 1000, Terrain::rowColCount, 1000, Terrain::rowColCount);
-	std::vector<MidPointQuad> midPointsQ;
-	bumpGrid.gen_midPointQ(&midPointsQ);
-	GL4_DataSet bumpGrid_midPointsQ(midPointsQ.data(), midPointsQ.size() * sizeof(MidPointQuad), sizeof(MidPointQuad), offsetof(MidPointQuad, pos));
-	GL4_Sphere playerSphere(Player::radius, 14, 14);
-	Player::pos = midPointsQ.size() / 2 + Terrain::rowColCount / 2;
-	Player::quad = midPointsQ[Player::pos];
-	// playerSphere.relMatrix = glm::translate(glm::mat4(1), glm::vec3(Player::quad.pos[0], Player::quad.pos[1], Player::quad.pos[2] + Player::radius));
+	GL4_BumpGrid bumpGrid(Terrain::rise, Terrain::xyLength, Terrain::rowColCount, Terrain::xyLength, Terrain::rowColCount);
+	std::vector<float> mappedGrid;
+	bumpGrid.map(&mappedGrid);
 
-	Scene_PlaneCollision planeCollsion;
-	std::vector<float> clampedVals;
-	planeCollsion.waves(Terrain::rise, &midPointsQ, &clampedVals);
+	GL4_Sphere playerSphere(Player::radius, 14, 14);
+	// Player::location = mappedGrid.size() / 6 + Terrain::rowColCount * 3 / 2;
+	// Player::location = mappedGrid.size() / 3 * 2 + Terrain::rowColCount * 6;
+	Player::location = mappedGrid.size() / 2 - 1;
+	Player::pos = { mappedGrid[Player::location], mappedGrid[Player::location + 1], mappedGrid[Player::location + 2] };
 
 	Time::setupEnd = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
 		Time::frameBegin = std::chrono::steady_clock::now();
 		Time::secSpan = std::chrono::duration_cast<std::chrono::duration<double>>(Time::frameBegin - Time::setupEnd);
+
+		Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
 		glfwPollEvents();
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -183,30 +187,19 @@ int main(int argc, char** argv) {
 		bumpGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::zDegree), glm::vec3(0.0, 0.0, 1.0));
 		Waves.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * bumpGrid.relMatrix);
 		Waves.set_renderMode(0);
-		Waves.set_primMode(1);
 		bumpGrid.draw();
 
 		glUseProgram(Idle.shaderProgID);
-		Player::quad = midPointsQ[Player::pos];
-		float newZ = std::abs(std::sin(Player::quad.pos[2] + Terrain::waveInc)) * Terrain::rise;
-		playerSphere.relMatrix = glm::translate(bumpGrid.relMatrix, glm::vec3(Player::quad.pos[0], Player::quad.pos[1], newZ + Player::radius));
-		// playerSphere.relMatrix = glm::translate(glm::mat4(1), glm::vec3(Player::quad.pos[0], Player::quad.pos[1], Player::quad.pos[2] + Player::radius));		
+		Player::pos = { mappedGrid[Player::location], mappedGrid[Player::location + 1], mappedGrid[Player::location + 2] };
+		float newZ = std::abs(std::sin(Player::pos[2] + Terrain::waveInc)) * Terrain::rise + Player::radius * 0.6;
+		playerSphere.relMatrix = glm::translate(bumpGrid.relMatrix, glm::vec3(Player::pos[0], Player::pos[1], newZ));
+		// playerSphere.relMatrix *= glm::rotate(glm::mat4(1), glm::radians(180.0f), glm::vec3(0.0, 0.0, 1.0));
 		Idle.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * playerSphere.relMatrix);
-		Idle.set_renderMode(2);
-		// Waves.set_waveHeight(0.0);
+		Idle.set_renderMode(1);
 		playerSphere.draw(GL_TRIANGLES);
 
 		glDisable(GL_DEPTH_TEST);
 		glPointSize(6.0f);
-
-		// Waves.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * bumpGrid.relMatrix);
-		// Waves.set_renderMode(1);
-		// bumpGrid_midPointsQ.draw(GL_POINTS, midPointsQ.size());
-
-		glDisable(GL_DEPTH_TEST);
-
-		// Perform drawing without depth testing
-		// Collision computation... Anton Says Hi
 
 		glfwSwapBuffers(window);
 	}
