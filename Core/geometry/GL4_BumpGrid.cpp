@@ -19,7 +19,7 @@ void GL4_BumpGrid::create(GLfloat rise, GLuint xDimension, GLuint rowCount, GLui
 		for (GLfloat currentRow = -1 * (GLfloat)xDimension / 2; currentRow <= (GLfloat)xDimension / 2; currentRow += rowSize) {
 			posAccum.push_back(currentRow);
 			posAccum.push_back(currentCol);
-			posAccum.push_back(((static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX)) * rise) - rise / 2);
+			posAccum.push_back(((static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX)) * rise));
 
 			if (vertexID % (rowCount * 2) < rowCount) uTex = 0.0;
 			else uTex = 1.0;

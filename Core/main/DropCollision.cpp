@@ -42,7 +42,7 @@ namespace Mouse {
 }
 
 namespace Terrain {
-	GLfloat rise = 16.0f;
+	GLfloat rise = 8.0f;
 	GLfloat waveInc = 0.0;
 	GLfloat distance = -200.0f;
 	GLfloat xDegree = 0.0f;
@@ -61,6 +61,8 @@ namespace Player {
 }
 
 namespace Time {
+	float threshold = 2.0f;
+	float pace = 0.04f;
 	std::chrono::steady_clock::time_point setupEnd;
 	std::chrono::steady_clock::time_point frameBegin;
 	std::chrono::duration<double> secSpan;
@@ -143,7 +145,7 @@ int main(int argc, char** argv) {
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
 	GLSL_Waves Waves(parentDir + "//shaders//Waves.vert", parentDir + "//shaders//Waves.frag");
 
-	GL4_BumpGrid bumpGrid(Terrain::rise, 500, Terrain::rowColCount, 500, Terrain::rowColCount);
+	GL4_BumpGrid bumpGrid(Terrain::rise, 1000, Terrain::rowColCount, 1000, Terrain::rowColCount);
 	std::vector<MidPointQuad> midPointsQ;
 	bumpGrid.gen_midPointQ(&midPointsQ);
 	GL4_DataSet bumpGrid_midPointsQ(midPointsQ.data(), midPointsQ.size() * sizeof(MidPointQuad), sizeof(MidPointQuad), offsetof(MidPointQuad, pos));
@@ -168,28 +170,38 @@ int main(int argc, char** argv) {
 
 		// glUseProgram(HeightRange.shaderProgID);
 		glUseProgram(Waves.shaderProgID);
-		Waves.set_waveHeight(Terrain::rise / 2.0);
-		Waves.set_waveInc(Terrain::waveInc);
+		Waves.set_waveHeight(Terrain::rise);
+
+		if(Time::secSpan.count() > Time::threshold){
+			Time::threshold = Time::secSpan.count() + Time::pace;
+			Terrain::waveInc += 0.1;
+			Waves.set_waveInc(Terrain::waveInc);
+		}
 
 		bumpGrid.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance));
 		bumpGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::xDegree), glm::vec3(1.0, 0.0, 0.0));
 		bumpGrid.relMatrix *= glm::rotate(glm::mat4(1), glm::radians<float>(Terrain::zDegree), glm::vec3(0.0, 0.0, 1.0));
 		Waves.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * bumpGrid.relMatrix);
 		Waves.set_renderMode(0);
+		Waves.set_primMode(1);
 		bumpGrid.draw();
+
+		glUseProgram(Idle.shaderProgID);
 		Player::quad = midPointsQ[Player::pos];
-		playerSphere.relMatrix = glm::translate(bumpGrid.relMatrix, glm::vec3(Player::quad.pos[0], Player::quad.pos[1], Player::quad.pos[2] + Player::radius));
+		float newZ = std::abs(std::sin(Player::quad.pos[2] + Terrain::waveInc)) * Terrain::rise;
+		playerSphere.relMatrix = glm::translate(bumpGrid.relMatrix, glm::vec3(Player::quad.pos[0], Player::quad.pos[1], newZ + Player::radius));
 		// playerSphere.relMatrix = glm::translate(glm::mat4(1), glm::vec3(Player::quad.pos[0], Player::quad.pos[1], Player::quad.pos[2] + Player::radius));		
-		Waves.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * playerSphere.relMatrix);
-		Waves.set_renderMode(2);
+		Idle.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * playerSphere.relMatrix);
+		Idle.set_renderMode(2);
+		// Waves.set_waveHeight(0.0);
 		playerSphere.draw(GL_TRIANGLES);
 
 		glDisable(GL_DEPTH_TEST);
 		glPointSize(6.0f);
 
-		Waves.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * bumpGrid.relMatrix);
-		Waves.set_renderMode(1);
-		bumpGrid_midPointsQ.draw(GL_POINTS, midPointsQ.size());
+		// Waves.set_mvpMatrix(Player::persMatrix * Player::viewMatrix * bumpGrid.relMatrix);
+		// Waves.set_renderMode(1);
+		// bumpGrid_midPointsQ.draw(GL_POINTS, midPointsQ.size());
 
 		glDisable(GL_DEPTH_TEST);
 
