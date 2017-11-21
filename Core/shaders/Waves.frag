@@ -8,27 +8,19 @@ layout(location = 0) out vec4 frag_out;
 
 void main(){
 
-    vec3 grey0 = vec3(0.05, 0.05, 0.05);
-    vec3 grey1 = vec3(0.35, 0.35, 0.35);
-    vec3 grey2 = vec3(0.5, 0.5, 0.5);
-    vec3 grey3 = vec3(0.65, 0.65, 0.65);
-    vec3 grey4 = vec3(0.95, 0.95, 0.95);
-
-    vec3 red = vec3(1.0, 0.4, 0.4);
-    vec3 green = vec3(0.0, 1.0, 0.6);
+    vec3 sand1 = vec3(0.929, 0.882, 0.607);
+    vec3 sand2 = vec3(0.9, 0.9, 0.68);
+    vec3 sand3 = vec3(0.95, 0.8, 0.65);
+    
     vec3 blue = vec3(0.3, 0.5, 0.9);
     
     if(renderMode == 1){
-        frag_out = vec4(red, 1.0);
-    } else if (renderMode == 2){
-        frag_out = vec4(green, 1.0);
-    } else if (renderMode == 3){
-        frag_out = vec4(blue, 1.0);
-    } else if (renderMode == 4){
-        frag_out = vec4(grey4, 1.0);
+        if(vertexID % 3 == 1) frag_out = vec4(sand1, 0.8);
+        else if(vertexID % 3 == 2) frag_out = vec4(sand2, 0.8);
+        else frag_out = vec4(sand3, 0.8);
     } else {
-        if(vertexID % 3 == 1) frag_out = vec4(blue.r, blue.g, blue.b, 0.4);
-        else if(vertexID % 3 == 2) frag_out = vec4(blue.r, blue.g, blue.b * 1.15, 0.4);
-        else frag_out = vec4(blue.r * 1.1, blue.g * 1.1, blue.b * 1.3, 0.4);
+        if(vertexID % 3 == 1) frag_out = vec4(blue.r, blue.g, blue.b, 0.6);
+        else if(vertexID % 3 == 2) frag_out = vec4(blue.r, blue.g, blue.b * 1.15, 0.6);
+        else frag_out = vec4(blue.r * 1.1, blue.g * 1.1, blue.b * 1.3, 0.6);
     }
 }

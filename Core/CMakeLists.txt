@@ -182,6 +182,28 @@ target_link_libraries(Ripples
     glm
 )
 
+add_executable(StackedRipples
+    loaders/LoadShaders.cpp
+    pipeline/GLSL_Idle.cpp
+    pipeline/GLSL_HeightRange.cpp
+    pipeline/GLSL_Waves.cpp
+    geometry/GL4_Sphere.cpp
+    geometry/GL4_BumpGrid.cpp
+    geometry/GL4_DataSet.cpp
+    scene/PlaneCollision.cpp
+    main/StackedRipples.cpp
+)
+
+target_include_directories(StackedRipples
+    PUBLIC include
+)
+
+target_link_libraries(StackedRipples
+    GLEW::glew_s
+    glfw
+    glm
+)
+
 set(SRC_SHADER_LIST)
 set(OUTPUT_SHADER_LIST)
 foreach(current_shader "Idle.vert" "Idle.frag"
