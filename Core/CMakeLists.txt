@@ -160,7 +160,7 @@ target_link_libraries(Hexes
     glm
 )
 
-add_executable(DropCollision
+add_executable(Ripples
     loaders/LoadShaders.cpp
     pipeline/GLSL_Idle.cpp
     pipeline/GLSL_HeightRange.cpp
@@ -169,14 +169,14 @@ add_executable(DropCollision
     geometry/GL4_BumpGrid.cpp
     geometry/GL4_DataSet.cpp
     scene/PlaneCollision.cpp
-    main/DropCollision.cpp
+    main/Ripples.cpp
 )
 
-target_include_directories(DropCollision
+target_include_directories(Ripples
     PUBLIC include
 )
 
-target_link_libraries(DropCollision
+target_link_libraries(Ripples
     GLEW::glew_s
     glfw
     glm

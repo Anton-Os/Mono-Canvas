@@ -32,7 +32,7 @@ namespace UI {
 }
 
 namespace Key {
-	GLboolean W, A, S, D, Q, E = false;
+	GLboolean W, A, S, D, Q, E, Z, C, X, V, R, F = false;
 }
 
 namespace Mouse {
@@ -41,12 +41,19 @@ namespace Mouse {
 	GLfloat xOffset, yOffset;
 }
 
+namespace Background {
+	float r = 0.0;
+	float g = 0.0;
+	float b = 0.0;
+}
+
 namespace Terrain {
 	GLfloat rise = 8.0f;
 	GLfloat waveInc = 0.0;
 	GLfloat distance = -200.0f;
 	GLfloat xDegree = 0.0f;
 	GLfloat zDegree = 0.0f;
+	bool remake = false;
 	unsigned int xyLength = 1000;
 	unsigned int rowColCount = 42;
 	float stride = (float)xyLength / (float)rowColCount;
@@ -58,6 +65,7 @@ namespace Player {
 	glm::vec3 camLookPos(0.0, 0.0, -1.0);
 	glm::mat4 persMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
 	glm::mat4 viewMatrix(1);
+	bool remake = false;
 	unsigned int location;
 	std::array<float, 3> pos;
 	MidPointQuad quad;
@@ -77,6 +85,36 @@ namespace Time {
 }
 
 void God_keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
+	if(key == GLFW_KEY_1 && action == GLFW_PRESS){
+		Background::r = 0.0f;
+		Background::g = 0.0f;
+		Background::b = 0.0f;
+	}
+
+	if(key == GLFW_KEY_2 && action == GLFW_PRESS){
+		Background::r = 1.0f;
+		Background::g = 1.0f;
+		Background::b = 1.0f;
+	}
+
+	if(key == GLFW_KEY_3 && action == GLFW_PRESS){
+		Background::r = 0.5f;
+		Background::g = 0.5f;
+		Background::b = 0.5f;
+	}
+
+	if(key == GLFW_KEY_4 && action == GLFW_PRESS){
+		Background::r = 1.0f;
+		Background::g = 0.6313725490196078f;
+		Background::b = 0.4196078431372549f;
+	}
+
+	if(key == GLFW_KEY_5 && action == GLFW_PRESS){
+		Background::r = 0.392156862745098f;
+		Background::g = 0.3333333333333333f;
+		Background::b = 0.4392156862745098f;
+	}
+
 	if(key == GLFW_KEY_P && action == GLFW_PRESS && Player::isGod) Player::isGod = false;
 	else if(key == GLFW_KEY_P && action == GLFW_PRESS && !Player::isGod) Player::isGod = true;
 
@@ -107,6 +145,50 @@ void God_keyCallback(GLFWwindow* window, int key, int scancode, int action, int 
 	if(key == GLFW_KEY_E && action == GLFW_PRESS) Key::E = true;
 	if(key == GLFW_KEY_E && action == GLFW_RELEASE) Key::E = false;
 	if(Key::E && Player::isGod) Terrain::distance -= 20.0f;
+
+	if(key == GLFW_KEY_Z && action == GLFW_PRESS) Key::Z = true;
+	if(key == GLFW_KEY_Z && action == GLFW_RELEASE) Key::Z = false;
+	if(Key::Z && Player::isGod){ 
+		Terrain::xyLength += 40;
+		Terrain::remake = true;
+	}
+	if(Key::Z && ! Player::isGod){ 
+		Player::radius += 0.5f;
+		Player::remake = true;
+	}
+
+	if(key == GLFW_KEY_C && action == GLFW_PRESS) Key::C = true;
+	if(key == GLFW_KEY_C && action == GLFW_RELEASE) Key::C = false;
+	if(Key::C && Player::isGod){ 
+		Terrain::xyLength -= 40;
+		Terrain::remake = true;
+	}
+	if(Key::C && ! Player::isGod){ 
+		Player::radius -= 0.5f;
+		Player::remake = true;
+	}
+
+	if(key == GLFW_KEY_X && action == GLFW_PRESS) Key::X = true;
+	if(key == GLFW_KEY_X && action == GLFW_RELEASE) Key::X = false;
+	if(Key::X && Player::isGod){ 
+		Terrain::rise += 1.0f;
+		Terrain::remake = true;
+	}
+
+	if(key == GLFW_KEY_V && action == GLFW_PRESS) Key::V = true;
+	if(key == GLFW_KEY_V && action == GLFW_RELEASE) Key::V = false;
+	if(Key::V && Player::isGod){ 
+		Terrain::rise -= 1.0f;
+		Terrain::remake = true;
+	}
+
+	if(key == GLFW_KEY_R && action == GLFW_PRESS) Key::R = true;
+	if(key == GLFW_KEY_R && action == GLFW_RELEASE) Key::R = false;
+	if(Key::R) Time::pace += 0.005f;
+
+	if(key == GLFW_KEY_F && action == GLFW_PRESS) Key::F = true;
+	if(key == GLFW_KEY_F && action == GLFW_RELEASE) Key::F = false;
+	if(Key::F) Time::pace -= 0.005f;
 }
 
 int main(int argc, char** argv) {
@@ -168,13 +250,24 @@ int main(int argc, char** argv) {
 		Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
 		glfwPollEvents();
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(Background::r, Background::g, Background::b, 1.0f);
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// glUseProgram(HeightRange.shaderProgID);
 		glUseProgram(Waves.shaderProgID);
 		Waves.set_waveHeight(Terrain::rise);
+
+		if(Terrain::remake){
+			bumpGrid.create(Terrain::rise, Terrain::xyLength, Terrain::rowColCount, Terrain::xyLength, Terrain::rowColCount);
+			bumpGrid.map(&mappedGrid);
+			Terrain::remake = false;
+		}
+
+		if(Player::remake){
+			playerSphere.create(Player::radius, 14, 14);
+			Player::remake = false;
+		}
 
 		if(Time::secSpan.count() > Time::threshold){
 			Time::threshold = Time::secSpan.count() + Time::pace;
