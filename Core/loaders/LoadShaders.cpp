@@ -147,3 +147,9 @@ GLuint compileShaders(const std::string& vertexShaderFilePath, const std::string
 
     return shader_program;
 }
+
+GLuint createShaderProg(const std::string& vertexShaderFile, const std::string& fragmentShaderFile){
+    char* vertexShaderSource = readFile(vertexShaderFile);
+    char* fragmentShaderSource = readFile(fragmentShaderFile);
+    return 0;
+}

@@ -2,7 +2,6 @@
 #include <string>
 #include <chrono>
 #include <ctime>
-// #include <cstring>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -16,15 +15,6 @@
 #include "ManualSets.h"
 #include "Pipeline.h"
 #include "Scene.h"
-
-const std::string getParentDirectory(const char* path) {
-	const char* ptr = path + strlen(path);
-	while (ptr != path && nullptr == strchr("\\/", *(--ptr)));
-	std::size_t len = ptr - path;
-	std::string result(path, len);
-	std::cout << "Parent dir: " << result << std::endl;
-	return result;
-}
 
 namespace UI {
 	int height = 1080;
@@ -133,8 +123,9 @@ int main(int argc, char** argv) {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	std::string parentDir = getParentDirectory(argv[0]);
+	std::string parentDir = getParentDir(argv[0]);
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
+	readFile(parentDir + "//shaders//Idle.vert");
 	
 	float dot[3] = {0.0f, 0.0f, 0.0f};
 	GL4_DataSet dataSet(&dot[0], 3);

@@ -1,4 +1,5 @@
 add_executable(Blank
+    loaders/FileIO.cpp
     loaders/LoadShaders.cpp
     geometry/GL4_DataSet.cpp
     pipeline/GLSL_Idle.cpp
@@ -17,6 +18,7 @@ target_link_libraries(Blank
 
 
 add_executable(LoopTimed
+    loaders/FileIO.cpp
     loaders/LoadShaders.cpp
     loaders/LoadData.cpp
     pipeline/GLSL_Idle.cpp
@@ -36,6 +38,7 @@ target_link_libraries(LoopTimed
 )
 
 add_executable(Hills
+    loaders/FileIO.cpp
     loaders/LoadShaders.cpp
     loaders/LoadData.cpp
     pipeline/GLSL_Idle.cpp
@@ -55,6 +58,7 @@ target_link_libraries(Hills
 )
 
 add_executable(MidPoints
+    loaders/FileIO.cpp
     loaders/LoadShaders.cpp
     pipeline/GLSL_Idle.cpp
     pipeline/GLSL_HeightRange.cpp
@@ -76,6 +80,7 @@ target_link_libraries(MidPoints
 )
 
 add_executable(CollisionTest
+    loaders/FileIO.cpp
     loaders/LoadShaders.cpp
     pipeline/GLSL_Idle.cpp
     pipeline/GLSL_HeightRange.cpp
@@ -97,6 +102,7 @@ target_link_libraries(CollisionTest
 )
 
 add_executable(MandlebrotSet
+    loaders/FileIO.cpp
     loaders/LoadShaders.cpp
     pipeline/GLSL_Idle.cpp
     pipeline/GLSL_Flatscape.cpp
@@ -119,6 +125,7 @@ target_link_libraries(MandlebrotSet
 )
 
 add_executable(ConwaysGOL
+    loaders/FileIO.cpp
     loaders/LoadShaders.cpp
     geometry/GL4_DataSet.cpp
     geometry/GL4_Grid.cpp
@@ -140,6 +147,7 @@ target_link_libraries(ConwaysGOL
 )
 
 add_executable(Hexes
+    loaders/FileIO.cpp
     loaders/LoadShaders.cpp
     geometry/GL4_DataSet.cpp
     geometry/GL4_Grid.cpp
@@ -161,6 +169,7 @@ target_link_libraries(Hexes
 )
 
 add_executable(Ripples
+    loaders/FileIO.cpp
     loaders/LoadShaders.cpp
     pipeline/GLSL_Idle.cpp
     pipeline/GLSL_HeightRange.cpp
@@ -183,6 +192,7 @@ target_link_libraries(Ripples
 )
 
 add_executable(StackedRipples
+    loaders/FileIO.cpp
     loaders/LoadShaders.cpp
     pipeline/GLSL_Idle.cpp
     pipeline/GLSL_HeightRange.cpp
