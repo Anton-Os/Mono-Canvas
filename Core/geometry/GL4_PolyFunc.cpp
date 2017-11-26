@@ -33,3 +33,13 @@ void GL4_PolyFunc::gen_x(float interval, unsigned int reps){
         GL4_PolyFunc::xVals[repCount / 2 + (xElem + indexOffset)] = interval * xElem - offsetX;
     }
 }
+
+void GL4_PolyFunc::gen_y(){
+    if(GL4_PolyFunc::yVals.empty())
+        GL4_PolyFunc::yVals.resize(GL4_PolyFunc::xVals.size());
+    else
+        GL4_PolyFunc::yVals.resize(GL4_PolyFunc::yVals.size() + GL4_PolyFunc::xVals.size());
+
+    for(unsigned int yElem = GL4_PolyFunc::yVals.size() - GL4_PolyFunc::xVals.size(); yElem < GL4_PolyFunc::yVals.size(); yElem++)
+        GL4_PolyFunc::yVals[yElem] = GL4_PolyFunc::yEquasion(GL4_PolyFunc::xVals[yElem]);
+}
