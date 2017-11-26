@@ -33,20 +33,9 @@ namespace Mouse {
 }
 
 namespace Player {
-	GLboolean isGod = true;
-	glm::mat4 perspectiveMatrix = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, -10.0f, 10.0f);
-	glm::mat4 viewMatrix(1);
-	glm::vec3 pos = glm::vec3(-4.0, -4.0, 0.0);
-	float mvSpeed = 0.5f;
 }
 
 namespace Terrain {
-	bool firstCreation = true;
-	float pointSize = 3.0;
-	float probability = 0.2;
-	unsigned int xyCount = 200;
-	float xRotation = 0.0;
-	float zRotation = 0.0;
 }
 
 namespace Time {
@@ -138,31 +127,10 @@ int main(int argc, char** argv) {
 	std::string parentDir = getParentDirectory(argv[0]);
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
 	
-	float dot[6] = {0.0f, 0.0f, 0.0f, 3.0f, 3.0f, 0.0};
-	GL4_DataSet dataSet(&dot[0], 6 * sizeof(float));
+	float dot[3] = {0.0f, 0.0f, 0.0f};
+	GL4_DataSet dataSet(&dot[0], 3);
 
-	float initPos[2] = {0.0, 0.0};
-	/* Hexagon hexagon = createHex(5.0f, initPos);
-	GL4_DataSet hexDataSet(&hexagon.sixProx[0], sizeof(float) * 18);
-	initPos[1] = 20.0f;
-	Hexagon hexagon2 = createHex(5.0f, initPos);
-	GL4_DataSet hexDataSet2(&hexagon2.sixProx[0], sizeof(float) * 18);
-	initPos[0] = 15.0f;
-	initPos[1] = 10.0f; */
-	HexagonIdx12 hexagon0 = createHexIdx12(12.0f, initPos, 0);
-	GL4_DataSet hexDataSet0(&hexagon0.sixProx[0], sizeof(float) * 18);
-	hexDataSet0.index(hexagon0.indices.data(), sizeof(GLuint) * 12);
-	initPos[0] = 24.0f;
-	initPos[1] = 24.0f;
-	HexagonIdx12 hexagon1 = createHexIdx12(12.0f, initPos, 1);
-	GL4_DataSet hexDataSet1(&hexagon1.sixProx[0], sizeof(float) * 18);
-	hexDataSet1.index(hexagon1.indices.data(), sizeof(GLuint) * 12);
-	initPos[0] = -24.0f;
-	initPos[1] = -24.0f;
-	HexagonIdx12 hexagon2 = createHexIdx12(12.0f, initPos, 3);
-	GL4_DataSet hexDataSet2(&hexagon2.sixProx[0], sizeof(float) * 18);
-	hexDataSet2.index(hexagon2.indices.data(), sizeof(GLuint) * 12);
-	// GL4_HexGrid hexGrid(5.0f, 1, 2);
+    GL4_PolyFunc polyFunc();
 
 	Time::setupEnd = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(window)){
@@ -175,17 +143,10 @@ int main(int argc, char** argv) {
 
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
-		glPointSize(6.0f);
-		glLineWidth(4.0f);
+		glPointSize(12.0f);
 
 		glUseProgram(Idle.shaderProgID);
-		Idle.set_mvpMatrix(Player::perspectiveMatrix * Player::viewMatrix);
-		Idle.set_renderMode(1);
-		hexDataSet0.drawIdx(GL_LINES, 12);
-		Idle.set_renderMode(2);
-		hexDataSet1.drawIdx(GL_TRIANGLES, 12);
-		Idle.set_renderMode(3);
-		hexDataSet2.drawIdx(GL_TRIANGLES, 12);
+		dataSet.draw(GL_POINTS, 1);
 
 		glfwSwapBuffers(window);
 	}

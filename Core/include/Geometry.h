@@ -172,3 +172,16 @@ private:
     bool isSquare = false;
     GLuint indexCount;
 };
+
+class GL4_PolyFunc : public GL4_Object3D {
+public:
+    float * currentX;
+    float yEquasion = 0.0f;
+    float zEquasion = 0.0f;
+    std::vector<float> xVals;
+    std::vector<float> yVals;
+    std::vector<float> zVals;
+    void gen_x(std::vector<float>* xVals, float interval, unsigned int reps);
+private:
+    void gen_x(float interval, unsigned int reps);
+};

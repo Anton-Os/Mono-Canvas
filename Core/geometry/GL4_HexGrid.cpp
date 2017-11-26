@@ -9,10 +9,10 @@ namespace HexAngle {
     float cos30 = std::cos(shortSide);
     float sin150= std::sin(longSide);
     float cos150 = std::cos(longSide); */
-    float sin30 = std::sin(glm::radians(30.0f));
-    float cos30 = std::cos(glm::radians(30.0f));
-    float sin150= std::sin(glm::radians(150.0f));
-    float cos150 = std::cos(glm::radians(150.0f));
+    const float sin30 = std::sin(glm::radians(30.0f));
+    const float cos30 = std::cos(glm::radians(30.0f));
+    const float sin150= std::sin(glm::radians(150.0f));
+    const float cos150 = std::cos(glm::radians(150.0f));
 }
 
 Hexagon createHex(float size) {

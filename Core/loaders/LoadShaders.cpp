@@ -1,32 +1,5 @@
 #include "Loaders.h"
 
-/* Handles operations related to GLSL Shaders */
-
-GLchar* readShaderFile(const char* nameOfShader){
-    FILE* shaderFile = fopen(nameOfShader, "r");
-    if (nullptr == shaderFile) {
-        std::cerr << "Failed to open shader file: " << nameOfShader << std::endl;
-        return nullptr;
-    }
-    fseek(shaderFile, 0, SEEK_END);
-    int shaderLength = ftell(shaderFile);
-    fseek(shaderFile, 0, SEEK_SET);
-
-    GLchar* shaderSource = new GLchar[shaderLength + 1];
-    // second argument specifies size in bytes
-    std::size_t n = fread(shaderSource, 1, shaderLength, shaderFile);
-    if (n <= 0) {
-        std::cerr << "Failed to read shader file (got " << n
-                  << " bytes, expected " << shaderLength << " bytes)" << std::endl;
-        return nullptr;
-    }
-    fclose(shaderFile);
-    shaderSource[n] = '\0';
-
-    // cast to constant NOW because earlier fread cannot use shaderSource
-    return shaderSource;
-}
-
 GLuint compileShaders(const std::string& rootPath, const char* vertexShaderBaseName, const char* fragmentShaderBaseName){
     GLuint vertex_shader, fragment_shader, shader_program;
     GLint logState;
@@ -37,8 +10,8 @@ GLuint compileShaders(const std::string& rootPath, const char* vertexShaderBaseN
     std::string fragment_shader_absolute_path((rootPath.length() > 0) ?
                                               rootPath + "\\" + fragmentShaderBaseName :
                                               std::string(fragmentShaderBaseName));
-    const GLchar* vertex_shader_source = readShaderFile(vertex_shader_absolute_path.c_str());
-    const GLchar* fragment_shader_source = readShaderFile(fragment_shader_absolute_path.c_str());
+    const GLchar* vertex_shader_source = readFile(vertex_shader_absolute_path.c_str());
+    const GLchar* fragment_shader_source = readFile(fragment_shader_absolute_path.c_str());
     vertex_shader_absolute_path;
     fragment_shader_absolute_path;
 
@@ -96,8 +69,8 @@ GLuint compileShaders(const std::string& vertexShaderFilePath, const std::string
     GLint logState;
     GLchar infoLog[512];
 
-    const GLchar* vertex_shader_source = readShaderFile(vertexShaderFilePath.c_str());
-    const GLchar* fragment_shader_source = readShaderFile(fragmentShaderFilePath.c_str());
+    const GLchar* vertex_shader_source = readFile(vertexShaderFilePath.c_str());
+    const GLchar* fragment_shader_source = readFile(fragmentShaderFilePath.c_str());
 
     vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shader, 1, &vertex_shader_source, NULL);
@@ -146,10 +119,4 @@ GLuint compileShaders(const std::string& vertexShaderFilePath, const std::string
     glDeleteShader(fragment_shader);
 
     return shader_program;
-}
-
-GLuint createShaderProg(const std::string& vertexShaderFile, const std::string& fragmentShaderFile){
-    char* vertexShaderSource = readFile(vertexShaderFile);
-    char* fragmentShaderSource = readFile(fragmentShaderFile);
-    return 0;
 }

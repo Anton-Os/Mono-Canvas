@@ -17,15 +17,6 @@
 #include "Pipeline.h"
 #include "Scene.h"
 
-const std::string getParentDirectory(const char* path) {
-	const char* ptr = path + strlen(path);
-	while (ptr != path && nullptr == strchr("\\/", *(--ptr)));
-	std::size_t len = ptr - path;
-	std::string result(path, len);
-	std::cout << "Parent dir: " << result << std::endl;
-	return result;
-}
-
 namespace UI {
 	int height = 1080;
 	int width = 1320;
