@@ -35,17 +35,17 @@ namespace Mouse {
 namespace Player {
     glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
     glm::mat4 viewMatrix(1);
-    glm::vec3 camPos(0.0, 0.0, -10.0);
-    glm::vec3 camLookPos = camPos + glm::vec3(0.0f, 0.0f, 1.0f);
+    glm::vec3 camPos(0.0, 0.0, 1.0f);
+    glm::vec3 camLookPos = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 namespace Terrain {
 }
 
 namespace Math {
-	float interval = 1.0f;
+    float interval = 0.2f;
 	unsigned int xNum = 8;
-    float yInit = 2.0f;
+    float yInit = 0.0f;
 }
 
 namespace Time {
@@ -81,7 +81,7 @@ float yFuncZero(float xVal){
 }
 
 float zFuncAdd(float xVal, float yVal){
-    return xVal + yVal;
+    return 0.0f;
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
@@ -173,7 +173,9 @@ int main(int argc, char** argv) {
     polyFunc.gen_x();
     polyFunc.yEquasion = yFuncZero;
     polyFunc.gen_y();
-    Math::yInit = 3.0f;
+    Math::yInit = 0.5f;
+    polyFunc.gen_y();
+    Math::yInit = -0.2f;
     polyFunc.gen_y();
     polyFunc.zEquasion = zFuncAdd;
     polyFunc.gen_z();
@@ -191,11 +193,12 @@ int main(int argc, char** argv) {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
         glPointSize(12.0f);
+        glLineWidth(10.0f);
 
         glUseProgram(Idle.shaderProgID);
-        Idle.set_mvpMatrix(Player::viewMatrix * Player::perspectiveMatrix);
+        Idle.set_mvpMatrix(Player::viewMatrix * glm::mat4(1));
         // dataSet.draw(GL_POINTS, 1);
-        polyFunc.draw(GL_POINTS, 48);
+        polyFunc.draw(GL_LINES, 48);
 
 		glfwSwapBuffers(window);
 	}
