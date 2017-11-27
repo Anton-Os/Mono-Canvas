@@ -33,12 +33,18 @@ namespace Mouse {
 }
 
 namespace Player {
+    glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
+    glm::mat4 viewMatrix(1);
+    glm::vec3 camPos(0.0, 0.0, -10.0);
+    glm::vec3 camLookPos = camPos + glm::vec3(0.0f, 0.0f, 1.0f);
 }
 
 namespace Terrain {
 }
 
 namespace Math {
+	float interval = 1.0f;
+	unsigned int xNum = 8;
     float yInit = 2.0f;
 }
 
@@ -52,9 +58,30 @@ namespace Time {
 	std::chrono::duration<double, std::nano> nanoSpan;
 }
 
+void xFunc(std::vector<float>* xVals){
+    xVals->resize(Math::xNum);
+    float offsetX = Math::interval / 2.0f;
+    short int indexOffset = -1;
+    unsigned int repCount = Math::xNum;
+    if(repCount % 2 == 1){
+        xVals->at(repCount / 2) = 0.0f;
+        offsetX = 0.0f;
+        indexOffset = 0;
+        repCount--;
+    }
+    for(unsigned int xElem = repCount / 2; xElem > 0; xElem--){
+        xVals->at(repCount / 2 - xElem) = -1.0f * Math::interval * xElem + offsetX;
+        xVals->at(repCount / 2 + (xElem + indexOffset)) = Math::interval * xElem - offsetX;
+    }
+}
+
 float yFuncZero(float xVal){
    float* yVal = &Math::yInit;
    return *yVal;
+}
+
+float zFuncAdd(float xVal, float yVal){
+    return xVal + yVal;
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
@@ -136,15 +163,21 @@ int main(int argc, char** argv) {
 	std::string parentDir = getParentDirectory(argv[0]);
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
 	
-	float dot[3] = {0.0f, 0.0f, 0.0f};
-	GL4_DataSet dataSet(&dot[0], 3);
+    // float dot[3] = {0.0f, 0.0f, 0.0f};
+    // GL4_DataSet dataSet(&dot[0], 3);
+
+    Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
     GL4_PolyFunc polyFunc;
-    polyFunc.gen_x(1.0f, 8);
+    polyFunc.xEquasion = xFunc;
+    polyFunc.gen_x();
     polyFunc.yEquasion = yFuncZero;
     polyFunc.gen_y();
     Math::yInit = 3.0f;
     polyFunc.gen_y();
+    polyFunc.zEquasion = zFuncAdd;
+    polyFunc.gen_z();
+    polyFunc.create();
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){
@@ -160,7 +193,9 @@ int main(int argc, char** argv) {
         glPointSize(12.0f);
 
         glUseProgram(Idle.shaderProgID);
-		dataSet.draw(GL_POINTS, 1);
+        Idle.set_mvpMatrix(Player::viewMatrix * Player::perspectiveMatrix);
+        // dataSet.draw(GL_POINTS, 1);
+        polyFunc.draw(GL_POINTS, 48);
 
 		glfwSwapBuffers(window);
 	}

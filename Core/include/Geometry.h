@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <array>
 #include <limits>
+#include <bitset>
 
 #include <GL/glew.h>
 
@@ -173,15 +174,22 @@ private:
     GLuint indexCount;
 };
 
-class GL4_PolyFunc : public GL4_Object3D {
+class GL4_PolyFunc {
 public:
-    float (*xEquasion)();
+    void (*xEquasion)(std::vector<float>* xVals);
     float (*yEquasion)(float);
     float (*zEquasion)(float, float);
     std::vector<float> xVals;
     std::vector<float> yVals;
     std::vector<float> zVals;
-    void gen_x(std::vector<float>* xVals, float interval, unsigned int reps);
-    void gen_x(float interval, unsigned int reps);
+    void gen_x();
     void gen_y();
+    void gen_z();
+    void create();
+    void draw(GLenum drawMode, GLuint drawCount);
+private:
+    enum ptAttrib { X, Y, Z };
+    std::bitset<3> xyzBits;
+    enum feedParams { VAO, feedPos };
+    unsigned int feed[2];
 };
