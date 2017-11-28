@@ -44,12 +44,6 @@ namespace Player {
 namespace Terrain {
 }
 
-namespace Math {
-    float interval = 0.2f;
-	unsigned int xNum = 40;
-    float yInit = 0.0f;
-}
-
 namespace Time {
 	std::chrono::steady_clock::time_point setupBegin;
 	std::chrono::steady_clock::time_point setupEnd;
@@ -58,6 +52,12 @@ namespace Time {
 	std::chrono::duration<double, std::milli> milliSpan;
 	std::chrono::duration<double, std::micro> microSpan;
 	std::chrono::duration<double, std::nano> nanoSpan;
+}
+
+namespace Math {
+    float interval = 0.1f;
+    unsigned int xNum = 1000;
+    float yInit = 0.0f;
 }
 
 void xFunc(std::vector<float>* xVals){
@@ -80,6 +80,22 @@ void xFunc(std::vector<float>* xVals){
 float yFuncZero(float xVal){
    float* yVal = &Math::yInit;
    return *yVal;
+}
+
+float yFuncTan(float xVal){
+    return std::tan(xVal);
+}
+
+float yFuncTanM(float xVal){
+    return -1 * std::tan(xVal);
+}
+
+float yFuncSinCos(float xVal){
+    return std::tan(xVal);
+}
+
+float yFuncSinCosM(float xVal){
+    return -1 * std::tan(xVal);
 }
 
 float zFuncAdd(float xVal, float yVal){
@@ -173,11 +189,9 @@ int main(int argc, char** argv) {
     GL4_PolyFunc polyFunc;
     polyFunc.xEquasion = xFunc;
     polyFunc.gen_x();
-    polyFunc.yEquasion = yFuncZero;
-    polyFunc.gen_y();
-    Math::yInit = 0.5f;
-    polyFunc.gen_y();
-    Math::yInit = -0.2f;
+    polyFunc.yEquasion = yFuncTan;
+	polyFunc.gen_y();
+    polyFunc.yEquasion = yFuncTanM;
     polyFunc.gen_y();
     polyFunc.zEquasion = zFuncAdd;
     polyFunc.gen_z();
@@ -198,6 +212,7 @@ int main(int argc, char** argv) {
         glLineWidth(8.0f);
 
         glUseProgram(Idle.shaderProgID);
+        Idle.set_renderMode(0);
         Idle.set_mvpMatrix(Player::viewMatrix * Player::perspectiveMatrix);
         // dataSet.draw(GL_POINTS, 1);
         polyFunc.draw(GL_POINTS, polyFunc.get_vertexCount());

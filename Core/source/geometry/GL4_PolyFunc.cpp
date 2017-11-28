@@ -20,8 +20,11 @@ void GL4_PolyFunc::gen_y(){
     else
         GL4_PolyFunc::yVals.resize(GL4_PolyFunc::yVals.size() + GL4_PolyFunc::xVals.size());
 
-    for(unsigned int yElem = GL4_PolyFunc::yVals.size() - GL4_PolyFunc::xVals.size(); yElem < GL4_PolyFunc::yVals.size(); yElem++)
-        GL4_PolyFunc::yVals[yElem] = GL4_PolyFunc::yEquasion(GL4_PolyFunc::xVals[yElem]);
+    unsigned int xElem = 0;
+    for(unsigned int yElem = GL4_PolyFunc::yVals.size() - GL4_PolyFunc::xVals.size(); yElem < GL4_PolyFunc::yVals.size(); yElem++){
+        xElem++;
+        GL4_PolyFunc::yVals[yElem] = GL4_PolyFunc::yEquasion(GL4_PolyFunc::xVals[xElem]);
+    }
 
     GL4_PolyFunc::xyzBits.set(1);
 }

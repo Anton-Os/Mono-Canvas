@@ -1,4 +1,4 @@
-# Mono-Canvas
+# PolyArt
 
 ### Supported generators:
 
@@ -8,8 +8,8 @@
 
 ### Build Instructions:
 
-1. First create a cmake project with with the source directory pointing to Anton-Os/Mono-Canvas/Extlib and lets call the build directory ${EXTLIB_DIR}
-2. Set CACHE variable CMAKE_INSTALL_PREFIX to a custom install directory, lets call it ${INSTALL_DIR}
+1. First create a cmake project with with the source directory pointing to Anton-Os/Mono-Canvas/Extlib and a build directory, ${EXTLIB_DIR}
+2. Set CACHE variable CMAKE_INSTALL_PREFIX to an install directory, lets call it ${INSTALL_DIR}
 3. Proceed to build the first project
 
 4. Create a second cmake project with the source directory pointing to the root source directory Anton-Os/Mono-Canvas
