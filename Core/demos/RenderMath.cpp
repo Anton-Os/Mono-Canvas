@@ -2,6 +2,7 @@
 #include <string>
 #include <chrono>
 #include <ctime>
+#include <algorithm>
 // #include <cstring>
 
 #include <GL/glew.h>
@@ -74,7 +75,9 @@ void xFunc(std::vector<float>* xVals){
     for(unsigned int xElem = repCount / 2; xElem > 0; xElem--){
         xVals->at(repCount / 2 - xElem) = -1.0f * Math::interval * xElem + offsetX;
         xVals->at(repCount / 2 + (xElem + indexOffset)) = Math::interval * xElem - offsetX;
-    }
+	}
+	
+	std::sort(xVals->begin(), xVals->end());
 }
 
 float yFuncZero(float xVal){
@@ -90,12 +93,12 @@ float yFuncTanM(float xVal){
     return -1 * std::tan(xVal);
 }
 
-float yFuncSinCos(float xVal){
-    return std::tan(xVal);
+float yFuncCos(float xVal){
+    return std::cos(xVal);
 }
 
-float yFuncSinCosM(float xVal){
-    return -1 * std::tan(xVal);
+float yFuncCosM(float xVal){
+	return -1 * std::cos(xVal);
 }
 
 float zFuncAdd(float xVal, float yVal){
@@ -189,9 +192,9 @@ int main(int argc, char** argv) {
     GL4_PolyFunc polyFunc;
     polyFunc.xEquasion = xFunc;
     polyFunc.gen_x();
-    polyFunc.yEquasion = yFuncTan;
+    polyFunc.yEquasion = yFuncCos;
 	polyFunc.gen_y();
-    polyFunc.yEquasion = yFuncTanM;
+    polyFunc.yEquasion = yFuncCosM;
     polyFunc.gen_y();
     polyFunc.zEquasion = zFuncAdd;
     polyFunc.gen_z();
@@ -215,7 +218,8 @@ int main(int argc, char** argv) {
         Idle.set_renderMode(0);
         Idle.set_mvpMatrix(Player::viewMatrix * Player::perspectiveMatrix);
         // dataSet.draw(GL_POINTS, 1);
-        polyFunc.draw(GL_POINTS, polyFunc.get_vertexCount());
+		// polyFunc.drawXI(GL_POINTS, polyFunc.get_vertexCount());
+		polyFunc.draw(GL_TRIANGLES);
 
 		glfwSwapBuffers(window);
 	}

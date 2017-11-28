@@ -8,17 +8,20 @@ public:
     void (*xEquasion)(std::vector<float>* xVals);
     float (*yEquasion)(float);
     float (*zEquasion)(float, float);
-    std::vector<float> xVals;
-    std::vector<float> yVals;
-    std::vector<float> zVals;
     void gen_x();
     void gen_y();
     void gen_z();
+    void createXI();
     void create();
-    void draw(GLenum drawMode, GLuint drawCount);
+    void drawXI(GLenum drawMode, GLuint drawCount);
+    void draw(GLenum drawMode);
 private:
+    unsigned int indexCount;
+    std::vector<float> xVals;
+    std::vector<float> yVals;
+    std::vector<float> zVals;
     enum ptAttrib { X, Y, Z };
     std::bitset<3> xyzBits;
-    enum feedParams { VAO, feedPos };
-    unsigned int feed[2];
+    enum feedParams { VAO, EBO, feedPos };
+    unsigned int feed[3];
 };
