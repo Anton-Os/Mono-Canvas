@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
-project(PolyArt_Extlib)
+project(MonoCanvas_Extlib)
 
 include(ExternalProject)
 
