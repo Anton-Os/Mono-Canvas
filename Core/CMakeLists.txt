@@ -1,10 +1,10 @@
 
 add_executable(Blank
-    loaders/FileIO.cpp
-    loaders/LoadShaders.cpp
-    geometry/GL4_DataSet.cpp
-    pipeline/GLSL_Idle.cpp
-    main/Blank.cpp
+    source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
+    source/geometry/GL4_DataSet.cpp
+    source/pipeline/GLSL_Idle.cpp
+    demos/Blank.cpp
 )
 
 target_include_directories(Blank
@@ -19,13 +19,12 @@ target_link_libraries(Blank
 
 
 add_executable(LoopTimed
-    loaders/FileIO.cpp
-    loaders/LoadShaders.cpp
-    loaders/LoadData.cpp
-    pipeline/GLSL_Idle.cpp
-    geometry/GL4_Sphere.cpp
-    geometry/GL4_BumpGrid.cpp
-    main/LoopTimed.cpp
+    source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
+    source/loaders/LoadData.cpp
+    source/pipeline/GLSL_Idle.cpp
+    source/geometry/GL4_Sphere.cpp
+    demos/LoopTimed.cpp
 )
 
 target_include_directories(LoopTimed
@@ -39,13 +38,13 @@ target_link_libraries(LoopTimed
 )
 
 add_executable(Hills
-    loaders/FileIO.cpp
-    loaders/LoadShaders.cpp
-    loaders/LoadData.cpp
-    pipeline/GLSL_Idle.cpp
-    pipeline/GLSL_HeightRange.cpp
-    geometry/GL4_BumpGrid.cpp
-    main/Hills.cpp
+    source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
+    source/loaders/LoadData.cpp
+    source/pipeline/GLSL_Idle.cpp
+    source/pipeline/GLSL_HeightRange.cpp
+    source/geometry/GL4_BumpGrid.cpp
+    demos/Hills.cpp
 )
 
 target_include_directories(Hills
@@ -59,15 +58,15 @@ target_link_libraries(Hills
 )
 
 add_executable(MidPoints
-    loaders/FileIO.cpp
-    loaders/LoadShaders.cpp
-    pipeline/GLSL_Idle.cpp
-    pipeline/GLSL_HeightRange.cpp
-    geometry/GL4_Sphere.cpp
-    geometry/GL4_BumpGrid.cpp
-    geometry/GL4_DataSet.cpp
-    scene/PlaneCollision.cpp
-    main/MidPoints.cpp
+    source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
+    source/pipeline/GLSL_Idle.cpp
+    source/pipeline/GLSL_HeightRange.cpp
+    source/geometry/GL4_Sphere.cpp
+    source/geometry/GL4_BumpGrid.cpp
+    source/geometry/GL4_DataSet.cpp
+    source/scene/PlaneCollision.cpp
+    demos/MidPoints.cpp
 )
 
 target_include_directories(MidPoints
@@ -81,15 +80,15 @@ target_link_libraries(MidPoints
 )
 
 add_executable(CollisionTest
-    loaders/FileIO.cpp
-    loaders/LoadShaders.cpp
-    pipeline/GLSL_Idle.cpp
-    pipeline/GLSL_HeightRange.cpp
-    geometry/GL4_Sphere.cpp
-    geometry/GL4_BumpGrid.cpp
-    geometry/GL4_DataSet.cpp
-    scene/PlaneCollision.cpp
-    main/CollisionTest.cpp
+    source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
+    source/pipeline/GLSL_Idle.cpp
+    source/pipeline/GLSL_HeightRange.cpp
+    source/geometry/GL4_Sphere.cpp
+    source/geometry/GL4_BumpGrid.cpp
+    source/geometry/GL4_DataSet.cpp
+    source/scene/PlaneCollision.cpp
+    demos/CollisionTest.cpp
 )
 
 target_include_directories(CollisionTest
@@ -103,14 +102,13 @@ target_link_libraries(CollisionTest
 )
 
 add_executable(MandlebrotSet
-    loaders/FileIO.cpp
-    loaders/LoadShaders.cpp
-    pipeline/GLSL_Idle.cpp
-    pipeline/GLSL_Flatscape.cpp
-    pipeline/GLSL_Fractals.cpp
-    geometry/GL4_DataSet.cpp
-    scene/PlaneCollision.cpp
-    main/MandlebrotSet.cpp
+    source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
+    source/pipeline/GLSL_Idle.cpp
+    source/pipeline/GLSL_Flatscape.cpp
+    source/pipeline/GLSL_Fractals.cpp
+    source/geometry/GL4_DataSet.cpp
+    demos/MandlebrotSet.cpp
 )
 
 target_include_directories(MandlebrotSet
@@ -126,15 +124,15 @@ target_link_libraries(MandlebrotSet
 )
 
 add_executable(ConwaysGOL
-    loaders/FileIO.cpp
-    loaders/LoadShaders.cpp
-    geometry/GL4_DataSet.cpp
-    geometry/GL4_Grid.cpp
-    geometry/GL4_BumpGrid
-    pipeline/GLSL_Idle.cpp
-    pipeline/GLSL_StateStream.cpp
-    scene/CellSim.cpp
-    main/ConwaysGOL.cpp
+    source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
+    source/geometry/GL4_DataSet.cpp
+    source/geometry/GL4_Grid.cpp
+    source/geometry/GL4_BumpGrid
+    source/pipeline/GLSL_Idle.cpp
+    source/pipeline/GLSL_StateStream.cpp
+    source/scene/CellSim.cpp
+    demos/ConwaysGOL.cpp
 )
 
 target_include_directories(ConwaysGOL
@@ -148,15 +146,14 @@ target_link_libraries(ConwaysGOL
 )
 
 add_executable(Hexes
-    loaders/FileIO.cpp
-    loaders/LoadShaders.cpp
-    geometry/GL4_DataSet.cpp
-    geometry/GL4_Grid.cpp
-    geometry/GL4_HexGrid.cpp
-    pipeline/GLSL_Idle.cpp
-    pipeline/GLSL_StateStream.cpp
-    scene/CellSim.cpp
-    main/Hexes.cpp
+    source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
+    source/geometry/GL4_DataSet.cpp
+    source/geometry/GL4_Grid.cpp
+    source/geometry/GL4_HexGrid.cpp
+    source/pipeline/GLSL_Idle.cpp
+    source/pipeline/GLSL_StateStream.cpp
+    demos/Hexes.cpp
 )
 
 target_include_directories(Hexes
@@ -170,16 +167,15 @@ target_link_libraries(Hexes
 )
 
 add_executable(Ripples
-    loaders/FileIO.cpp
-    loaders/LoadShaders.cpp
-    pipeline/GLSL_Idle.cpp
-    pipeline/GLSL_HeightRange.cpp
-    pipeline/GLSL_Waves.cpp
-    geometry/GL4_Sphere.cpp
-    geometry/GL4_BumpGrid.cpp
-    geometry/GL4_DataSet.cpp
-    scene/PlaneCollision.cpp
-    main/Ripples.cpp
+    source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
+    source/pipeline/GLSL_Idle.cpp
+    source/pipeline/GLSL_HeightRange.cpp
+    source/pipeline/GLSL_Waves.cpp
+    source/geometry/GL4_Sphere.cpp
+    source/geometry/GL4_BumpGrid.cpp
+    source/geometry/GL4_DataSet.cpp
+    demos/Ripples.cpp
 )
 
 target_include_directories(Ripples
@@ -193,16 +189,15 @@ target_link_libraries(Ripples
 )
 
 add_executable(StackedRipples
-    loaders/FileIO.cpp
-    loaders/LoadShaders.cpp
-    pipeline/GLSL_Idle.cpp
-    pipeline/GLSL_HeightRange.cpp
-    pipeline/GLSL_Waves.cpp
-    geometry/GL4_Sphere.cpp
-    geometry/GL4_BumpGrid.cpp
-    geometry/GL4_DataSet.cpp
-    scene/PlaneCollision.cpp
-    main/StackedRipples.cpp
+    source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
+    source/pipeline/GLSL_Idle.cpp
+    source/pipeline/GLSL_HeightRange.cpp
+    source/pipeline/GLSL_Waves.cpp
+    source/geometry/GL4_Sphere.cpp
+    source/geometry/GL4_BumpGrid.cpp
+    source/geometry/GL4_DataSet.cpp
+    demos/StackedRipples.cpp
 )
 
 target_include_directories(StackedRipples
@@ -216,12 +211,12 @@ target_link_libraries(StackedRipples
 )
 
 add_executable(RenderMath
-    loaders/FileIO.cpp
-    loaders/LoadShaders.cpp
-    geometry/GL4_DataSet.cpp
-    geometry/GL4_PolyFunc.cpp
-    pipeline/GLSL_Idle.cpp
-    main/RenderMath.cpp
+    source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
+    source/geometry/GL4_DataSet.cpp
+    source/geometry/GL4_PolyFunc.cpp
+    source/pipeline/GLSL_Idle.cpp
+    demos/RenderMath.cpp
 )
 
 target_include_directories(RenderMath

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(MonoCanvas)
+project(PolyArt)
 
 if(NOT EXTLIB_BUILD_PATH)
     set(EXTLIB_BUILD_PATH "${CMAKE_BINARY_DIR}/Extlib-Build" CACHE PATH "Route Exlib Build here")

@@ -1,1 +1,0 @@
-include("${ASSIMP_LIB_INSTALL_DIR}/cmake/assimp-${ASSIMP_VERSION_MAJOR}.${ASSIMP_VERSION_MINOR}/zlib/zlibTargets.cmake")

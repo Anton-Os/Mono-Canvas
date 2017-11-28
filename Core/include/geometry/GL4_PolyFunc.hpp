@@ -11,7 +11,6 @@ public:
     std::vector<float> xVals;
     std::vector<float> yVals;
     std::vector<float> zVals;
-    std::vector<unsigned int> indices;
     void gen_x();
     void gen_y();
     void gen_z();
