@@ -1,4 +1,4 @@
-# Mono-Canvas
+# PolyArt
 
 ### Supported generators:
 
