@@ -5,9 +5,10 @@
 
 class GL4_PolyFunc : public GL4_Object3D {
 public:
-    void (*xEquasion)(std::vector<float>* xVals);
-    float (*yEquasion)(float);
-    float (*zEquasion)(float, float);
+    void (*xEquation)(std::vector<float>* xVals);
+    float (*yEquation)(float);
+    float (*zEquation)(float, float);
+    void reset();
     void gen_x();
     void gen_y();
     void gen_z();

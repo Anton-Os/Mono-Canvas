@@ -17,6 +17,7 @@
 #include "pipeline/GLSL_Idle.hpp"
 #include "geometry/GL4_DataSet.hpp"
 #include "geometry/GL4_PolyFunc.hpp"
+#include "geometry/CartesianGrid_Eq.hpp"
 
 namespace UI {
 	int height = 1080;
@@ -34,7 +35,6 @@ namespace Mouse {
 }
 
 namespace Player {
-	// glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10.0f);
 	glm::mat4 perspectiveMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 10.0f);
 	// glm::mat4 perspectiveMatrix = glm::ortho(-100.0f / 2, 100.0f / 2, -100.0f / 2, 100.0f / 2, -10.0f / 2, 10.0f / 2);
     glm::mat4 viewMatrix(1);
@@ -58,10 +58,11 @@ namespace Time {
 namespace Math {
     float interval = 0.1f;
     unsigned int xNum = 1000;
-    float yInit = 0.0f;
+	float yInit = 0.0f;
+	float zInit = 0.0f;
 }
 
-void xFunc(std::vector<float>* xVals){
+void xFunc_Default(std::vector<float>* xVals){
     xVals->resize(Math::xNum);
     float offsetX = Math::interval / 2.0f;
     short int indexOffset = -1;
@@ -80,29 +81,38 @@ void xFunc(std::vector<float>* xVals){
 	std::sort(xVals->begin(), xVals->end());
 }
 
-float yFuncZero(float xVal){
+float yFunc_Zero(float xVal){
    float* yVal = &Math::yInit;
    return *yVal;
 }
 
-float yFuncTan(float xVal){
+float yFunc_Tan(float xVal){
     return std::tan(xVal);
 }
 
-float yFuncTanM(float xVal){
+float yFunc_TanM(float xVal){
     return -1 * std::tan(xVal);
 }
 
-float yFuncCos(float xVal){
+float yFunc_Cosine(float xVal){
     return std::cos(xVal);
 }
 
-float yFuncCosM(float xVal){
+float yFunc_CosineM(float xVal){
 	return -1 * std::cos(xVal);
 }
 
-float zFuncAdd(float xVal, float yVal){
-    return 0.0f;
+float yFunc_Sin(float xVal){
+    return std::sin(xVal);
+}
+
+float yFunc_SinM(float xVal){
+	return -1 * std::sin(xVal);
+}
+
+float zFunc_Const(float xVal, float yVal){
+	float* zVal = &Math::zInit;
+    return *zVal;
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
@@ -190,15 +200,17 @@ int main(int argc, char** argv) {
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
     GL4_PolyFunc polyFunc;
-    polyFunc.xEquasion = xFunc;
+    polyFunc.xEquation = xFunc_Default;
     polyFunc.gen_x();
-    polyFunc.yEquasion = yFuncCos;
+    polyFunc.yEquation = yFunc_Cosine;
 	polyFunc.gen_y();
-    polyFunc.yEquasion = yFuncCosM;
+    polyFunc.yEquation = yFunc_CosineM;
     polyFunc.gen_y();
-    polyFunc.zEquasion = zFuncAdd;
+    polyFunc.zEquation = zFunc_Const;
     polyFunc.gen_z();
-    polyFunc.create();
+	polyFunc.create();
+	
+	CartesianGrid_Eq cartesianGrid(&polyFunc, 10.0f, 5, 10.0f, 5);
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){
@@ -217,8 +229,6 @@ int main(int argc, char** argv) {
         glUseProgram(Idle.shaderProgID);
         Idle.set_renderMode(0);
         Idle.set_mvpMatrix(Player::viewMatrix * Player::perspectiveMatrix);
-        // dataSet.draw(GL_POINTS, 1);
-		// polyFunc.drawXI(GL_POINTS, polyFunc.get_vertexCount());
 		polyFunc.draw(GL_TRIANGLES);
 
 		glfwSwapBuffers(window);

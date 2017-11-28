@@ -1,11 +1,24 @@
 #include "geometry/GL4_PolyFunc.hpp"
 
+void GL4_PolyFunc::reset(){
+    GL4_PolyFunc::xVals.clear();
+    GL4_PolyFunc::yVals.clear();
+    GL4_PolyFunc::zVals.clear();
+    GL4_PolyFunc::xyzBits.reset();
+    GL4_PolyFunc::indexCount = 0;
+    GL4_PolyFunc::vertexCount = 0;
+    GL4_PolyFunc::relMatrix = glm::mat4(1);
+    GL4_PolyFunc::xEquation = nullptr;
+    GL4_PolyFunc::yEquation = nullptr;
+    GL4_PolyFunc::zEquation = nullptr;
+}
+
 void GL4_PolyFunc::gen_x(){
     if(GL4_PolyFunc::xyzBits[GL4_PolyFunc::Y] == true || GL4_PolyFunc::xyzBits[GL4_PolyFunc::Z] == true){
         std::cerr << "X values are immutable" << std::endl;
         return;
     }
-    GL4_PolyFunc::xEquasion(&xVals);
+    GL4_PolyFunc::xEquation(&xVals);
     GL4_PolyFunc::xyzBits.set(0);
 }
 
@@ -23,7 +36,7 @@ void GL4_PolyFunc::gen_y(){
     unsigned int xElem = 0;
     for(unsigned int yElem = GL4_PolyFunc::yVals.size() - GL4_PolyFunc::xVals.size(); yElem < GL4_PolyFunc::yVals.size(); yElem++){
         xElem++;
-        GL4_PolyFunc::yVals[yElem] = GL4_PolyFunc::yEquasion(GL4_PolyFunc::xVals[xElem]);
+        GL4_PolyFunc::yVals[yElem] = GL4_PolyFunc::yEquation(GL4_PolyFunc::xVals[xElem]);
     }
 
     GL4_PolyFunc::xyzBits.set(1);
@@ -40,7 +53,7 @@ void GL4_PolyFunc::gen_z(){
     for(unsigned int zElem = GL4_PolyFunc::zVals.size() - GL4_PolyFunc::yVals.size(); zElem < GL4_PolyFunc::zVals.size(); zElem++){
         if(xElem == GL4_PolyFunc::xVals.size()) xElem = 0;
         if(yElem == GL4_PolyFunc::yVals.size()) yElem = 0;
-        GL4_PolyFunc::zVals[zElem] = GL4_PolyFunc::zEquasion(GL4_PolyFunc::xVals[xElem], GL4_PolyFunc::yVals[yElem]);
+        GL4_PolyFunc::zVals[zElem] = GL4_PolyFunc::zEquation(GL4_PolyFunc::xVals[xElem], GL4_PolyFunc::yVals[yElem]);
         xElem++; yElem++;
     }
 

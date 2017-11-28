@@ -210,20 +210,40 @@ target_link_libraries(StackedRipples
     glm
 )
 
-add_executable(RenderMath
+add_executable(CalcGraph
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
     source/geometry/GL4_DataSet.cpp
     source/geometry/GL4_PolyFunc.cpp
     source/pipeline/GLSL_Idle.cpp
-    demos/RenderMath.cpp
+    demos/CalcGraph.cpp
 )
 
-target_include_directories(RenderMath
+target_include_directories(CalcGraph
     PUBLIC include
 )
 
-target_link_libraries(RenderMath
+target_link_libraries(CalcGraph
+    GLEW::glew_s
+    glfw
+    glm
+)
+
+add_executable(AnyShapes
+    source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
+    source/geometry/GL4_DataSet.cpp
+    source/geometry/GL4_PolyFunc.cpp
+    source/geometry/CartesianGrid_Eq.cpp
+    source/pipeline/GLSL_Idle.cpp
+    demos/AnyShapes.cpp
+)
+
+target_include_directories(AnyShapes
+    PUBLIC include
+)
+
+target_link_libraries(AnyShapes
     GLEW::glew_s
     glfw
     glm
