@@ -17,7 +17,7 @@
 #include "pipeline/GLSL_Idle.hpp"
 #include "geometry/GL4_DataSet.hpp"
 #include "geometry/GL4_PolyFunc.hpp"
-#include "geometry/CartesianGrid.hpp"
+#include "geometry/PLY_CartesianGrid.hpp"
 
 namespace UI {
 	int height = 1080;
@@ -81,40 +81,6 @@ void xFunc_Default(std::vector<float>* xVals){
 	std::sort(xVals->begin(), xVals->end());
 }
 
-float yFunc_Zero(float xVal){
-   float* yVal = &Math::yInit;
-   return *yVal;
-}
-
-float yFunc_Tan(float xVal){
-    return std::tan(xVal);
-}
-
-float yFunc_TanM(float xVal){
-    return -1 * std::tan(xVal);
-}
-
-float yFunc_Cosine(float xVal){
-    return std::cos(xVal);
-}
-
-float yFunc_CosineM(float xVal){
-	return -1 * std::cos(xVal);
-}
-
-float yFunc_Sin(float xVal){
-    return std::sin(xVal);
-}
-
-float yFunc_SinM(float xVal){
-	return -1 * std::sin(xVal);
-}
-
-float zFunc_Const(float xVal, float yVal){
-	float* zVal = &Math::zInit;
-    return *zVal;
-}
-
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
 	// State Switching
 
@@ -151,7 +117,6 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
 	Mouse::xInit = xpos;
 	Mouse::yInit = ypos;
 }
-
 
 int main(int argc, char** argv) {
 	Time::setupBegin = std::chrono::steady_clock::now();
@@ -193,14 +158,11 @@ int main(int argc, char** argv) {
 
 	std::string parentDir = getParentDirectory(argv[0]);
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
-	
-    // float dot[3] = {0.0f, 0.0f, 0.0f};
-    // GL4_DataSet dataSet(&dot[0], 3);
 
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
-    GL4_PolyFunc polyFunc;	
-    CartesianGrid cartesianGrid(&polyFunc, 10.0f, 11, 10.0f, 13);
+    GL4_PolyFunc polyFunc;
+    PLY_CartesianGrid cartesianGrid(&polyFunc, 10.0f, 10, 10.0f, 20);
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){

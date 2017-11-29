@@ -234,7 +234,8 @@ add_executable(AnyShapes
     source/loaders/LoadShaders.cpp
     source/geometry/GL4_DataSet.cpp
     source/geometry/GL4_PolyFunc.cpp
-    source/geometry/CartesianGrid.cpp
+    source/geometry/PLY_CartesianGrid.cpp
+    source/geometry/PLY_BumpGrid.cpp
     source/pipeline/GLSL_Idle.cpp
     demos/AnyShapes.cpp
 )
