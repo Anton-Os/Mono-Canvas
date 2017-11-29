@@ -7,6 +7,7 @@
 #include <limits>
 #include <climits>
 #include <bitset>
+#include <algorithm>
 
 #include <GL/glew.h>
 

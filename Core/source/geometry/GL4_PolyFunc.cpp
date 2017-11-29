@@ -139,7 +139,7 @@ void GL4_PolyFunc::create(){
     unsigned int zSetOfX = GL4_PolyFunc::zVals.size() / GL4_PolyFunc::xVals.size();
 
     if(zSetOfX == 1) GL4_PolyFunc::indexCount = genIndices0(&indexAccum, GL4_PolyFunc::xVals.size());
-    else if(ySetOfX > 1 && zSetOfY == 1) genIndices1(&indexAccum, GL4_PolyFunc::yVals.size(), GL4_PolyFunc::xVals.size());
+    else if(ySetOfX > 1 && zSetOfY == 1) GL4_PolyFunc::indexCount = genIndices1(&indexAccum, GL4_PolyFunc::yVals.size(), GL4_PolyFunc::xVals.size());
 
     GLuint VAO;
     glGenVertexArrays(1, &VAO);

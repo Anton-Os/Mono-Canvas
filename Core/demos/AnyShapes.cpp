@@ -17,7 +17,7 @@
 #include "pipeline/GLSL_Idle.hpp"
 #include "geometry/GL4_DataSet.hpp"
 #include "geometry/GL4_PolyFunc.hpp"
-#include "geometry/CartesianGrid_Eq.hpp"
+#include "geometry/CartesianGrid.hpp"
 
 namespace UI {
 	int height = 1080;
@@ -199,18 +199,8 @@ int main(int argc, char** argv) {
 
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
-    GL4_PolyFunc polyFunc;
-    polyFunc.xEquation = xFunc_Default;
-    polyFunc.gen_x();
-    polyFunc.yEquation = yFunc_Cosine;
-	polyFunc.gen_y();
-    polyFunc.yEquation = yFunc_CosineM;
-    polyFunc.gen_y();
-    polyFunc.zEquation = zFunc_Const;
-    polyFunc.gen_z();
-	polyFunc.create();
-	
-	CartesianGrid_Eq cartesianGrid(&polyFunc, 10.0f, 5, 10.0f, 5);
+    GL4_PolyFunc polyFunc;	
+    CartesianGrid cartesianGrid(&polyFunc, 10.0f, 11, 10.0f, 13);
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){
@@ -229,7 +219,7 @@ int main(int argc, char** argv) {
         glUseProgram(Idle.shaderProgID);
         Idle.set_renderMode(0);
         Idle.set_mvpMatrix(Player::viewMatrix * Player::perspectiveMatrix);
-		polyFunc.draw(GL_TRIANGLES);
+        polyFunc.draw(GL_TRIANGLES);
 
 		glfwSwapBuffers(window);
 	}
