@@ -2,7 +2,6 @@
 #include <string>
 #include <chrono>
 #include <ctime>
-#include <algorithm>
 // #include <cstring>
 
 #include <GL/glew.h>
@@ -12,12 +11,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+// #include "Geometry.h"
 #include "ManualSets.h"
 #include "loaders/Loaders.h"
 #include "pipeline/GLSL_Idle.hpp"
 #include "geometry/GL4_DataSet.hpp"
-#include "geometry/GL4_PolyFunc.hpp"
-#include "geometry/PLY_CartesianGrid.hpp"
+// #include "Scene.h"
 
 namespace UI {
 	int height = 1080;
@@ -35,11 +34,6 @@ namespace Mouse {
 }
 
 namespace Player {
-	glm::mat4 perspectiveMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 10.0f);
-	// glm::mat4 perspectiveMatrix = glm::ortho(-100.0f / 2, 100.0f / 2, -100.0f / 2, 100.0f / 2, -10.0f / 2, 10.0f / 2);
-    glm::mat4 viewMatrix(1);
-    glm::vec3 camPos(0.0, 0.0, 1.0f);
-    glm::vec3 camLookPos = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 namespace Terrain {
@@ -53,32 +47,6 @@ namespace Time {
 	std::chrono::duration<double, std::milli> milliSpan;
 	std::chrono::duration<double, std::micro> microSpan;
 	std::chrono::duration<double, std::nano> nanoSpan;
-}
-
-namespace Math {
-    float interval = 0.1f;
-    unsigned int xNum = 1000;
-	float yInit = 0.0f;
-	float zInit = 0.0f;
-}
-
-void xFunc_Default(std::vector<float>* xVals){
-    xVals->resize(Math::xNum);
-    float offsetX = Math::interval / 2.0f;
-    short int indexOffset = -1;
-    unsigned int repCount = Math::xNum;
-    if(repCount % 2 == 1){
-        xVals->at(repCount / 2) = 0.0f;
-        offsetX = 0.0f;
-        indexOffset = 0;
-        repCount--;
-    }
-    for(unsigned int xElem = repCount / 2; xElem > 0; xElem--){
-        xVals->at(repCount / 2 - xElem) = -1.0f * Math::interval * xElem + offsetX;
-        xVals->at(repCount / 2 + (xElem + indexOffset)) = Math::interval * xElem - offsetX;
-	}
-	
-	std::sort(xVals->begin(), xVals->end());
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
@@ -117,6 +85,7 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
 	Mouse::xInit = xpos;
 	Mouse::yInit = ypos;
 }
+
 
 int main(int argc, char** argv) {
 	Time::setupBegin = std::chrono::steady_clock::now();
@@ -158,30 +127,25 @@ int main(int argc, char** argv) {
 
 	std::string parentDir = getParentDirectory(argv[0]);
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
+	
+	float dot[3] = {0.0f, 0.0f, 0.0f};
+	GL4_DataSet dataSet(&dot[0], 3);
 
-    Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
+	Time::setupEnd = std::chrono::steady_clock::now();
+	while(!glfwWindowShouldClose(window)){
+		Time::frameBegin = std::chrono::steady_clock::now();
+		Time::secSpan = std::chrono::duration_cast<std::chrono::duration<double>>(Time::frameBegin - Time::setupEnd);
 
-    GL4_PolyFunc polyFunc;
-    PLY_CartesianGrid cartesianGrid(&polyFunc, 10.0f, 10, 10.0f, 20);
+		glfwPollEvents();
+		glClearColor(0.949f, 0.917f, 0.803f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    Time::setupEnd = std::chrono::steady_clock::now();
-    while(!glfwWindowShouldClose(window)){
-        Time::frameBegin = std::chrono::steady_clock::now();
-        Time::secSpan = std::chrono::duration_cast<std::chrono::duration<double>>(Time::frameBegin - Time::setupEnd);
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_BLEND);
+		glPointSize(12.0f);
 
-        glfwPollEvents();
-        glClearColor(0.949f, 0.917f, 0.803f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_BLEND);
-        glPointSize(8.0f);
-        glLineWidth(8.0f);
-
-        glUseProgram(Idle.shaderProgID);
-        Idle.set_renderMode(0);
-        Idle.set_mvpMatrix(Player::viewMatrix * Player::perspectiveMatrix);
-        polyFunc.draw(GL_TRIANGLES);
+		glUseProgram(Idle.shaderProgID);
+		dataSet.draw(GL_POINTS, 1);
 
 		glfwSwapBuffers(window);
 	}

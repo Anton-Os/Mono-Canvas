@@ -1,6 +1,6 @@
-class PLY_CartesianGrid {
+class CartesianGrid {
 public:
-    PLY_CartesianGrid(GL4_PolyFunc* polyFunc, float width_arg, unsigned int xCount_arg, 
+    CartesianGrid(GL4_PolyFunc* polyFunc, float width_arg, unsigned int xCount_arg, 
                      float height_arg, unsigned int yCount_arg) {
         width = width_arg;
         xCount = xCount_arg;

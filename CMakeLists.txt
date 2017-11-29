@@ -50,6 +50,7 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
     set(BOOST_LIBS)
     file(GLOB BOOST_LIBS "${BOOST_LIBRARYDIR}/*.lib")
 
+    add_subdirectory("Legacy")
     add_subdirectory("Core")
     if(Vulkan_FOUND)
         message(STATUS "Vulkan was found")

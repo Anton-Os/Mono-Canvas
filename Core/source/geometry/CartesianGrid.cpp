@@ -1,8 +1,7 @@
 #include "geometry/GL4_PolyFunc.hpp"
-#include "geometry/PLY_BumpGrid.hpp"
+#include "geometry/CartesianGrid.hpp"
 
-namespace BumpGrid_Eq {
-    float height;
+namespace CartesianGrid_Eq {
     float yOffset;
     unsigned int xNum;
     float interval;
@@ -31,25 +30,24 @@ namespace BumpGrid_Eq {
         return *yOffsetPtr;
     }
 
-    float zNormal(float x, float y){
-        return height;
+    float zFunc(float x, float y){
+        return 0.0;
     } 
 }
 
-void PLY_BumpGrid::create(GL4_PolyFunc* polyFunc){
-    BumpGrid_Eq::xNum = PLY_BumpGrid::xCount;
-    BumpGrid_Eq::interval = PLY_BumpGrid::width / (float)PLY_BumpGrid::xCount;
-    polyFunc->xEquation = BumpGrid_Eq::xFunc;
+void CartesianGrid::create(GL4_PolyFunc* polyFunc){
+    CartesianGrid_Eq::xNum = CartesianGrid::xCount;
+    CartesianGrid_Eq::interval = CartesianGrid::width / (float)CartesianGrid::xCount;
+    polyFunc->xEquation = CartesianGrid_Eq::xFunc;
     polyFunc->gen_x();
-    float yInc = PLY_BumpGrid::height / (float)PLY_BumpGrid::yCount;
-    BumpGrid_Eq::yOffset = -1 * PLY_BumpGrid::height / 2.0f;
-    polyFunc->yEquation = BumpGrid_Eq::yFunc;
-    for(unsigned int yElem = 0; yElem < PLY_BumpGrid::yCount; yElem++){
+    float yInc = CartesianGrid::height / (float)CartesianGrid::yCount;
+    CartesianGrid_Eq::yOffset = -1 * CartesianGrid::height / 2.0f;
+    polyFunc->yEquation = CartesianGrid_Eq::yFunc;
+    for(unsigned int yElem = 0; yElem < CartesianGrid::yCount; yElem++){
         polyFunc->gen_y();
-        BumpGrid_Eq::yOffset += yInc;
+        CartesianGrid_Eq::yOffset += yInc;
     }
-    BumpGrid_Eq::height = PLY_BumpGrid::rise;
-    if(PLY_BumpGrid::zMode == normal) polyFunc->zEquation = BumpGrid_Eq::zNormal;
+    polyFunc->zEquation = CartesianGrid_Eq::zFunc;
     polyFunc->gen_z();
     polyFunc->create();
     return;
