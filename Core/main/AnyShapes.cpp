@@ -37,7 +37,6 @@ namespace Mouse {
 namespace Player {
 	// glm::mat4 projectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -20.0f, 20.0f);
 	glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
-	// glm::mat4 projectionMatrix = glm::ortho(-100.0f / 2, 100.0f / 2, -100.0f / 2, 100.0f / 2, -10.0f / 2, 10.0f / 2);
     glm::mat4 viewMatrix(1);
     glm::vec3 camPos(0.0, 0.0, 1.0f);
     glm::vec3 camLookPos = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -167,7 +166,7 @@ int main(int argc, char** argv) {
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
     GL4_PolyFunc polyFunc;
-    CartesianGrid cartesianGrid(&polyFunc, 0.5f, 7, 0.5f, 6);
+    CartesianGrid cartesianGrid(&polyFunc, 0.5f, 7, 0.5f, 7);
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){

@@ -171,7 +171,38 @@ unsigned int genIndices3D(std::vector<unsigned int>* indexAccum, unsigned int xC
             indexCount += 6;
         }
     }
-    
+
+    for(unsigned int zIndex = 0; zIndex < zSetOfY - 1; zIndex++){
+        for(unsigned int yIndex = 0; yIndex < yCount - xCount; yIndex += xCount){
+            indexSet = {
+                yIndex,
+                yIndex + xCount,
+                yIndex + yCount,
+                yIndex + yCount + xCount
+            };
+            indexAccum->push_back(indexSet[0]);
+            indexAccum->push_back(indexSet[1]);
+            indexAccum->push_back(indexSet[2]);
+            indexAccum->push_back(indexSet[3]);
+            indexAccum->push_back(indexSet[2]);
+            indexAccum->push_back(indexSet[1]);
+            indexCount += 6;
+            unsigned int incFactor = xCount - 1;
+            indexSet = {
+                yIndex + incFactor,
+                yIndex + xCount + incFactor,
+                yIndex + yCount + incFactor,
+                yIndex + yCount + xCount + incFactor
+            };
+            indexAccum->push_back(indexSet[0]);
+            indexAccum->push_back(indexSet[1]);
+            indexAccum->push_back(indexSet[2]);
+            indexAccum->push_back(indexSet[3]);
+            indexAccum->push_back(indexSet[2]);
+            indexAccum->push_back(indexSet[1]);
+            indexCount += 6;
+        }
+    }
 
     return indexCount;
 }
