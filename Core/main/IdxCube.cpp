@@ -41,12 +41,14 @@ namespace Player {
     glm::vec3 camPos(0.0, 0.0, 1.0f);
     glm::vec3 camLookPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	float rtFactor = 5.0f;
+	float mvSpeed = 0.1f;
 }
 
 namespace Terrain {
 	float xAngle = 0.0f;
 	float yAngle = 0.0f;
 	float zAngle = 0.0f;
+	float distance = -2.0f;
 }
 
 namespace Time {
@@ -96,19 +98,27 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	
 	if(key == GLFW_KEY_A && action == GLFW_PRESS) Key::A = true;
 	if(key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
-	if(Key::A) Terrain::xAngle += Player::rtFactor;
+	if(Key::A) Terrain::yAngle += Player::rtFactor;
 
 	if(key == GLFW_KEY_D && action == GLFW_PRESS) Key::D = true;
 	if(key == GLFW_KEY_D && action == GLFW_RELEASE) Key::D = false;
-	if(Key::D) Terrain::xAngle -= Player::rtFactor;
+	if(Key::D) Terrain::yAngle -= Player::rtFactor;
 
 	if(key == GLFW_KEY_W && action == GLFW_PRESS) Key::W = true;
 	if(key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
-	if(Key::W) Terrain::yAngle += Player::rtFactor;
+	if(Key::W) Terrain::xAngle += Player::rtFactor;
 
 	if(key == GLFW_KEY_S && action == GLFW_PRESS) Key::S = true;
 	if(key == GLFW_KEY_S && action == GLFW_RELEASE) Key::S = false;
-	if(Key::S) Terrain::yAngle -= Player::rtFactor;
+	if(Key::S) Terrain::xAngle -= Player::rtFactor;
+
+	if(key == GLFW_KEY_Q && action == GLFW_PRESS) Key::Q = true;
+	if(key == GLFW_KEY_Q && action == GLFW_RELEASE) Key::Q = false;
+	if(Key::Q) Terrain::distance += Player::mvSpeed;
+
+	if(key == GLFW_KEY_E && action == GLFW_PRESS) Key::E = true;
+	if(key == GLFW_KEY_E && action == GLFW_RELEASE) Key::E = false;
+	if(Key::E) Terrain::distance -= Player::mvSpeed;
 }
 
 void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
@@ -166,7 +176,7 @@ int main(int argc, char** argv) {
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
     GL4_PolyFunc polyFunc;
-    CartesianGrid cartesianGrid(&polyFunc, 0.5f, 7, 0.5f, 7);
+    CartesianGrid cartesianGrid(&polyFunc, 0.5f, 7, 0.5f, 10);
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){
@@ -182,7 +192,7 @@ int main(int argc, char** argv) {
         glPointSize(8.0f);
         glLineWidth(8.0f);
 
-		polyFunc.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -2.0f));
+		polyFunc.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance));
         polyFunc.relMatrix = glm::rotate(polyFunc.relMatrix, glm::radians<float>(Terrain::xAngle), glm::vec3(1.0, 0.0, 0.0));
 		polyFunc.relMatrix = glm::rotate(polyFunc.relMatrix, glm::radians<float>(Terrain::yAngle), glm::vec3(0.0, 1.0, 0.0));
 

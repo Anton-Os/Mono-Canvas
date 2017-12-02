@@ -50,9 +50,15 @@ void CartesianGrid::create(GL4_PolyFunc* polyFunc){
         CartesianGrid_Eq::yOffset += yInc;
     }
     polyFunc->zEquation = CartesianGrid_Eq::zFunc;
-    CartesianGrid_Eq::rise = 0.2f;
-    polyFunc->gen_z();
     CartesianGrid_Eq::rise = -0.2f;
+    polyFunc->gen_z();
+    CartesianGrid_Eq::rise = -0.1f;
+    polyFunc->gen_z();
+    CartesianGrid_Eq::rise = 0.0f;
+    polyFunc->gen_z();
+    CartesianGrid_Eq::rise = 0.1f;
+    polyFunc->gen_z();
+    CartesianGrid_Eq::rise = 0.2f;
     polyFunc->gen_z();
     polyFunc->create();
     return;

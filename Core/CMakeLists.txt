@@ -17,26 +17,25 @@ target_link_libraries(CalcGraph
     glm
 )
 
-add_executable(AnyShapes
+add_executable(IdxCube
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
     source/geometry/GL4_DataSet.cpp
     source/geometry/GL4_PolyFunc.cpp
     source/geometry/CartesianGrid.cpp
     source/pipeline/GLSL_Idle.cpp
-    main/AnyShapes.cpp
+    main/IdxCube.cpp
 )
 
-target_include_directories(AnyShapes
+target_include_directories(IdxCube
     PUBLIC include
 )
 
-target_link_libraries(AnyShapes
+target_link_libraries(IdxCube
     GLEW::glew_s
     glfw
     glm
 )
-
 
 set(SRC_SHADER_LIST)
 set(OUTPUT_SHADER_LIST)
