@@ -35,14 +35,19 @@ namespace Mouse {
 }
 
 namespace Player {
-	glm::mat4 perspectiveMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 10.0f);
-	// glm::mat4 perspectiveMatrix = glm::ortho(-100.0f / 2, 100.0f / 2, -100.0f / 2, 100.0f / 2, -10.0f / 2, 10.0f / 2);
+	// glm::mat4 projectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -20.0f, 20.0f);
+	glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
+	// glm::mat4 projectionMatrix = glm::ortho(-100.0f / 2, 100.0f / 2, -100.0f / 2, 100.0f / 2, -10.0f / 2, 10.0f / 2);
     glm::mat4 viewMatrix(1);
     glm::vec3 camPos(0.0, 0.0, 1.0f);
     glm::vec3 camLookPos = glm::vec3(0.0f, 0.0f, 0.0f);
+	float rtFactor = 5.0f;
 }
 
 namespace Terrain {
+	float xAngle = 0.0f;
+	float yAngle = 0.0f;
+	float zAngle = 0.0f;
 }
 
 namespace Time {
@@ -92,19 +97,19 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	
 	if(key == GLFW_KEY_A && action == GLFW_PRESS) Key::A = true;
 	if(key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
-	if(Key::A) std::cout << "Key A Held..." << std::endl;
+	if(Key::A) Terrain::xAngle += Player::rtFactor;
 
 	if(key == GLFW_KEY_D && action == GLFW_PRESS) Key::D = true;
 	if(key == GLFW_KEY_D && action == GLFW_RELEASE) Key::D = false;
-	if(Key::D) std::cout << "Key D Held..." << std::endl;
+	if(Key::D) Terrain::xAngle -= Player::rtFactor;
 
 	if(key == GLFW_KEY_W && action == GLFW_PRESS) Key::W = true;
 	if(key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
-	if(Key::W) std::cout << "Key W Held..." << std::endl;
+	if(Key::W) Terrain::yAngle += Player::rtFactor;
 
 	if(key == GLFW_KEY_S && action == GLFW_PRESS) Key::S = true;
 	if(key == GLFW_KEY_S && action == GLFW_RELEASE) Key::S = false;
-	if(Key::S) std::cout << "Key S Held..." << std::endl;
+	if(Key::S) Terrain::yAngle -= Player::rtFactor;
 }
 
 void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
@@ -162,7 +167,7 @@ int main(int argc, char** argv) {
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
     GL4_PolyFunc polyFunc;
-    CartesianGrid cartesianGrid(&polyFunc, 10.0f, 10, 10.0f, 20);
+    CartesianGrid cartesianGrid(&polyFunc, 0.5f, 7, 0.5f, 6);
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){
@@ -178,9 +183,13 @@ int main(int argc, char** argv) {
         glPointSize(8.0f);
         glLineWidth(8.0f);
 
+		polyFunc.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -2.0f));
+        polyFunc.relMatrix = glm::rotate(polyFunc.relMatrix, glm::radians<float>(Terrain::xAngle), glm::vec3(1.0, 0.0, 0.0));
+		polyFunc.relMatrix = glm::rotate(polyFunc.relMatrix, glm::radians<float>(Terrain::yAngle), glm::vec3(0.0, 1.0, 0.0));
+
         glUseProgram(Idle.shaderProgID);
         Idle.set_renderMode(0);
-        Idle.set_mvpMatrix(Player::viewMatrix * Player::perspectiveMatrix);
+        Idle.set_mvpMatrix(Player::viewMatrix * Player::projectionMatrix * polyFunc.relMatrix);
         polyFunc.draw(GL_TRIANGLES);
 
 		glfwSwapBuffers(window);

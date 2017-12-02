@@ -3,6 +3,7 @@
 
 namespace CartesianGrid_Eq {
     float yOffset;
+    float rise;
     unsigned int xNum;
     float interval;
 
@@ -31,8 +32,9 @@ namespace CartesianGrid_Eq {
     }
 
     float zFunc(float x, float y){
-        return 0.0;
-    } 
+        float* risePtr = &rise;
+        return *risePtr;
+    }
 }
 
 void CartesianGrid::create(GL4_PolyFunc* polyFunc){
@@ -48,6 +50,9 @@ void CartesianGrid::create(GL4_PolyFunc* polyFunc){
         CartesianGrid_Eq::yOffset += yInc;
     }
     polyFunc->zEquation = CartesianGrid_Eq::zFunc;
+    CartesianGrid_Eq::rise = 0.0f;
+    polyFunc->gen_z();
+    CartesianGrid_Eq::rise = -0.5f;
     polyFunc->gen_z();
     polyFunc->create();
     return;

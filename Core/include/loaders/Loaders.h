@@ -4,21 +4,26 @@
 
 #include <GL/glew.h>
 
-// From LoadData.cpp // Legacy
 
-GLuint loadData(GLuint VAO, GLuint vertexCount, GLenum drawUsage, GLfloat* pos, GLfloat* color, GLfloat* normal, GLfloat* texCoord);
-void loadIndices(GLuint VAO, GLuint indexCount, GLenum drawUsage, GLuint* index);
+#ifndef LOADERS_H
+    // From LoadData.cpp // Legacy
 
-// From FileIO.cpp
+    GLuint loadData(GLuint VAO, GLuint vertexCount, GLenum drawUsage, GLfloat* pos, GLfloat* color, GLfloat* normal, GLfloat* texCoord);
+    void loadIndices(GLuint VAO, GLuint indexCount, GLenum drawUsage, GLuint* index);
 
-const std::string getParentDirectory(const char* path);
-char* readFile(const char* fileName);
+    // From FileIO.cpp
 
-// From LoadShaders.cpp
+    const std::string getParentDirectory(const char* path);
+    char* readFile(const char* fileName);
 
-GLchar* readShaderFile(const char* nameOfShader);
-GLuint compileShaders(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath);
+    // From LoadShaders.cpp
 
-// From LoadTextures.cpp
+    GLchar* readShaderFile(const char* nameOfShader);
+    GLuint compileShaders(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath);
 
-GLuint createTexture(const char* Filename);
+    // From LoadTextures.cpp
+
+    GLuint createTexture(const char* Filename);
+
+#define LOADERS_H
+#endif

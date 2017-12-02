@@ -19,7 +19,7 @@ void GL4_PolyFunc::gen_x(){
         return;
     }
     GL4_PolyFunc::xEquation(&xVals);
-    GL4_PolyFunc::xyzBits.set(0);
+    GL4_PolyFunc::xyzBits.set(GL4_PolyFunc::X);
 }
 
 void GL4_PolyFunc::gen_y(){
@@ -39,7 +39,7 @@ void GL4_PolyFunc::gen_y(){
         GL4_PolyFunc::yVals[yElem] = GL4_PolyFunc::yEquation(GL4_PolyFunc::xVals[xElem]);
     }
 
-    GL4_PolyFunc::xyzBits.set(1);
+    GL4_PolyFunc::xyzBits.set(GL4_PolyFunc::Y);
 }
 
 void GL4_PolyFunc::gen_z(){
@@ -57,7 +57,7 @@ void GL4_PolyFunc::gen_z(){
         xElem++; yElem++;
     }
 
-    GL4_PolyFunc::xyzBits.set(2);
+    GL4_PolyFunc::xyzBits.set(GL4_PolyFunc::Z);
 }
 
 void GL4_PolyFunc::createXI(){
@@ -92,7 +92,7 @@ void GL4_PolyFunc::createXI(){
     GL4_PolyFunc::feed[GL4_PolyFunc::feedPos] = VBO;
 }
 
-unsigned int genIndices0(std::vector<unsigned int>* indexAccum, unsigned int xCount){
+unsigned int genIndices1D(std::vector<unsigned int>* indexAccum, unsigned int xCount){
     unsigned int indexCount = 0;
     for(unsigned int indexElem = 0; indexElem < xCount - 1; indexElem++){
         indexAccum->push_back(indexElem);
@@ -102,7 +102,7 @@ unsigned int genIndices0(std::vector<unsigned int>* indexAccum, unsigned int xCo
     return indexCount;
 }
 
-unsigned int genIndices1(std::vector<unsigned int>* indexAccum, unsigned int yCount, unsigned int xCount){
+unsigned int genIndices2D(std::vector<unsigned int>* indexAccum, unsigned int xCount, unsigned int yCount){
     unsigned int indexCount = 0;
     std::array<unsigned int, 4> indexSet;
     for(unsigned int indexElem = 0; indexElem < yCount - xCount; indexElem++){
@@ -116,6 +116,63 @@ unsigned int genIndices1(std::vector<unsigned int>* indexAccum, unsigned int yCo
         indexAccum->push_back(indexSet[1]);
         indexCount += 6;
     }
+    return indexCount;
+}
+
+unsigned int genIndices3D(std::vector<unsigned int>* indexAccum, unsigned int xCount, unsigned int yCount, unsigned int zCount){
+    unsigned int indexCount = 0;
+    unsigned int ySetOfX = yCount / xCount;
+    unsigned int zSetOfY = zCount / yCount;
+    std::array<unsigned int, 4> indexSet;
+    for(unsigned int zIndex = 0; zIndex < zSetOfY; zIndex++){
+        for(unsigned int indexElem = zIndex * yCount; indexElem < zIndex * yCount + yCount - xCount; indexElem++){
+            if(indexElem % xCount == xCount - 1) continue;
+            indexSet = {indexElem, indexElem + 1, indexElem + xCount, indexElem + xCount + 1};
+            indexAccum->push_back(indexSet[0]);
+            indexAccum->push_back(indexSet[1]);
+            indexAccum->push_back(indexSet[2]);
+            indexAccum->push_back(indexSet[3]);
+            indexAccum->push_back(indexSet[2]);
+            indexAccum->push_back(indexSet[1]);
+            indexCount += 6;
+        }
+    }
+
+    unsigned int indexOffset = 0;
+    for(unsigned int zIndex = 0; zIndex < zSetOfY - 1; zIndex++){
+        indexOffset = zIndex * yCount;
+        for(unsigned int xIndex = 0; xIndex < xCount - 1; xIndex++){
+            indexSet = {
+                indexOffset + xIndex,
+                indexOffset + xIndex + 1, 
+                indexOffset + yCount + xIndex, 
+                indexOffset + yCount + xIndex + 1
+            };
+            indexAccum->push_back(indexSet[0]);
+            indexAccum->push_back(indexSet[1]);
+            indexAccum->push_back(indexSet[2]);
+            indexAccum->push_back(indexSet[3]);
+            indexAccum->push_back(indexSet[2]);
+            indexAccum->push_back(indexSet[1]);
+            indexCount += 6;
+            unsigned int incFactor = yCount - xCount;
+            indexSet = {
+                indexOffset + xIndex + incFactor,
+                indexOffset + xIndex + 1 + incFactor, 
+                indexOffset + yCount + xIndex + incFactor,
+                indexOffset + yCount + xIndex + 1  + incFactor
+            };
+            indexAccum->push_back(indexSet[0]);
+            indexAccum->push_back(indexSet[1]);
+            indexAccum->push_back(indexSet[2]);
+            indexAccum->push_back(indexSet[3]);
+            indexAccum->push_back(indexSet[2]);
+            indexAccum->push_back(indexSet[1]);
+            indexCount += 6;
+        }
+    }
+    
+
     return indexCount;
 }
 
@@ -138,8 +195,11 @@ void GL4_PolyFunc::create(){
     unsigned int zSetOfY = GL4_PolyFunc::zVals.size() / GL4_PolyFunc::yVals.size();
     unsigned int zSetOfX = GL4_PolyFunc::zVals.size() / GL4_PolyFunc::xVals.size();
 
-    if(zSetOfX == 1) GL4_PolyFunc::indexCount = genIndices0(&indexAccum, GL4_PolyFunc::xVals.size());
-    else if(ySetOfX > 1 && zSetOfY == 1) GL4_PolyFunc::indexCount = genIndices1(&indexAccum, GL4_PolyFunc::yVals.size(), GL4_PolyFunc::xVals.size());
+    if(zSetOfX == 1) GL4_PolyFunc::indexCount = genIndices1D(&indexAccum, GL4_PolyFunc::xVals.size());
+    else if(ySetOfX > 1 && zSetOfY == 1) GL4_PolyFunc::indexCount = genIndices2D(&indexAccum, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size());
+    // else if(ySetOfX == 1 && zSetOfY > 1) genIndices2(&indexAccum, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size(), GL4_PolyFunc::zVals.size());
+    else if(ySetOfX > 1 && zSetOfY > 1) GL4_PolyFunc::indexCount = genIndices3D(&indexAccum, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size(), GL4_PolyFunc::zVals.size());
+    else std::cerr << "Something went wrong while indexing Cartesian Grid" << std::endl;
 
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
@@ -173,5 +233,11 @@ void GL4_PolyFunc::drawXI(GLenum drawMode, GLuint drawCount){
 void GL4_PolyFunc::draw(GLenum drawMode){
     glBindVertexArray(GL4_PolyFunc::feed[GL4_PolyFunc::VAO]);
     glDrawElements(drawMode, GL4_PolyFunc::indexCount, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+}
+
+void GL4_PolyFunc::draw(GLenum drawMode, unsigned int drawCount){
+    glBindVertexArray(GL4_PolyFunc::feed[GL4_PolyFunc::VAO]);
+    glDrawElements(drawMode, drawCount, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
