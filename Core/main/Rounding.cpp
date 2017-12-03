@@ -17,7 +17,9 @@
 #include "pipeline/GLSL_Idle.hpp"
 #include "geometry/GL4_DataSet.hpp"
 #include "geometry/GL4_PolyFunc.hpp"
+#include "geometry/GL4_PolyAngles.hpp"
 #include "geometry/poly/CartesianGrid.hpp"
+#include "geometry/poly/Circle.hpp"
 
 namespace UI {
 	int height = 1080;
@@ -176,7 +178,10 @@ int main(int argc, char** argv) {
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
     GL4_PolyFunc polyFunc;
-    CartesianGrid cartesianGrid(&polyFunc, 0.5f, 7, 0.5f, 10);
+	CartesianGrid cartesianGrid(&polyFunc, 0.5f, 7, 0.5f, 10);
+	
+	GL4_PolyAngles polyAngles;
+    Circle circle(&polyAngles, 0.2f, 20);
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){
@@ -192,14 +197,14 @@ int main(int argc, char** argv) {
         glPointSize(8.0f);
         glLineWidth(8.0f);
 
-		polyFunc.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance));
-        polyFunc.relMatrix = glm::rotate(polyFunc.relMatrix, glm::radians<float>(Terrain::xAngle), glm::vec3(1.0, 0.0, 0.0));
-		polyFunc.relMatrix = glm::rotate(polyFunc.relMatrix, glm::radians<float>(Terrain::yAngle), glm::vec3(0.0, 1.0, 0.0));
+		polyAngles.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance));
+        polyAngles.relMatrix = glm::rotate(polyAngles.relMatrix, glm::radians<float>(Terrain::xAngle), glm::vec3(1.0, 0.0, 0.0));
+		polyAngles.relMatrix = glm::rotate(polyAngles.relMatrix, glm::radians<float>(Terrain::yAngle), glm::vec3(0.0, 1.0, 0.0));
 
         glUseProgram(Idle.shaderProgID);
         Idle.set_renderMode(0);
-        Idle.set_mvpMatrix(Player::viewMatrix * Player::projectionMatrix * polyFunc.relMatrix);
-        polyFunc.draw(GL_TRIANGLES);
+        Idle.set_mvpMatrix(Player::viewMatrix * Player::projectionMatrix * polyAngles.relMatrix);
+        polyAngles.drawXI(GL_LINES, 100);
 
 		glfwSwapBuffers(window);
 	}

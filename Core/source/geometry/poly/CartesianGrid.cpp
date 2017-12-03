@@ -1,9 +1,9 @@
 #include "geometry/GL4_PolyFunc.hpp"
-#include "geometry/CartesianGrid.hpp"
+#include "geometry/poly/CartesianGrid.hpp"
 
 namespace CartesianGrid_Eq {
     float yOffset;
-    float rise;
+    float zOffset;
     unsigned int xNum;
     float interval;
 
@@ -26,15 +26,19 @@ namespace CartesianGrid_Eq {
         std::sort(xVals->begin(), xVals->end());
     }
 
-    float yFunc(float x){
+    /* float yFunc(float x){
         float* yOffsetPtr = &yOffset;
         return *yOffsetPtr;
     }
 
     float zFunc(float x, float y){
-        float* risePtr = &rise;
-        return *risePtr;
-    }
+        float* zOffsetPtr = &zOffset;
+        return *zOffsetPtr;
+    } */
+    float yFunc(float x){ return yOffset; }
+
+    float zFunc(float x, float y){ return zOffset; }
+
 }
 
 void CartesianGrid::create(GL4_PolyFunc* polyFunc){
@@ -50,16 +54,15 @@ void CartesianGrid::create(GL4_PolyFunc* polyFunc){
         CartesianGrid_Eq::yOffset += yInc;
     }
     polyFunc->zEquation = CartesianGrid_Eq::zFunc;
-    CartesianGrid_Eq::rise = -0.2f;
+    CartesianGrid_Eq::zOffset = -0.2f;
     polyFunc->gen_z();
-    CartesianGrid_Eq::rise = -0.1f;
+    CartesianGrid_Eq::zOffset = -0.1f;
     polyFunc->gen_z();
-    CartesianGrid_Eq::rise = 0.0f;
+    CartesianGrid_Eq::zOffset = 0.0f;
     polyFunc->gen_z();
-    CartesianGrid_Eq::rise = 0.1f;
+    CartesianGrid_Eq::zOffset = 0.1f;
     polyFunc->gen_z();
-    CartesianGrid_Eq::rise = 0.2f;
+    CartesianGrid_Eq::zOffset = 0.2f;
     polyFunc->gen_z();
     polyFunc->create();
-    return;
 }

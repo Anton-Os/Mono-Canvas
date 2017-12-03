@@ -19,6 +19,7 @@
         void draw(GLenum drawMode);
         void draw(GLenum drawMode, unsigned int drawCount);
     private:
+        bool isIdx = false;
         unsigned int indexCount;
         std::vector<float> xVals;
         std::vector<float> yVals;

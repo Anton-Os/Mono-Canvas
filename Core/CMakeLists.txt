@@ -22,7 +22,8 @@ add_executable(IdxCube
     source/loaders/LoadShaders.cpp
     source/geometry/GL4_DataSet.cpp
     source/geometry/GL4_PolyFunc.cpp
-    source/geometry/CartesianGrid.cpp
+    source/geometry/GL4_PolyAngles.cpp
+    source/geometry/poly/CartesianGrid.cpp
     source/pipeline/GLSL_Idle.cpp
     main/IdxCube.cpp
 )
@@ -32,6 +33,28 @@ target_include_directories(IdxCube
 )
 
 target_link_libraries(IdxCube
+    GLEW::glew_s
+    glfw
+    glm
+)
+
+add_executable(Rounding
+    source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
+    source/geometry/GL4_DataSet.cpp
+    source/geometry/GL4_PolyFunc.cpp
+    source/geometry/GL4_PolyAngles.cpp
+    source/geometry/poly/CartesianGrid.cpp
+    source/geometry/poly/Circle.cpp
+    source/pipeline/GLSL_Idle.cpp
+    main/Rounding.cpp
+)
+
+target_include_directories(Rounding
+    PUBLIC include
+)
+
+target_link_libraries(Rounding
     GLEW::glew_s
     glfw
     glm
