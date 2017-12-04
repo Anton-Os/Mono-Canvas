@@ -17,11 +17,13 @@
         void gen_z();
         void createXI();
         void create();
-        void drawXI(GLenum drawMode, GLuint drawCount);
+        void map(std::vector<float>* posAccum);
         void draw(GLenum drawMode);
         void draw(GLenum drawMode, unsigned int drawCount);
     private:
+        unsigned int idxBff;
         bool isIdx = false;
+        bool isFed = false;
         unsigned int indexCount;
         std::vector<float> angles;
         std::vector<float> xVals;
@@ -29,8 +31,6 @@
         std::vector<float> zVals;
         enum ptAttrib { Angl, X, Y, Z };
         std::bitset<4> xyzBits;
-        enum feedParams { VAO, EBO, feedPos };
-        unsigned int feed[3];
     };
 
 #define POLY_ANGLES_H

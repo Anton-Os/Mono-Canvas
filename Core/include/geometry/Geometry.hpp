@@ -14,35 +14,29 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-struct MidPointTrig {
-    float pos[3];
-    float threeProx[9];
-};
-
-struct MidPointQuad {
-    float pos[3];
-    float fourProx[12];
-};
-
-struct MidPoint45 {
-    float pos[3];
-    float fourProx[12];
-
-    float t1[3];
-    short unsigned int threeIndex1[3];
-
-    float t2[3];
-    short unsigned int threeIndex2[3];
-};
-
 class GL4_Object3D {
 public:
-    glm::mat4 relMatrix;
+    glm::mat4 relMatrix = glm::mat4(1);
     GLuint get_vertexCount(){ return vertexCount; }
-    // drawXI();
-    // drawXI(GLenum drawMode);
-    // drawFixedXI(GLenum drawMode, GLuint vertexCount);
-    // drawPartXI(GLenum drawMode, GLuint part, GLuint whole);
+    void drawXI(GLenum drawMode){
+        glBindVertexArray(GL4_Object3D::VAO);
+        glDrawArrays(drawMode, 0, GL4_Object3D::vertexCount);
+        glBindVertexArray(0);
+    }
+    void drawFixedXI(GLenum drawMode, GLuint drawCount){
+        glBindVertexArray(GL4_Object3D::VAO);
+        if(drawCount > GL4_Object3D::vertexCount) glDrawArrays(drawMode, 0, GL4_Object3D::vertexCount);
+        else glDrawArrays(drawMode, 0, drawCount);
+        glBindVertexArray(0);
+    }
+    void drawPartXI(GLenum drawMode, GLuint part, GLuint whole){
+        glBindVertexArray(GL4_Object3D::VAO);
+        if(part > whole) glDrawArrays(drawMode, 0, GL4_Object3D::vertexCount);
+        else glDrawArrays(drawMode, 0, GL4_Object3D::vertexCount / whole * part);
+        glBindVertexArray(0);
+    }
 protected:
-    GLuint vertexCount;
+    GLuint VAO;
+    GLuint posBff;
+    GLuint vertexCount = 0;
 };

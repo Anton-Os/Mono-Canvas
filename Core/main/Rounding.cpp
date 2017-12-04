@@ -176,12 +176,9 @@ int main(int argc, char** argv) {
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
 
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
-
-    GL4_PolyFunc polyFunc;
-	CartesianGrid cartesianGrid(&polyFunc, 0.5f, 7, 0.5f, 10);
 	
 	GL4_PolyAngles polyAngles;
-    Circle circle(&polyAngles, 0.2f, 20);
+    Circle circle(&polyAngles, 0.2f, 12);
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){
@@ -204,7 +201,7 @@ int main(int argc, char** argv) {
         glUseProgram(Idle.shaderProgID);
         Idle.set_renderMode(0);
         Idle.set_mvpMatrix(Player::viewMatrix * Player::projectionMatrix * polyAngles.relMatrix);
-        polyAngles.drawXI(GL_LINES, 100);
+        polyAngles.drawPartXI(GL_POINTS, 3, 4);
 
 		glfwSwapBuffers(window);
 	}

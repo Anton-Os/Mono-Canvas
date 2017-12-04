@@ -87,9 +87,10 @@ void GL4_PolyFunc::createXI(){
 
     glBindVertexArray(0);
 
+    GL4_PolyFunc::isFed = true;
     GL4_PolyFunc::vertexCount = threePts.size() / 3;
-    GL4_PolyFunc::feed[GL4_PolyFunc::VAO] = VAO;
-    GL4_PolyFunc::feed[GL4_PolyFunc::feedPos] = VBO;
+    GL4_PolyFunc::VAO = VAO;
+    GL4_PolyFunc::posBff = VBO;
 }
 
 unsigned int genIndices1D(std::vector<unsigned int>* indexAccum, unsigned int xCount){
@@ -252,35 +253,48 @@ void GL4_PolyFunc::create(){
     glBindVertexArray(0);
 
     GL4_PolyFunc::isIdx = true;
+    GL4_PolyFunc::isFed = true;
     GL4_PolyFunc::vertexCount = threePts.size() / 3;
-    GL4_PolyFunc::feed[GL4_PolyFunc::VAO] = VAO;
-    GL4_PolyFunc::feed[GL4_PolyFunc::EBO] = VBOs[0];
-    GL4_PolyFunc::feed[GL4_PolyFunc::feedPos] = VBOs[1];
+    GL4_PolyFunc::VAO = VAO;
+    GL4_PolyFunc::idxBff = VBOs[0];
+    GL4_PolyFunc::posBff = VBOs[1];
 }
 
-void GL4_PolyFunc::drawXI(GLenum drawMode, GLuint drawCount){
-    glBindVertexArray(GL4_PolyFunc::feed[GL4_PolyFunc::VAO]);
-    glDrawArrays(drawMode, 0, drawCount);
+void GL4_PolyFunc::map(std::vector<float>* posAccum){
+    if(!GL4_PolyFunc::isFed) {
+        std::cerr << "Cannot perform an mapping on feedPos, invoke create()" << std::endl;
+        return;
+    }
+    glBindVertexArray(GL4_PolyFunc::VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, GL4_PolyFunc::posBff);
+    GLfloat* posData = (GLfloat*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
+	posAccum->resize(GL4_PolyFunc::vertexCount * 3);
+
+    for(GLuint posElem = 0; posElem < posAccum->size(); posElem++){
+		posAccum->at(posElem) = *(posData + posElem);
+    }
+
+    glUnmapBuffer(GL_ARRAY_BUFFER);
     glBindVertexArray(0);
 }
 
 void GL4_PolyFunc::draw(GLenum drawMode){
     if(!GL4_PolyFunc::isIdx) {
-        std::cerr << "Cannot perform an indexed draw" << std::endl;
+        std::cerr << "Cannot perform an indexed draw on non-indexed object" << std::endl;
         return;
     }
     if(!GL4_PolyFunc::isIdx) return;
-    glBindVertexArray(GL4_PolyFunc::feed[GL4_PolyFunc::VAO]);
+    glBindVertexArray(GL4_PolyFunc::VAO);
     glDrawElements(drawMode, GL4_PolyFunc::indexCount, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 
 void GL4_PolyFunc::draw(GLenum drawMode, unsigned int drawCount){
     if(!GL4_PolyFunc::isIdx) {
-        std::cerr << "Cannot perform an indexed draw" << std::endl;
+        std::cerr << "Cannot perform an indexed draw on non-indexed object" << std::endl;
         return;
     }
-    glBindVertexArray(GL4_PolyFunc::feed[GL4_PolyFunc::VAO]);
+    glBindVertexArray(GL4_PolyFunc::VAO);
     if(drawCount > GL4_PolyFunc::indexCount)
         glDrawElements(drawMode, GL4_PolyFunc::indexCount, GL_UNSIGNED_INT, 0);
     else glDrawElements(drawMode, drawCount, GL_UNSIGNED_INT, 0);

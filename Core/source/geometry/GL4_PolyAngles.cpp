@@ -95,33 +95,46 @@ void GL4_PolyAngles::createXI(){
 
     glBindVertexArray(0);
 
+    GL4_PolyAngles::isFed = true;
     GL4_PolyAngles::vertexCount = threePts.size() / 3;
-    GL4_PolyAngles::feed[GL4_PolyAngles::VAO] = VAO;
-    GL4_PolyAngles::feed[GL4_PolyAngles::feedPos] = VBO;
+    GL4_PolyAngles::VAO = VAO;
+    GL4_PolyAngles::posBff = VBO;
 }
 
-void GL4_PolyAngles::drawXI(GLenum drawMode, GLuint drawCount){
-    glBindVertexArray(GL4_PolyAngles::feed[GL4_PolyAngles::VAO]);
-    glDrawArrays(drawMode, 0, drawCount);
+void GL4_PolyAngles::map(std::vector<float>* posAccum){
+    if(!GL4_PolyAngles::isFed) {
+        std::cerr << "Cannot perform an mapping on feedPos, invoke create()" << std::endl;
+        return;
+    }
+    glBindVertexArray(GL4_PolyAngles::VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, GL4_PolyAngles::posBff);
+    GLfloat* posData = (GLfloat*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
+	posAccum->resize(GL4_PolyAngles::vertexCount * 3);
+
+    for(GLuint posElem = 0; posElem < posAccum->size(); posElem++){
+		posAccum->at(posElem) = *(posData + posElem);
+    }
+
+    glUnmapBuffer(GL_ARRAY_BUFFER);
     glBindVertexArray(0);
 }
 
 void GL4_PolyAngles::draw(GLenum drawMode){
     if(!GL4_PolyAngles::isIdx) {
-        std::cerr << "Cannot perform an indexed draw" << std::endl;
+        std::cerr << "Cannot perform an indexed draw on non-indexed object" << std::endl;
         return;
     }
-    glBindVertexArray(GL4_PolyAngles::feed[GL4_PolyAngles::VAO]);
+    glBindVertexArray(GL4_PolyAngles::VAO);
     glDrawElements(drawMode, GL4_PolyAngles::indexCount, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 
 void GL4_PolyAngles::draw(GLenum drawMode, unsigned int drawCount){
     if(!GL4_PolyAngles::isIdx) {
-        std::cerr << "Cannot perform an indexed draw" << std::endl;
+        std::cerr << "Cannot perform an indexed draw on non-indexed object" << std::endl;
         return;
     }
-    glBindVertexArray(GL4_PolyAngles::feed[GL4_PolyAngles::VAO]);
+    glBindVertexArray(GL4_PolyAngles::VAO);
     if(drawCount > GL4_PolyAngles::indexCount)
         glDrawElements(drawMode, GL4_PolyAngles::indexCount, GL_UNSIGNED_INT, 0);
     else glDrawElements(drawMode, drawCount, GL_UNSIGNED_INT, 0);

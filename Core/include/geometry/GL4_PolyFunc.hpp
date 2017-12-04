@@ -15,10 +15,12 @@
         void gen_z();
         void createXI();
         void create();
-        void drawXI(GLenum drawMode, GLuint drawCount);
+        void map(std::vector<float>* posAccum);
         void draw(GLenum drawMode);
         void draw(GLenum drawMode, unsigned int drawCount);
     private:
+        unsigned int idxBff;
+        bool isFed = false;
         bool isIdx = false;
         unsigned int indexCount;
         std::vector<float> xVals;
@@ -26,8 +28,6 @@
         std::vector<float> zVals;
         enum ptAttrib { X, Y, Z };
         std::bitset<3> xyzBits;
-        enum feedParams { VAO, EBO, feedPos };
-        unsigned int feed[3];
     };
 
 #define POLY_FUNC_H
