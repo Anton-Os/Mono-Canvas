@@ -1,5 +1,5 @@
 #include "geometry/GL4_PolyAngles.hpp"
-#include "geometry/poly/Circle.hpp"
+#include "geometry/shapes/Circle.hpp"
 
 namespace Circle_Eq {
     unsigned int interval;

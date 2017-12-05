@@ -17,7 +17,7 @@
 #include "pipeline/GLSL_Idle.hpp"
 #include "geometry/GL4_DataSet.hpp"
 #include "geometry/GL4_PolyFunc.hpp"
-#include "geometry/poly/CartesianGrid.hpp"
+#include "geometry/shapes/CartesianGrid.hpp"
 
 namespace UI {
 	int height = 1080;

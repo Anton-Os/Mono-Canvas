@@ -7,6 +7,7 @@
     class GL4_PolyAngles : public GL4_Object3D {
     public:
         void (*anglEquation)(std::vector<float>* anglVals);
+        unsigned int (*idxEquation)(std::vector<unsigned int>* idxVals);
         float (*xEquation)(float);
         float (*yEquation)(float);
         float (*zEquation)(float);
@@ -22,9 +23,9 @@
         void draw(GLenum drawMode, unsigned int drawCount);
     private:
         unsigned int idxBff;
+        unsigned int indexCount;
         bool isIdx = false;
         bool isFed = false;
-        unsigned int indexCount;
         std::vector<float> angles;
         std::vector<float> xVals;
         std::vector<float> yVals;

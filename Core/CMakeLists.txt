@@ -22,7 +22,7 @@ add_executable(IdxCube
     source/loaders/LoadShaders.cpp
     source/geometry/GL4_DataSet.cpp
     source/geometry/GL4_PolyFunc.cpp
-    source/geometry/poly/CartesianGrid.cpp
+    source/geometry/shapes/CartesianGrid.cpp
     source/pipeline/GLSL_Idle.cpp
     main/IdxCube.cpp
 )
@@ -42,8 +42,7 @@ add_executable(Rounding
     source/loaders/LoadShaders.cpp
     source/geometry/GL4_DataSet.cpp
     source/geometry/GL4_PolyAngles.cpp
-    source/geometry/GL4_PolyTraverse.cpp
-    source/geometry/poly/Circle.cpp
+    source/geometry/shapes/Circle.cpp
     source/pipeline/GLSL_Idle.cpp
     main/Rounding.cpp
 )

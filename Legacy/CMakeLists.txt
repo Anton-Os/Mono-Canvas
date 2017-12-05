@@ -120,7 +120,6 @@ target_link_libraries(MandlebrotSet
     glfw
     gli
     glm
-    ${ASSIMP_LIBRARY_SUFFIX}
 )
 
 add_executable(ConwaysGOL

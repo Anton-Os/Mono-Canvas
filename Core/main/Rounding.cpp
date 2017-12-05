@@ -18,8 +18,8 @@
 #include "geometry/GL4_DataSet.hpp"
 #include "geometry/GL4_PolyFunc.hpp"
 #include "geometry/GL4_PolyAngles.hpp"
-#include "geometry/poly/CartesianGrid.hpp"
-#include "geometry/poly/Circle.hpp"
+#include "geometry/shapes/CartesianGrid.hpp"
+#include "geometry/shapes/Circle.hpp"
 
 namespace UI {
 	int height = 1080;

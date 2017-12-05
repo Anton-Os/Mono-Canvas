@@ -1,5 +1,5 @@
 #include "geometry/GL4_PolyFunc.hpp"
-#include "geometry/poly/CartesianGrid.hpp"
+#include "geometry/shapes/CartesianGrid.hpp"
 
 namespace CartesianGrid_Eq {
     float yOffset;
