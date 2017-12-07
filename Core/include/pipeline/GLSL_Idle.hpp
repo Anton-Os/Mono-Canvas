@@ -1,5 +1,5 @@
 #ifndef PIPELINE_H
-    #include "pipeline/Pipeline.hpp"
+    #include "Pipeline.hpp"
     #define PIPELINE_H
 #endif
 

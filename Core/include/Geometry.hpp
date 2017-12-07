@@ -18,6 +18,7 @@ class GL4_Object3D {
 public:
     glm::mat4 relMatrix = glm::mat4(1);
     GLuint get_vertexCount(){ return vertexCount; }
+    // GLuint get_idxCount(){ return idxCount }
     void drawXI(GLenum drawMode){
         glBindVertexArray(GL4_Object3D::VAO);
         glDrawArrays(drawMode, 0, GL4_Object3D::vertexCount);
@@ -35,8 +36,14 @@ public:
         else glDrawArrays(drawMode, 0, GL4_Object3D::vertexCount / whole * part);
         glBindVertexArray(0);
     }
+    // void draw(GLenum drawMode);
+    // void drawFixed(GLenum drawMode, GLuint drawCount);
+    // void drawPart(GLenum drawMode, GLuint part, GLuint whole);
+    // void map(GLushort bff, GLsizei dataSize, GLuint count);
 protected:
     GLuint VAO;
     GLuint posBff;
     GLuint vertexCount = 0;
+    // GLuint idxBff;
+    // GLuint idxCount = 0;
 };

@@ -6,7 +6,7 @@ void GL4_PolyAngles::reset(){
     GL4_PolyAngles::yVals.clear();
     GL4_PolyAngles::zVals.clear();
     GL4_PolyAngles::xyzBits.reset();
-    GL4_PolyAngles::indexCount = 0;
+    GL4_PolyAngles::idxCount = 0;
     GL4_PolyAngles::vertexCount = 0;
     GL4_PolyAngles::relMatrix = glm::mat4(1);
     GL4_PolyAngles::anglEquation = nullptr;
@@ -102,12 +102,15 @@ void GL4_PolyAngles::createXI(){
     GL4_PolyAngles::posBff = VBO;
 }
 
-unsigned int genIndices1D(std::vector<unsigned int>* indexAccum){
-    for(unsigned int i = 0; i < indexAccum->size(); i++){
+unsigned int genIndices1D(std::vector<unsigned int>* indexAccum, unsigned int posCount){
+    unsigned int idxCount = 0;
+    for(unsigned int i = 1; i < posCount; i++){
         indexAccum->push_back(i);
         indexAccum->push_back(i + 1);
+        idxCount += 2;
     }
-    return indexAccum->size();
+    indexAccum->at(idxCount - 1) = 1;
+    return idxCount;
 }
 
 void GL4_PolyAngles::create(){
@@ -123,19 +126,18 @@ void GL4_PolyAngles::create(){
         threePts[vecElem * 3 + 2] = GL4_PolyAngles::zVals[vecElem];
     }
 
-    std::vector<unsigned int> indexAccum;
-    if(idxEquation == nullptr) GL4_PolyAngles::indexCount = genIndices1D(&indexAccum);
-    else GL4_PolyAngles::indexCount = idxEquation(&indexAccum);
-    
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
+
+    std::vector<unsigned int> indexAccum;
+    GL4_PolyAngles::idxCount = genIndices1D(&indexAccum, threePts.size() / 3);
 
     GLuint VBOs[2];
     glGenBuffers(2, VBOs);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOs[0]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexAccum.size() * sizeof(GLuint), indexAccum.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexAccum.size() * sizeof(unsigned int), indexAccum.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
     glBufferData(GL_ARRAY_BUFFER, threePts.size() * sizeof(GLfloat), threePts.data(), GL_STATIC_DRAW);
@@ -144,50 +146,10 @@ void GL4_PolyAngles::create(){
 
     glBindVertexArray(0);
 
-    GL4_PolyAngles::isIdx = true;
     GL4_PolyAngles::isFed = true;
+    GL4_PolyAngles::isIdx = true;
     GL4_PolyAngles::vertexCount = threePts.size() / 3;
     GL4_PolyAngles::VAO = VAO;
-    GL4_PolyAngles::idxBff = VBOs[0];
-    GL4_PolyAngles::posBff = VBOs[1];
-}
-
-void GL4_PolyAngles::map(std::vector<float>* posAccum){
-    if(!GL4_PolyAngles::isFed) {
-        std::cerr << "Cannot perform an mapping on feedPos, invoke create()" << std::endl;
-        return;
-    }
-    glBindVertexArray(GL4_PolyAngles::VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, GL4_PolyAngles::posBff);
-    GLfloat* posData = (GLfloat*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
-	posAccum->resize(GL4_PolyAngles::vertexCount * 3);
-
-    for(GLuint posElem = 0; posElem < posAccum->size(); posElem++){
-		posAccum->at(posElem) = *(posData + posElem);
-    }
-
-    glUnmapBuffer(GL_ARRAY_BUFFER);
-    glBindVertexArray(0);
-}
-
-void GL4_PolyAngles::draw(GLenum drawMode){
-    if(!GL4_PolyAngles::isIdx) {
-        std::cerr << "Cannot perform an indexed draw on non-indexed object" << std::endl;
-        return;
-    }
-    glBindVertexArray(GL4_PolyAngles::VAO);
-    glDrawElements(drawMode, GL4_PolyAngles::indexCount, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
-}
-
-void GL4_PolyAngles::draw(GLenum drawMode, unsigned int drawCount){
-    if(!GL4_PolyAngles::isIdx) {
-        std::cerr << "Cannot perform an indexed draw on non-indexed object" << std::endl;
-        return;
-    }
-    glBindVertexArray(GL4_PolyAngles::VAO);
-    if(drawCount > GL4_PolyAngles::indexCount)
-        glDrawElements(drawMode, GL4_PolyAngles::indexCount, GL_UNSIGNED_INT, 0);
-    else glDrawElements(drawMode, drawCount, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
+    GL4_PolyAngles::posBff = VBOs[0];
+    GL4_PolyAngles::idxBff = VBOs[1];
 }

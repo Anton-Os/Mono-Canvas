@@ -1,10 +1,14 @@
 #ifndef GEOMETRY_H
-    #include "geometry/Geometry.hpp"
+    #include "Geometry.hpp"
     #define GEOMETRY_H
 #endif
 
+#ifndef ENTITY_H
+    #include "geometry/GL4_Entity.hpp"
+#endif
+
 #ifndef POLY_FUNC_H
-    class GL4_PolyFunc : public GL4_Object3D {
+    class GL4_PolyFunc : public GL4_Entity {
     public:
         void (*xEquation)(std::vector<float>* xVals);
         float (*yEquation)(float);
@@ -15,14 +19,7 @@
         void gen_z();
         void createXI();
         void create();
-        void map(std::vector<float>* posAccum);
-        void draw(GLenum drawMode);
-        void draw(GLenum drawMode, unsigned int drawCount);
     private:
-        unsigned int idxBff;
-        bool isFed = false;
-        bool isIdx = false;
-        unsigned int indexCount;
         std::vector<float> xVals;
         std::vector<float> yVals;
         std::vector<float> zVals;

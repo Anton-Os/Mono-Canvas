@@ -5,7 +5,7 @@ void GL4_PolyFunc::reset(){
     GL4_PolyFunc::yVals.clear();
     GL4_PolyFunc::zVals.clear();
     GL4_PolyFunc::xyzBits.reset();
-    GL4_PolyFunc::indexCount = 0;
+    GL4_PolyFunc::idxCount = 0;
     GL4_PolyFunc::vertexCount = 0;
     GL4_PolyFunc::relMatrix = glm::mat4(1);
     GL4_PolyFunc::xEquation = nullptr;
@@ -94,17 +94,17 @@ void GL4_PolyFunc::createXI(){
 }
 
 unsigned int genIndices1D(std::vector<unsigned int>* indexAccum, unsigned int xCount){
-    unsigned int indexCount = 0;
+    unsigned int idxCount = 0;
     for(unsigned int indexElem = 0; indexElem < xCount - 1; indexElem++){
         indexAccum->push_back(indexElem);
         indexAccum->push_back(indexElem + 1);
-        indexCount += 2;
+        idxCount += 2;
     }
-    return indexCount;
+    return idxCount;
 }
 
 unsigned int genIndices2D(std::vector<unsigned int>* indexAccum, unsigned int xCount, unsigned int yCount){
-    unsigned int indexCount = 0;
+    unsigned int idxCount = 0;
     std::array<unsigned int, 4> indexSet;
     for(unsigned int indexElem = 0; indexElem < yCount - xCount; indexElem++){
         if(indexElem % xCount == xCount - 1) continue;
@@ -115,13 +115,13 @@ unsigned int genIndices2D(std::vector<unsigned int>* indexAccum, unsigned int xC
         indexAccum->push_back(indexSet[3]);
         indexAccum->push_back(indexSet[2]);
         indexAccum->push_back(indexSet[1]);
-        indexCount += 6;
+        idxCount += 6;
     }
-    return indexCount;
+    return idxCount;
 }
 
 unsigned int genIndices3D(std::vector<unsigned int>* indexAccum, unsigned int xCount, unsigned int yCount, unsigned int zCount){
-    unsigned int indexCount = 0;
+    unsigned int idxCount = 0;
     unsigned int ySetOfX = yCount / xCount;
     unsigned int zSetOfY = zCount / yCount;
     std::array<unsigned int, 4> indexSet;
@@ -135,7 +135,7 @@ unsigned int genIndices3D(std::vector<unsigned int>* indexAccum, unsigned int xC
             indexAccum->push_back(indexSet[3]);
             indexAccum->push_back(indexSet[2]);
             indexAccum->push_back(indexSet[1]);
-            indexCount += 6;
+            idxCount += 6;
         }
     }
 
@@ -155,7 +155,7 @@ unsigned int genIndices3D(std::vector<unsigned int>* indexAccum, unsigned int xC
             indexAccum->push_back(indexSet[3]);
             indexAccum->push_back(indexSet[2]);
             indexAccum->push_back(indexSet[1]);
-            indexCount += 6;
+            idxCount += 6;
             unsigned int incFactor = yCount - xCount;
             indexSet = {
                 indexOffset + xIndex + incFactor,
@@ -169,7 +169,7 @@ unsigned int genIndices3D(std::vector<unsigned int>* indexAccum, unsigned int xC
             indexAccum->push_back(indexSet[3]);
             indexAccum->push_back(indexSet[2]);
             indexAccum->push_back(indexSet[1]);
-            indexCount += 6;
+            idxCount += 6;
         }
     }
 
@@ -189,7 +189,7 @@ unsigned int genIndices3D(std::vector<unsigned int>* indexAccum, unsigned int xC
             indexAccum->push_back(indexSet[3]);
             indexAccum->push_back(indexSet[2]);
             indexAccum->push_back(indexSet[1]);
-            indexCount += 6;
+            idxCount += 6;
             unsigned int incFactor = xCount - 1;
             indexSet = {
                 indexOffset + yIndex + incFactor,
@@ -203,11 +203,11 @@ unsigned int genIndices3D(std::vector<unsigned int>* indexAccum, unsigned int xC
             indexAccum->push_back(indexSet[3]);
             indexAccum->push_back(indexSet[2]);
             indexAccum->push_back(indexSet[1]);
-            indexCount += 6;
+            idxCount += 6;
         }
     }
 
-    return indexCount;
+    return idxCount;
 }
 
 void GL4_PolyFunc::create(){
@@ -229,11 +229,11 @@ void GL4_PolyFunc::create(){
     unsigned int zSetOfY = GL4_PolyFunc::zVals.size() / GL4_PolyFunc::yVals.size();
     unsigned int zSetOfX = GL4_PolyFunc::zVals.size() / GL4_PolyFunc::xVals.size();
 
-    if(zSetOfX == 1) GL4_PolyFunc::indexCount = genIndices1D(&indexAccum, GL4_PolyFunc::xVals.size());
-    else if(ySetOfX > 1 && zSetOfY == 1) GL4_PolyFunc::indexCount = genIndices2D(&indexAccum, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size());
+    if(zSetOfX == 1) GL4_PolyFunc::idxCount = genIndices1D(&indexAccum, GL4_PolyFunc::xVals.size());
+    else if(ySetOfX > 1 && zSetOfY == 1) GL4_PolyFunc::idxCount = genIndices2D(&indexAccum, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size());
     // else if(ySetOfX == 1 && zSetOfY > 1) genIndices2(&indexAccum, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size(), GL4_PolyFunc::zVals.size());
-    else if(ySetOfX > 1 && zSetOfY > 1) GL4_PolyFunc::indexCount = genIndices3D(&indexAccum, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size(), GL4_PolyFunc::zVals.size());
-    else std::cerr << "Something went wrong while indexing Cartesian Grid" << std::endl;
+    else if(ySetOfX > 1 && zSetOfY > 1) GL4_PolyFunc::idxCount = genIndices3D(&indexAccum, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size(), GL4_PolyFunc::zVals.size());
+    else std::cerr << "Something went wrong while indexing Grid" << std::endl;
 
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
@@ -258,45 +258,4 @@ void GL4_PolyFunc::create(){
     GL4_PolyFunc::VAO = VAO;
     GL4_PolyFunc::idxBff = VBOs[0];
     GL4_PolyFunc::posBff = VBOs[1];
-}
-
-void GL4_PolyFunc::map(std::vector<float>* posAccum){
-    if(!GL4_PolyFunc::isFed) {
-        std::cerr << "Cannot perform an mapping on feedPos, invoke create()" << std::endl;
-        return;
-    }
-    glBindVertexArray(GL4_PolyFunc::VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, GL4_PolyFunc::posBff);
-    GLfloat* posData = (GLfloat*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
-	posAccum->resize(GL4_PolyFunc::vertexCount * 3);
-
-    for(GLuint posElem = 0; posElem < posAccum->size(); posElem++){
-		posAccum->at(posElem) = *(posData + posElem);
-    }
-
-    glUnmapBuffer(GL_ARRAY_BUFFER);
-    glBindVertexArray(0);
-}
-
-void GL4_PolyFunc::draw(GLenum drawMode){
-    if(!GL4_PolyFunc::isIdx) {
-        std::cerr << "Cannot perform an indexed draw on non-indexed object" << std::endl;
-        return;
-    }
-    if(!GL4_PolyFunc::isIdx) return;
-    glBindVertexArray(GL4_PolyFunc::VAO);
-    glDrawElements(drawMode, GL4_PolyFunc::indexCount, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
-}
-
-void GL4_PolyFunc::draw(GLenum drawMode, unsigned int drawCount){
-    if(!GL4_PolyFunc::isIdx) {
-        std::cerr << "Cannot perform an indexed draw on non-indexed object" << std::endl;
-        return;
-    }
-    glBindVertexArray(GL4_PolyFunc::VAO);
-    if(drawCount > GL4_PolyFunc::indexCount)
-        glDrawElements(drawMode, GL4_PolyFunc::indexCount, GL_UNSIGNED_INT, 0);
-    else glDrawElements(drawMode, drawCount, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
 }

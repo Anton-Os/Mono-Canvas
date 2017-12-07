@@ -7,9 +7,9 @@ namespace Circle_Eq {
     // float angleInc = glm::pi<float>() * 2 / (float)Circle::interval;
 
     void anglFunc(std::vector<float>* anglVals){
-        anglVals->resize(interval);
+        anglVals->resize(interval + 1);
         float angleInc = glm::pi<float>() * 2 / (float)interval;
-        for(unsigned int angleElem = 0; angleElem < interval; angleElem++)
+        for(unsigned int angleElem = 0; angleElem < interval + 1; angleElem++)
             anglVals->at(angleElem) = angleElem * angleInc;
     }
 
@@ -31,5 +31,5 @@ void Circle::create(GL4_PolyAngles* polyAngles){
     polyAngles->gen_y();
     polyAngles->zEquation = Circle_Eq::zFunc;
     polyAngles->gen_z();
-    polyAngles->createXI();
+    polyAngles->create();
 }

@@ -1,5 +1,5 @@
 #ifndef GEOMETRY_H
-    #include "geometry/Geometry.hpp"
+    #include "Geometry.hpp"
     #define GEOMETRY_H
 #endif
 

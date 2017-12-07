@@ -1,10 +1,14 @@
 #ifndef GEOMETRY_H
-    #include "geometry/Geometry.hpp"
+    #include "Geometry.hpp"
     #define GEOMETRY_H
 #endif
 
+#ifndef ENTITY_H
+    #include "geometry/GL4_Entity.hpp"
+#endif
+
 #ifndef POLY_ANGLES_H
-    class GL4_PolyAngles : public GL4_Object3D {
+    class GL4_PolyAngles : public GL4_Entity {
     public:
         void (*anglEquation)(std::vector<float>* anglVals);
         unsigned int (*idxEquation)(std::vector<unsigned int>* idxVals);
@@ -18,14 +22,7 @@
         void gen_z();
         void createXI();
         void create();
-        void map(std::vector<float>* posAccum);
-        void draw(GLenum drawMode);
-        void draw(GLenum drawMode, unsigned int drawCount);
     private:
-        unsigned int idxBff;
-        unsigned int indexCount;
-        bool isIdx = false;
-        bool isFed = false;
         std::vector<float> angles;
         std::vector<float> xVals;
         std::vector<float> yVals;

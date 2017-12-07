@@ -3,7 +3,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #ifndef LOADERS_H
-    #include "loaders/Loaders.h"
+    #include "Loaders.h"
     #define LOADERS_H
 #endif
 

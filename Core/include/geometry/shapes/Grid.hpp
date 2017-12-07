@@ -1,13 +1,12 @@
 #ifndef GEOMETRY_H
-    #include "geometry/Geometry.hpp"
+    #include "Geometry.hpp"
     #define GEOMETRY_H
 #endif
 
-#ifndef CARTESIAN_GRID_H
-
-class CartesianGrid {
+#ifndef GRID_H
+class Grid {
     public:
-        CartesianGrid(GL4_PolyFunc* polyFunc, float width_arg, unsigned int xCount_arg, 
+        Grid(GL4_PolyFunc* polyFunc, float width_arg, unsigned int xCount_arg, 
                         float height_arg, unsigned int yCount_arg) {
             width = width_arg;
             xCount = xCount_arg;
@@ -23,6 +22,5 @@ class CartesianGrid {
         float height;
         unsigned int yCount;
     };
-
-#define CARTESIAN_GRID_H
+#define GRID_H
 #endif

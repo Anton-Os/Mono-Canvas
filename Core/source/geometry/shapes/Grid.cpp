@@ -1,7 +1,7 @@
 #include "geometry/GL4_PolyFunc.hpp"
-#include "geometry/shapes/CartesianGrid.hpp"
+#include "geometry/shapes/Grid.hpp"
 
-namespace CartesianGrid_Eq {
+namespace Grid_Eq {
     float yOffset;
     float zOffset;
     unsigned int xNum;
@@ -41,28 +41,28 @@ namespace CartesianGrid_Eq {
 
 }
 
-void CartesianGrid::create(GL4_PolyFunc* polyFunc){
-    CartesianGrid_Eq::xNum = CartesianGrid::xCount;
-    CartesianGrid_Eq::interval = CartesianGrid::width / (float)CartesianGrid::xCount;
-    polyFunc->xEquation = CartesianGrid_Eq::xFunc;
+void Grid::create(GL4_PolyFunc* polyFunc){
+    Grid_Eq::xNum = Grid::xCount;
+    Grid_Eq::interval = Grid::width / (float)Grid::xCount;
+    polyFunc->xEquation = Grid_Eq::xFunc;
     polyFunc->gen_x();
-    float yInc = CartesianGrid::height / (float)CartesianGrid::yCount;
-    CartesianGrid_Eq::yOffset = -1 * CartesianGrid::height / 2.0f;
-    polyFunc->yEquation = CartesianGrid_Eq::yFunc;
-    for(unsigned int yElem = 0; yElem < CartesianGrid::yCount; yElem++){
+    float yInc = Grid::height / (float)Grid::yCount;
+    Grid_Eq::yOffset = -1 * Grid::height / 2.0f;
+    polyFunc->yEquation = Grid_Eq::yFunc;
+    for(unsigned int yElem = 0; yElem < Grid::yCount; yElem++){
         polyFunc->gen_y();
-        CartesianGrid_Eq::yOffset += yInc;
+        Grid_Eq::yOffset += yInc;
     }
-    polyFunc->zEquation = CartesianGrid_Eq::zFunc;
-    CartesianGrid_Eq::zOffset = -0.2f;
+    polyFunc->zEquation = Grid_Eq::zFunc;
+    Grid_Eq::zOffset = -0.2f;
     polyFunc->gen_z();
-    CartesianGrid_Eq::zOffset = -0.1f;
+    Grid_Eq::zOffset = -0.1f;
     polyFunc->gen_z();
-    CartesianGrid_Eq::zOffset = 0.0f;
+    Grid_Eq::zOffset = 0.0f;
     polyFunc->gen_z();
-    CartesianGrid_Eq::zOffset = 0.1f;
+    Grid_Eq::zOffset = 0.1f;
     polyFunc->gen_z();
-    CartesianGrid_Eq::zOffset = 0.2f;
+    Grid_Eq::zOffset = 0.2f;
     polyFunc->gen_z();
     polyFunc->create();
 }

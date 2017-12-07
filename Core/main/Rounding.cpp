@@ -13,12 +13,12 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "ManualSets.h"
-#include "loaders/Loaders.h"
+#include "Loaders.h"
 #include "pipeline/GLSL_Idle.hpp"
 #include "geometry/GL4_DataSet.hpp"
 #include "geometry/GL4_PolyFunc.hpp"
 #include "geometry/GL4_PolyAngles.hpp"
-#include "geometry/shapes/CartesianGrid.hpp"
+#include "geometry/shapes/Grid.hpp"
 #include "geometry/shapes/Circle.hpp"
 
 namespace UI {
@@ -68,25 +68,6 @@ namespace Math {
     unsigned int xNum = 1000;
 	float yInit = 0.0f;
 	float zInit = 0.0f;
-}
-
-void xFunc_Default(std::vector<float>* xVals){
-    xVals->resize(Math::xNum);
-    float offsetX = Math::interval / 2.0f;
-    short int indexOffset = -1;
-    unsigned int repCount = Math::xNum;
-    if(repCount % 2 == 1){
-        xVals->at(repCount / 2) = 0.0f;
-        offsetX = 0.0f;
-        indexOffset = 0;
-        repCount--;
-    }
-    for(unsigned int xElem = repCount / 2; xElem > 0; xElem--){
-        xVals->at(repCount / 2 - xElem) = -1.0f * Math::interval * xElem + offsetX;
-        xVals->at(repCount / 2 + (xElem + indexOffset)) = Math::interval * xElem - offsetX;
-	}
-	
-	std::sort(xVals->begin(), xVals->end());
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
@@ -178,7 +159,7 @@ int main(int argc, char** argv) {
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 	
 	GL4_PolyAngles polyAngles;
-    Circle circle(&polyAngles, 0.2f, 12);
+    Circle circle(&polyAngles, 0.2f, 20);
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){
@@ -201,7 +182,8 @@ int main(int argc, char** argv) {
         glUseProgram(Idle.shaderProgID);
         Idle.set_renderMode(0);
         Idle.set_mvpMatrix(Player::viewMatrix * Player::projectionMatrix * polyAngles.relMatrix);
-        polyAngles.drawPartXI(GL_POINTS, 3, 4);
+        //polyAngles.drawFixedXI(GL_POINTS, 14);
+		polyAngles.draw(GL_LINES);
 
 		glfwSwapBuffers(window);
 	}

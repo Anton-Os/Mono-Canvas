@@ -1,11 +1,10 @@
 #ifndef GEOMETRY_H
-    #include "geometry/Geometry.hpp"
+    #include "Geometry.hpp"
     #define GEOMETRY_H
 #endif
 
 #ifndef CIRCLE_H
-
-class Circle {
+    class Circle {
     public:
         Circle(GL4_PolyAngles* polyAngles, float radiusArg, unsigned int intervalArg) {
             radius = radiusArg;
