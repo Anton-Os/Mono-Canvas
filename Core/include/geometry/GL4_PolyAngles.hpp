@@ -10,8 +10,8 @@
 #ifndef POLY_ANGLES_H
     class GL4_PolyAngles : public GL4_Entity {
     public:
-        void (*anglEquation)(std::vector<float>* anglVals);
-        unsigned int (*idxEquation)(std::vector<unsigned int>* idxVals);
+        void (*anglSequence)(std::vector<float>* anglVals);
+        unsigned int (*idxSequence)(std::vector<unsigned int>* idxVals);
         float (*xEquation)(float);
         float (*yEquation)(float);
         float (*zEquation)(float);

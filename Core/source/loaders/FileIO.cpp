@@ -1,6 +1,5 @@
 #ifndef LOADERS_H
     #include "Loaders.h"
-    #define LOADERS_H
 #endif
 
 #include <cstring>

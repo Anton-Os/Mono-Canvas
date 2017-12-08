@@ -3,10 +3,10 @@
     #define GEOMETRY_H
 #endif
 
-#ifndef GRID_H
-class Grid {
+#ifndef POLYFORM_GRID_H
+class Polyform_Grid {
     public:
-        Grid(GL4_PolyFunc* polyFunc, float width_arg, unsigned int xCount_arg, 
+        Polyform_Grid(GL4_PolyFunc* polyFunc, float width_arg, unsigned int xCount_arg, 
                         float height_arg, unsigned int yCount_arg) {
             width = width_arg;
             xCount = xCount_arg;
@@ -22,5 +22,5 @@ class Grid {
         float height;
         unsigned int yCount;
     };
-#define GRID_H
+#define POLYFORM_GRID_H
 #endif

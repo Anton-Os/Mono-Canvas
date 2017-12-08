@@ -9,8 +9,8 @@ void GL4_PolyAngles::reset(){
     GL4_PolyAngles::idxCount = 0;
     GL4_PolyAngles::vertexCount = 0;
     GL4_PolyAngles::relMatrix = glm::mat4(1);
-    GL4_PolyAngles::anglEquation = nullptr;
-    GL4_PolyAngles::idxEquation = nullptr;
+    GL4_PolyAngles::anglSequence = nullptr;
+    GL4_PolyAngles::idxSequence = nullptr;
     GL4_PolyAngles::xEquation = nullptr;
     GL4_PolyAngles::yEquation = nullptr;
     GL4_PolyAngles::zEquation = nullptr;
@@ -23,7 +23,7 @@ void GL4_PolyAngles::gen_angl(){
         std::cerr << "Angles are immutable" << std::endl;
         return;
     }
-    GL4_PolyAngles::anglEquation(&angles);
+    GL4_PolyAngles::anglSequence(&angles);
     GL4_PolyAngles::xyzBits.set(GL4_PolyAngles::Angl);
 }
 

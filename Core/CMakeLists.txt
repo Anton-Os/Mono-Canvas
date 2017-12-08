@@ -22,7 +22,7 @@ add_executable(IdxCube
     source/loaders/LoadShaders.cpp
     source/geometry/GL4_Entity.cpp
     source/geometry/GL4_PolyFunc.cpp
-    source/geometry/shapes/Grid.cpp
+    source/geometry/polyform/Polyform_Grid.cpp
     source/pipeline/GLSL_Idle.cpp
     main/IdxCube.cpp
 )
@@ -42,7 +42,7 @@ add_executable(Rounding
     source/loaders/LoadShaders.cpp
     source/geometry/GL4_Entity.cpp
     source/geometry/GL4_PolyAngles.cpp
-    source/geometry/shapes/Circle.cpp
+    source/geometry/polyform/Polyform_Circle.cpp
     source/pipeline/GLSL_Idle.cpp
     main/Rounding.cpp
 )
@@ -56,6 +56,28 @@ target_link_libraries(Rounding
     glfw
     glm
 )
+
+add_executable(Quasi
+    source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
+    source/geometry/GL4_Entity.cpp
+    source/geometry/GL4_PolyAngles.cpp
+    source/geometry/polyform/Polyform_Circle.cpp 
+    source/geometry/pseudo/Aimless.cpp
+    source/pipeline/GLSL_Idle.cpp
+    main/Quasi.cpp
+)
+
+target_include_directories(Quasi
+    PUBLIC include
+)
+
+target_link_libraries(Quasi
+    GLEW::glew_s
+    glfw
+    glm
+)
+
 
 set(SRC_SHADER_LIST)
 set(OUTPUT_SHADER_LIST)

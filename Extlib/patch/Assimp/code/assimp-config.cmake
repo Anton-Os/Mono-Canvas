@@ -1,0 +1,1 @@
+include(${ASSIMP_LIB_INSTALL_DIR}/assimpTargets.cmake)

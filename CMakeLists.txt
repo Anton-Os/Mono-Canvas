@@ -41,15 +41,20 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
     find_package(GLEW REQUIRED CONFIG)
     find_package(glfw3 REQUIRED CONFIG)
     find_package(FLTK CONFIG CONFIG)
-    # find_package(SQLite REQUIRED CONFIG)
     find_package(GLI REQUIRED CONFIG)
     find_package(GLM REQUIRED CONFIG)
     find_package(ASSIMP REQUIRED CONFIG)
     find_package(Boost REQUIRED)
 
+    find_library(assimp_lib
+        NAMES assimp libassimp
+        PATH ${ASSIMP_LIBRARY_DIRS}
+    )
+
     set(BOOST_LIBS)
     file(GLOB BOOST_LIBS "${BOOST_LIBRARYDIR}/*.lib")
 
+    message(STATUS "Assimp Library: ${assimp_lib}")
     add_subdirectory("legacy")
     add_subdirectory("Core")
     if(Vulkan_FOUND)

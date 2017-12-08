@@ -8,7 +8,7 @@ void GL4_PolyFunc::reset(){
     GL4_PolyFunc::idxCount = 0;
     GL4_PolyFunc::vertexCount = 0;
     GL4_PolyFunc::relMatrix = glm::mat4(1);
-    GL4_PolyFunc::xEquation = nullptr;
+    GL4_PolyFunc::xSequence = nullptr;
     GL4_PolyFunc::yEquation = nullptr;
     GL4_PolyFunc::zEquation = nullptr;
 }
@@ -18,7 +18,7 @@ void GL4_PolyFunc::gen_x(){
         std::cerr << "X values are immutable" << std::endl;
         return;
     }
-    GL4_PolyFunc::xEquation(&xVals);
+    GL4_PolyFunc::xSequence(&xVals);
     GL4_PolyFunc::xyzBits.set(GL4_PolyFunc::X);
 }
 

@@ -16,6 +16,10 @@
 #include "Loaders.h"
 #include "pipeline/GLSL_Idle.hpp"
 #include "geometry/GL4_PolyFunc.hpp"
+#include "geometry/GL4_PolyAngles.hpp"
+#include "geometry/polyform/Polyform_Grid.hpp"
+#include "geometry/polyform/Polyform_Circle.hpp"
+#include "geometry/pseudo/Aimless.hpp"
 
 namespace UI {
 	int height = 1080;
@@ -33,14 +37,20 @@ namespace Mouse {
 }
 
 namespace Player {
-	glm::mat4 perspectiveMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 10.0f);
-	// glm::mat4 perspectiveMatrix = glm::ortho(-100.0f / 2, 100.0f / 2, -100.0f / 2, 100.0f / 2, -10.0f / 2, 10.0f / 2);
+	// glm::mat4 projectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -20.0f, 20.0f);
+	glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
     glm::mat4 viewMatrix(1);
     glm::vec3 camPos(0.0, 0.0, 1.0f);
     glm::vec3 camLookPos = glm::vec3(0.0f, 0.0f, 0.0f);
+	float rtFactor = 5.0f;
+	float mvSpeed = 0.1f;
 }
 
 namespace Terrain {
+	float xAngle = 0.0f;
+	float yAngle = 0.0f;
+	float zAngle = 0.0f;
+	float distance = -2.0f;
 }
 
 namespace Time {
@@ -60,59 +70,6 @@ namespace Math {
 	float zInit = 0.0f;
 }
 
-void xFunc_Default(std::vector<float>* xVals){
-    xVals->resize(Math::xNum);
-    float offsetX = Math::interval / 2.0f;
-    short int indexOffset = -1;
-    unsigned int repCount = Math::xNum;
-    if(repCount % 2 == 1){
-        xVals->at(repCount / 2) = 0.0f;
-        offsetX = 0.0f;
-        indexOffset = 0;
-        repCount--;
-    }
-    for(unsigned int xElem = repCount / 2; xElem > 0; xElem--){
-        xVals->at(repCount / 2 - xElem) = -1.0f * Math::interval * xElem + offsetX;
-        xVals->at(repCount / 2 + (xElem + indexOffset)) = Math::interval * xElem - offsetX;
-	}
-	
-	std::sort(xVals->begin(), xVals->end());
-}
-
-float yFunc_Zero(float xVal){
-   float* yVal = &Math::yInit;
-   return *yVal;
-}
-
-float yFunc_Tan(float xVal){
-    return std::tan(xVal);
-}
-
-float yFunc_TanM(float xVal){
-    return -1 * std::tan(xVal);
-}
-
-float yFunc_Cosine(float xVal){
-    return std::cos(xVal);
-}
-
-float yFunc_CosineM(float xVal){
-	return -1 * std::cos(xVal);
-}
-
-float yFunc_Sin(float xVal){
-    return std::sin(xVal);
-}
-
-float yFunc_SinM(float xVal){
-	return -1 * std::sin(xVal);
-}
-
-float zFunc_Const(float xVal, float yVal){
-	float* zVal = &Math::zInit;
-    return *zVal;
-}
-
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
 	// State Switching
 
@@ -124,19 +81,27 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	
 	if(key == GLFW_KEY_A && action == GLFW_PRESS) Key::A = true;
 	if(key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
-	if(Key::A) std::cout << "Key A Held..." << std::endl;
+	if(Key::A) Terrain::yAngle += Player::rtFactor;
 
 	if(key == GLFW_KEY_D && action == GLFW_PRESS) Key::D = true;
 	if(key == GLFW_KEY_D && action == GLFW_RELEASE) Key::D = false;
-	if(Key::D) std::cout << "Key D Held..." << std::endl;
+	if(Key::D) Terrain::yAngle -= Player::rtFactor;
 
 	if(key == GLFW_KEY_W && action == GLFW_PRESS) Key::W = true;
 	if(key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
-	if(Key::W) std::cout << "Key W Held..." << std::endl;
+	if(Key::W) Terrain::xAngle += Player::rtFactor;
 
 	if(key == GLFW_KEY_S && action == GLFW_PRESS) Key::S = true;
 	if(key == GLFW_KEY_S && action == GLFW_RELEASE) Key::S = false;
-	if(Key::S) std::cout << "Key S Held..." << std::endl;
+	if(Key::S) Terrain::xAngle -= Player::rtFactor;
+
+	if(key == GLFW_KEY_Q && action == GLFW_PRESS) Key::Q = true;
+	if(key == GLFW_KEY_Q && action == GLFW_RELEASE) Key::Q = false;
+	if(Key::Q) Terrain::distance += Player::mvSpeed;
+
+	if(key == GLFW_KEY_E && action == GLFW_PRESS) Key::E = true;
+	if(key == GLFW_KEY_E && action == GLFW_RELEASE) Key::E = false;
+	if(Key::E) Terrain::distance -= Player::mvSpeed;
 }
 
 void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
@@ -149,7 +114,6 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
 	Mouse::xInit = xpos;
 	Mouse::yInit = ypos;
 }
-
 
 int main(int argc, char** argv) {
 	Time::setupBegin = std::chrono::steady_clock::now();
@@ -191,22 +155,8 @@ int main(int argc, char** argv) {
 
 	std::string parentDir = getParentDirectory(argv[0]);
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
-	
-    // float dot[3] = {0.0f, 0.0f, 0.0f};
-    // GL4_DataSet dataSet(&dot[0], 3);
 
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
-
-    GL4_PolyFunc polyFunc;
-    polyFunc.xSequence = xFunc_Default;
-    polyFunc.gen_x();
-    polyFunc.yEquation = yFunc_Cosine;
-	polyFunc.gen_y();
-    polyFunc.yEquation = yFunc_CosineM;
-    polyFunc.gen_y();
-    polyFunc.zEquation = zFunc_Const;
-    polyFunc.gen_z();
-    polyFunc.create();
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){
@@ -224,8 +174,7 @@ int main(int argc, char** argv) {
 
         glUseProgram(Idle.shaderProgID);
         Idle.set_renderMode(0);
-        Idle.set_mvpMatrix(Player::viewMatrix * Player::perspectiveMatrix);
-		polyFunc.draw(GL_TRIANGLES);
+        Idle.set_mvpMatrix(Player::viewMatrix * Player::projectionMatrix);
 
 		glfwSwapBuffers(window);
 	}

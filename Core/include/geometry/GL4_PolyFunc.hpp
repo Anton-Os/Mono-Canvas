@@ -10,7 +10,7 @@
 #ifndef POLY_FUNC_H
     class GL4_PolyFunc : public GL4_Entity {
     public:
-        void (*xEquation)(std::vector<float>* xVals);
+        void (*xSequence)(std::vector<float>* xVals);
         float (*yEquation)(float);
         float (*zEquation)(float, float);
         void reset();

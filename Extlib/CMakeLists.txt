@@ -276,7 +276,7 @@ ExternalProject_Add(ASSIMP
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy
         "${CMAKE_SOURCE_DIR}/patch/Assimp/revision.h"
         "<SOURCE_DIR>/revision.h"
-
+        
     PREFIX ${ASSIMP_PROJECT_DIR}
     BINARY_DIR "${ASSIMP_PROJECT_DIR}/build"
     TMP_DIR "${ASSIMP_PROJECT_DIR}/temp"

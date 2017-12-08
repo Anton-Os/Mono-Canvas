@@ -16,7 +16,7 @@
 #include "Loaders.h"
 #include "pipeline/GLSL_Idle.hpp"
 #include "geometry/GL4_PolyFunc.hpp"
-#include "geometry/shapes/Grid.hpp"
+#include "geometry/polyform/Polyform_Grid.hpp"
 
 namespace UI {
 	int height = 1080;
@@ -175,7 +175,7 @@ int main(int argc, char** argv) {
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
     GL4_PolyFunc polyFunc;
-    Grid grid(&polyFunc, 0.5f, 7, 0.5f, 10);
+    Polyform_Grid grid(&polyFunc, 0.5f, 7, 0.5f, 10);
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){

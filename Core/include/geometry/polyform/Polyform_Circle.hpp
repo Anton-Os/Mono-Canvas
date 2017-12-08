@@ -3,10 +3,10 @@
     #define GEOMETRY_H
 #endif
 
-#ifndef CIRCLE_H
-    class Circle {
+#ifndef POLYFORM_CIRCLE_H
+    class Polyform_Circle {
     public:
-        Circle(GL4_PolyAngles* polyAngles, float radiusArg, unsigned int intervalArg) {
+        Polyform_Circle(GL4_PolyAngles* polyAngles, float radiusArg, unsigned int intervalArg) {
             radius = radiusArg;
             interval = intervalArg;
             polyAngles->reset();
@@ -14,13 +14,9 @@
         }
         void create(GL4_PolyAngles* polyAngles);
     private:
-        void anglFunc(std::vector<float>* anglVals);
-        float xFunc(float angle);
-        float yFunc(float angle);
-        float zFunc(float angle);
         float radius;
         unsigned int interval;
     };
 
-#define CIRCLE_H
+#define POLYFORM_CIRCLE_H
 #endif

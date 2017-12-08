@@ -17,8 +17,8 @@
 #include "pipeline/GLSL_Idle.hpp"
 #include "geometry/GL4_PolyFunc.hpp"
 #include "geometry/GL4_PolyAngles.hpp"
-#include "geometry/shapes/Grid.hpp"
-#include "geometry/shapes/Circle.hpp"
+#include "geometry/polyform/Polyform_Grid.hpp"
+#include "geometry/polyform/Polyform_Circle.hpp"
 
 namespace UI {
 	int height = 1080;
@@ -158,7 +158,7 @@ int main(int argc, char** argv) {
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 	
 	GL4_PolyAngles polyAngles;
-    Circle circle(&polyAngles, 0.2f, 33);
+    Polyform_Circle circle(&polyAngles, 0.2f, 33);
 	vertexFeed vFeed;
 	polyAngles.feed(&vFeed);
 
@@ -183,7 +183,6 @@ int main(int argc, char** argv) {
         glUseProgram(Idle.shaderProgID);
         Idle.set_renderMode(0);
         Idle.set_mvpMatrix(Player::viewMatrix * Player::projectionMatrix * polyAngles.relMatrix);
-        //polyAngles.drawFixedXI(GL_POINTS, 14);
         polyAngles.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 30);
 
 		glfwSwapBuffers(window);
