@@ -1,7 +1,6 @@
 add_executable(CalcGraph
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
-    source/geometry/GL4_DataSet.cpp
     source/geometry/GL4_Entity.cpp
     source/geometry/GL4_PolyFunc.cpp
     source/pipeline/GLSL_Idle.cpp
@@ -21,7 +20,6 @@ target_link_libraries(CalcGraph
 add_executable(IdxCube
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
-    source/geometry/GL4_DataSet.cpp
     source/geometry/GL4_Entity.cpp
     source/geometry/GL4_PolyFunc.cpp
     source/geometry/shapes/Grid.cpp
@@ -42,7 +40,6 @@ target_link_libraries(IdxCube
 add_executable(Rounding
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
-    source/geometry/GL4_DataSet.cpp
     source/geometry/GL4_Entity.cpp
     source/geometry/GL4_PolyAngles.cpp
     source/geometry/shapes/Circle.cpp

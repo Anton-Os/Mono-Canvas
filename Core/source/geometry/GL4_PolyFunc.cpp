@@ -88,7 +88,7 @@ void GL4_PolyFunc::createXI(){
     glBindVertexArray(0);
 
     GL4_PolyFunc::isFed = true;
-    GL4_PolyFunc::vertexCount = threePts.size() / 3;
+    GL4_PolyFunc::vertexCount = threePts.size() / GL4_PolyFunc::perVertex;
     GL4_PolyFunc::VAO = VAO;
     GL4_PolyFunc::posBff = VBO;
 }
@@ -254,7 +254,7 @@ void GL4_PolyFunc::create(){
 
     GL4_PolyFunc::isIdx = true;
     GL4_PolyFunc::isFed = true;
-    GL4_PolyFunc::vertexCount = threePts.size() / 3;
+    GL4_PolyFunc::vertexCount = threePts.size() / GL4_PolyFunc::perVertex;
     GL4_PolyFunc::VAO = VAO;
     GL4_PolyFunc::idxBff = VBOs[0];
     GL4_PolyFunc::posBff = VBOs[1];

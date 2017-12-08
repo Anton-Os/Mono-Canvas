@@ -15,7 +15,6 @@
 #include "ManualSets.h"
 #include "Loaders.h"
 #include "pipeline/GLSL_Idle.hpp"
-#include "geometry/GL4_DataSet.hpp"
 #include "geometry/GL4_PolyFunc.hpp"
 
 namespace UI {

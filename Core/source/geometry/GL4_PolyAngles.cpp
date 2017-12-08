@@ -97,17 +97,31 @@ void GL4_PolyAngles::createXI(){
     glBindVertexArray(0);
 
     GL4_PolyAngles::isFed = true;
-    GL4_PolyAngles::vertexCount = threePts.size() / 3;
+    GL4_PolyAngles::vertexCount = threePts.size() / GL4_PolyAngles::perVertex;
     GL4_PolyAngles::VAO = VAO;
     GL4_PolyAngles::posBff = VBO;
 }
 
+// We are assuming index 0 contains point 0.0, 0.0, 0.0
 unsigned int genIndices1D(std::vector<unsigned int>* indexAccum, unsigned int posCount){
     unsigned int idxCount = 0;
-    for(unsigned int i = 1; i < posCount; i++){
+    for(unsigned int i = 1; i < posCount - 1; i++){
         indexAccum->push_back(i);
         indexAccum->push_back(i + 1);
         idxCount += 2;
+    }
+    indexAccum->at(idxCount - 1) = 1;
+    return idxCount;
+}
+
+// We are assuming index 0 contains point 0.0, 0.0, 0.0
+unsigned int genIndices2D(std::vector<unsigned int>* indexAccum, unsigned int posCount){
+    unsigned int idxCount = 0;
+    for(unsigned int i = 1; i < posCount - 1; i++){
+        indexAccum->push_back(0);
+        indexAccum->push_back(i);
+        indexAccum->push_back(i + 1);
+        idxCount += 3;
     }
     indexAccum->at(idxCount - 1) = 1;
     return idxCount;
@@ -119,8 +133,11 @@ void GL4_PolyAngles::create(){
         return;
     }
 
-    std::vector<GLfloat> threePts(GL4_PolyAngles::angles.size() * 3);
-    for(GLuint vecElem = 0; vecElem < GL4_PolyAngles::angles.size(); vecElem++){
+    std::vector<GLfloat> threePts(GL4_PolyAngles::angles.size() * 3 + 3);
+    threePts[0] = 0.0f;
+    threePts[1] = 0.0f;
+    threePts[2] = 0.0f;
+    for(GLuint vecElem = 1; vecElem < GL4_PolyAngles::angles.size(); vecElem++){
         threePts[vecElem * 3] = GL4_PolyAngles::xVals[vecElem];
         threePts[vecElem * 3 + 1] = GL4_PolyAngles::yVals[vecElem];
         threePts[vecElem * 3 + 2] = GL4_PolyAngles::zVals[vecElem];
@@ -128,10 +145,10 @@ void GL4_PolyAngles::create(){
 
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
+        glBindVertexArray(VAO);
 
     std::vector<unsigned int> indexAccum;
-    GL4_PolyAngles::idxCount = genIndices1D(&indexAccum, threePts.size() / 3);
+    GL4_PolyAngles::idxCount = genIndices2D(&indexAccum, threePts.size() / GL4_PolyAngles::perVertex);
 
     GLuint VBOs[2];
     glGenBuffers(2, VBOs);
@@ -148,7 +165,7 @@ void GL4_PolyAngles::create(){
 
     GL4_PolyAngles::isFed = true;
     GL4_PolyAngles::isIdx = true;
-    GL4_PolyAngles::vertexCount = threePts.size() / 3;
+    GL4_PolyAngles::vertexCount = threePts.size() / GL4_PolyAngles::perVertex;
     GL4_PolyAngles::VAO = VAO;
     GL4_PolyAngles::posBff = VBOs[0];
     GL4_PolyAngles::idxBff = VBOs[1];

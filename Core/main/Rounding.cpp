@@ -15,7 +15,6 @@
 #include "ManualSets.h"
 #include "Loaders.h"
 #include "pipeline/GLSL_Idle.hpp"
-#include "geometry/GL4_DataSet.hpp"
 #include "geometry/GL4_PolyFunc.hpp"
 #include "geometry/GL4_PolyAngles.hpp"
 #include "geometry/shapes/Grid.hpp"
@@ -159,7 +158,9 @@ int main(int argc, char** argv) {
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 	
 	GL4_PolyAngles polyAngles;
-    Circle circle(&polyAngles, 0.2f, 20);
+    Circle circle(&polyAngles, 0.2f, 33);
+	vertexFeed vFeed;
+	polyAngles.feed(&vFeed);
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){
@@ -183,7 +184,7 @@ int main(int argc, char** argv) {
         Idle.set_renderMode(0);
         Idle.set_mvpMatrix(Player::viewMatrix * Player::projectionMatrix * polyAngles.relMatrix);
         //polyAngles.drawFixedXI(GL_POINTS, 14);
-		polyAngles.draw(GL_LINES);
+        polyAngles.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 30);
 
 		glfwSwapBuffers(window);
 	}

@@ -14,36 +14,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-class GL4_Object3D {
-public:
-    glm::mat4 relMatrix = glm::mat4(1);
-    GLuint get_vertexCount(){ return vertexCount; }
-    // GLuint get_idxCount(){ return idxCount }
-    void drawXI(GLenum drawMode){
-        glBindVertexArray(GL4_Object3D::VAO);
-        glDrawArrays(drawMode, 0, GL4_Object3D::vertexCount);
-        glBindVertexArray(0);
-    }
-    void drawFixedXI(GLenum drawMode, GLuint drawCount){
-        glBindVertexArray(GL4_Object3D::VAO);
-        if(drawCount > GL4_Object3D::vertexCount) glDrawArrays(drawMode, 0, GL4_Object3D::vertexCount);
-        else glDrawArrays(drawMode, 0, drawCount);
-        glBindVertexArray(0);
-    }
-    void drawPartXI(GLenum drawMode, GLuint part, GLuint whole){
-        glBindVertexArray(GL4_Object3D::VAO);
-        if(part > whole) glDrawArrays(drawMode, 0, GL4_Object3D::vertexCount);
-        else glDrawArrays(drawMode, 0, GL4_Object3D::vertexCount / whole * part);
-        glBindVertexArray(0);
-    }
-    // void draw(GLenum drawMode);
-    // void drawFixed(GLenum drawMode, GLuint drawCount);
-    // void drawPart(GLenum drawMode, GLuint part, GLuint whole);
-    // void map(GLushort bff, GLsizei dataSize, GLuint count);
-protected:
-    GLuint VAO;
-    GLuint posBff;
-    GLuint vertexCount = 0;
-    // GLuint idxBff;
-    // GLuint idxCount = 0;
+struct vertexFeed {
+    unsigned int attribCount = 3;
+    std::vector<float> pos;
+};
+
+struct vertexFeedIdx {
+    unsigned int attribCount = 3;
+    std::vector<float> pos;
+    std::vector<unsigned int> idx;
 };

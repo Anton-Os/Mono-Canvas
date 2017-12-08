@@ -52,4 +52,47 @@ void GL4_Entity::drawPart(GLenum drawMode, GLuint part, GLuint whole){
         glDrawElements(drawMode, GL4_Entity::idxCount, GL_UNSIGNED_INT, 0);
     else glDrawElements(drawMode, GL4_Entity::idxCount / whole * part, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
+}   
+
+void GL4_Entity::feed(vertexFeed* vFeed){
+    vFeed->pos = GL4_Entity::mapPos();
+}
+
+void GL4_Entity::feed(vertexFeedIdx* vFeed){
+    vFeed->pos = GL4_Entity::mapPos();
+    vFeed->idx = GL4_Entity::mapIdx();
+}
+
+std::vector<GLfloat> GL4_Entity::mapPos(){
+    glBindVertexArray(GL4_Entity::VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, GL4_Entity::posBff);
+    GLfloat* posData = (GLfloat*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
+
+    std::vector<GLfloat> posAccum;
+    posAccum.resize(GL4_Entity::vertexCount * GL4_Entity::perVertex);
+
+    for(GLuint posElem = 0; posElem < posAccum.size(); posElem++)
+		posAccum[posElem] = *(posData + posElem);
+
+    glUnmapBuffer(GL_ARRAY_BUFFER);
+    glBindVertexArray(0);
+
+    return posAccum;
+}
+
+std::vector<GLuint> GL4_Entity::mapIdx(){
+    glBindVertexArray(GL4_Entity::VAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL4_Entity::idxBff);
+    GLuint* idxData = (GLuint*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_READ_ONLY);
+
+    std::vector<GLuint> idxAccum;
+    idxAccum.resize(GL4_Entity::idxCount);
+
+    for(GLuint idxElem = 0; idxElem < idxAccum.size(); idxElem++)
+		idxAccum[idxElem] = *(idxData + idxElem);
+
+    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+    glBindVertexArray(0);
+
+    return idxAccum;
 }

@@ -15,10 +15,14 @@
         void draw(GLenum drawMode);
         void drawFixed(GLenum drawMode, GLuint drawCount);
         void drawPart(GLenum drawMode, GLuint part, GLuint whole);
-        void map(GLushort bff, GLsizei dataSize, GLuint count);
+        void feed(vertexFeed* vFeed);
+        void feed(vertexFeedIdx* vFeed);
     protected:
+        std::vector<GLfloat> mapPos();
+        std::vector<GLuint> mapIdx();
         bool isFed = false;
         bool isIdx = false;
+        GLuint perVertex = 3;
         GLuint VAO;
         GLuint posBff;
         GLuint vertexCount = 0;
