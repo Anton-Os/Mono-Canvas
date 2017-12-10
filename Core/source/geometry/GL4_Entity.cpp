@@ -55,10 +55,12 @@ void GL4_Entity::drawPart(GLenum drawMode, GLuint part, GLuint whole){
 }   
 
 void GL4_Entity::feed(vertexFeed* vFeed){
+    vFeed->perVertex = GL4_Entity::perVertex;
     vFeed->pos = GL4_Entity::mapPos();
 }
 
 void GL4_Entity::feed(vertexFeedIdx* vFeed){
+    vFeed->perVertex = GL4_Entity::perVertex;
     vFeed->pos = GL4_Entity::mapPos();
     vFeed->idx = GL4_Entity::mapIdx();
 }

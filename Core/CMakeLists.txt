@@ -61,8 +61,8 @@ add_executable(Quasi
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
     source/geometry/GL4_Entity.cpp
-    source/geometry/GL4_PolyAngles.cpp
-    source/geometry/polyform/Polyform_Circle.cpp 
+    source/geometry/GL4_PolyFunc.cpp
+    source/geometry/polyform/Polyform_Box.cpp
     source/geometry/pseudo/Aimless.cpp
     source/pipeline/GLSL_Idle.cpp
     main/Quasi.cpp
@@ -77,6 +77,28 @@ target_link_libraries(Quasi
     glfw
     glm
 )
+
+add_executable(Spectrum
+    source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
+    source/geometry/GL4_Entity.cpp
+    source/geometry/GL4_PolyFunc.cpp
+    source/geometry/polyform/Polyform_Box.cpp
+    source/geometry/polyform/Polyform_Rubiks.cpp
+    source/pipeline/GLSL_Idle.cpp
+    main/Spectrum.cpp
+)
+
+target_include_directories(Spectrum
+    PUBLIC include
+)
+
+target_link_libraries(Spectrum
+    GLEW::glew_s
+    glfw
+    glm
+)
+
 
 
 set(SRC_SHADER_LIST)

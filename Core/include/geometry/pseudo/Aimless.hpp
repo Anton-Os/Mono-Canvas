@@ -3,17 +3,14 @@
     #define GEOMETRY_H
 #endif
 
-#ifndef ENTITY_H
-    #include "geometry/GL4_Entity.hpp"
-#endif
-
 #ifndef AIMLESS_H
     class Aimless {
     public:
-        Aimless(){
-            create();
+        Aimless(GL4_PolyFunc* polyFunc){
+            polyFunc->reset();
+            create(polyFunc);
         }
-        void create();
+        void create(GL4_PolyFunc* polyFunc);
     };
     #define AIMLESS_H
 #endif

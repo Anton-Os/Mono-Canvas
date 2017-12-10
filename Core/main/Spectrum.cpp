@@ -16,9 +16,8 @@
 #include "Loaders.h"
 #include "pipeline/GLSL_Idle.hpp"
 #include "geometry/GL4_PolyFunc.hpp"
-#include "geometry/polyform/Polyform_Grid.hpp"
 #include "geometry/polyform/Polyform_Box.hpp"
-#include "geometry/pseudo/Aimless.hpp"
+#include "geometry/polyform/Polyform_Rubiks.hpp"
 
 namespace UI {
 	int height = 1080;
@@ -156,7 +155,11 @@ int main(int argc, char** argv) {
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
 
 	GL4_PolyFunc polyFunc;
-	Aimless aimless(&polyFunc);
+	// Aimless aimless(&polyFunc);
+	Polyform_Box polyBox(&polyFunc, 0.5f, 0.5f, 0.5f);
+	GL4_Entity entity;
+	Polyform_Rubiks polyRubiks(&entity, &polyBox, 1, 1, 1);
+	// GL4_PolyFunc_Ref polyFuncRef = polyFunc.exportRef();
 
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
@@ -184,7 +187,7 @@ int main(int argc, char** argv) {
         Idle.set_renderMode(0);
         Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * polyFunc.relMatrix);
 
-		polyFunc.drawXI(GL_POINTS);		
+		polyFunc.draw(GL_TRIANGLES);		
 
 		glfwSwapBuffers(window);
 	}

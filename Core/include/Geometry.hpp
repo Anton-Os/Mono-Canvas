@@ -15,12 +15,12 @@
 #include <glm/gtc/type_ptr.hpp>
 
 struct vertexFeed {
-    unsigned int attribCount = 3;
+    unsigned int perVertex = 3;
     std::vector<float> pos;
 };
 
 struct vertexFeedIdx {
-    unsigned int attribCount = 3;
+    unsigned int perVertex = 3;
     std::vector<float> pos;
     std::vector<unsigned int> idx;
 };

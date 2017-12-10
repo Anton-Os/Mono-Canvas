@@ -259,3 +259,19 @@ void GL4_PolyFunc::create(){
     GL4_PolyFunc::idxBff = VBOs[0];
     GL4_PolyFunc::posBff = VBOs[1];
 }
+
+/* GL4_PolyFunc_Ref GL4_PolyFunc::exportRef(){
+    if(!GL4_PolyFunc::xyzBits.all()) 
+        std::cerr << "exportRef can only work if all x y z values are present" << std::endl;
+
+    GL4_PolyFunc_Ref polyFuncRef = {
+        GL4_PolyFunc::xVals.size(),
+        GL4_PolyFunc::xVals.data(),
+        GL4_PolyFunc::yVals.size(),
+        GL4_PolyFunc::yVals.data(),
+        GL4_PolyFunc::zVals.size(),
+        GL4_PolyFunc::zVals.data(),
+    };
+
+    return polyFuncRef;
+} */
