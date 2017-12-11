@@ -6,13 +6,13 @@
 #ifndef POLYFORM_RUBIKS_H
     class Polyform_Rubiks {
     public:
-        Polyform_Rubiks(GL4_Entity* entity, Polyform_Box* polyBox, float xCountArg, float yCountArg, float zCountArg){
+        Polyform_Rubiks(GL4_PolyFunc* polyFunc, Polyform_Box* polyBox, float xCountArg, float yCountArg, float zCountArg){
             xCount = xCountArg;
             yCount = yCountArg;
             zCount = zCountArg;
-            create(entity, polyBox);
+            create(polyFunc, polyBox);
         }
-        void create(GL4_Entity* entity, Polyform_Box* polyBox);
+        void create(GL4_PolyFunc* polyFunc, Polyform_Box* polyBox);
     private:
         float xCount;
         float yCount;

@@ -86,6 +86,7 @@ add_executable(Spectrum
     source/geometry/polyform/Polyform_Box.cpp
     source/geometry/polyform/Polyform_Rubiks.cpp
     source/pipeline/GLSL_Idle.cpp
+    source/pipeline/GLSL_ColorMe.cpp
     main/Spectrum.cpp
 )
 
@@ -99,11 +100,12 @@ target_link_libraries(Spectrum
     glm
 )
 
-
-
 set(SRC_SHADER_LIST)
 set(OUTPUT_SHADER_LIST)
-foreach(current_shader "Idle.vert" "Idle.frag")
+foreach(current_shader "Idle.vert" "Idle.frag"
+                       "ColorMe.vert" "ColorMe.frag" 
+
+)
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/shaders/${current_shader}"
         DEPENDS "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"
         COMMAND ${GLSLC_EXE} ARGS "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}" -S -g --target-env=opengl -x glsl

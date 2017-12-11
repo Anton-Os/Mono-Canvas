@@ -3,7 +3,7 @@
     #define PIPELINE_H
 #endif
 
-#ifndef PIPELINE_IDLE
+#ifndef PIPELINE_IDLE_H
     class GLSL_Idle : public GLSL_Base {
     public:
         GLSL_Idle(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath) {
@@ -18,5 +18,5 @@
         GLuint unifLoc[2];
         void initUniforms();
     };
-#define PIPELINE_IDLE
+#define PIPELINE_IDLE_H
 #endif

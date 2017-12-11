@@ -15,6 +15,7 @@
 #include "ManualSets.h"
 #include "Loaders.h"
 #include "pipeline/GLSL_Idle.hpp"
+#include "pipeline/GLSL_ColorMe.hpp"
 #include "geometry/GL4_PolyFunc.hpp"
 #include "geometry/polyform/Polyform_Box.hpp"
 #include "geometry/polyform/Polyform_Rubiks.hpp"
@@ -153,15 +154,23 @@ int main(int argc, char** argv) {
 
 	std::string parentDir = getParentDirectory(argv[0]);
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
+	GLSL_ColorMe ColorMe(parentDir + "//shaders//ColorMe.vert", parentDir + "//shaders//ColorMe.frag");
 
 	GL4_PolyFunc polyFunc;
 	// Aimless aimless(&polyFunc);
-	Polyform_Box polyBox(&polyFunc, 0.5f, 0.5f, 0.5f);
-	GL4_Entity entity;
-	Polyform_Rubiks polyRubiks(&entity, &polyBox, 1, 1, 1);
+	Polyform_Box polyBox(0.01f, 0.01f, 0.01666f);
+	// GL4_Entity entity;
+	Polyform_Rubiks polyRubiks(&polyFunc, &polyBox, 255, 255, 255);
 	// GL4_PolyFunc_Ref polyFuncRef = polyFunc.exportRef();
 
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
+
+	ColorMe.set_xMin(-12.7f);
+	ColorMe.set_xMax(12.7f);
+	ColorMe.set_yMin(-12.7f);
+	ColorMe.set_yMax(12.7f);
+	ColorMe.set_zMin(-12.7f);
+	ColorMe.set_zMax(12.7f);
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){
@@ -183,10 +192,10 @@ int main(int argc, char** argv) {
         polyFunc.relMatrix = glm::rotate(polyFunc.relMatrix, glm::radians<float>(Terrain::xAngle), glm::vec3(1.0, 0.0, 0.0));
 		polyFunc.relMatrix = glm::rotate(polyFunc.relMatrix, glm::radians<float>(Terrain::yAngle), glm::vec3(0.0, 1.0, 0.0));
 
-        glUseProgram(Idle.shaderProgID);
-        Idle.set_renderMode(0);
-        Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * polyFunc.relMatrix);
-
+        glUseProgram(ColorMe.shaderProgID);
+        ColorMe.set_renderMode(0);
+		ColorMe.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * polyFunc.relMatrix);
+		
 		polyFunc.draw(GL_TRIANGLES);		
 
 		glfwSwapBuffers(window);
