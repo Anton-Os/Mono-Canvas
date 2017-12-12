@@ -14,17 +14,6 @@ namespace Aimless_Eq {
         }
     }
 
-    /* void xSequence_1(std::vector<float>* xVals){
-        float xInc = 1.0f / 40;
-        float xOffset = -1.0f * length / 2.0f;
-        unsigned int vSpan = 4;
-        if()
-        while(xOffset <= length / 2){
-            xVals->push_back(xOffset);
-            xOffset += xInc;
-        }
-    } */
-
     float yEquation(float x){
         return 0.0f;
     }
