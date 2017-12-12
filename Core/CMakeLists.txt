@@ -4,7 +4,7 @@ add_executable(CalcGraph
     source/geometry/GL4_Entity.cpp
     source/geometry/GL4_PolyFunc.cpp
     source/pipeline/GLSL_Idle.cpp
-    main/CalcGraph.cpp
+    main/Demo_CalcGraph.cpp
 )
 
 target_include_directories(CalcGraph
@@ -24,7 +24,7 @@ add_executable(IdxCube
     source/geometry/GL4_PolyFunc.cpp
     source/geometry/polyform/Polyform_Grid.cpp
     source/pipeline/GLSL_Idle.cpp
-    main/IdxCube.cpp
+    main/Demo_IdxCube.cpp
 )
 
 target_include_directories(IdxCube
@@ -44,7 +44,7 @@ add_executable(Rounding
     source/geometry/GL4_PolyAngles.cpp
     source/geometry/polyform/Polyform_Circle.cpp
     source/pipeline/GLSL_Idle.cpp
-    main/Rounding.cpp
+    main/Demo_Rounding.cpp
 )
 
 target_include_directories(Rounding
@@ -65,7 +65,7 @@ add_executable(Quasi
     source/geometry/polyform/Polyform_Box.cpp
     source/geometry/pseudo/Aimless.cpp
     source/pipeline/GLSL_Idle.cpp
-    main/Quasi.cpp
+    main/Demo_Quasi.cpp
 )
 
 target_include_directories(Quasi
@@ -87,7 +87,7 @@ add_executable(Spectrum
     source/geometry/polyform/Polyform_Rubiks.cpp
     source/pipeline/GLSL_Idle.cpp
     source/pipeline/GLSL_ColorMe.cpp
-    main/Spectrum.cpp
+    main/Demo_Spectrum.cpp
 )
 
 target_include_directories(Spectrum
@@ -109,7 +109,7 @@ add_executable(Galactica
     source/geometry/polyform/Polyform_Rubiks.cpp
     source/pipeline/GLSL_Idle.cpp
     source/pipeline/GLSL_ColorMe.cpp
-    main/Galactica.cpp
+    main/Demo_Galactica.cpp
 )
 
 target_include_directories(Galactica
@@ -117,6 +117,28 @@ target_include_directories(Galactica
 )
 
 target_link_libraries(Galactica
+    GLEW::glew_s
+    glfw
+    glm
+)
+
+add_executable(Editor
+    source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
+    source/geometry/GL4_Entity.cpp
+    source/geometry/GL4_PolyFunc.cpp
+    source/geometry/polyform/Polyform_Box.cpp
+    source/geometry/polyform/Polyform_Rubiks.cpp
+    source/pipeline/GLSL_Idle.cpp
+    source/scene/Editor.cpp
+    main/Demo_Editor.cpp
+)
+
+target_include_directories(Editor
+    PUBLIC include
+)
+
+target_link_libraries(Editor
     GLEW::glew_s
     glfw
     glm

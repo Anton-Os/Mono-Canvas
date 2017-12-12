@@ -2,6 +2,7 @@
 #include <string>
 #include <chrono>
 #include <ctime>
+#include <algorithm>
 // #include <cstring>
 
 #include <GL/glew.h>
@@ -12,12 +13,13 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "ManualSets.h"
-#include "loaders/Loaders.h"
+#include "Loaders.h"
 #include "pipeline/GLSL_Idle.hpp"
-#include "pipeline/GLSL_StateStream.hpp"
-#include "geometry/GL4_DataSet.hpp"
-#include "geometry/GL4_Grid.hpp"
-#include "geometry/GL4_HexGrid.hpp"
+#include "pipeline/GLSL_ColorMe.hpp"
+#include "geometry/GL4_PolyFunc.hpp"
+#include "geometry/polyform/Polyform_Box.hpp"
+#include "geometry/polyform/Polyform_Rubiks.hpp"
+#include "scene/Editor.hpp"
 
 namespace UI {
 	int height = 1080;
@@ -35,20 +37,24 @@ namespace Mouse {
 }
 
 namespace Player {
-	GLboolean isGod = true;
-	glm::mat4 perspectiveMatrix = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, -10.0f, 10.0f);
-	glm::mat4 viewMatrix(1);
-	glm::vec3 pos = glm::vec3(-4.0, -4.0, 0.0);
-	float mvSpeed = 0.5f;
+	// glm::mat4 projectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -20.0f, 20.0f);
+	glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
+    glm::mat4 viewMatrix(1);
+    glm::vec3 camPos(0.0, 0.0, 1.0f);
+    glm::vec3 camLookPos = glm::vec3(0.0f, 0.0f, 0.0f);
+	float rtFactor = 5.0f;
+	float mvSpeed = 0.3f;
 }
 
 namespace Terrain {
-	bool firstCreation = true;
-	float pointSize = 3.0;
-	float probability = 0.2;
-	unsigned int xyCount = 200;
-	float xRotation = 0.0;
-	float zRotation = 0.0;
+	float xAngle = 0.0f;
+	float yAngle = 0.0f;
+	float zAngle = 0.0f;
+	float distance = -2.0f;
+	/* float minimum = -12.7f / 7;
+	float maximum = 12.7f / 7; */
+	float minimum = -1.0f;
+	float maximum = 1.0f;
 }
 
 namespace Time {
@@ -59,6 +65,13 @@ namespace Time {
 	std::chrono::duration<double, std::milli> milliSpan;
 	std::chrono::duration<double, std::micro> microSpan;
 	std::chrono::duration<double, std::nano> nanoSpan;
+}
+
+namespace Math {
+    float interval = 0.1f;
+    unsigned int xNum = 1000;
+	float yInit = 0.0f;
+	float zInit = 0.0f;
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
@@ -72,19 +85,27 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	
 	if(key == GLFW_KEY_A && action == GLFW_PRESS) Key::A = true;
 	if(key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
-	if(Key::A) std::cout << "Key A Held..." << std::endl;
+	if(Key::A) Terrain::yAngle += Player::rtFactor;
 
 	if(key == GLFW_KEY_D && action == GLFW_PRESS) Key::D = true;
 	if(key == GLFW_KEY_D && action == GLFW_RELEASE) Key::D = false;
-	if(Key::D) std::cout << "Key D Held..." << std::endl;
+	if(Key::D) Terrain::yAngle -= Player::rtFactor;
 
 	if(key == GLFW_KEY_W && action == GLFW_PRESS) Key::W = true;
 	if(key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
-	if(Key::W) std::cout << "Key W Held..." << std::endl;
+	if(Key::W) Terrain::xAngle += Player::rtFactor;
 
 	if(key == GLFW_KEY_S && action == GLFW_PRESS) Key::S = true;
 	if(key == GLFW_KEY_S && action == GLFW_RELEASE) Key::S = false;
-	if(Key::S) std::cout << "Key S Held..." << std::endl;
+	if(Key::S) Terrain::xAngle -= Player::rtFactor;
+
+	if(key == GLFW_KEY_Q && action == GLFW_PRESS) Key::Q = true;
+	if(key == GLFW_KEY_Q && action == GLFW_RELEASE) Key::Q = false;
+	if(Key::Q) Terrain::distance += Player::mvSpeed;
+
+	if(key == GLFW_KEY_E && action == GLFW_PRESS) Key::E = true;
+	if(key == GLFW_KEY_E && action == GLFW_RELEASE) Key::E = false;
+	if(Key::E) Terrain::distance -= Player::mvSpeed;
 }
 
 void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
@@ -97,7 +118,6 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
 	Mouse::xInit = xpos;
 	Mouse::yInit = ypos;
 }
-
 
 int main(int argc, char** argv) {
 	Time::setupBegin = std::chrono::steady_clock::now();
@@ -139,55 +159,40 @@ int main(int argc, char** argv) {
 
 	std::string parentDir = getParentDirectory(argv[0]);
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
-	
-	float dot[6] = {0.0f, 0.0f, 0.0f, 3.0f, 3.0f, 0.0};
-	GL4_DataSet dataSet(&dot[0], 6 * sizeof(float));
 
-	float initPos[2] = {0.0, 0.0};
-	/* Hexagon hexagon = createHex(5.0f, initPos);
-	GL4_DataSet hexDataSet(&hexagon.sixProx[0], sizeof(float) * 18);
-	initPos[1] = 20.0f;
-	Hexagon hexagon2 = createHex(5.0f, initPos);
-	GL4_DataSet hexDataSet2(&hexagon2.sixProx[0], sizeof(float) * 18);
-	initPos[0] = 15.0f;
-	initPos[1] = 10.0f; */
-	HexagonIdx12 hexagon0 = createHexIdx12(12.0f, initPos, 0);
-	GL4_DataSet hexDataSet0(&hexagon0.sixProx[0], sizeof(float) * 18);
-	hexDataSet0.index(hexagon0.indices.data(), sizeof(GLuint) * 12);
-	initPos[0] = 24.0f;
-	initPos[1] = 24.0f;
-	HexagonIdx12 hexagon1 = createHexIdx12(12.0f, initPos, 1);
-	GL4_DataSet hexDataSet1(&hexagon1.sixProx[0], sizeof(float) * 18);
-	hexDataSet1.index(hexagon1.indices.data(), sizeof(GLuint) * 12);
-	initPos[0] = -24.0f;
-	initPos[1] = -24.0f;
-	HexagonIdx12 hexagon2 = createHexIdx12(12.0f, initPos, 3);
-	GL4_DataSet hexDataSet2(&hexagon2.sixProx[0], sizeof(float) * 18);
-	hexDataSet2.index(hexagon2.indices.data(), sizeof(GLuint) * 12);
-	// GL4_HexGrid hexGrid(5.0f, 1, 2);
+	GL4_PolyFunc polyFunc;
+	Polyform_Box polyBox(0.2f, 0.2f, 0.2f);
+	Polyform_Rubiks polyRubiks(10, 10, 10);
+	polyRubiks.createXI(&polyFunc, &polyBox);
 
-	Time::setupEnd = std::chrono::steady_clock::now();
-	while(!glfwWindowShouldClose(window)){
-		Time::frameBegin = std::chrono::steady_clock::now();
-		Time::secSpan = std::chrono::duration_cast<std::chrono::duration<double>>(Time::frameBegin - Time::setupEnd);
+    Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
-		glfwPollEvents();
-		glClearColor(0.949f, 0.917f, 0.803f, 1.0f);
+    Time::setupEnd = std::chrono::steady_clock::now();
+    while(!glfwWindowShouldClose(window)){
+        Time::frameBegin = std::chrono::steady_clock::now();
+        Time::secSpan = std::chrono::duration_cast<std::chrono::duration<double>>(Time::frameBegin - Time::setupEnd);
+
+        glfwPollEvents();
+        // glClearColor(0.949f, 0.917f, 0.803f, 1.0f);
+        glClearColor(0.0, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_BLEND);
-		glPointSize(6.0f);
-		glLineWidth(4.0f);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glPointSize(3.0f);
+        glLineWidth(8.0f);
+
+		Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
+
+		polyFunc.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance));
+        polyFunc.relMatrix = glm::rotate(polyFunc.relMatrix, glm::radians<float>(Terrain::xAngle), glm::vec3(1.0, 0.0, 0.0));
+		polyFunc.relMatrix = glm::rotate(polyFunc.relMatrix, glm::radians<float>(Terrain::yAngle), glm::vec3(0.0, 1.0, 0.0));
 
 		glUseProgram(Idle.shaderProgID);
-		Idle.set_mvpMatrix(Player::perspectiveMatrix * Player::viewMatrix);
-		Idle.set_renderMode(1);
-		hexDataSet0.drawIdx(GL_LINES, 12);
-		Idle.set_renderMode(2);
-		hexDataSet1.drawIdx(GL_TRIANGLES, 12);
-		Idle.set_renderMode(3);
-		hexDataSet2.drawIdx(GL_TRIANGLES, 12);
+		Idle.set_renderMode(0);
+		Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * polyFunc.relMatrix);
+		
+		polyFunc.drawXI(GL_POINTS);		
 
 		glfwSwapBuffers(window);
 	}

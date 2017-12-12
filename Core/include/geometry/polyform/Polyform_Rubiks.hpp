@@ -3,6 +3,10 @@
     #define GEOMETRY_H
 #endif
 
+/* #ifndef POLY_FUNC_H
+    #include "geometry/GL4_PolyFunc.hpp"
+#endif */
+
 #ifndef POLYFORM_RUBIKS_H
     class Polyform_Rubiks {
     public:
