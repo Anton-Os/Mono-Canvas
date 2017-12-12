@@ -4,27 +4,27 @@ void GLSL_ColorMe::set_mvpMatrix(glm::mat4 mvpMatrix){
     glUniformMatrix4fv(GLSL_ColorMe::unifLoc[GLSL_ColorMe::mvpMatrix], 1, GL_FALSE, glm::value_ptr(mvpMatrix));
 }
 
-void GLSL_ColorMe::set_xMin(float xMin){
+void GLSL_ColorMe::set_xMin(GLfloat xMin){
     glUniform1f(GLSL_ColorMe::unifLoc[GLSL_ColorMe::xMin], xMin);
 }
 
-void GLSL_ColorMe::set_xMax(float xMax){
+void GLSL_ColorMe::set_xMax(GLfloat xMax){
     glUniform1f(GLSL_ColorMe::unifLoc[GLSL_ColorMe::xMax], xMax);
 }
 
-void GLSL_ColorMe::set_yMin(float yMin){
+void GLSL_ColorMe::set_yMin(GLfloat yMin){
     glUniform1f(GLSL_ColorMe::unifLoc[GLSL_ColorMe::yMin], yMin);
 }
 
-void GLSL_ColorMe::set_yMax(float yMax){
+void GLSL_ColorMe::set_yMax(GLfloat yMax){
     glUniform1f(GLSL_ColorMe::unifLoc[GLSL_ColorMe::yMax], yMax);
 }
 
-void GLSL_ColorMe::set_zMin(float zMin){
+void GLSL_ColorMe::set_zMin(GLfloat zMin){
     glUniform1f(GLSL_ColorMe::unifLoc[GLSL_ColorMe::zMin], zMin);
 }
 
-void GLSL_ColorMe::set_zMax(float zMax){
+void GLSL_ColorMe::set_zMax(GLfloat zMax){
     glUniform1f(GLSL_ColorMe::unifLoc[GLSL_ColorMe::zMax], zMax);
 }
 

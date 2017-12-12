@@ -9,17 +9,13 @@
     class GL4_Composite {
     public:
         glm::mat4 relMatrix = glm::mat4(1);
-        GLuint get_vertexCount(){ return vertexCount; }
-        GLuint get_idxCount(){ return idxCount; }
+        GLuint get_vertexCount(GLuint targetBff){ return vertexCount; }
+        GLuint get_idxCount(GLuint targetBff){ return idxCount; }
         void drawXI(GLenum drawMode);
-        void drawFixedXI(GLenum drawMode, GLuint drawCount);
-        void drawPartXI(GLenum drawMode, GLuint part, GLuint whole);
         void draw(GLenum drawMode);
-        void drawFixed(GLenum drawMode, GLuint drawCount);
-        void drawPart(GLenum drawMode, GLuint part, GLuint whole);
     protected:
-        std::vector<GLfloat> mapPos();
-        std::vector<GLuint> mapIdx();
+        std::vector<GLfloat> mapPos(GLuint targetBff);
+        std::vector<GLuint> mapIdx(GLuint targetBff);
         bool isFed = false;
         bool isIdx = false;
         GLuint perVertex = 3;

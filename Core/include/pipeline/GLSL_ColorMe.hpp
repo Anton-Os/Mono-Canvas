@@ -14,12 +14,12 @@
         enum unifID { mvpMatrix, renderMode, xMin, xMax, yMin, yMax, zMin, zMax };
         void set_mvpMatrix(glm::mat4 mvpMatrix);
         void set_renderMode(GLuint renderMode);
-        void set_xMin(float xMin);
-        void set_xMax(float xMin);
-        void set_yMin(float xMin);
-        void set_yMax(float xMin);
-        void set_zMin(float xMin);
-        void set_zMax(float xMin);
+        void set_xMin(GLfloat xMin);
+        void set_xMax(GLfloat xMax);
+        void set_yMin(GLfloat yMin);
+        void set_yMax(GLfloat yMax);
+        void set_zMin(GLfloat zMin);
+        void set_zMax(GLfloat zMax);
     private:
         GLuint unifLoc[8];
         void initUniforms();

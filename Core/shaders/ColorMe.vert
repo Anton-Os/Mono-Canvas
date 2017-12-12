@@ -17,13 +17,19 @@ layout(location = 1) out vec3 colorScale;
 void main(){
     float xRange = xMax - xMin;
     colorScale.r = (pos.x - xMin) / xRange;
-    // colorScale.r = 1.0;
     float yRange = yMax - yMin;
     colorScale.g = (pos.y - yMin) / yRange;
-    // colorScale.g = 0.0;
     float zRange = zMax - zMin;
     colorScale.b = (pos.z - zMin) / zRange;
-    // colorScale.b = 0.0;
+    
+    /* if(pos.x > 0.0){
+        colorScale.r = 1.0;
+    } else {
+        colorScale.r = 0.5;
+    } */
+    // colorScale.r = pos.x / xMax;
+    //colorScale.g = 0.0;
+    //colorScale.b = 0.0;
 
     vec4 wPos = vec4(pos, 1.0);
     vertexID_out = gl_VertexID;

@@ -50,6 +50,10 @@ namespace Terrain {
 	float yAngle = 0.0f;
 	float zAngle = 0.0f;
 	float distance = -2.0f;
+	/* float minimum = -12.7f / 7;
+	float maximum = 12.7f / 7; */
+	float minimum = -1.0f;
+	float maximum = 1.0f;
 }
 
 namespace Time {
@@ -155,22 +159,23 @@ int main(int argc, char** argv) {
 	std::string parentDir = getParentDirectory(argv[0]);
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
 	GLSL_ColorMe ColorMe(parentDir + "//shaders//ColorMe.vert", parentDir + "//shaders//ColorMe.frag");
+	
+	glUseProgram(ColorMe.shaderProgID);
+	ColorMe.set_xMin(Terrain::minimum);
+	ColorMe.set_xMax(Terrain::maximum);
+	ColorMe.set_yMin(Terrain::minimum);
+	ColorMe.set_yMax(Terrain::maximum);
+	ColorMe.set_zMin(Terrain::minimum);
+	ColorMe.set_zMax(Terrain::maximum);
 
 	GL4_PolyFunc polyFunc;
 	// Aimless aimless(&polyFunc);
-	Polyform_Box polyBox(0.01f, 0.01f, 0.01666f);
+	Polyform_Box polyBox(0.01f, 0.01f, 0.01f);
 	// GL4_Entity entity;
 	Polyform_Rubiks polyRubiks(&polyFunc, &polyBox, 255, 255, 255);
 	// GL4_PolyFunc_Ref polyFuncRef = polyFunc.exportRef();
 
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
-
-	ColorMe.set_xMin(-12.7f);
-	ColorMe.set_xMax(12.7f);
-	ColorMe.set_yMin(-12.7f);
-	ColorMe.set_yMax(12.7f);
-	ColorMe.set_zMin(-12.7f);
-	ColorMe.set_zMax(12.7f);
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){
@@ -193,7 +198,6 @@ int main(int argc, char** argv) {
 		polyFunc.relMatrix = glm::rotate(polyFunc.relMatrix, glm::radians<float>(Terrain::yAngle), glm::vec3(0.0, 1.0, 0.0));
 
         glUseProgram(ColorMe.shaderProgID);
-        ColorMe.set_renderMode(0);
 		ColorMe.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * polyFunc.relMatrix);
 		
 		polyFunc.draw(GL_TRIANGLES);		
