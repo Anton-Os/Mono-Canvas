@@ -4,9 +4,16 @@
 #include "geometry/polyform/Polyform_Rubiks.hpp"
 #include "scene/Editor.hpp"
 
-void Editor::init(GL4_PolyFunc* polyFunc, Polyform_Rubiks* polyRubiks){
+void Editor::init(Polyform_Box* polyBox, Polyform_Rubiks* polyRubiks){
+    polyRubiks->create(Editor::workspace, polyBox);
+
+    Polyform_Box_Meta polyBoxMeta;
+    polyBox->exportMeta(&polyBoxMeta);
+    Editor::polyBoxMeta = polyBoxMeta;
+
     Polyform_Rubiks_Meta polyRubiksMeta;
     polyRubiks->exportMeta(&polyRubiksMeta);
+    Editor::polyRubiksMeta = polyRubiksMeta;
 
     Editor::xBounds[0] = polyRubiksMeta.xCount / 2;
     Editor::xBounds[1] = polyRubiksMeta.xCount - Editor::xBounds[0];
@@ -19,7 +26,7 @@ void Editor::init(GL4_PolyFunc* polyFunc, Polyform_Rubiks* polyRubiks){
     Editor::zBounds[0] *= -1;
 
     vertexFeed vFeed;
-    polyFunc->dump(&vFeed);
+    Editor::workspace->dump(&vFeed);
     if(vFeed.pos.empty()){
         std::cerr << "PolyFunc cannot be empty" << std::endl;
         return;
@@ -27,8 +34,10 @@ void Editor::init(GL4_PolyFunc* polyFunc, Polyform_Rubiks* polyRubiks){
     Editor::vFeed = vFeed;
 
     Editor::cursor3D->init();
-    Editor::cursor3D->feedPos(vFeed.pos.data(), vFeed.pos.size());
-    Editor::cursor3D->relMatrix = polyFunc->relMatrix;
+    // Editor::cursor3D->feedPos(vFeed.pos.data(), vFeed.pos.size());
+    Editor::cursor3D->relMatrix = Editor::workspace->relMatrix;
+
+    Editor::create(0, 0, 0);
 
     return;
 }
@@ -41,12 +50,9 @@ void Editor::create(int x, int y, int z){
     if(z < Editor::zBounds[0]) z = Editor::zBounds[0];
     else if(z > Editor::zBounds[1]) z = Editor::zBounds[1];
 
-    Polyform_Rubiks_Meta polyRubiksMeta;
-    polyRubiks->exportMeta(&polyRubiksMeta);
-
     unsigned int absVertex = (x - xBounds[0]) + 
-                          ((y - yBounds[0]) * polyRubiksMeta.xCount) + 
-                          ((z - zBounds[0]) * polyRubiksMeta.xCount * polyRubiksMeta.yCount);
+                          ((y - yBounds[0]) * Editor::polyRubiksMeta.xCount) + 
+                          ((z - zBounds[0]) * Editor::polyRubiksMeta.xCount * Editor::polyRubiksMeta.yCount);
 
     std::array<float, 3> cursorPos = {
         Editor::vFeed.pos[absVertex * Editor::vFeed.perVertex],

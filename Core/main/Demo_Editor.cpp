@@ -37,11 +37,13 @@ namespace Mouse {
 }
 
 namespace Player {
+	bool isGod = true;
 	// glm::mat4 projectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -20.0f, 20.0f);
 	glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
     glm::mat4 viewMatrix(1);
     glm::vec3 camPos(0.0, 0.0, 1.0f);
     glm::vec3 camLookPos = glm::vec3(0.0f, 0.0f, 0.0f);
+	std::array<int, 3> location = {0, 0, 0};
 	float rtFactor = 5.0f;
 	float mvSpeed = 0.3f;
 }
@@ -77,35 +79,42 @@ namespace Math {
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
 	// State Switching
 
-	if(key == GLFW_KEY_1 && action == GLFW_PRESS) std::cout << "Key 1 Pressed" << std::endl;
-	if(key == GLFW_KEY_2 && action == GLFW_PRESS) std::cout << "Key 2 Pressed" << std::endl;
-	if(key == GLFW_KEY_3 && action == GLFW_PRESS) std::cout << "Key 3 Pressed" << std::endl;
+	if(key == GLFW_KEY_1 && action == GLFW_PRESS){
+		if(Player::isGod) Player::isGod = false;
+		else if(!Player::isGod) Player::isGod = true;
+	}
 
 	// Continuous actions
 	
 	if(key == GLFW_KEY_A && action == GLFW_PRESS) Key::A = true;
 	if(key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
-	if(Key::A) Terrain::yAngle += Player::rtFactor;
+	if(Player::isGod && Key::A) Terrain::yAngle += Player::rtFactor;
+	else if(!Player::isGod && Key::A) Player::location[0]--;
 
 	if(key == GLFW_KEY_D && action == GLFW_PRESS) Key::D = true;
 	if(key == GLFW_KEY_D && action == GLFW_RELEASE) Key::D = false;
-	if(Key::D) Terrain::yAngle -= Player::rtFactor;
+	if(Player::isGod && Key::D) Terrain::yAngle -= Player::rtFactor;
+	else if(!Player::isGod && Key::D) Player::location[0]++;
 
 	if(key == GLFW_KEY_W && action == GLFW_PRESS) Key::W = true;
 	if(key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
-	if(Key::W) Terrain::xAngle += Player::rtFactor;
+	if(Player::isGod && Key::W) Terrain::xAngle += Player::rtFactor;
+	else if(!Player::isGod && Key::W) Player::location[1]++;
 
 	if(key == GLFW_KEY_S && action == GLFW_PRESS) Key::S = true;
 	if(key == GLFW_KEY_S && action == GLFW_RELEASE) Key::S = false;
-	if(Key::S) Terrain::xAngle -= Player::rtFactor;
+	if(Player::isGod && Key::S) Terrain::xAngle -= Player::rtFactor;
+	else if(!Player::isGod && Key::S) Player::location[1]--;
 
 	if(key == GLFW_KEY_Q && action == GLFW_PRESS) Key::Q = true;
 	if(key == GLFW_KEY_Q && action == GLFW_RELEASE) Key::Q = false;
-	if(Key::Q) Terrain::distance += Player::mvSpeed;
+	if(Player::isGod && Key::Q) Terrain::distance += Player::mvSpeed;
+	else if(!Player::isGod && Key::Q) Player::location[2]--;
 
 	if(key == GLFW_KEY_E && action == GLFW_PRESS) Key::E = true;
 	if(key == GLFW_KEY_E && action == GLFW_RELEASE) Key::E = false;
-	if(Key::E) Terrain::distance -= Player::mvSpeed;
+	if(Player::isGod && Key::E) Terrain::distance -= Player::mvSpeed;
+	else if(!Player::isGod && Key::E) Player::location[2]++;
 }
 
 void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
@@ -163,11 +172,10 @@ int main(int argc, char** argv) {
 	GL4_PolyFunc polyFunc;
 	Polyform_Box polyBox(0.2f, 0.2f, 0.2f);
 	Polyform_Rubiks polyRubiks(10, 10, 10);
-	polyRubiks.createXI(&polyFunc, &polyBox);
 
 	GL4_Entity cursor3D;
 	GL4_Entity model;
-	Editor editor(&cursor3D, &model, &polyFunc, &polyRubiks);
+	Editor editor(&cursor3D, &model, &polyFunc, &polyBox, &polyRubiks);
 
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
@@ -193,10 +201,15 @@ int main(int argc, char** argv) {
 		polyFunc.relMatrix = glm::rotate(polyFunc.relMatrix, glm::radians<float>(Terrain::yAngle), glm::vec3(0.0, 1.0, 0.0));
 
 		glUseProgram(Idle.shaderProgID);
-		Idle.set_renderMode(0);
+		Idle.set_renderMode(2);
 		Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * polyFunc.relMatrix);
 		
-		// polyFunc.drawXI(GL_POINTS);		
+		editor.create(Player::location[0], Player::location[1], Player::location[2]);
+		polyFunc.drawXI(GL_POINTS);
+
+		glPointSize(10.0f);
+		Idle.set_renderMode(1);
+
 		cursor3D.drawXI(GL_POINTS);
 
 		glfwSwapBuffers(window);

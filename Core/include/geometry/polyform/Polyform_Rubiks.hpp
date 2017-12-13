@@ -27,7 +27,7 @@
             zCount = zCountArg;
             create(polyFunc, polyBox);
         }
-        void createXI(GL4_PolyFunc* polyFunc, Polyform_Box* polyBox);
+        void createXI(GL4_PolyFunc* workspace, Polyform_Box* polyBox);
         void create(GL4_PolyFunc* polyFunc, Polyform_Box* polyBox);
         void exportMeta(Polyform_Rubiks_Meta* metaData);
     private:
