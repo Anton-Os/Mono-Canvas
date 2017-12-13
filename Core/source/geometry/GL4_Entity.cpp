@@ -54,15 +54,46 @@ void GL4_Entity::drawPart(GLenum drawMode, GLuint part, GLuint whole){
     glBindVertexArray(0);
 }   
 
-void GL4_Entity::feed(vertexFeed* vFeed){
+void GL4_Entity::dump(vertexFeed* vFeed){
     vFeed->perVertex = GL4_Entity::perVertex;
     vFeed->pos = GL4_Entity::mapPos();
 }
 
-void GL4_Entity::feed(vertexFeedIdx* vFeed){
+void GL4_Entity::dump(vertexFeedIdx* vFeed){
     vFeed->perVertex = GL4_Entity::perVertex;
     vFeed->pos = GL4_Entity::mapPos();
     vFeed->idx = GL4_Entity::mapIdx();
+}
+
+void GL4_Entity::init(){
+    GLuint VertexArray;
+    GLuint buffers[2];
+
+    glGenVertexArrays(1, &VertexArray);
+    glBindVertexArray(VertexArray);
+
+    glGenBuffers(2, buffers);
+    glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[1]);
+
+    GL4_Entity::VAO = VertexArray;
+    GL4_Entity::posBff = buffers[0];
+    GL4_Entity::idxBff = buffers[1];
+}
+
+void GL4_Entity::feedPos(const void* data, GLuint vertexCount){
+    glBindBuffer(GL_ARRAY_BUFFER, GL4_Entity::posBff);
+    glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(GLfloat), data, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    glEnableVertexAttribArray(0);
+    GL4_Entity::vertexCount = vertexCount / GL4_Entity::perVertex;
+    GL4_Entity::isFed = true;
+}
+
+void GL4_Entity::feedIdx(const void* data, GLuint indexCount){
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL4_Entity::idxBff);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * sizeof(GLuint), data, GL_STATIC_DRAW);
+    GL4_Entity::isIdx = true;
 }
 
 std::vector<GLfloat> GL4_Entity::mapPos(){

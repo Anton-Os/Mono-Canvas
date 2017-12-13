@@ -160,7 +160,7 @@ int main(int argc, char** argv) {
 	GL4_PolyAngles polyAngles;
     Polyform_Circle circle(&polyAngles, 0.2f, 33);
 	vertexFeed vFeed;
-	polyAngles.feed(&vFeed);
+	polyAngles.dump(&vFeed);
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){

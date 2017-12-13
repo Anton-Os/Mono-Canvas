@@ -165,6 +165,10 @@ int main(int argc, char** argv) {
 	Polyform_Rubiks polyRubiks(10, 10, 10);
 	polyRubiks.createXI(&polyFunc, &polyBox);
 
+	GL4_Entity cursor3D;
+	GL4_Entity model;
+	Editor editor(&cursor3D, &model, &polyFunc, &polyRubiks);
+
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
     Time::setupEnd = std::chrono::steady_clock::now();
@@ -192,7 +196,8 @@ int main(int argc, char** argv) {
 		Idle.set_renderMode(0);
 		Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * polyFunc.relMatrix);
 		
-		polyFunc.drawXI(GL_POINTS);		
+		// polyFunc.drawXI(GL_POINTS);		
+		cursor3D.drawXI(GL_POINTS);
 
 		glfwSwapBuffers(window);
 	}

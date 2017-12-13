@@ -8,6 +8,12 @@
 #endif */
 
 #ifndef POLYFORM_RUBIKS_H
+    struct Polyform_Rubiks_Meta {
+        unsigned int xCount;
+        unsigned int yCount;
+        unsigned int zCount;
+    };
+
     class Polyform_Rubiks {
     public:
         Polyform_Rubiks(unsigned int xCountArg, unsigned int yCountArg, unsigned int zCountArg){
@@ -23,6 +29,7 @@
         }
         void createXI(GL4_PolyFunc* polyFunc, Polyform_Box* polyBox);
         void create(GL4_PolyFunc* polyFunc, Polyform_Box* polyBox);
+        void exportMeta(Polyform_Rubiks_Meta* metaData);
     private:
         unsigned int xCount;
         unsigned int yCount;

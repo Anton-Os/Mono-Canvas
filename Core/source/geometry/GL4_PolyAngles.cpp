@@ -143,30 +143,13 @@ void GL4_PolyAngles::create(){
         threePts[vecElem * 3 + 2] = GL4_PolyAngles::zVals[vecElem];
     }
 
-    GLuint VAO;
-    glGenVertexArrays(1, &VAO);
-        glBindVertexArray(VAO);
-
     std::vector<unsigned int> indexAccum;
     GL4_PolyAngles::idxCount = genIndices2D(&indexAccum, threePts.size() / GL4_PolyAngles::perVertex);
 
-    GLuint VBOs[2];
-    glGenBuffers(2, VBOs);
+    GL4_PolyAngles::init();
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOs[0]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexAccum.size() * sizeof(unsigned int), indexAccum.data(), GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
-    glBufferData(GL_ARRAY_BUFFER, threePts.size() * sizeof(GLfloat), threePts.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-    glEnableVertexAttribArray(0);
+    GL4_PolyAngles::feedPos(threePts.data(), threePts.size());
+    GL4_PolyAngles::feedIdx(indexAccum.data(), indexAccum.size());
 
     glBindVertexArray(0);
-
-    GL4_PolyAngles::isFed = true;
-    GL4_PolyAngles::isIdx = true;
-    GL4_PolyAngles::vertexCount = threePts.size() / GL4_PolyAngles::perVertex;
-    GL4_PolyAngles::VAO = VAO;
-    GL4_PolyAngles::posBff = VBOs[0];
-    GL4_PolyAngles::idxBff = VBOs[1];
 }

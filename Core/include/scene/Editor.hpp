@@ -14,17 +14,30 @@
 #ifndef EDITOR_H
     class Editor {
     public:
-        Editor(GL4_Entity* entityArg1, GL4_Entity* entityArg2, Polyform_Rubiks* polyRubiksArg){
+        Editor(GL4_Entity* entityArg1, GL4_Entity* entityArg2, 
+               GL4_PolyFunc* polyFunc, Polyform_Rubiks* polyRubiks) {
             cursor3D = entityArg1;
             model = entityArg2;
-            polyRubiks = polyRubiksArg;
-            init();
+            init(polyFunc, polyRubiks);
         }
         GL4_Entity* cursor3D;
         GL4_Entity* model;
-        Polyform_Rubiks* polyRubiks;
-        void init();
+        void init(GL4_PolyFunc* polyFunc, Polyform_Rubiks* polyRubiks);
         void create(int x, int y, int z);
+    private:
+        vertexFeed vFeed;
+        int xBounds[2];
+        int yBounds[2];
+        int zBounds[2];
     };
+
+    /* class Editor {
+    public:
+        Editor(GL4_PolyFunc* polyFunc, Polyform_Rubiks* polyRubiks){
+            init(polyFunc, polyRubiks);
+        }
+        void init(GL4_PolyFunc* polyFunc, Polyform_Rubiks* polyRubiks);
+        create();
+    } */
 #define EDITOR_H
 #endif

@@ -235,27 +235,9 @@ void GL4_PolyFunc::create(){
     else if(ySetOfX > 1 && zSetOfY > 1) GL4_PolyFunc::idxCount = genIndices3D(&indexAccum, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size(), GL4_PolyFunc::zVals.size());
     else std::cerr << "Something went wrong while indexing Grid" << std::endl;
 
-    GLuint VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-
-    GLuint VBOs[2];
-    glGenBuffers(2, VBOs);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOs[0]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexAccum.size() * sizeof(GLuint), indexAccum.data(), GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
-    glBufferData(GL_ARRAY_BUFFER, threePts.size() * sizeof(GLfloat), threePts.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-    glEnableVertexAttribArray(0);
+    GL4_PolyFunc::init();
+    GL4_PolyFunc::feedPos(threePts.data(), threePts.size());
+    GL4_PolyFunc::feedIdx(indexAccum.data(), indexAccum.size());
 
     glBindVertexArray(0);
-
-    GL4_PolyFunc::isIdx = true;
-    GL4_PolyFunc::isFed = true;
-    GL4_PolyFunc::vertexCount = threePts.size() / GL4_PolyFunc::perVertex;
-    GL4_PolyFunc::VAO = VAO;
-    GL4_PolyFunc::idxBff = VBOs[0];
-    GL4_PolyFunc::posBff = VBOs[1];
 }

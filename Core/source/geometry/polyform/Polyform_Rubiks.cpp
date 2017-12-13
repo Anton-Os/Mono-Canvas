@@ -86,3 +86,9 @@ void Polyform_Rubiks::create(GL4_PolyFunc* polyFunc, Polyform_Box* polyBox){
     }
     polyFunc->create();
 }
+
+void Polyform_Rubiks::exportMeta(Polyform_Rubiks_Meta* metaData){
+    metaData->xCount = Polyform_Rubiks::xCount;
+    metaData->yCount = Polyform_Rubiks::yCount;
+    metaData->zCount = Polyform_Rubiks::zCount;
+}

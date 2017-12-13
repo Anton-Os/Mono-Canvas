@@ -15,8 +15,11 @@
         void draw(GLenum drawMode);
         void drawFixed(GLenum drawMode, GLuint drawCount);
         void drawPart(GLenum drawMode, GLuint part, GLuint whole);
-        void feed(vertexFeed* vFeed);
-        void feed(vertexFeedIdx* vFeed);
+        void dump(vertexFeed* vFeed);
+        void dump(vertexFeedIdx* vFeed);
+        void init();
+        void feedPos(const void* data, GLuint vertexCount);
+        void feedIdx(const void* startIdx, GLuint indexCount);
     protected:
         std::vector<GLfloat> mapPos();
         std::vector<GLuint> mapIdx();

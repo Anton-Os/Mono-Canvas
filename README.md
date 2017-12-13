@@ -8,11 +8,8 @@
 
 ### Build Instructions:
 
-1. First create a cmake project with with the source directory pointing to Anton-Os/PolyArt/Extlib and a build directory, ${EXTLIB_DIR}
-2. Set CACHE variable CMAKE_INSTALL_PREFIX to an install directory, lets call it ${INSTALL_DIR}
-3. Proceed to build the first project
+1. Build dependencies. Create a new CMake project with the source directory specified as PolyArt/Extlib, set the CACHE entry CMAKE_INSTALL_PREFIX to a path on your local file system
+2. Navigate to the dependencies build directory and invoke cmake --build .
 
-4. Create a second cmake project with the source directory pointing to the root source directory Anton-Os/PolyArt
-5. Set CACHE variable CMAKE_INSTALL_PREFIX for this project to the ${INSTALL_DIR} set earlier
-6. Set CACHE variable EXTLIB_BUILD_PATH for this project to the ${EXTLIB_DIR} set earlier
-7. Proceed to build the second project
+3. Build the main project. Set CACHE entry CMAKE_INSTALL_PREFIX so that it matches the one you set in step #1. Set CACHE entry EXTLIB_BUILD_PATH to the build directory for your dependencies set in step #2.
+4. Navigate to the main project build directory and invoke cmake --build .
