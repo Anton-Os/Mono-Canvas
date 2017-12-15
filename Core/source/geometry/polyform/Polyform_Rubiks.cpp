@@ -1,6 +1,3 @@
-#include "geometry/GL4_Entity.hpp"
-#include "geometry/GL4_PolyFunc.hpp"
-#include "geometry/polyform/Polyform_Box.hpp"
 #include "geometry/polyform/Polyform_Rubiks.hpp"
 
 namespace Polyform_Rubiks_Eq {

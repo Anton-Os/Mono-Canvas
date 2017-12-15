@@ -3,7 +3,7 @@
     #define GEOMETRY_H
 #endif
 
-#ifndef ENTITY_H
+#ifndef GL4_ENTITY_H
     class GL4_Entity {
     public:
         glm::mat4 relMatrix = glm::mat4(1);
@@ -33,5 +33,5 @@
         GLuint idxBff;
         GLuint idxCount = 0;
     };
-#define ENTITY_H
+#define GL4_ENTITY_H
 #endif

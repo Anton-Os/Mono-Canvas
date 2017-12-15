@@ -3,7 +3,7 @@
     #define GEOMETRY_H
 #endif
 
-#ifndef ENTITY_H
+#ifndef GL4_ENTITY_H
     #include "geometry/GL4_Entity.hpp"
 #endif
 

@@ -1,4 +1,3 @@
-#include "geometry/GL4_PolyAngles.hpp"
 #include "geometry/polyform/Polyform_Circle.hpp"
 
 namespace Polyform_Circle_Eq {

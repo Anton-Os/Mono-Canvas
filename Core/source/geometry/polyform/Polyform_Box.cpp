@@ -1,4 +1,3 @@
-#include "geometry/GL4_PolyFunc.hpp"
 #include "geometry/polyform/Polyform_Box.hpp"
 
 namespace Polyform_Box_Eq {

@@ -3,16 +3,15 @@
     #define GEOMETRY_H
 #endif
 
-#ifndef ENTITY_H
-    #include "geometry/GL4_Entity.hpp"
+#ifndef GL4_TREE_H
+    #include "geometry/GL4_Tree.hpp"
 #endif
 
 #ifndef POLY_CLONE_H
-    class GL4_PolyFunc : public GL4_Entity {
+    class GL4_PolyClone : public GL4_Tree {
     public:
-        void (*mtxSequence)(std::vector<glm::mat4>>* matrices);
-        void create(vertexFeedIdx* vFeed);
+        void (*mtxSequence)(std::vector<glm::mat4>* matrices);
+        void gen_mtx();
     };
-
 #define POLY_CLONE_H
 #endif

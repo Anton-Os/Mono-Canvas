@@ -3,9 +3,13 @@
     #define GEOMETRY_H
 #endif
 
-/* #ifndef POLY_FUNC_H
+#ifndef POLY_BOX_H
+    #include "geometry/polyform/Polyform_Box.hpp"
+#endif
+
+#ifndef POLY_FUNC_H
     #include "geometry/GL4_PolyFunc.hpp"
-#endif */
+#endif
 
 #ifndef POLYFORM_RUBIKS_H
     struct Polyform_Rubiks_Meta {

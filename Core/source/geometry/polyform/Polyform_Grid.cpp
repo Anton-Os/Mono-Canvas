@@ -1,4 +1,3 @@
-#include "geometry/GL4_PolyFunc.hpp"
 #include "geometry/polyform/Polyform_Grid.hpp"
 
 namespace Polyform_Grid_Eq {
