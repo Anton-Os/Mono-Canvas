@@ -200,7 +200,8 @@ int main(int argc, char** argv) {
         glUseProgram(ColorMe.shaderProgID);
 		ColorMe.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * polyFunc.relMatrix);
 		
-		polyFunc.draw(GL_TRIANGLES);		
+		// polyFunc.draw(GL_TRIANGLES);
+		polyFunc.drawXI(GL_POINTS);		
 
 		glfwSwapBuffers(window);
 	}

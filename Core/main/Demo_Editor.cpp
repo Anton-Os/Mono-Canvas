@@ -49,6 +49,7 @@ namespace Player {
 }
 
 namespace Terrain {
+	bool spawnVertex = false;
 	float xAngle = 0.0f;
 	float yAngle = 0.0f;
 	float zAngle = 0.0f;
@@ -82,6 +83,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if(key == GLFW_KEY_1 && action == GLFW_PRESS){
 		if(Player::isGod) Player::isGod = false;
 		else if(!Player::isGod) Player::isGod = true;
+	}
+
+	if(key == GLFW_KEY_SPACE && action == GLFW_PRESS){
+		Terrain::spawnVertex = true;
 	}
 
 	// Continuous actions
@@ -173,9 +178,7 @@ int main(int argc, char** argv) {
 	Polyform_Box polyBox(0.2f, 0.2f, 0.2f);
 	Polyform_Rubiks polyRubiks(10, 10, 10);
 
-	GL4_Entity cursor3D;
-	GL4_Entity model;
-	Editor editor(&cursor3D, &model, &polyFunc, &polyBox, &polyRubiks);
+	Editor editor(&polyFunc, &polyBox, &polyRubiks);
 
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
@@ -204,13 +207,20 @@ int main(int argc, char** argv) {
 		Idle.set_renderMode(2);
 		Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * polyFunc.relMatrix);
 		
-		editor.create(Player::location[0], Player::location[1], Player::location[2]);
+		editor.setCursor(&Player::location);
 		polyFunc.drawXI(GL_POINTS);
 
 		glPointSize(10.0f);
 		Idle.set_renderMode(1);
 
-		cursor3D.drawXI(GL_POINTS);
+		editor.cursor3D.drawXI(GL_POINTS);
+		if(Terrain::spawnVertex){
+			editor.spawnVertex(Player::location[0], Player::location[1], Player::location[2]);
+			// editor.model.drawXI(GL_TRIANGLES);
+			Terrain::spawnVertex = false;
+		}
+		Idle.set_renderMode(0);
+		editor.model.drawXI(GL_TRIANGLE_FAN);
 
 		glfwSwapBuffers(window);
 	}

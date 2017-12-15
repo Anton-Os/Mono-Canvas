@@ -20,6 +20,7 @@
         void init();
         void feedPos(const void* data, GLuint vertexCount);
         void feedIdx(const void* startIdx, GLuint indexCount);
+        void clearPos();
     protected:
         std::vector<GLfloat> mapPos();
         std::vector<GLuint> mapIdx();

@@ -82,6 +82,7 @@ void GL4_Entity::init(){
 }
 
 void GL4_Entity::feedPos(const void* data, GLuint vertexCount){
+    glBindVertexArray(GL4_Entity::VAO);
     glBindBuffer(GL_ARRAY_BUFFER, GL4_Entity::posBff);
     glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(GLfloat), data, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
@@ -94,6 +95,14 @@ void GL4_Entity::feedIdx(const void* data, GLuint indexCount){
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL4_Entity::idxBff);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * sizeof(GLuint), data, GL_STATIC_DRAW);
     GL4_Entity::isIdx = true;
+}
+
+void GL4_Entity::clearPos(){
+    glBindBuffer(GL_ARRAY_BUFFER, GL4_Entity::posBff);
+    glBufferData(GL_ARRAY_BUFFER, 0, NULL, GL_STATIC_DRAW);
+    glDisableVertexAttribArray(0);
+    GL4_Entity::vertexCount = 0;
+    GL4_Entity::isFed = false;
 }
 
 std::vector<GLfloat> GL4_Entity::mapPos(){
