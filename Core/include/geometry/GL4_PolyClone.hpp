@@ -10,8 +10,14 @@
 #ifndef POLY_CLONE_H
     class GL4_PolyClone : public GL4_Tree {
     public:
+        void reset();
         void (*mtxSequence)(std::vector<glm::mat4>* matrices);
-        void gen_mtx();
+        void gen_mtx(); 
+        void createXI(vertexFeed* vFeed);
+    private:
+        std::vector<glm::mat4> matrices;
+        enum ptAttrib { Mtx };
+        std::bitset<1> xyzBits;
     };
 #define POLY_CLONE_H
 #endif

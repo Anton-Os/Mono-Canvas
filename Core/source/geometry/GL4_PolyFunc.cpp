@@ -241,3 +241,9 @@ void GL4_PolyFunc::create(){
 
     glBindVertexArray(0);
 }
+
+void GL4_PolyFunc::exportMeta(GL4_PolyFunc_Meta* polyFuncMeta){
+    polyFuncMeta->xCount = GL4_PolyFunc::xVals.size();
+    polyFuncMeta->yCount = GL4_PolyFunc::yVals.size() / GL4_PolyFunc::xVals.size();
+    polyFuncMeta->zCount = GL4_PolyFunc::zVals.size() / GL4_PolyFunc::yVals.size();
+}

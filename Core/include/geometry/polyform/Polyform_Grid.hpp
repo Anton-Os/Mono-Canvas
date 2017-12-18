@@ -8,7 +8,14 @@
 #endif
 
 #ifndef POLYFORM_GRID_H
-class Polyform_Grid {
+    struct Polyform_Grid_Meta {
+        float width;
+        unsigned int xCount;
+        float height;
+        unsigned int yCount;
+    };
+
+    class Polyform_Grid {
     public:
         Polyform_Grid(GL4_PolyFunc* polyFunc, float width_arg, unsigned int xCount_arg, 
                         float height_arg, unsigned int yCount_arg) {

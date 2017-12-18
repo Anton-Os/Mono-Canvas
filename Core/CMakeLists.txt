@@ -149,9 +149,10 @@ add_executable(Cloning
     source/loaders/LoadShaders.cpp
     source/geometry/GL4_Entity.cpp
     source/geometry/GL4_Tree.cpp
-    source/geometry/GL4_PolyAngles.cpp
+    source/geometry/GL4_PolyFunc.cpp
     source/geometry/GL4_PolyClone.cpp
-    source/geometry/polyform/Polyform_Circle.cpp
+    source/geometry/polyform/Polyform_Box.cpp
+    source/geometry/pseudo/TreeTest.cpp
     source/pipeline/GLSL_Idle.cpp
     main/Demo_Cloning.cpp
 )

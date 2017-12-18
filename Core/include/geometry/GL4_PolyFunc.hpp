@@ -8,6 +8,12 @@
 #endif
 
 #ifndef POLY_FUNC_H
+    struct GL4_PolyFunc_Meta {
+        unsigned xCount;
+        unsigned yCount;
+        unsigned zCount;
+    };
+
     class GL4_PolyFunc : public GL4_Entity {
     public:
         void (*xSequence)(std::vector<float>* xVals);
@@ -19,6 +25,7 @@
         void gen_z();
         void createXI();
         void create();
+        void exportMeta(GL4_PolyFunc_Meta* polyFuncMeta);
     private:
         std::vector<float> xVals;
         std::vector<float> yVals;

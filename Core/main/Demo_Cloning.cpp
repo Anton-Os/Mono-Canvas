@@ -21,6 +21,7 @@
 #include "geometry/GL4_PolyClone.hpp"
 #include "geometry/polyform/Polyform_Grid.hpp"
 #include "geometry/polyform/Polyform_Circle.hpp"
+#include "geometry/pseudo/TreeTest.hpp"
 
 namespace UI {
 	int height = 1080;
@@ -158,11 +159,19 @@ int main(int argc, char** argv) {
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
 
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
-	
-	GL4_PolyAngles polyAngles;
-    Polyform_Circle circle(&polyAngles, 0.2f, 33);
-	vertexFeed vFeed;
-	polyAngles.dump(&vFeed);
+
+	GL4_PolyClone polyClone;
+	Polyform_Box polyBox(3.0f, 3.0f, 3.0f);
+	TreeTest treeTest(&polyClone, &polyBox);
+
+	GL4_Tree_Meta treeMeta;
+	polyClone.exportMeta(&treeMeta);
+
+    GL4_PolyFunc polyFunc;
+    polyBox.create(&polyFunc);
+    vertexFeed vFeed;
+    polyFunc.dump(&vFeed);
+    polyClone.createXI(&vFeed);
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){
@@ -178,14 +187,13 @@ int main(int argc, char** argv) {
         glPointSize(8.0f);
         glLineWidth(8.0f);
 
-		polyAngles.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance));
-        polyAngles.relMatrix = glm::rotate(polyAngles.relMatrix, glm::radians<float>(Terrain::xAngle), glm::vec3(1.0, 0.0, 0.0));
-		polyAngles.relMatrix = glm::rotate(polyAngles.relMatrix, glm::radians<float>(Terrain::yAngle), glm::vec3(0.0, 1.0, 0.0));
-
         glUseProgram(Idle.shaderProgID);
         Idle.set_renderMode(0);
-        Idle.set_mvpMatrix(Player::viewMatrix * Player::projectionMatrix * polyAngles.relMatrix);
-        polyAngles.drawFixed(GL_TRIANGLES, Time::secSpan.count() * 30);
+
+		for(unsigned currentNode = 0; currentNode < treeMeta.nodeCount; currentNode++){
+        	Idle.set_mvpMatrix(Player::viewMatrix * Player::projectionMatrix * polyClone.get_mtx(currentNode));
+			polyClone.draw(currentNode, GL_TRIANGLES);
+		}
 
 		glfwSwapBuffers(window);
 	}

@@ -8,11 +8,19 @@
 #endif
 
 #ifndef GL4_TREE_H
+    struct GL4_Tree_Meta {
+        // Will contain data such as max children, lowest child, etc...
+        unsigned nodeCount;
+    };
+
     class GL4_Tree {
     public:
         glm::mat4 relMatrix;
         glm::mat4 traceBack(GLuint nodeID);
-        void addNode(glm::mat4* matrix, vertexFeed* vFeed);
+        glm::mat4 get_mtx(GLuint nodeID);
+        void addNode(glm::mat4* matrixPtr, vertexFeed* vFeed);
+        void draw(GLuint nodeID, GLenum drawMode);
+        void exportMeta(GL4_Tree_Meta* treeMeta);
     private:
         std::vector<GL4_Entity> nodes;
         std::vector<GLuint> nodeOrder;
