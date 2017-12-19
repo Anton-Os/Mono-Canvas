@@ -32,6 +32,14 @@ glm::mat4 GL4_Tree::get_mtx(GLuint nodeID){
     return GL4_Tree::nodes[nodeID].relMatrix;
 }
 
+void GL4_Tree::drawXI(GLuint nodeID, GLenum drawMode){
+    if(nodeID > GL4_Tree::nodeOrder.size()){
+        std::cout << "Node requested is out of bounds" << std::endl;
+        return;
+    }
+    GL4_Tree::nodes[nodeID].drawXI(drawMode);
+}
+
 void GL4_Tree::draw(GLuint nodeID, GLenum drawMode){
     if(nodeID > GL4_Tree::nodeOrder.size()){
         std::cout << "Node requested is out of bounds" << std::endl;
@@ -48,7 +56,7 @@ void GL4_Tree::addNode(glm::mat4* matrix, vertexFeed* vFeed){
     GL4_Entity entity;
     entity.relMatrix = *matrix;
     entity.init();
-    entity.feedPos(vFeed->pos.data(), vFeed->perVertex);
+    entity.feedPos(vFeed->pos.data(), vFeed->pos.size());
     GL4_Tree::nodes.push_back(entity);
-    GL4_Tree::nodeOrder.push_back(GL4_Tree::nodeOrder.size() + 1);
+    GL4_Tree::nodeOrder.push_back(0);
 }

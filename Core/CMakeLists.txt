@@ -57,27 +57,6 @@ target_link_libraries(Rounding
     glm
 )
 
-add_executable(Quasi
-    source/loaders/FileIO.cpp
-    source/loaders/LoadShaders.cpp
-    source/geometry/GL4_Entity.cpp
-    source/geometry/GL4_PolyFunc.cpp
-    source/geometry/polyform/Polyform_Box.cpp
-    source/geometry/pseudo/Aimless.cpp
-    source/pipeline/GLSL_Idle.cpp
-    main/Demo_Quasi.cpp
-)
-
-target_include_directories(Quasi
-    PUBLIC include
-)
-
-target_link_libraries(Quasi
-    GLEW::glew_s
-    glfw
-    glm
-)
-
 add_executable(Spectrum
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
@@ -152,7 +131,7 @@ add_executable(Cloning
     source/geometry/GL4_PolyFunc.cpp
     source/geometry/GL4_PolyClone.cpp
     source/geometry/polyform/Polyform_Box.cpp
-    source/geometry/pseudo/TreeTest.cpp
+    source/geometry/polyform/Polyform_Grid.cpp
     source/pipeline/GLSL_Idle.cpp
     main/Demo_Cloning.cpp
 )

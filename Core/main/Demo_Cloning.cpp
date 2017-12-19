@@ -17,11 +17,7 @@
 #include "pipeline/GLSL_Idle.hpp"
 #include "geometry/GL4_Tree.hpp"
 #include "geometry/GL4_PolyFunc.hpp"
-#include "geometry/GL4_PolyAngles.hpp"
-#include "geometry/GL4_PolyClone.hpp"
 #include "geometry/polyform/Polyform_Grid.hpp"
-#include "geometry/polyform/Polyform_Circle.hpp"
-#include "geometry/pseudo/TreeTest.hpp"
 
 namespace UI {
 	int height = 1080;
@@ -52,7 +48,7 @@ namespace Terrain {
 	float xAngle = 0.0f;
 	float yAngle = 0.0f;
 	float zAngle = 0.0f;
-	float distance = -2.0f;
+	float distance = -4.0f;
 }
 
 namespace Time {
@@ -160,18 +156,16 @@ int main(int argc, char** argv) {
 
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
-	GL4_PolyClone polyClone;
-	Polyform_Box polyBox(3.0f, 3.0f, 3.0f);
-	TreeTest treeTest(&polyClone, &polyBox);
-
-	GL4_Tree_Meta treeMeta;
-	polyClone.exportMeta(&treeMeta);
-
     GL4_PolyFunc polyFunc;
-    polyBox.create(&polyFunc);
-    vertexFeed vFeed;
-    polyFunc.dump(&vFeed);
-    polyClone.createXI(&vFeed);
+	Polyform_Grid grid(&polyFunc, 0.5f, 7, 0.5f, 10);
+	GL4_Tree tree;
+	vertexFeed vFeed;
+	polyFunc.dump(&vFeed);
+	tree.addNode(&polyFunc.relMatrix, &vFeed);
+	glm::mat4 shiftRight = glm::translate(polyFunc.relMatrix, glm::vec3(1.0, 0.0, 0.0));
+	tree.addNode(&shiftRight, &vFeed);
+	glm::mat4 shiftLeft = glm::translate(polyFunc.relMatrix, glm::vec3(-1.0, 0.0, 0.0));
+	tree.addNode(&shiftLeft, &vFeed);
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){
@@ -187,13 +181,20 @@ int main(int argc, char** argv) {
         glPointSize(8.0f);
         glLineWidth(8.0f);
 
+		polyFunc.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance));
+        polyFunc.relMatrix = glm::rotate(polyFunc.relMatrix, glm::radians<float>(Terrain::xAngle), glm::vec3(1.0, 0.0, 0.0));
+		polyFunc.relMatrix = glm::rotate(polyFunc.relMatrix, glm::radians<float>(Terrain::yAngle), glm::vec3(0.0, 1.0, 0.0));
+		shiftRight = glm::translate(polyFunc.relMatrix, glm::vec3(1.0, 0.0, 0.0));
+		shiftLeft = glm::translate(polyFunc.relMatrix, glm::vec3(-1.0, 0.0, 0.0));
+
         glUseProgram(Idle.shaderProgID);
         Idle.set_renderMode(0);
-
-		for(unsigned currentNode = 0; currentNode < treeMeta.nodeCount; currentNode++){
-        	Idle.set_mvpMatrix(Player::viewMatrix * Player::projectionMatrix * polyClone.get_mtx(currentNode));
-			polyClone.draw(currentNode, GL_TRIANGLES);
-		}
+        Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * polyFunc.relMatrix);
+		tree.drawXI(0, GL_POINTS);
+		Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * shiftRight);
+		tree.drawXI(1, GL_POINTS);
+		Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * shiftLeft);
+		tree.drawXI(2, GL_POINTS);
 
 		glfwSwapBuffers(window);
 	}

@@ -89,6 +89,7 @@ void GL4_Entity::feedPos(const void* data, GLuint vertexCount){
     glEnableVertexAttribArray(0);
     GL4_Entity::vertexCount = vertexCount / GL4_Entity::perVertex;
     GL4_Entity::isFed = true;
+    glBindVertexArray(0);
 }
 
 void GL4_Entity::feedIdx(const void* data, GLuint indexCount){
