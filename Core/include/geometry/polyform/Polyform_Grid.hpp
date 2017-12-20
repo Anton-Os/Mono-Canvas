@@ -27,6 +27,7 @@
             create(polyFunc);
         }
         void create(GL4_PolyFunc* polyFunc);
+        void exportMeta(Polyform_Grid_Meta* polyGridMeta);
     private:
         float width;
         unsigned int xCount;

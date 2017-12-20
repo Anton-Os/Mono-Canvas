@@ -1,4 +1,4 @@
-#version 430 core
+#version 440 core
 
 layout(location = 0) in flat uint vertexID;
 

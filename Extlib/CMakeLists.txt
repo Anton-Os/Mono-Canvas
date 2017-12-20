@@ -33,6 +33,7 @@ set(FLTK_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/FLTK")
 set(GLI_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/GLI")
 set(GLM_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/GLM")
 set(SQLITE_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/SQLite")
+set(PYTHON_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/Python")
 set(GOOGLETEST_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/GoogleTest")
 set(GLSLANG_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/GLSLang")
 set(SPIRVTOOLS_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/SPIRV_Tools")
@@ -187,6 +188,20 @@ ExternalProject_Add(GLFW
 
 list(APPEND EXTLIB_TARGETS GLFW)
 
+#[[ ExternalProject_Add(Python
+    GIT_REPOSITORY "https://github.com/python-cmake-buildsystem/python-cmake-buildsystem.git"
+    GIT_TAG "f55f8db60a81e9b7bd7138e5c87d59fcd779e287"
+
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+
+    PREFIX ${PYTHON_PROJECT_DIR}
+    BINARY_DIR "${PYTHON_PROJECT_DIR}/build"
+    TMP_DIR "${PYTHON_PROJECT_DIR}/temp"
+    STAMP_DIR "${PYTHON_PROJECT_DIR}/stamp"
+)
+
+list(APPEND EXTLIB_TARGETS Python) #]]
+
 ExternalProject_Add(FLTK
     URL "${CMAKE_BINARY_DIR}/fltk-1.3.4-1-source.tar.gz"
     URL_MD5 d7fcd27ab928648e1a1366dd2e273970
@@ -230,42 +245,6 @@ ExternalProject_Add(GLM
 )
 
 list(APPEND EXTLIB_TARGETS GLM)
-
-#[[ ExternalProject_Add(ASSIMP
-    GIT_REPOSITORY "https://github.com/assimp/assimp.git"
-    GIT_TAG "b38ba233f530fdb103d3ede3df5126121af78b10"
-
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-
-    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_SOURCE_DIR}/patch/Assimp/CMakeLists.txt"
-    "<SOURCE_DIR>/CMakeLists.txt"
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/Assimp/code/CMakeLists.txt"
-        "<SOURCE_DIR>/code/CMakeLists.txt"
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/Assimp/assimp-config.cmake"
-        "<SOURCE_DIR>/assimp-config.cmake"
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/Assimp/contrib/zlib/CMakeLists.txt"
-        "<SOURCE_DIR>/contrib/zlib/CMakeLists.txt"
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/Assimp/contrib/zlib/zlib-config.cmake"
-        "<SOURCE_DIR>/zlib-config.cmake"
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/Assimp/contrib/irrXML/CMakeLists.txt"
-        "<SOURCE_DIR>/contrib/irrXML/CMakeLists.txt"
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/Assimp/contrib/irrXML/irrxml-config.cmake"
-        "<SOURCE_DIR>/irrxml-config.cmake"
-
-    PREFIX ${ASSIMP_PROJECT_DIR}
-    BINARY_DIR "${ASSIMP_PROJECT_DIR}/build"
-    TMP_DIR "${ASSIMP_PROJECT_DIR}/temp"
-    STAMP_DIR "${ASSIMP_PROJECT_DIR}/stamp"
-) 
-
-list(APPEND EXTLIB_TARGETS ASSIMP) ]]#
 
 ExternalProject_Add(ASSIMP
     GIT_REPOSITORY "https://github.com/assimp/assimp.git"
@@ -451,7 +430,5 @@ add_custom_target(ExtlibCache ALL
 )
 
 if(IS_DIRECTORY "${CMAKE_BINARY_DIR}/SPIRV_Headers-prefix")
-    file(REMOVE
-        "${CMAKE_BINARY_DIR}/SPIRV_Headers-prefix"
-    )
+    file(REMOVE "${CMAKE_BINARY_DIR}/SPIRV_Headers-prefix")
 endif()

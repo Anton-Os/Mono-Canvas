@@ -17,7 +17,9 @@
 #include "pipeline/GLSL_Idle.hpp"
 #include "geometry/GL4_Tree.hpp"
 #include "geometry/GL4_PolyFunc.hpp"
+#include "geometry/GL4_PolyClone.hpp"
 #include "geometry/polyform/Polyform_Grid.hpp"
+#include "scene/Cellular.hpp"
 
 namespace UI {
 	int height = 1080;
@@ -61,11 +63,13 @@ namespace Time {
 	std::chrono::duration<double, std::nano> nanoSpan;
 }
 
-namespace Math {
-    float interval = 0.1f;
-    unsigned int xNum = 1000;
-	float yInit = 0.0f;
-	float zInit = 0.0f;
+void mtxSequence(std::vector<glm::mat4>* matrices){
+	glm::mat4 matrix1 = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -7.0));
+	matrices->push_back(matrix1);
+	glm::mat4 matrix2 = glm::translate(glm::mat4(1), glm::vec3(1.0f, 0.0, -4.0));
+	matrices->push_back(matrix2);
+	glm::mat4 matrix3 = glm::translate(glm::mat4(1), glm::vec3(-0.5f, 0.0, -2.0));
+	matrices->push_back(matrix3);
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
@@ -167,6 +171,21 @@ int main(int argc, char** argv) {
 	glm::mat4 shiftLeft = glm::translate(polyFunc.relMatrix, glm::vec3(-1.0, 0.0, 0.0));
 	tree.addNode(&shiftLeft, &vFeed);
 
+	GL4_PolyClone polyClone;
+	polyClone.mtxSequence = mtxSequence;
+	polyClone.gen_mtx();
+	polyClone.createXI(&vFeed);
+
+    Cellular cellular(&polyFunc, &grid);
+	Cellular_Picker cellPicker;
+	cellPicker.weights.push_back(0.2);
+	cellPicker.states.push_back(1);
+	cellPicker.weights.push_back(0.35);
+	cellPicker.states.push_back(2);
+    cellPicker.weights.push_back(0.2);
+	cellPicker.states.push_back(3);
+	cellular.gen_points(&cellPicker);
+
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){
         Time::frameBegin = std::chrono::steady_clock::now();
@@ -189,12 +208,12 @@ int main(int argc, char** argv) {
 
         glUseProgram(Idle.shaderProgID);
         Idle.set_renderMode(0);
-        Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * polyFunc.relMatrix);
-		tree.drawXI(0, GL_POINTS);
-		Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * shiftRight);
-		tree.drawXI(1, GL_POINTS);
-		Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * shiftLeft);
-		tree.drawXI(2, GL_POINTS);
+		Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * polyClone.get_mtx(0));
+		polyClone.drawXI(0, GL_POINTS);
+		Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * polyClone.get_mtx(1));
+		polyClone.drawXI(1, GL_POINTS);
+		Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * polyClone.get_mtx(2));
+		polyClone.drawXI(2, GL_POINTS);
 
 		glfwSwapBuffers(window);
 	}

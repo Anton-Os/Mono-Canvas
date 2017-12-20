@@ -40,7 +40,7 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
 
     find_package(GLEW REQUIRED CONFIG)
     find_package(glfw3 REQUIRED CONFIG)
-    find_package(FLTK CONFIG CONFIG)
+    find_package(FLTK REQUIRED CONFIG)
     find_package(GLI REQUIRED CONFIG)
     find_package(GLM REQUIRED CONFIG)
     find_package(ASSIMP REQUIRED CONFIG)

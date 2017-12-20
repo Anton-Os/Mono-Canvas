@@ -133,6 +133,7 @@ add_executable(Cloning
     source/geometry/polyform/Polyform_Box.cpp
     source/geometry/polyform/Polyform_Grid.cpp
     source/pipeline/GLSL_Idle.cpp
+    source/scene/Cellular.cpp # For Testing
     main/Demo_Cloning.cpp
 )
 

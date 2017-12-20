@@ -28,7 +28,6 @@ namespace Polyform_Grid_Eq {
     float yEquation(float x){ return yOffset; }
 
     float zEquation(float x, float y){ return zOffset; }
-
 }
 
 void Polyform_Grid::create(GL4_PolyFunc* polyFunc){
@@ -47,4 +46,11 @@ void Polyform_Grid::create(GL4_PolyFunc* polyFunc){
     Polyform_Grid_Eq::zOffset = 0.0f;
     polyFunc->gen_z();
     polyFunc->create();
+}
+
+void Polyform_Grid::exportMeta(Polyform_Grid_Meta* polyGridMeta){
+    polyGridMeta->width = Polyform_Grid::width;
+    polyGridMeta->xCount = Polyform_Grid::xCount;
+    polyGridMeta->height = Polyform_Grid::height;
+    polyGridMeta->yCount = Polyform_Grid::yCount;
 }
