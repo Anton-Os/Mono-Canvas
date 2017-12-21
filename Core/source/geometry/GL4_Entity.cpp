@@ -1,3 +1,4 @@
+#include "Feeds.h"
 #include "geometry/GL4_Entity.hpp"
 
 void GL4_Entity::drawXI(GLenum drawMode){
@@ -85,8 +86,8 @@ void GL4_Entity::feedPos(const void* data, GLuint vertexCount){
     glBindVertexArray(GL4_Entity::VAO);
     glBindBuffer(GL_ARRAY_BUFFER, GL4_Entity::posBff);
     glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(GLfloat), data, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(FEED_POS_ID, FEED_POS_COUNT, GL_FLOAT, GL_FALSE, 0, nullptr);
+    glEnableVertexAttribArray(FEED_POS_ID);
     GL4_Entity::vertexCount = vertexCount / GL4_Entity::perVertex;
     GL4_Entity::isFed = true;
     glBindVertexArray(0);

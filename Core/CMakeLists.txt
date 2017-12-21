@@ -147,6 +147,28 @@ target_link_libraries(Cloning
     glm 
 )
 
+add_executable(Cellular
+    source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
+    source/geometry/GL4_Entity.cpp
+    source/geometry/GL4_PolyFunc.cpp
+    source/geometry/polyform/Polyform_Box.cpp
+    source/geometry/polyform/Polyform_Grid.cpp
+    source/pipeline/GLSL_Idle.cpp
+    source/scene/Cellular.cpp # For Testing
+    main/Demo_Cellular.cpp
+)
+
+target_include_directories(Cellular
+    PUBLIC include
+)
+
+target_link_libraries(Cellular
+    GLEW::glew_s
+    glfw
+    glm 
+)
+
 set(SRC_SHADER_LIST)
 set(OUTPUT_SHADER_LIST)
 foreach(current_shader "Idle.vert" "Idle.frag"

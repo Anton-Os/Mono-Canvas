@@ -7,6 +7,7 @@
     class GL4_Entity {
     public:
         glm::mat4 relMatrix = glm::mat4(1);
+        GLuint get_VAO(){ return VAO; }
         GLuint get_vertexCount(){ return vertexCount; }
         GLuint get_idxCount(){ return idxCount; }
         void drawXI(GLenum drawMode);

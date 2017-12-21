@@ -25,11 +25,17 @@
             polyGrid->create(polyFunc);
             polyGrid->exportMeta(&polyGridMeta);
             states.resize(polyGridMeta.xCount * polyGridMeta.yCount);
+            VAO = polyFunc->get_VAO();
+            init();
         }
         void gen_points(float thresh);
         void gen_points(Cellular_Picker* cellPicker);
+        void feedStates();
     private:
+        GLuint VAO;
+        void init();
         Polyform_Grid_Meta polyGridMeta;
         std::vector<int> states;
+        GLuint stateBff;
     };
 #endif

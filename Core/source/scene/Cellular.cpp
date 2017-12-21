@@ -1,3 +1,4 @@
+#include "Feeds.h"
 #include "scene/Cellular.hpp"
 
 void Cellular::gen_points(float thresh){
@@ -29,31 +30,54 @@ void Cellular::gen_points(Cellular_Picker* cellPicker){
     for(unsigned stateElem = 0; stateElem < cellPicker->weights.size(); stateElem++)
         totalWeight += std::abs(cellPicker->weights[stateElem]);
 
-    std::vector<float> clmpWeights;
-    if(totalWeight > 1.0f){
-        clmpWeights.resize(cellPicker->weights.size());
-        for(unsigned stateElem = 0; stateElem < clmpWeights.size(); stateElem++)
-            clmpWeights[stateElem] = std::abs(cellPicker->weights[stateElem]) / totalWeight;
+    std::vector<float> weights;
+    weights.resize(cellPicker->weights.size() + 1);
+    weights[0] = 0.0f;
 
-    } else {
-        clmpWeights.resize(cellPicker->weights.size() + 1);
-        for(unsigned stateElem = 0; stateElem < clmpWeights.size(); stateElem++)
-            clmpWeights[stateElem] = std::abs(cellPicker->weights[stateElem]);
-
-        clmpWeights[cellPicker->weights.size() - 1] = 1.0f - totalWeight;
+    for(unsigned stateElem = 0; stateElem < cellPicker->weights.size(); stateElem++){
+       weights[stateElem + 1] = std::abs(weights[stateElem] + cellPicker->weights[stateElem] / totalWeight);
     }
 
     float random;
-    float bounds[2] = {0.0f, clmpWeights[0]};
-    for(unsigned weightElem = 0; weightElem < Cellular::states.size(); weightElem++){
+    float bounds[2];
+    int correctState;
+    Cellular::states.resize(cellPicker->states.size());
+    for(unsigned weightElem = 0; weightElem < cellPicker->weights.size(); weightElem++){
         random = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
-        for(unsigned stateElem = 0; stateElem < clmpWeights.size() - 1; stateElem++){
-            if(random > bounds[0] && random <= bounds[1]){
-                Cellular::states[stateElem] = cellPicker->states[stateElem];
+        correctState = cellPicker->defaultState;
+        for(unsigned stateElem = 0; stateElem < cellPicker->weights.size(); stateElem++){
+            bounds[0] = weights[stateElem];
+            bounds[1] = weights[stateElem + 1];
+            if(random >= bounds[0] && random <= bounds[1]){
+                correctState = cellPicker->states[stateElem];
                 break;
             }
-            bounds[0] += clmpWeights[stateElem];
-            bounds[1] += clmpWeights[stateElem + 1];
         }
+        Cellular::states[weightElem] = correctState;
     }
+}
+
+/* void Cellular::init(){
+    GLuint buffer;
+
+    glBindVertexArray(Cellular::VAO);
+
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+
+    Cellular::stateBff = buffer;
+} */
+
+void Cellular::init() { return; }
+
+void Cellular::feedStates(){
+    glBindVertexArray(Cellular::VAO);
+    GLuint buffer;
+    glGenBuffers(1, &buffer);
+    Cellular::stateBff = buffer;
+    glBindBuffer(GL_ARRAY_BUFFER, Cellular::stateBff);
+    glBufferData(GL_ARRAY_BUFFER, Cellular::states.size() * sizeof(GLint), Cellular::states.data(), GL_STATIC_DRAW);
+    glVertexAttribIPointer(FEED_STATE_ID, FEED_STATE_COUNT, GL_INT, 0, (GLvoid*)0);
+    glEnableVertexAttribArray(FEED_STATE_ID);
+    glBindVertexArray(0);
 }

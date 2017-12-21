@@ -12,7 +12,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "ManualSets.h"
 #include "Loaders.h"
 #include "pipeline/GLSL_Idle.hpp"
 #include "geometry/GL4_Tree.hpp"
@@ -178,12 +177,18 @@ int main(int argc, char** argv) {
 
     Cellular cellular(&polyFunc, &grid);
 	Cellular_Picker cellPicker;
-	cellPicker.weights.push_back(0.2);
+	cellPicker.weights.push_back(0.1);
 	cellPicker.states.push_back(1);
-	cellPicker.weights.push_back(0.35);
+	cellPicker.weights.push_back(0.05);
 	cellPicker.states.push_back(2);
-    cellPicker.weights.push_back(0.2);
+    cellPicker.weights.push_back(0.3);
 	cellPicker.states.push_back(3);
+	cellPicker.weights.push_back(0.22);
+	cellPicker.states.push_back(4);
+	cellPicker.weights.push_back(0.11);
+	cellPicker.states.push_back(5);
+    cellPicker.weights.push_back(0.01);
+	cellPicker.states.push_back(6);
 	cellular.gen_points(&cellPicker);
 
     Time::setupEnd = std::chrono::steady_clock::now();

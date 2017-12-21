@@ -33,6 +33,7 @@ set(FLTK_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/FLTK")
 set(GLI_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/GLI")
 set(GLM_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/GLM")
 set(SQLITE_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/SQLite")
+set(STB_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/stb")
 set(PYTHON_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/Python")
 set(GOOGLETEST_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/GoogleTest")
 set(GLSLANG_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/GLSLang")
@@ -187,6 +188,24 @@ ExternalProject_Add(GLFW
 )
 
 list(APPEND EXTLIB_TARGETS GLFW)
+
+ExternalProject_Add(stb
+    GIT_REPOSITORY "https://github.com/nothings/stb.git"
+    GIT_TAG "9d9f75eb682dd98b34de08bb5c489c6c561c9fa6"
+
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND ""
+
+    PREFIX ${STB_PROJECT_DIR}
+    BINARY_DIR "${STB_PROJECT_DIR}/build"
+    TMP_DIR "${STB_PROJECT_DIR}/temp"
+    STAMP_DIR "${STB_PROJECT_DIR}/stamp"
+)
+
+list(APPEND EXTLIB_TARGETS stb)
 
 #[[ ExternalProject_Add(Python
     GIT_REPOSITORY "https://github.com/python-cmake-buildsystem/python-cmake-buildsystem.git"

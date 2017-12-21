@@ -14,10 +14,9 @@
 
 #include "Loaders.h"
 #include "pipeline/GLSL_Idle.hpp"
-#include "pipeline/GLSL_ColorMe.hpp"
 #include "geometry/GL4_PolyFunc.hpp"
-#include "geometry/polyform/Polyform_Box.hpp"
-#include "geometry/polyform/Polyform_Rubiks.hpp"
+#include "geometry/polyform/Polyform_Grid.hpp"
+#include "scene/Cellular.hpp"
 
 namespace UI {
 	int height = 1080;
@@ -41,18 +40,14 @@ namespace Player {
     glm::vec3 camPos(0.0, 0.0, 1.0f);
     glm::vec3 camLookPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	float rtFactor = 5.0f;
-	float mvSpeed = 0.7f;
+	float mvSpeed = 0.1f;
 }
 
 namespace Terrain {
 	float xAngle = 0.0f;
 	float yAngle = 0.0f;
 	float zAngle = 0.0f;
-	float distance = -2.0f;
-	/* float minimum = -12.7f / 7;
-	float maximum = 12.7f / 7; */
-	float minimum = -1.0f;
-	float maximum = 1.0f;
+	float distance = -4.0f;
 }
 
 namespace Time {
@@ -63,13 +58,6 @@ namespace Time {
 	std::chrono::duration<double, std::milli> milliSpan;
 	std::chrono::duration<double, std::micro> microSpan;
 	std::chrono::duration<double, std::nano> nanoSpan;
-}
-
-namespace Math {
-    float interval = 0.1f;
-    unsigned int xNum = 1000;
-	float yInit = 0.0f;
-	float zInit = 0.0f;
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
@@ -158,12 +146,27 @@ int main(int argc, char** argv) {
 	std::string parentDir = getParentDirectory(argv[0]);
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
 
-	GL4_PolyFunc polyFunc;
-	Polyform_Box polyBox(0.2f, 0.2f, 0.2f);
-	Polyform_Rubiks polyRubiks(150, 150, 600);
-	polyRubiks.createXI(&polyFunc, &polyBox);
-
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
+
+    GL4_PolyFunc polyFunc;
+	Polyform_Grid grid(0.5f, 7, 0.5f, 10);
+
+    Cellular cellular(&polyFunc, &grid);
+	Cellular_Picker cellPicker;
+	cellPicker.weights.push_back(0.1);
+	cellPicker.states.push_back(1);
+	cellPicker.weights.push_back(0.05);
+	cellPicker.states.push_back(2);
+    cellPicker.weights.push_back(0.3);
+	cellPicker.states.push_back(3);
+	cellPicker.weights.push_back(0.22);
+	cellPicker.states.push_back(4);
+	cellPicker.weights.push_back(0.11);
+	cellPicker.states.push_back(5);
+    cellPicker.weights.push_back(0.01);
+	cellPicker.states.push_back(6);
+	cellular.gen_points(&cellPicker);
+	cellular.feedStates();
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){
@@ -171,26 +174,19 @@ int main(int argc, char** argv) {
         Time::secSpan = std::chrono::duration_cast<std::chrono::duration<double>>(Time::frameBegin - Time::setupEnd);
 
         glfwPollEvents();
-        // glClearColor(0.949f, 0.917f, 0.803f, 1.0f);
-        glClearColor(1.0, 1.0f, 1.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClearColor(0.949f, 0.917f, 0.803f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
-        glPointSize(1.0f);
-        glLineWidth(8.0f);
-
-		Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
-
-		polyFunc.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance));
-        polyFunc.relMatrix = glm::rotate(polyFunc.relMatrix, glm::radians<float>(Terrain::xAngle), glm::vec3(1.0, 0.0, 0.0));
-		polyFunc.relMatrix = glm::rotate(polyFunc.relMatrix, glm::radians<float>(Terrain::yAngle), glm::vec3(0.0, 1.0, 0.0));
 
 		glUseProgram(Idle.shaderProgID);
-		Idle.set_renderMode(0);
-		Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * polyFunc.relMatrix);
-		
-		polyFunc.drawXI(GL_POINTS);		
+		Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix);
+		Idle.set_renderMode(3);
+		polyFunc.draw(GL_TRIANGLES);
+
+        glPointSize(8.0f);
+        glLineWidth(8.0f);
 
 		glfwSwapBuffers(window);
 	}
