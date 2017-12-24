@@ -195,9 +195,14 @@ ExternalProject_Add(stb
 
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
 
-    CONFIGURE_COMMAND ""
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/stb/CMakeLists.txt"
+        "<SOURCE_DIR>/CMakeLists.txt"
+    COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/patch/stb/stbConfig.cmake.in"
+        "<SOURCE_DIR>/stbConfig.cmake.in"
+        
     BUILD_COMMAND ""
-    INSTALL_COMMAND ""
 
     PREFIX ${STB_PROJECT_DIR}
     BINARY_DIR "${STB_PROJECT_DIR}/build"
@@ -433,7 +438,7 @@ ExtlibWriteConfig(
         -DGLI_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/gli
         -DGLM_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/glm
         -DASSIMP_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/assimp-4.0
-        -DFREEIMAGE_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/freeimage
+        -Dstb_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/stb
         -DBOOST_INCLUDEDIR:PATH=${CMAKE_INSTALL_PREFIX}/include/boost-1_65_1
         -DBOOST_LIBRARYDIR:PATH=${BOOST_PROJECT_DIR}/lib
 )

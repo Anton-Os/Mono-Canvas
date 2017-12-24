@@ -41,8 +41,9 @@ void Cellular::gen_points(Cellular_Picker* cellPicker){
     float random;
     float bounds[2];
     int correctState;
-    Cellular::states.resize(cellPicker->states.size());
-    for(unsigned weightElem = 0; weightElem < cellPicker->weights.size(); weightElem++){
+    // Cellular::states.resize(cellPicker->states.size());
+    Cellular::states.resize(Cellular::polyGridMeta.xCount * Cellular::polyGridMeta.yCount);
+    for(unsigned weightElem = 0; weightElem < Cellular::states.size(); weightElem++){
         random = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
         correctState = cellPicker->defaultState;
         for(unsigned stateElem = 0; stateElem < cellPicker->weights.size(); stateElem++){
@@ -57,27 +58,17 @@ void Cellular::gen_points(Cellular_Picker* cellPicker){
     }
 }
 
-/* void Cellular::init(){
-    GLuint buffer;
-
-    glBindVertexArray(Cellular::VAO);
-
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-
-    Cellular::stateBff = buffer;
-} */
-
-void Cellular::init() { return; }
+void Cellular::init() {
+    GLuint cellStateBuffer;
+	glGenBuffers(1, &cellStateBuffer);
+    Cellular::stateBff = cellStateBuffer;
+}
 
 void Cellular::feedStates(){
     glBindVertexArray(Cellular::VAO);
-    GLuint buffer;
-    glGenBuffers(1, &buffer);
-    Cellular::stateBff = buffer;
-    glBindBuffer(GL_ARRAY_BUFFER, Cellular::stateBff);
-    glBufferData(GL_ARRAY_BUFFER, Cellular::states.size() * sizeof(GLint), Cellular::states.data(), GL_STATIC_DRAW);
-    glVertexAttribIPointer(FEED_STATE_ID, FEED_STATE_COUNT, GL_INT, 0, (GLvoid*)0);
-    glEnableVertexAttribArray(FEED_STATE_ID);
+	glBindBuffer(GL_ARRAY_BUFFER, Cellular::stateBff);
+	glBufferData(GL_ARRAY_BUFFER, Cellular::states.size() * sizeof(GLuint), &Cellular::states[0], GL_STATIC_DRAW);
+	glVertexAttribIPointer(FEED_STATE_ID, FEED_STATE_COUNT, GL_UNSIGNED_INT, 0, (GLvoid*)0);
+	glEnableVertexAttribArray(FEED_STATE_ID);
     glBindVertexArray(0);
 }

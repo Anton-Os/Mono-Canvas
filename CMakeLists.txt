@@ -22,11 +22,12 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
-set(GDRIVE_DATA_DIR "${CMAKE_BINARY_DIR}/data")
 
 set(INSTALL_PREFIX_RUNTIME_DIR "${CMAKE_INSTALL_PREFIX}/bin")
-set(GLSLC_EXE "${INSTALL_PREFIX_RUNTIME_DIR}/glslc.exe")
-set(IMG2KTX_EXE "${INSTALL_PREFIX_RUNTIME_DIR}/img2ktx.exe")
+find_program(GLSLC_EXE 
+    NAMES glslc
+    PATHS ${INSTALL_PREFIX_RUNTIME_DIR}
+)
 
 message("Extlib Cache: ${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
 message("Current Generator is ${CMAKE_GENERATOR}")
@@ -37,6 +38,9 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
     endif()
 
     find_package(Vulkan QUIET MODULE)
+    if(Vulkan_FOUND)
+        message(STATUS "Vulkan was found")
+    endif()
 
     find_package(GLEW REQUIRED CONFIG)
     find_package(glfw3 REQUIRED CONFIG)
@@ -56,17 +60,4 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
 
     # add_subdirectory("Legacy")
     add_subdirectory("Core")
-    if(Vulkan_FOUND)
-        message(STATUS "Vulkan was found")
-    endif()
 endif()
-
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake" 
-               "${CMAKE_BINARY_DIR}/GDrive.cmake"
-                @ONLY
-)
-
-add_custom_target(GDrive ALL 
-    ${CMAKE_COMMAND} -P "${CMAKE_BINARY_DIR}/GDrive.cmake"
-    DEPENDS "${CMAKE_BINARY_DIR}/GDrive.cmake"
-)

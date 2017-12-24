@@ -14,8 +14,8 @@
 
 #include "Loaders.h"
 #include "pipeline/GLSL_Idle.hpp"
-#include "geometry/GL4_PolyFunc.hpp"
-#include "geometry/GL4_PolyAngles.hpp"
+#include "geometry/polybase/GL4_PolyFunc.hpp"
+#include "geometry/polybase/GL4_PolyAngles.hpp"
 #include "geometry/polyform/Polyform_Grid.hpp"
 #include "geometry/polyform/Polyform_Circle.hpp"
 

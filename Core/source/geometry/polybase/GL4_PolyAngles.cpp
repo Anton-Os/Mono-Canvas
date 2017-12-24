@@ -1,4 +1,4 @@
-#include "geometry/GL4_PolyAngles.hpp"
+#include "geometry/polybase/GL4_PolyAngles.hpp"
 
 void GL4_PolyAngles::reset(){
     GL4_PolyAngles::angles.clear();

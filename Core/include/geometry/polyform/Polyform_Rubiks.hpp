@@ -8,7 +8,7 @@
 #endif
 
 #ifndef POLY_FUNC_H
-    #include "geometry/GL4_PolyFunc.hpp"
+    #include "geometry/polybase/GL4_PolyFunc.hpp"
 #endif
 
 #ifndef POLYFORM_RUBIKS_H

@@ -88,6 +88,7 @@ void GL4_Entity::feedPos(const void* data, GLuint vertexCount){
     glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(GLfloat), data, GL_STATIC_DRAW);
     glVertexAttribPointer(FEED_POS_ID, FEED_POS_COUNT, GL_FLOAT, GL_FALSE, 0, nullptr);
     glEnableVertexAttribArray(FEED_POS_ID);
+    
     GL4_Entity::vertexCount = vertexCount / GL4_Entity::perVertex;
     GL4_Entity::isFed = true;
     glBindVertexArray(0);

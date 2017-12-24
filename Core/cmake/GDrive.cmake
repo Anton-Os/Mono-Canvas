@@ -48,11 +48,11 @@ list(APPEND GDRIVE_NAMES
 foreach(currentFile ${GDRIVE_NAMES})
     list(FIND GDRIVE_NAMES ${currentFile} currentIndex)
     list(GET GDRIVE_URLS ${currentIndex} currentUrl)
-    if(NOT EXISTS @GDRIVE_DATA_DIR@/${currentFile})
+    if(NOT EXISTS @RES_DIR@/${currentFile})
         message(STATUS "Downloading ${currentFile}")
         file(DOWNLOAD
             "${currentUrl}"
-            @GDRIVE_DATA_DIR@/${currentFile}
+            @RES_DIR@/${currentFile}
             SHOW_PROGRESS
         )
     else()

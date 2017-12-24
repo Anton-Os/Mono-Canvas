@@ -15,7 +15,7 @@
 #include "Loaders.h"
 #include "pipeline/GLSL_Idle.hpp"
 #include "pipeline/GLSL_ColorMe.hpp"
-#include "geometry/GL4_PolyFunc.hpp"
+#include "geometry/polybase/GL4_PolyFunc.hpp"
 #include "geometry/polyform/Polyform_Box.hpp"
 #include "geometry/polyform/Polyform_Rubiks.hpp"
 

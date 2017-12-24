@@ -35,7 +35,7 @@
         GLuint VAO;
         void init();
         Polyform_Grid_Meta polyGridMeta;
-        std::vector<int> states;
+        std::vector<GLuint> states;
         GLuint stateBff;
     };
 #endif

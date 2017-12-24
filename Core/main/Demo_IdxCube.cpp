@@ -14,7 +14,7 @@
 
 #include "Loaders.h"
 #include "pipeline/GLSL_Idle.hpp"
-#include "geometry/GL4_PolyFunc.hpp"
+#include "geometry/polybase/GL4_PolyFunc.hpp"
 #include "geometry/polyform/Polyform_Grid.hpp"
 
 namespace UI {

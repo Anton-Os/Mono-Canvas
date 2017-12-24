@@ -1,7 +1,7 @@
 #version 440 core
 
 layout(location = 0) in flat uint vertexID;
-layout(location = 1) in flat int state;
+layout(location = 1) in flat uint state;
 
 uniform uint renderMode;
 
@@ -26,10 +26,10 @@ void main(){
         else frag_out = vec4(grey4, 0.7);    
     } else if(renderMode == 3){
         if(state == 1) frag_out = vec4(blue, 1.0);
-        if(state == 2) frag_out = vec4(green, 1.0);
-        if(state == 3) frag_out = vec4(red, 1.0);
-        if(state == 4) frag_out = vec4(grey0, 1.0);
-        else frag_out = vec4(grey4, 1.0);
+        else if(state == 2) frag_out = vec4(green, 1.0);
+        else if(state == 3) frag_out = vec4(red, 1.0);
+        else if(state == 4) frag_out = vec4(grey0, 1.0);
+        else frag_out = vec4(grey2, 1.0);
     } else {
         if(vertexID % 3 == 1) frag_out = vec4(red, 0.7);
         else if(vertexID % 3 == 2) frag_out = vec4(green, 0.7);

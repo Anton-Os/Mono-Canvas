@@ -1,4 +1,4 @@
-#include "geometry/GL4_PolyFunc.hpp"
+#include "geometry/polybase/GL4_PolyFunc.hpp"
 
 void GL4_PolyFunc::reset(){
     GL4_PolyFunc::xVals.clear();

@@ -4,7 +4,7 @@
 #endif
 
 #ifndef POLY_ANGLES_H
-    #include "geometry/GL4_PolyAngles.hpp"
+    #include "geometry/polybase/GL4_PolyAngles.hpp"
 #endif
 
 #ifndef POLYFORM_CIRCLE_H

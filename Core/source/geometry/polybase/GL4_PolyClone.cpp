@@ -1,4 +1,4 @@
-#include "geometry/GL4_PolyClone.hpp"
+#include "geometry/polybase/GL4_PolyClone.hpp"
 
 void GL4_PolyClone::reset(){
     GL4_PolyClone::mtxSequence = nullptr;

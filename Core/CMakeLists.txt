@@ -2,7 +2,7 @@ add_executable(CalcGraph
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
     source/geometry/GL4_Entity.cpp
-    source/geometry/GL4_PolyFunc.cpp
+    source/geometry/polybase/GL4_PolyFunc.cpp
     source/pipeline/GLSL_Idle.cpp
     main/Demo_CalcGraph.cpp
 )
@@ -21,7 +21,7 @@ add_executable(IdxCube
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
     source/geometry/GL4_Entity.cpp
-    source/geometry/GL4_PolyFunc.cpp
+    source/geometry/polybase/GL4_PolyFunc.cpp
     source/geometry/polyform/Polyform_Grid.cpp
     source/pipeline/GLSL_Idle.cpp
     main/Demo_IdxCube.cpp
@@ -41,7 +41,7 @@ add_executable(Rounding
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
     source/geometry/GL4_Entity.cpp
-    source/geometry/GL4_PolyAngles.cpp
+    source/geometry/polybase/GL4_PolyAngles.cpp
     source/geometry/polyform/Polyform_Circle.cpp
     source/pipeline/GLSL_Idle.cpp
     main/Demo_Rounding.cpp
@@ -61,7 +61,7 @@ add_executable(Spectrum
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
     source/geometry/GL4_Entity.cpp
-    source/geometry/GL4_PolyFunc.cpp
+    source/geometry/polybase/GL4_PolyFunc.cpp
     source/geometry/polyform/Polyform_Box.cpp
     source/geometry/polyform/Polyform_Rubiks.cpp
     source/pipeline/GLSL_Idle.cpp
@@ -83,7 +83,7 @@ add_executable(Galactica
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
     source/geometry/GL4_Entity.cpp
-    source/geometry/GL4_PolyFunc.cpp
+    source/geometry/polybase/GL4_PolyFunc.cpp
     source/geometry/polyform/Polyform_Box.cpp
     source/geometry/polyform/Polyform_Rubiks.cpp
     source/pipeline/GLSL_Idle.cpp
@@ -105,7 +105,7 @@ add_executable(Editor
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
     source/geometry/GL4_Entity.cpp
-    source/geometry/GL4_PolyFunc.cpp
+    source/geometry/polybase/GL4_PolyFunc.cpp
     source/geometry/polyform/Polyform_Box.cpp
     source/geometry/polyform/Polyform_Rubiks.cpp
     source/pipeline/GLSL_Idle.cpp
@@ -128,8 +128,8 @@ add_executable(Cloning
     source/loaders/LoadShaders.cpp
     source/geometry/GL4_Entity.cpp
     source/geometry/GL4_Tree.cpp
-    source/geometry/GL4_PolyFunc.cpp
-    source/geometry/GL4_PolyClone.cpp
+    source/geometry/polybase/GL4_PolyFunc.cpp
+    source/geometry/polybase/GL4_PolyClone.cpp
     source/geometry/polyform/Polyform_Box.cpp
     source/geometry/polyform/Polyform_Grid.cpp
     source/pipeline/GLSL_Idle.cpp
@@ -151,7 +151,7 @@ add_executable(Cellular
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
     source/geometry/GL4_Entity.cpp
-    source/geometry/GL4_PolyFunc.cpp
+    source/geometry/polybase/GL4_PolyFunc.cpp
     source/geometry/polyform/Polyform_Box.cpp
     source/geometry/polyform/Polyform_Grid.cpp
     source/pipeline/GLSL_Idle.cpp
@@ -167,6 +167,26 @@ target_link_libraries(Cellular
     GLEW::glew_s
     glfw
     glm 
+)
+
+add_executable(BasicUI
+    main/Demo_BasicUI.cpp
+)
+
+target_include_directories(BasicUI
+    PUBLIC include
+           ${FLTK_INCLUDE_DIRS}
+)
+
+target_link_libraries(BasicUI
+    fltk
+)
+
+set(RES_DIR "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/res")
+configure_file("${CMAKE_CURRENT_LIST_DIR}/cmake/GDrive.cmake" "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/GDrive.cmake" @ONLY)
+add_custom_target(Core_GDrive ALL 
+    ${CMAKE_COMMAND} -P "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/GDrive.cmake"
+    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/GDrive.cmake"
 )
 
 set(SRC_SHADER_LIST)
