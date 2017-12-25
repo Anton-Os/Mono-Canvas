@@ -85,9 +85,15 @@ void GL4_Entity::init(){
 void GL4_Entity::feedPos(const void* data, GLuint vertexCount){
     glBindVertexArray(GL4_Entity::VAO);
     glBindBuffer(GL_ARRAY_BUFFER, GL4_Entity::posBff);
-    glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(GLfloat), data, GL_STATIC_DRAW);
-    glVertexAttribPointer(FEED_POS_ID, FEED_POS_COUNT, GL_FLOAT, GL_FALSE, 0, nullptr);
-    glEnableVertexAttribArray(FEED_POS_ID);
+
+    if(GL4_Entity::entityFeeds.empty()){
+        glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(GLfloat), data, GL_STATIC_DRAW);
+        glVertexAttribPointer(FEED_POS_ID, FEED_POS_COUNT, GL_FLOAT, GL_FALSE, 0, nullptr);
+        glEnableVertexAttribArray(FEED_POS_ID);
+    } else {
+        std::cerr << "Cannot work with entity feeds yet. Please stand by..." << std::endl;
+        return;
+    }
     
     GL4_Entity::vertexCount = vertexCount / GL4_Entity::perVertex;
     GL4_Entity::isFed = true;

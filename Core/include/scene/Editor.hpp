@@ -3,6 +3,22 @@
     #define GEOMETRY_H
 #endif
 
+#ifndef GL4_ENTITY_H
+    #include "geometry/GL4_Entity.hpp"
+#endif
+
+#ifndef POLY_FUNC_H
+    #include "geometry/polybase/GL4_PolyFunc.hpp"
+#endif
+
+#ifndef POLY_BOX_H
+    #include "geometry/polyform/Polyform_Box.hpp"
+#endif
+
+#ifndef POLY_RUBIKS_H
+    #include "geometry/polyform/Polyform_Rubiks.hpp"
+#endif
+
 #ifndef EDITOR_H
     class Editor {
     public:

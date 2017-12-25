@@ -4,9 +4,17 @@
 #endif
 
 #ifndef GL4_ENTITY_H
+    struct GL4_Entity_Feed {
+        GLuint feedID;
+        GLint perVertex;
+        GLsizei stride;
+        const GLvoid* offset;
+    };
+
     class GL4_Entity {
     public:
         glm::mat4 relMatrix = glm::mat4(1);
+        std::vector<GL4_Entity_Feed> entityFeeds;
         GLuint get_VAO(){ return VAO; }
         GLuint get_vertexCount(){ return vertexCount; }
         GLuint get_idxCount(){ return idxCount; }

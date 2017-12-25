@@ -4,6 +4,9 @@
 
 #include <GL/glew.h>
 
+#ifndef GL4_TREE_H
+    #include "geometry/GL4_Tree.hpp"
+#endif
 
 #ifndef LOADERS_H
     // From LoadData.cpp // Legacy
@@ -24,6 +27,10 @@
     // From LoadTextures.cpp
 
     GLuint createTexture(const char* Filename);
+
+    // From AssimpImport.cpp
+
+    void assimpImport(GL4_Tree* tree);
 
 #define LOADERS_H
 #endif
