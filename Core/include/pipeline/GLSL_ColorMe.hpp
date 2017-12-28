@@ -3,6 +3,8 @@
     #define PIPELINE_H
 #endif
 
+#include "Feeds.h"
+
 #ifndef PIPELINE_COLOR_ME_H
     class GLSL_ColorMe : public GLSL_Base {
     public:
@@ -21,6 +23,7 @@
         void set_zMin(GLfloat zMin);
         void set_zMax(GLfloat zMax);
     private:
+        GLuint inputFeeds[1] = { FEED_POS_ID };
         GLuint unifLoc[8];
         void initUniforms();
     };

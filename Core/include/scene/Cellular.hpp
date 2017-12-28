@@ -14,6 +14,7 @@
 #ifndef CELLULAR_H
     struct Cellular_Picker {
         int defaultState = 0;
+        unsigned perState = 1;
         std::vector<float> weights;
         std::vector<int> states;
     };

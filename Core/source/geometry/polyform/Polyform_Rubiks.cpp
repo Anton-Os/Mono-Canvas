@@ -59,6 +59,28 @@ void Polyform_Rubiks::createXI(GL4_PolyFunc* polyFunc, Polyform_Box* polyBox){
     polyFunc->createXI();
 }
 
+void Polyform_Rubiks::create(GL4_PolyFunc* polyFunc, float length, float width, float height){
+    Polyform_Rubiks_Eq::xNum = Polyform_Rubiks::xCount;
+    Polyform_Rubiks_Eq::interval = length / (float)Polyform_Rubiks::xCount;
+    polyFunc->xSequence = Polyform_Rubiks_Eq::xSequence;
+    polyFunc->gen_x();
+    float yInc = width / (float)Polyform_Rubiks::yCount;
+    Polyform_Rubiks_Eq::yOffset = -1 * yInc * (float)Polyform_Rubiks::yCount / 2 - yInc / 2;
+    polyFunc->yEquation = Polyform_Rubiks_Eq::yEquation;
+    for(unsigned int yElem = 0; yElem < Polyform_Rubiks::yCount; yElem++){
+        Polyform_Rubiks_Eq::yOffset += yInc;
+        polyFunc->gen_y();
+    }
+    float zInc = height / (float)Polyform_Rubiks::zCount;
+    Polyform_Rubiks_Eq::zOffset = -1 * zInc * (float)Polyform_Rubiks::zCount / 2 - zInc / 2;
+    polyFunc->zEquation = Polyform_Rubiks_Eq::zEquation;
+    for(unsigned int zElem = 0; zElem < Polyform_Rubiks::zCount; zElem++){
+        Polyform_Rubiks_Eq::zOffset += zInc;
+        polyFunc->gen_z();
+    }
+    polyFunc->create();
+}
+
 void Polyform_Rubiks::create(GL4_PolyFunc* polyFunc, Polyform_Box* polyBox){
     Polyform_Box_Meta metaData;
     polyBox->exportMeta(&metaData);

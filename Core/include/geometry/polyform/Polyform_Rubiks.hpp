@@ -31,7 +31,14 @@
             zCount = zCountArg;
             create(polyFunc, polyBox);
         }
+        Polyform_Rubiks(GL4_PolyFunc* polyFunc, float length, float width, float height, Polyform_Box* polyBox, unsigned int xCountArg, unsigned int yCountArg, unsigned int zCountArg){
+            xCount = xCountArg;
+            yCount = yCountArg;
+            zCount = zCountArg;
+            create(polyFunc, length, width, height);
+        }
         void createXI(GL4_PolyFunc* workspace, Polyform_Box* polyBox);
+        void create(GL4_PolyFunc* polyFunc, float length, float width, float height);
         void create(GL4_PolyFunc* polyFunc, Polyform_Box* polyBox);
         void exportMeta(Polyform_Rubiks_Meta* metaData);
     private:

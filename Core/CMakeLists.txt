@@ -151,9 +151,12 @@ add_executable(Cellular
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
     source/geometry/GL4_Entity.cpp
+    source/geometry/GL4_Tree.cpp
     source/geometry/polybase/GL4_PolyFunc.cpp
+    source/geometry/polybase/GL4_PolyClone.cpp
     source/geometry/polyform/Polyform_Box.cpp
     source/geometry/polyform/Polyform_Grid.cpp
+    source/geometry/polyform/Polyform_Tilemap.cpp
     source/pipeline/GLSL_Idle.cpp
     source/scene/Cellular.cpp # For Testing
     main/Demo_Cellular.cpp

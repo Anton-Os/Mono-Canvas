@@ -16,6 +16,7 @@
 #include "pipeline/GLSL_Idle.hpp"
 #include "geometry/polybase/GL4_PolyFunc.hpp"
 #include "geometry/polyform/Polyform_Grid.hpp"
+#include "geometry/polyform/Polyform_Tilemap.hpp"
 #include "scene/Cellular.hpp"
 
 namespace UI {
@@ -149,10 +150,11 @@ int main(int argc, char** argv) {
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
     GL4_PolyFunc polyFunc;
-	Polyform_Grid grid(0.5f, 7, 0.5f, 10);
+	Polyform_Grid grid(0.5f, 10, 0.5f, 10);
 
     Cellular cellular(&polyFunc, &grid);
 	Cellular_Picker cellPicker;
+    cellPicker.perState = 4;
 	cellPicker.weights.push_back(0.1);
 	cellPicker.states.push_back(1);
 	cellPicker.weights.push_back(0.05);
@@ -167,6 +169,11 @@ int main(int argc, char** argv) {
 	cellPicker.states.push_back(6);
 	cellular.gen_points(&cellPicker);
 	cellular.feedStates();
+
+	GL4_PolyClone polyClone;
+	Polyform_Tilemap tilemap(&polyClone, &grid);
+	GL4_Tree_Meta treeMeta;
+	polyClone.exportMeta(&treeMeta);
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){
@@ -183,7 +190,12 @@ int main(int argc, char** argv) {
 		glUseProgram(Idle.shaderProgID);
 		Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix);
 		Idle.set_renderMode(3);
-		polyFunc.draw(GL_TRIANGLES);
+		// polyFunc.draw(GL_TRIANGLES);
+		
+		for(unsigned m = 0; m < treeMeta.nodeCount; m++){
+			Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * polyClone.get_mtx(m));
+			polyClone.drawXI(m, GL_TRIANGLES);
+		}
 
         glPointSize(8.0f);
         glLineWidth(8.0f);

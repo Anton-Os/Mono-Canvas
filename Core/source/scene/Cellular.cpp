@@ -43,7 +43,7 @@ void Cellular::gen_points(Cellular_Picker* cellPicker){
     int correctState;
     // Cellular::states.resize(cellPicker->states.size());
     Cellular::states.resize(Cellular::polyGridMeta.xCount * Cellular::polyGridMeta.yCount);
-    for(unsigned weightElem = 0; weightElem < Cellular::states.size(); weightElem++){
+    for(unsigned weightElem = 0; weightElem < Cellular::states.size() / cellPicker->perState; weightElem++){
         random = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
         correctState = cellPicker->defaultState;
         for(unsigned stateElem = 0; stateElem < cellPicker->weights.size(); stateElem++){
@@ -54,7 +54,8 @@ void Cellular::gen_points(Cellular_Picker* cellPicker){
                 break;
             }
         }
-        Cellular::states[weightElem] = correctState;
+        for(unsigned stateElem = 0; stateElem < cellPicker->perState; stateElem++)
+            Cellular::states[weightElem * cellPicker->perState + stateElem] = correctState;
     }
 }
 
