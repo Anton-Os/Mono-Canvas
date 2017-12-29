@@ -3,7 +3,6 @@
 #include <chrono>
 #include <ctime>
 #include <algorithm>
-// #include <cstring>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -14,10 +13,6 @@
 
 #include "Loaders.h"
 #include "pipeline/GLSL_Idle.hpp"
-#include "geometry/GL4_Tree.hpp"
-#include "geometry/polybase/GL4_PolyFunc.hpp"
-#include "geometry/polybase/GL4_PolyClone.hpp"
-#include "geometry/polyform/Polyform_Grid.hpp"
 
 namespace UI {
 	int height = 1080;
@@ -59,15 +54,6 @@ namespace Time {
 	std::chrono::duration<double, std::milli> milliSpan;
 	std::chrono::duration<double, std::micro> microSpan;
 	std::chrono::duration<double, std::nano> nanoSpan;
-}
-
-void mtxSequence(std::vector<glm::mat4>* matrices){
-	glm::mat4 matrix1 = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, -7.0));
-	matrices->push_back(matrix1);
-	glm::mat4 matrix2 = glm::translate(glm::mat4(1), glm::vec3(1.0f, 0.0, -4.0));
-	matrices->push_back(matrix2);
-	glm::mat4 matrix3 = glm::translate(glm::mat4(1), glm::vec3(-0.5f, 0.0, -2.0));
-	matrices->push_back(matrix3);
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
@@ -156,39 +142,10 @@ int main(int argc, char** argv) {
 	std::string parentDir = getParentDirectory(argv[0]);
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
 
-    Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
-
-    GL4_PolyFunc polyFunc;
-	Polyform_Grid grid(&polyFunc, 0.5f, 7, 0.5f, 10);
 	GL4_Tree tree;
-	vertexFeed vFeed;
-	polyFunc.dump(&vFeed);
-	tree.addNode(&polyFunc.relMatrix, &vFeed);
-	glm::mat4 shiftRight = glm::translate(polyFunc.relMatrix, glm::vec3(1.0, 0.0, 0.0));
-	tree.addNode(&shiftRight, &vFeed);
-	glm::mat4 shiftLeft = glm::translate(polyFunc.relMatrix, glm::vec3(-1.0, 0.0, 0.0));
-	tree.addNode(&shiftLeft, &vFeed);
+	assimpImport(parentDir + "//res//Centaur.fbx", &tree);
 
-	GL4_PolyClone polyClone;
-	polyClone.mtxSequence = mtxSequence;
-	polyClone.gen_mtx();
-	polyClone.createXI(&vFeed);
-
-    Cellular cellular(&polyFunc, &grid);
-	Cellular_Picker cellPicker;
-	cellPicker.weights.push_back(0.1);
-	cellPicker.states.push_back(1);
-	cellPicker.weights.push_back(0.05);
-	cellPicker.states.push_back(2);
-    cellPicker.weights.push_back(0.3);
-	cellPicker.states.push_back(3);
-	cellPicker.weights.push_back(0.22);
-	cellPicker.states.push_back(4);
-	cellPicker.weights.push_back(0.11);
-	cellPicker.states.push_back(5);
-    cellPicker.weights.push_back(0.01);
-	cellPicker.states.push_back(6);
-	cellular.gen_points(&cellPicker);
+    Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
     Time::setupEnd = std::chrono::steady_clock::now();
     while(!glfwWindowShouldClose(window)){
@@ -201,23 +158,12 @@ int main(int argc, char** argv) {
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
+
+		glUseProgram(Idle.shaderProgID);
+		Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix);
+
         glPointSize(8.0f);
         glLineWidth(8.0f);
-
-		polyFunc.relMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, Terrain::distance));
-        polyFunc.relMatrix = glm::rotate(polyFunc.relMatrix, glm::radians<float>(Terrain::xAngle), glm::vec3(1.0, 0.0, 0.0));
-		polyFunc.relMatrix = glm::rotate(polyFunc.relMatrix, glm::radians<float>(Terrain::yAngle), glm::vec3(0.0, 1.0, 0.0));
-		shiftRight = glm::translate(polyFunc.relMatrix, glm::vec3(1.0, 0.0, 0.0));
-		shiftLeft = glm::translate(polyFunc.relMatrix, glm::vec3(-1.0, 0.0, 0.0));
-
-        glUseProgram(Idle.shaderProgID);
-        Idle.set_renderMode(0);
-		Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * polyClone.get_mtx(0));
-		polyClone.drawXI(0, GL_POINTS);
-		Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * polyClone.get_mtx(1));
-		polyClone.drawXI(1, GL_POINTS);
-		Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix * polyClone.get_mtx(2));
-		polyClone.drawXI(2, GL_POINTS);
 
 		glfwSwapBuffers(window);
 	}

@@ -22,6 +22,7 @@ list(APPEND GDRIVE_URLS
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzZ1gzekJXZVh4UDg"
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzRk1MSGNNOUg0WGM"
     "https://drive.google.com/uc?export=download&id=0ByCFa5FWp8ZzNzUxRkR6cnk4aVU"
+    "https://drive.google.com/uc?export=download&id=1leGvUR_iBxPmkbnai7IqRoOl5OQoOeeY"
 )
 
 list(APPEND GDRIVE_NAMES
@@ -43,6 +44,7 @@ list(APPEND GDRIVE_NAMES
     "SandTex1.ktx"
     "MipTest.ktx"
     "Centaur.fbx"
+    "Smiley.png"
 )
 
 foreach(currentFile ${GDRIVE_NAMES})
@@ -56,6 +58,6 @@ foreach(currentFile ${GDRIVE_NAMES})
             SHOW_PROGRESS
         )
     else()
-        message(STATUS "${currentFile} exists in \\data directory")
+        message(STATUS "${currentFile} exists in \\res directory")
     endif()
 endforeach()

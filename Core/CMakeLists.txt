@@ -150,17 +150,53 @@ target_link_libraries(Cellular
     glm 
 )
 
+add_executable(Modeling
+    source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
+    source/loaders/AssimpImport.cpp
+    source/geometry/GL4_Entity.cpp
+    source/geometry/GL4_Tree.cpp
+    source/pipeline/GLSL_Idle.cpp
+    main/Demo_Modeling.cpp
+)
+
+target_include_directories(Modeling
+    PUBLIC include
+)
+
+target_link_libraries(Modeling
+    GLEW::glew_s
+    glfw
+    glm
+    ${assimp_lib}
+)
+
 add_executable(BasicUI
     main/Demo_BasicUI.cpp
 )
 
-target_include_directories(BasicUI
-    PUBLIC include
-           ${FLTK_INCLUDE_DIRS}
+target_include_directories(BasicUI PUBLIC 
+    include
+    ${FLTK_INCLUDE_DIRS}
 )
 
 target_link_libraries(BasicUI
     fltk
+)
+
+
+add_executable(BasicImg
+    source/loaders/FileIO.cpp
+    main/Demo_BasicImg.cpp
+)
+
+target_include_directories(BasicImg PUBLIC 
+    include
+)
+
+target_link_libraries(BasicImg
+    GLEW::glew_s
+    stb
 )
 
 set(RES_DIR "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/res")

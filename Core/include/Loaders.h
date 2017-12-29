@@ -30,7 +30,7 @@
 
     // From AssimpImport.cpp
 
-    void assimpImport(GL4_Tree* tree);
+    void assimpImport(std::string filepath, GL4_Tree* tree);
 
 #define LOADERS_H
 #endif

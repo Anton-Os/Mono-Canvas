@@ -148,7 +148,7 @@ int main(int argc, char** argv) {
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
 	GLSL_Tilemap Tilemap(parentDir + "//shaders//Tilemap.vert", parentDir + "//shaders//Tilemap.frag");
 
-	std::string sandTexPath = parentDir + "//res//LimeStone.ktx";
+	std::string sandTexPath = parentDir + "//res//LightWood.ktx";
 	GLuint sandTex = createTexture(sandTexPath.c_str());
 	glBindTextureUnit(0, sandTex);
 

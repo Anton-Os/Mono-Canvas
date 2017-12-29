@@ -49,6 +49,7 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
     find_package(GLM REQUIRED CONFIG)
     find_package(ASSIMP REQUIRED CONFIG)
     find_package(Boost REQUIRED)
+    find_package(stb REQUIRED)
 
     find_library(assimp_lib
         NAMES assimp libassimp
