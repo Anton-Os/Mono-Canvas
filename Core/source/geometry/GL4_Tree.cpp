@@ -60,3 +60,14 @@ void GL4_Tree::addNode(glm::mat4* matrix, vertexFeed* vFeed){
     GL4_Tree::nodes.push_back(entity);
     GL4_Tree::nodeOrder.push_back(0);
 }
+
+void GL4_Tree::addNode(glm::mat4* matrix, vertexFeedIdx* vFeed){
+    GL4_Entity entity;
+    entity.relMatrix = *matrix;
+    entity.init();
+    entity.feedPos(vFeed->pos.data(), vFeed->pos.size());
+    entity.feedIdx(vFeed->idx.data(), vFeed->idx.size());
+    GL4_Tree::nodes.push_back(entity);
+    GL4_Tree::nodeOrder.push_back(0);
+}
+

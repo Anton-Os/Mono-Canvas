@@ -14,6 +14,7 @@
         void (*mtxSequence)(std::vector<glm::mat4>* matrices);
         void gen_mtx(); 
         void createXI(vertexFeed* vFeed);
+        void create(vertexFeedIdx* vFeed);
     private:
         std::vector<glm::mat4> matrices;
         enum ptAttrib { Mtx };

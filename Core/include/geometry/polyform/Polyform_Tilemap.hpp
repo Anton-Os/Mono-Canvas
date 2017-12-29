@@ -28,8 +28,11 @@
         Polyform_Tilemap(GL4_PolyClone* polyClone, Polyform_Grid* polyGrid){
             create(polyClone, polyGrid);
         }
+        void gen_points(float thresh);
+        int get_state(unsigned nodeID);
     private:
         void create(GL4_PolyClone* polyClone, Polyform_Grid* polyGrid);
         std::vector<GLint> states;    
     };
+#define POLYFORM_TILEMAP_H
 #endif

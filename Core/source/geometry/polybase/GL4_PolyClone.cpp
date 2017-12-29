@@ -22,3 +22,15 @@ void GL4_PolyClone::createXI(vertexFeed* vFeed){
         GL4_PolyClone::addNode(&currentMatrix, vFeed);
     }
 }
+
+void GL4_PolyClone::create(vertexFeedIdx* vFeed){
+    if(!GL4_PolyClone::xyzBits.all()){
+        std::cerr << "Feed GL can only work if all x y z values are present" << std::endl;
+        return;
+    }
+
+    for(unsigned int matElem = 0; matElem < GL4_PolyClone::matrices.size(); matElem++){
+        glm::mat4 currentMatrix = GL4_PolyClone::matrices[matElem];
+        GL4_PolyClone::addNode(&currentMatrix, vFeed);
+    }
+}

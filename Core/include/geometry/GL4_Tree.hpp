@@ -19,6 +19,7 @@
         glm::mat4 traceBack(GLuint nodeID);
         glm::mat4 get_mtx(GLuint nodeID);
         void addNode(glm::mat4* matrixPtr, vertexFeed* vFeed);
+        void addNode(glm::mat4* matrixPtr, vertexFeedIdx* vFeed);
         void drawXI(GLuint nodeID, GLenum drawMode);
         void draw(GLuint nodeID, GLenum drawMode);
         void exportMeta(GL4_Tree_Meta* treeMeta);

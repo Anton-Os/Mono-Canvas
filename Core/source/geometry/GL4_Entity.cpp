@@ -103,6 +103,7 @@ void GL4_Entity::feedPos(const void* data, GLuint vertexCount){
 void GL4_Entity::feedIdx(const void* data, GLuint indexCount){
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL4_Entity::idxBff);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * sizeof(GLuint), data, GL_STATIC_DRAW);
+    GL4_Entity::idxCount = indexCount;
     GL4_Entity::isIdx = true;
 }
 
