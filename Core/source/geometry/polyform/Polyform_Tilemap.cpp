@@ -58,6 +58,24 @@ namespace Polyform_Tilemap_Eq {
         vFeed->idx.at(4) = 1;
         vFeed->idx.at(5) = 2;
     }
+
+    void genTileTexCoord(std::vector<float>* texCoords){
+        texCoords->resize(8);
+
+        const float uMin = 0.0f;
+        const float uMax = 1.0f;
+        const float vMin = 0.0f;
+        const float vMax = 1.0f;
+
+        texCoords->at(0) = uMin;
+        texCoords->at(1) = vMin;
+        texCoords->at(2) = uMax;
+        texCoords->at(3) = vMin;
+        texCoords->at(4) = uMin;
+        texCoords->at(5) = vMax;
+        texCoords->at(6) = uMax;
+        texCoords->at(7) = vMax;
+    }
 }
 
 void Polyform_Tilemap::create(GL4_PolyClone* polyClone, Polyform_Grid* polyGrid){
@@ -79,6 +97,15 @@ void Polyform_Tilemap::create(GL4_PolyClone* polyClone, Polyform_Grid* polyGrid)
     float tileY = polyGridMeta.height / polyGridMeta.yCount;
     Polyform_Tilemap_Eq::createTile(tileX, tileY, &tile);
     polyClone->create(&tile);
+
+    std::vector<float> texCoords;
+    Polyform_Tilemap_Eq::genTileTexCoord(&texCoords);
+    GL4_Entity_Feed texCoordFeed;
+    texCoordFeed.feedID = FEED_TEX_COORD_ID;
+    texCoordFeed.perVertex = FEED_TEX_COORD_COUNT;
+    texCoordFeed.stride = 0;
+    texCoordFeed.offset = nullptr;
+    polyClone->attach(&texCoordFeed, texCoords.size() * sizeof(GLfloat), texCoords.data());
 }
 
 void Polyform_Tilemap::gen_points(float thresh){
@@ -95,6 +122,45 @@ void Polyform_Tilemap::gen_points(float thresh){
         } else {
             Polyform_Tilemap::states[stateElem] = 0;
         }
+    }
+}
+
+void Polyform_Tilemap::gen_points(Polyform_Tilemap_Picker* tilemapPicker){
+    if(tilemapPicker->weights.empty() || tilemapPicker->states.empty() || 
+        tilemapPicker->weights.size() != tilemapPicker->states.size()){
+        std::cerr << "Weights and states cannot be empty and cannot vary in size" << std::endl;
+        return;
+    }
+
+    std::srand(time(NULL));
+    float totalWeight;
+    for(unsigned stateElem = 0; stateElem < tilemapPicker->weights.size(); stateElem++)
+        totalWeight += std::abs(tilemapPicker->weights[stateElem]);
+
+    std::vector<float> weights;
+    weights.resize(tilemapPicker->weights.size() + 1);
+    weights[0] = 0.0f;
+
+    for(unsigned stateElem = 0; stateElem < tilemapPicker->weights.size(); stateElem++){
+       weights[stateElem + 1] = std::abs(weights[stateElem] + tilemapPicker->weights[stateElem] / totalWeight);
+    }
+
+    float random;
+    float bounds[2];
+    int correctState;
+    for(unsigned weightElem = 0; weightElem < Polyform_Tilemap::states.size() / tilemapPicker->perState; weightElem++){
+        random = static_cast<GLfloat>(std::rand()) / static_cast<GLfloat>(RAND_MAX);
+        correctState = tilemapPicker->defaultState;
+        for(unsigned stateElem = 0; stateElem < tilemapPicker->weights.size(); stateElem++){
+            bounds[0] = weights[stateElem];
+            bounds[1] = weights[stateElem + 1];
+            if(random >= bounds[0] && random <= bounds[1]){
+                correctState = tilemapPicker->states[stateElem];
+                break;
+            }
+        }
+        for(unsigned stateElem = 0; stateElem < tilemapPicker->perState; stateElem++)
+            Polyform_Tilemap::states[weightElem * tilemapPicker->perState + stateElem] = correctState;
     }
 }
 

@@ -5,10 +5,16 @@
 
 #ifndef GL4_ENTITY_H
     struct GL4_Entity_Feed {
+        void feed(GLuint VAO, GLsizei size, const void *data);
+        GLuint buffer;
         GLuint feedID;
+        GLenum type = GL_FLOAT;
+        GLenum usage = GL_STATIC_DRAW;
+        GLboolean normalized = GL_FALSE;
         GLint perVertex;
         GLsizei stride;
         const GLvoid* offset;
+        bool isFed = false;
     };
 
     class GL4_Entity {

@@ -60,6 +60,7 @@ target_link_libraries(Rounding
 add_executable(Spectrum
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
+    source/loaders/LoadTextures.cpp
     source/geometry/GL4_Entity.cpp
     source/geometry/polybase/GL4_PolyFunc.cpp
     source/geometry/polyform/Polyform_Box.cpp
@@ -123,33 +124,10 @@ target_link_libraries(Editor
     glm
 )
 
-add_executable(Cloning
-    source/loaders/FileIO.cpp
-    source/loaders/LoadShaders.cpp
-    source/geometry/GL4_Entity.cpp
-    source/geometry/GL4_Tree.cpp
-    source/geometry/polybase/GL4_PolyFunc.cpp
-    source/geometry/polybase/GL4_PolyClone.cpp
-    source/geometry/polyform/Polyform_Box.cpp
-    source/geometry/polyform/Polyform_Grid.cpp
-    source/pipeline/GLSL_Idle.cpp
-    source/scene/Cellular.cpp # For Testing
-    main/Demo_Cloning.cpp
-)
-
-target_include_directories(Cloning
-    PUBLIC include
-)
-
-target_link_libraries(Cloning
-    GLEW::glew_s
-    glfw
-    glm 
-)
-
 add_executable(Cellular
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
+    source/loaders/LoadTextures.cpp
     source/geometry/GL4_Entity.cpp
     source/geometry/GL4_Tree.cpp
     source/geometry/polybase/GL4_PolyFunc.cpp
@@ -159,7 +137,6 @@ add_executable(Cellular
     source/geometry/polyform/Polyform_Tilemap.cpp
     source/pipeline/GLSL_Idle.cpp
     source/pipeline/GLSL_Tilemap.cpp
-    source/scene/Cellular.cpp # For Testing
     main/Demo_Cellular.cpp
 )
 

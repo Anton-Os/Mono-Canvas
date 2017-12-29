@@ -18,7 +18,6 @@
 #include "geometry/polybase/GL4_PolyFunc.hpp"
 #include "geometry/polybase/GL4_PolyClone.hpp"
 #include "geometry/polyform/Polyform_Grid.hpp"
-#include "scene/Cellular.hpp"
 
 namespace UI {
 	int height = 1080;

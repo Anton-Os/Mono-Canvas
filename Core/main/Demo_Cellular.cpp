@@ -18,7 +18,6 @@
 #include "geometry/polybase/GL4_PolyFunc.hpp"
 #include "geometry/polyform/Polyform_Grid.hpp"
 #include "geometry/polyform/Polyform_Tilemap.hpp"
-#include "scene/Cellular.hpp"
 
 namespace UI {
 	int height = 1080;
@@ -149,12 +148,24 @@ int main(int argc, char** argv) {
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
 	GLSL_Tilemap Tilemap(parentDir + "//shaders//Tilemap.vert", parentDir + "//shaders//Tilemap.frag");
 
+	std::string sandTexPath = parentDir + "//res//LimeStone.ktx";
+	GLuint sandTex = createTexture(sandTexPath.c_str());
+	glBindTextureUnit(0, sandTex);
+
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
 
 	Polyform_Grid grid(0.5f, 10, 0.5f, 10);
 	GL4_PolyClone polyClone;
 	Polyform_Tilemap tilemap(&polyClone, &grid);
-	tilemap.gen_points(0.5f);
+	Polyform_Tilemap_Picker tilemapPicker;
+	tilemapPicker.weights.push_back(0.6f);
+	tilemapPicker.states.push_back(1);
+	tilemapPicker.weights.push_back(0.3f);
+	tilemapPicker.states.push_back(2);
+	tilemapPicker.weights.push_back(0.2f);
+	tilemapPicker.states.push_back(3);
+	// tilemap.gen_points(0.5f);
+	tilemap.gen_points(&tilemapPicker);
 	GL4_Tree_Meta treeMeta;
 	polyClone.exportMeta(&treeMeta);
 

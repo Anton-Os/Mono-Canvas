@@ -1,6 +1,24 @@
 #include "Feeds.h"
 #include "geometry/GL4_Entity.hpp"
 
+void GL4_Entity_Feed::feed(GLuint VAO, GLsizei size, const void *data){
+    glBindVertexArray(VAO);
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, GL4_Entity_Feed::buffer);
+
+    glBufferData(GL_ARRAY_BUFFER, size, data, GL4_Entity_Feed::usage);
+    glVertexAttribPointer(GL4_Entity_Feed::feedID, 
+                          GL4_Entity_Feed::perVertex, 
+                          GL4_Entity_Feed::type, 
+                          GL4_Entity_Feed::normalized, 
+                          GL4_Entity_Feed::stride, 
+                          GL4_Entity_Feed::offset);
+    glEnableVertexAttribArray(GL4_Entity_Feed::feedID);
+
+    GL4_Entity_Feed::isFed = true;
+    glBindVertexArray(0);
+}
+
 void GL4_Entity::drawXI(GLenum drawMode){
     glBindVertexArray(GL4_Entity::VAO);
     glDrawArrays(drawMode, 0, GL4_Entity::vertexCount);

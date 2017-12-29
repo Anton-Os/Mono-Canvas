@@ -71,3 +71,12 @@ void GL4_Tree::addNode(glm::mat4* matrix, vertexFeedIdx* vFeed){
     GL4_Tree::nodeOrder.push_back(0);
 }
 
+void GL4_Tree::attach(GL4_Entity_Feed* entityFeed, GLsizei size, const void* data){
+    if(GL4_Tree::nodes.empty()){
+        std::cerr << "Cannot attach new feed if nodes are empty" << std::endl;
+        return;
+    }
+
+    for(unsigned currentNode = 0; currentNode < GL4_Tree::nodes.size(); currentNode++)
+        entityFeed->feed(GL4_Tree::nodes[currentNode].get_VAO(), size, data);
+}

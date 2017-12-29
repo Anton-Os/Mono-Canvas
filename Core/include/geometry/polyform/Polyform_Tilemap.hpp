@@ -29,6 +29,7 @@
             create(polyClone, polyGrid);
         }
         void gen_points(float thresh);
+        void gen_points(Polyform_Tilemap_Picker* tilemapPicker);
         int get_state(unsigned nodeID);
     private:
         void create(GL4_PolyClone* polyClone, Polyform_Grid* polyGrid);

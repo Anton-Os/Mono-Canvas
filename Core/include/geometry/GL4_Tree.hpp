@@ -20,10 +20,12 @@
         glm::mat4 get_mtx(GLuint nodeID);
         void addNode(glm::mat4* matrixPtr, vertexFeed* vFeed);
         void addNode(glm::mat4* matrixPtr, vertexFeedIdx* vFeed);
+        void attach(GL4_Entity_Feed* entityFeed, GLsizei size, const void* data);
         void drawXI(GLuint nodeID, GLenum drawMode);
         void draw(GLuint nodeID, GLenum drawMode);
         void exportMeta(GL4_Tree_Meta* treeMeta);
     private:
+        bool isFed = false;
         std::vector<GL4_Entity> nodes;
         std::vector<GLuint> nodeOrder;
     };
