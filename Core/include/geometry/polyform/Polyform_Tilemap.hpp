@@ -33,7 +33,7 @@
         int get_state(unsigned nodeID);
     private:
         void create(GL4_PolyClone* polyClone, Polyform_Grid* polyGrid);
-        std::vector<GLint> states;    
+        std::vector<GLint> states;
     };
 #define POLYFORM_TILEMAP_H
 #endif

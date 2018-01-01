@@ -1,8 +1,13 @@
 #include <iostream>
 #include <string>
+#include <stack>
 #include <vector>
 
 #include <GL/glew.h>
+
+#ifndef GL4_ENTITY_H
+    #include "geometry/GL4_Entity.hpp"
+#endif
 
 #ifndef GL4_TREE_H
     #include "geometry/GL4_Tree.hpp"
@@ -28,7 +33,7 @@
 
     GLuint createTexture(const char* Filename);
 
-    // From AssimpImport.cpp
+    // From LoadModel.cpp
 
     void assimpImport(std::string filepath, GL4_Tree* tree);
 

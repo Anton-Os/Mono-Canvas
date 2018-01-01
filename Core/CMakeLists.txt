@@ -153,7 +153,7 @@ target_link_libraries(Cellular
 add_executable(Modeling
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
-    source/loaders/AssimpImport.cpp
+    source/loaders/LoadModel.cpp
     source/geometry/GL4_Entity.cpp
     source/geometry/GL4_Tree.cpp
     source/pipeline/GLSL_Idle.cpp
