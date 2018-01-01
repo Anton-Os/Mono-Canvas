@@ -25,7 +25,6 @@
         void draw(GLuint nodeID, GLenum drawMode);
         void exportMeta(GL4_Tree_Meta* treeMeta);
     private:
-        bool isFed = false;
         std::vector<GL4_Entity> nodes;
         std::vector<GLuint> nodeOrder;
     };

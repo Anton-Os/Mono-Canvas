@@ -147,7 +147,8 @@ target_include_directories(Cellular
 target_link_libraries(Cellular
     GLEW::glew_s
     glfw
-    glm 
+    glm
+    stb
 )
 
 add_executable(Modeling

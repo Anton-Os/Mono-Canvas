@@ -33,7 +33,7 @@ namespace Player {
 	// glm::mat4 projectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -20.0f, 20.0f);
 	glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000.0f);
     glm::mat4 viewMatrix(1);
-    glm::vec3 camPos(0.0, 0.0, 6.0f);
+    glm::vec3 camPos(0.0, 60.0, 60.0f);
     glm::vec3 camLookPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	float rtFactor = 5.0f;
 	float mvSpeed = 0.1f;
@@ -163,11 +163,11 @@ int main(int argc, char** argv) {
 		Idle.set_mvpMatrix(Player::projectionMatrix * Player::viewMatrix);
         Idle.set_renderMode(2);
 
-        tree.drawXI(0, GL_TRIANGLES);
-        tree.drawXI(1, GL_TRIANGLES);
-        tree.drawXI(2, GL_TRIANGLES);
-        tree.drawXI(3, GL_TRIANGLES);
-        tree.drawXI(4, GL_TRIANGLES);
+        tree.draw(0, GL_TRIANGLES);
+        tree.draw(1, GL_TRIANGLES);
+        tree.draw(2, GL_TRIANGLES);
+        tree.draw(3, GL_TRIANGLES);
+        tree.draw(4, GL_TRIANGLES);
 
         glPointSize(8.0f);
         glLineWidth(8.0f);

@@ -31,7 +31,8 @@
 
     // From LoadTextures.cpp
 
-    GLuint createTexture(const char* Filename);
+    GLuint createTexture_gli(const char* Filename);
+    GLuint createTexture_stbi(const char* Filename);
 
     // From LoadModel.cpp
 

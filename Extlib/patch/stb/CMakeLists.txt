@@ -1,13 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 project(stb)
 
-#[[ set(stb_headers)
-list(APPEND stb_headers
-    "${CMAKE_SOURCE_DIR}/stb_easy_font.h"
-    "${CMAKE_SOURCE_DIR}/stb_image.h"
-    "${CMAKE_SOURCE_DIR}/stb_image_resize.h"
-) #]]
-
 file(GLOB stb_headers *.h)
 
 install(FILES

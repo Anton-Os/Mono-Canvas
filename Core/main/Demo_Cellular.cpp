@@ -148,8 +148,8 @@ int main(int argc, char** argv) {
 	GLSL_Idle Idle(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
 	GLSL_Tilemap Tilemap(parentDir + "//shaders//Tilemap.vert", parentDir + "//shaders//Tilemap.frag");
 
-	std::string tex1Path = parentDir + "//res//BrushedSteel.ktx";
-	GLuint tex1 = createTexture(tex1Path.c_str());
+	std::string tex1Path = parentDir + "//res//Smiley.png";
+	GLuint tex1 = createTexture_stbi(tex1Path.c_str());
 	glBindTextureUnit(0, tex1);
 
     Player::viewMatrix = glm::lookAt(Player::camPos, Player::camLookPos, glm::vec3(0.0, 1.0, 0.0));
