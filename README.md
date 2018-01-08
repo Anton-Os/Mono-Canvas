@@ -16,6 +16,9 @@
 ### Directory Structure:
 
 Core/source/geometry/ - for generating, analyzing, rendering geometric entities
+
 Core/source/loaders/ - for retrieving and exporting application data
+
 Core/source/pipeline/ - for operating on shader programs
+
 Core/source/scene/ - for interactivity between user and scene elements
