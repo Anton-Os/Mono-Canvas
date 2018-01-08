@@ -5,12 +5,12 @@
 
 #include "Feeds.h"
 
-#ifndef PIPELINE_TILEMAP_H
-    class GLSL_Tilemap : public GLSL_Base {
+#ifndef PIPELINE_SSWITCH_H
+    class GLSL_SSwitch : public GLSL_Base {
     public:
-        GLSL_Tilemap(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath) {
-            GLSL_Tilemap::shaderProgID = compileShaders(vertexShaderFilePath, fragmentShaderFilePath);
-            glUseProgram(GLSL_Tilemap::shaderProgID);
+        GLSL_SSwitch(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath) {
+            GLSL_SSwitch::shaderProgID = compileShaders(vertexShaderFilePath, fragmentShaderFilePath);
+            glUseProgram(GLSL_SSwitch::shaderProgID);
             initUniforms();
         }
         enum unifID { mvpMatrix, state };
@@ -21,5 +21,5 @@
         GLuint unifLoc[2];
         void initUniforms();
     };
-#define PIPELINE_TILEMAP_H
+#define PIPELINE_SSwitch_H
 #endif

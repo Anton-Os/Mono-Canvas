@@ -78,6 +78,7 @@ target_link_libraries(Spectrum
     GLEW::glew_s
     glfw
     glm
+    stb
 )
 
 add_executable(Galactica
@@ -124,7 +125,7 @@ target_link_libraries(Editor
     glm
 )
 
-add_executable(Cellular
+#[[ add_executable(Cellular
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
     source/loaders/LoadTextures.cpp
@@ -136,7 +137,7 @@ add_executable(Cellular
     source/geometry/polyform/Polyform_Grid.cpp
     source/geometry/polyform/Polyform_Tilemap.cpp
     source/pipeline/GLSL_Idle.cpp
-    source/pipeline/GLSL_Tilemap.cpp
+    source/pipeline/GLSL_SSwitch.cpp
     main/Demo_Cellular.cpp
 )
 
@@ -149,7 +150,7 @@ target_link_libraries(Cellular
     glfw
     glm
     stb
-)
+) #]]
 
 add_executable(Modeling
     source/loaders/FileIO.cpp
@@ -173,7 +174,7 @@ target_link_libraries(Modeling
 )
 
 add_executable(BasicUI
-    main/Demo_BasicUI.cpp
+    main/test/Test_BasicUI.cpp
 )
 
 target_include_directories(BasicUI PUBLIC 
@@ -188,7 +189,7 @@ target_link_libraries(BasicUI
 
 add_executable(BasicImg
     source/loaders/FileIO.cpp
-    main/Demo_BasicImg.cpp
+    main/test/Test_BasicImg.cpp
 )
 
 target_include_directories(BasicImg PUBLIC 
@@ -199,6 +200,34 @@ target_link_libraries(BasicImg
     GLEW::glew_s
     stb
 )
+
+add_executable(BasicIO
+    source/loaders/FileIO.cpp
+    main/test/Test_BasicIO.cpp
+)
+
+target_include_directories(BasicIO PUBLIC
+    include
+)
+
+target_link_libraries(BasicIO
+    GLEW::glew_s
+)
+
+add_executable(CompShaders
+    source/loaders/FileIO.cpp
+    source/loaders/CompShaders.cpp
+    main/test/Test_BasicIO.cpp
+)
+
+target_include_directories(CompShaders PUBLIC
+    include
+)
+
+target_link_libraries(CompShaders
+    GLEW::glew_s
+)
+
 
 set(RES_DIR "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/res")
 configure_file("${CMAKE_CURRENT_LIST_DIR}/cmake/GDrive.cmake" "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/GDrive.cmake" @ONLY)
@@ -211,7 +240,7 @@ set(SRC_SHADER_LIST)
 set(OUTPUT_SHADER_LIST)
 foreach(current_shader "Idle.vert" "Idle.frag"
                        "ColorMe.vert" "ColorMe.frag"
-                       "Tilemap.vert" "Tilemap.frag" 
+                       "SSwitch.vert" "SSwitch.frag" 
 )
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/shaders/${current_shader}"
         DEPENDS "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"

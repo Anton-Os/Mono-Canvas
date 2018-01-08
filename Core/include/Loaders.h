@@ -1,4 +1,4 @@
-#include <iostream>
+#include <cstdio>
 #include <string>
 #include <stack>
 #include <vector>
@@ -23,6 +23,7 @@
 
     const std::string getParentDirectory(const char* path);
     char* readFile(const char* fileName);
+    void writeFile(const std::string& fileName, const std::string& contents);
 
     // From LoadShaders.cpp
 

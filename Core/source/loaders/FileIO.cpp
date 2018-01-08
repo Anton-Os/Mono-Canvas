@@ -36,3 +36,22 @@ char* readFile(const char* fileName){
 
     return source;
 }
+
+/* void delFile_ifEmpty(const char* fileName){
+    FILE* file = fopen(fileName, "r");
+    if(!file){
+        std::cout << "File is empty" << std::endl;
+    } else {
+        std::cout << "File: " << fileName << " has been deleted" << std::endl;
+        remove(fileName);
+    }
+    fclose(file);
+} */
+
+void writeFile(const std::string& fileName, const std::string& contents){
+    // delFile_ifEmpty(fileName);
+    FILE* file = fopen(fileName.c_str(), "w");
+    fwrite(contents.c_str(), sizeof(char), contents.size(), file);
+    // if('\0' != contents.back()) fputc('\0', file);
+    fclose(file);
+}
