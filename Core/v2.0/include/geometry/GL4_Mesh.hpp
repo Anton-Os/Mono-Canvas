@@ -41,7 +41,7 @@
     class GL4_Mesh_Quill {
     public:
         GLenum mode = GL_TRIANGLES;
-        void init(GLboolean* fed, GLboolean* idx, GLuint* v, GLuint* i);
+        void init(GLboolean* fed, GLboolean* idx, GLuint* o, GLuint* v, GLuint* i);
         void unordered_draw();
         void unordered_drawFixed(GLuint count);
         void unordered_drawPart(GLuint part, GLuint whole);
@@ -49,30 +49,32 @@
         void ordered_drawFixed(GLuint count);
         void ordered_drawPart(GLuint part, GLuint whole);
     private:
-        GLboolean initPhase;
+        GLboolean initPhase = false;
         GLboolean* isFedPtr = nullptr;
         GLboolean* isIdxPtr = nullptr;
+        GLuint* vaoPtr = nullptr;
         GLuint* vertexCountPtr = nullptr;
         GLuint* indexCountPtr = nullptr;
     };
 
     class GL4_Mesh {
     public:
-        GL4_Mesh(GLushort c, GLuint v){
+        GL4_Mesh(GLuint v){
             vertexCount = v;
-            feedCounter = c;
-            quill.init(&isFed, &order.isIdx, &vertexCount, &order.indexCount);
-            init();
+            quill.init(&isFed, &order.isIdx, &VAO, &vertexCount, &order.indexCount);
         }
-        std::vector<GL4_Mesh_VertexFeed> vertices;
         GL4_Mesh_Order order;
         GL4_Mesh_Quill quill;
-        void feed(GLuint vAttrib, const void* data, size_t size);
         void init();
+        void add_feed(GL4_Mesh_VertexFeed* vertexFeed);
+        void del_feed(GLuint vAttrib);
+        void feed(GLuint vAttrib, const void* data, size_t size);
     private:
+        std::vector<GL4_Mesh_VertexFeed> vertices;
         GLuint VAO;
-        GLushort feedCounter;
+        GLushort feedCounter = 0;
         GLboolean isFed = false;
+        GLboolean initPhase = false;
         GLuint vertexCount;
     };
 #define GL4_MESH_H

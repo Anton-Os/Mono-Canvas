@@ -113,7 +113,9 @@ int main(int argc, char** argv) {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	GL4_Mesh mesh(1, 200);
+	GL4_Mesh_VertexFeed vertexFeed;
+	GL4_Mesh mesh(200);
+	mesh.add_feed(&vertexFeed);
 
 	std::string parentDir = getParentDirectory(argv[0]);
 
