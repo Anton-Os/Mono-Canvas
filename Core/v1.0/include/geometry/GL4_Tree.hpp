@@ -18,6 +18,7 @@
         glm::mat4 relMatrix;
         glm::mat4 traceBack(GLuint nodeID);
         glm::mat4 get_mtx(GLuint nodeID);
+        unsigned escNode;
         void addNode(glm::mat4* matrixPtr, vertexFeed* vFeed);
         void addNode(glm::mat4* matrixPtr, vertexFeedIdx* vFeed);
         void attach(GL4_Entity_Feed* entityFeed, GLsizei size, const void* data);

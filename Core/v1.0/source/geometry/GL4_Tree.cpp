@@ -59,6 +59,7 @@ void GL4_Tree::addNode(glm::mat4* matrix, vertexFeed* vFeed){
     entity.feedPos(vFeed->pos.data(), vFeed->pos.size());
     GL4_Tree::nodes.push_back(entity);
     GL4_Tree::nodeOrder.push_back(0);
+    GL4_Tree::escNode = GL4_Tree::nodes.size();
 }
 
 void GL4_Tree::addNode(glm::mat4* matrix, vertexFeedIdx* vFeed){
@@ -69,6 +70,7 @@ void GL4_Tree::addNode(glm::mat4* matrix, vertexFeedIdx* vFeed){
     entity.feedIdx(vFeed->idx.data(), vFeed->idx.size());
     GL4_Tree::nodes.push_back(entity);
     GL4_Tree::nodeOrder.push_back(0);
+    GL4_Tree::escNode = GL4_Tree::nodes.size();
 }
 
 void GL4_Tree::attach(GL4_Entity_Feed* entityFeed, GLsizei size, const void* data){
