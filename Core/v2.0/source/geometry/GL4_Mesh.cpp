@@ -1,15 +1,11 @@
 #include "geometry/GL4_Mesh.hpp"
+#include "scene/ErrorCode.hpp"
 
 void GL4_Mesh_Quill::init(GLboolean* fed, GLboolean* idx, GLuint* o, GLuint* v, GLuint* i){
-    if(initPhase){
-        std::cerr << "Cannot modify pointers after initialization, please invoke quill.reset()" << std::endl;
-        return;
-    }
+    if(initPhase) logError(__FILE__, __LINE__, error_initPhase);
     
-    if(nullptr == fed || nullptr == idx || nullptr == o || nullptr == v || nullptr == i){
-        std::cerr << "Arguments provideds are null pointers" << std::endl;
-        return;
-    }
+    if(nullptr == fed || nullptr == idx || nullptr == o || nullptr == v || nullptr == i)
+        logError(__FILE__, __LINE__, error_nullPtrArgs);
 
     isFedPtr = fed;
     isIdxPtr = idx;
@@ -20,34 +16,24 @@ void GL4_Mesh_Quill::init(GLboolean* fed, GLboolean* idx, GLuint* o, GLuint* v, 
 }
 
 void GL4_Mesh_Quill::unordered_draw(){
-    if(! *isFedPtr){
-        std::cerr << "Cannot perform a non-indexed draw, buffer objects empty" << std::endl;
-        return;
-    }
+    if(! *isFedPtr) logError(__FILE__, __LINE__, error_drawNotFed);
+
     glBindVertexArray(*vaoPtr);
     glDrawArrays(mode, 0, *vertexCountPtr);
     glBindVertexArray(0);
 }
 
 void GL4_Mesh_Quill::ordered_draw(){
-    if(! *isFedPtr){
-        std::cerr << "Cannot perform an indexed draw, buffer objects empty" << std::endl;
-        return;
-    }
-    if(*isIdxPtr){
-        std::cerr << "Cannot perform an index draw on non-indexed mesh" << std::endl;
-        return;
-    }
+    if(! *isFedPtr) logError(__FILE__, __LINE__, error_drawNotFed);
+    if(*isIdxPtr) logError(__FILE__, __LINE__, error_drawNotIdx);
+    
     glBindVertexArray(*vaoPtr);
     glDrawArrays(mode, 0, *vertexCountPtr);
     glBindVertexArray(0);
 }
 
 void GL4_Mesh::init(){
-    if(vertices.empty()){
-        std::cerr << "Vertex attributes are empty" << std::endl;
-        return;
-    }
+    if(vertices.empty()) logError(__FILE__, __LINE__, error_drawNotFed);
 
     glGenVertexArrays(1, &VAO);
 
@@ -60,10 +46,7 @@ void GL4_Mesh::init(){
 }
 
 void GL4_Mesh::add_feed(GL4_Mesh_VertexFeed* vertexFeed){
-    if(initPhase){
-        std::cerr << "Cannot add a feed after initialization" << std::endl;
-        return;
-    }
+    if(initPhase) logError(__FILE__, __LINE__, error_initPhase);
 
     vertices.push_back(*vertexFeed);
     feedCounter++;
@@ -80,10 +63,7 @@ void GL4_Mesh::del_feed(GLuint vAttrib){
         }
     }
 
-    if(!attribFound){
-        std::cerr << "Requested vertex attribute does not exist" << std::endl;
-        return;
-    }
+    if(!attribFound) logError(__FILE__, __LINE__, error_elemNotFound);
 
     glDeleteBuffers(1, &vertices[savedAttrib].buffer);
 
@@ -105,10 +85,7 @@ void GL4_Mesh::feed(GLuint vAttrib, const void * data, size_t size){
         }
     }
 
-    if(!attribFound){
-        std::cerr << "Requested vertex attribute does not exist" << std::endl;
-        return;
-    }
+    if(!attribFound) logError(__FILE__, __LINE__, error_elemNotFound);
 
     glBindBuffer(vertices[savedAttrib].target, vertices[savedAttrib].buffer);
     glBufferData(vertices[savedAttrib].target, size * vertexCount, data, vertices[savedAttrib].usage);

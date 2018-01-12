@@ -14,7 +14,7 @@
     // Subset of GL4_Mesh providing a vertex attribute
 
     struct GL4_Mesh_VertexFeed {
-        GLboolean isFed;
+        GLboolean isFed = false;
         GLuint buffer;
         GLint count = 3;
         GLint feedID = 0;

@@ -113,16 +113,29 @@ int main(int argc, char** argv) {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	GL4_Mesh_VertexFeed vertexFeed;
-	GL4_Mesh mesh(200);
-	mesh.add_feed(&vertexFeed);
-
 	std::string parentDir = getParentDirectory(argv[0]);
+	GLuint shaderProg = compileShaders(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
+	glUseProgram(shaderProg);
+
+	float cube[] = {
+		-0.5f, -0.5f, 0.0f,
+		-0.5f, 0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f,
+		0.5f, 0.5f, 0.0f
+	};
+
+	GL4_Mesh_VertexFeed vertexFeed;
+	GL4_Mesh mesh(12);
+	mesh.add_feed(&vertexFeed);
+	mesh.feed(0, &cube[0], 12);
+	mesh.quill.mode = GL_TRIANGLE_STRIP;
 
     while(!glfwWindowShouldClose(window)){
         glfwPollEvents();
         glClearColor(0.949f, 0.917f, 0.803f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		mesh.quill.unordered_draw();
 
 		glfwSwapBuffers(window);
 	}

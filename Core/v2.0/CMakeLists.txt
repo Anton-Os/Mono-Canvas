@@ -1,5 +1,6 @@
 add_executable(Idle
     source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
     source/geometry/GL4_Mesh.cpp
     main/Demo_Idle.cpp
 )
@@ -39,3 +40,5 @@ add_custom_target(Core_Shaders
     SOURCES ${SRC_SHADER_LIST}
     DEPENDS ${OUTPUT_SHADER_LIST}
 )
+
+add_dependencies(Idle Core_Shaders)
