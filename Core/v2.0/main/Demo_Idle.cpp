@@ -128,6 +128,8 @@ int main(int argc, char** argv) {
 	};
 
 	GL4_Vertex vertex;
+    GL4_Vertex_Pos pos;
+    pos.create(&vertex);
 	GL4_Mesh mesh(4);
 	mesh.add_feed(&vertex);
 	mesh.run_feed(0, &cube[0], 12);
