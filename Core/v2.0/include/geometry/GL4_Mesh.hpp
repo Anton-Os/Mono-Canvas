@@ -2,33 +2,23 @@
     #include "Geometry.hpp"
 #endif
 
+/* #ifndef SCENE_ERROR_CODE_H
+    #include "scene/ErrorCode.hpp"
+#endif */
+
+#ifndef GL4_VERTEX_H
+    #include "geometry/GL4_Vertex.hpp"
+#endif
+
 #ifndef GL4_MESH_H
-    namespace vaoPtrModes {
-        enum Modes {
-            Default, 
-            Integral, 
-            Double 
-        };
-    }
+    // Helper functions
 
-    // Subset of GL4_Mesh providing a vertex attribute
-
-    struct GL4_Mesh_VertexFeed {
-        GLboolean isFed = false;
-        GLuint buffer;
-        GLint count = 3;
-        GLint feedID = 0;
-        GLenum target = GL_ARRAY_BUFFER;
-        GLenum type = GL_FLOAT;
-        GLenum usage = GL_STATIC_DRAW;
-        GLboolean normalized = GL_FALSE;
-        int vaoPtrMode = vaoPtrModes::Default;
-    };
+    GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feedsArg);
 
     // Subset of GL4_Mesh responsible for indexing
 
     struct GL4_Mesh_Order {
-        GLboolean isIdx;
+        GLboolean isIdx = false;
         GLuint indexCount;
         GLuint buffer;
         GLenum target = GL_ELEMENT_ARRAY_BUFFER;
@@ -41,7 +31,7 @@
     class GL4_Mesh_Quill {
     public:
         GLenum mode = GL_TRIANGLES;
-        void init(GLboolean* fed, GLboolean* idx, GLuint* o, GLuint* v, GLuint* i);
+        void init(const GLboolean* fed, const GLboolean* idx, const GLuint* o, const GLuint* v, const GLuint* i);
         void unordered_draw();
         void unordered_drawFixed(GLuint count);
         void unordered_drawPart(GLuint part, GLuint whole);
@@ -50,11 +40,11 @@
         void ordered_drawPart(GLuint part, GLuint whole);
     private:
         GLboolean initPhase = false;
-        GLboolean* isFedPtr = nullptr;
-        GLboolean* isIdxPtr = nullptr;
-        GLuint* vaoPtr = nullptr;
-        GLuint* vertexCountPtr = nullptr;
-        GLuint* indexCountPtr = nullptr;
+        const GLboolean* isFedPtr = nullptr;
+        const GLboolean* isIdxPtr = nullptr;
+        const GLuint* vaoPtr = nullptr;
+        const GLuint* vertexCountPtr = nullptr;
+        const GLuint* indexCountPtr = nullptr;
     };
 
     class GL4_Mesh {
@@ -66,11 +56,11 @@
         GL4_Mesh_Order order;
         GL4_Mesh_Quill quill;
         void init();
-        void add_feed(GL4_Mesh_VertexFeed* vertexFeed);
+        void add_feed(GL4_Vertex* vertexFeed);
         void del_feed(GLuint vAttrib);
-        void feed(GLuint vAttrib, const void* data, size_t size);
+        void run_feed(GLuint vAttrib, const void* data, size_t size);
     private:
-        std::vector<GL4_Mesh_VertexFeed> vertices;
+        std::vector<GL4_Vertex> feeds;
         GLuint VAO;
         GLushort feedCounter = 0;
         GLboolean isFed = false;

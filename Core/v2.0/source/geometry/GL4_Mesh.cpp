@@ -1,7 +1,7 @@
 #include "geometry/GL4_Mesh.hpp"
 #include "scene/ErrorCode.hpp"
 
-void GL4_Mesh_Quill::init(GLboolean* fed, GLboolean* idx, GLuint* o, GLuint* v, GLuint* i){
+void GL4_Mesh_Quill::init(const GLboolean* fed, const GLboolean* idx, const GLuint* o, const GLuint* v, const GLuint* i){
     if(initPhase) logError(__FILE__, __LINE__, error_initPhase);
     
     if(nullptr == fed || nullptr == idx || nullptr == o || nullptr == v || nullptr == i)
@@ -33,77 +33,70 @@ void GL4_Mesh_Quill::ordered_draw(){
 }
 
 void GL4_Mesh::init(){
-    if(vertices.empty()) logError(__FILE__, __LINE__, error_drawNotFed);
+    if(feeds.empty()) logError(__FILE__, __LINE__, error_drawNotFed);
 
     glGenVertexArrays(1, &VAO);
 
     std::vector<GLuint> buffers;
-    buffers.resize(vertices.size());
-    glGenBuffers(vertices.size(), buffers.data());
+    buffers.resize(feeds.size());
+    glGenBuffers(feeds.size(), buffers.data());
 
-    for(unsigned v = 0; v < vertices.size(); v++) vertices[v].buffer = buffers[v];
+    for(unsigned v = 0; v < feeds.size(); v++) feeds[v].buffer = buffers[v];
     initPhase = true;
 }
 
-void GL4_Mesh::add_feed(GL4_Mesh_VertexFeed* vertexFeed){
+void GL4_Mesh::add_feed(GL4_Vertex* vertexFeed){
     if(initPhase) logError(__FILE__, __LINE__, error_initPhase);
 
-    vertices.push_back(*vertexFeed);
+    feeds.push_back(*vertexFeed);
     feedCounter++;
 }
 
 void GL4_Mesh::del_feed(GLuint vAttrib){
-    GLuint savedAttrib;
-    GLboolean attribFound = false;
-    for(unsigned v = 0; v < vertices.size(); v++){
-        if(vertices[v].feedID == vAttrib){
-            savedAttrib = v;
-            attribFound = true;
-            break;
-        }
-    }
+    GLint savedAttrib = match_vAttrib(vAttrib, &feeds);
+    if(savedAttrib < 0) logError(__FILE__, __LINE__, error_elemNotFound);
 
-    if(!attribFound) logError(__FILE__, __LINE__, error_elemNotFound);
-
-    glDeleteBuffers(1, &vertices[savedAttrib].buffer);
+    glDeleteBuffers(1, &feeds[savedAttrib].buffer);
 
     glBindVertexArray(VAO);
     glDisableVertexAttribArray(vAttrib);
     glBindVertexArray(0);
 }
 
-void GL4_Mesh::feed(GLuint vAttrib, const void * data, size_t size){
+void GL4_Mesh::run_feed(GLuint vAttrib, const void * data, size_t size){
     if(!initPhase) init();
 
-    GLuint savedAttrib;
-    GLboolean attribFound = false;
-    for(unsigned v = 0; v < vertices.size(); v++){
-        if(vertices[v].feedID == vAttrib){
-            savedAttrib = v;
-            attribFound = true;
-            break;
-        }
-    }
+    GLint savedAttrib = match_vAttrib(vAttrib, &feeds);
+    if(savedAttrib < 0) logError(__FILE__, __LINE__, error_elemNotFound);
 
-    if(!attribFound) logError(__FILE__, __LINE__, error_elemNotFound);
-
-    glBindBuffer(vertices[savedAttrib].target, vertices[savedAttrib].buffer);
-    glBufferData(vertices[savedAttrib].target, size * vertexCount, data, vertices[savedAttrib].usage);
+    glBindBuffer(feeds[savedAttrib].target, feeds[savedAttrib].buffer);
+    glBufferData(feeds[savedAttrib].target, size * vertexCount, data, feeds[savedAttrib].usage);
 
     glBindVertexArray(VAO);
-    if(vertices[savedAttrib].vaoPtrMode == vaoPtrModes::Default)
-        glVertexAttribPointer(vertices[savedAttrib].feedID, vertices[savedAttrib].count, vertices[savedAttrib].type, vertices[savedAttrib].normalized, 0, nullptr);
-    else if(vertices[savedAttrib].vaoPtrMode == vaoPtrModes::Integral)
-        glVertexAttribIPointer(vertices[savedAttrib].feedID, vertices[savedAttrib].count, vertices[savedAttrib].type, 0, nullptr);
-    else if(vertices[savedAttrib].vaoPtrMode == vaoPtrModes::Integral)
-        glVertexAttribIPointer(vertices[savedAttrib].feedID, vertices[savedAttrib].count, vertices[savedAttrib].type, 0, nullptr);
+    if(feeds[savedAttrib].vaoPtrMode == vaoPtrModes::Default)
+        glVertexAttribPointer(feeds[savedAttrib].feedID, feeds[savedAttrib].count, feeds[savedAttrib].type, feeds[savedAttrib].normalized, 0, nullptr);
+    else if(feeds[savedAttrib].vaoPtrMode == vaoPtrModes::Integral)
+        glVertexAttribIPointer(feeds[savedAttrib].feedID, feeds[savedAttrib].count, feeds[savedAttrib].type, 0, nullptr);
+    else if(feeds[savedAttrib].vaoPtrMode == vaoPtrModes::Integral)
+        glVertexAttribIPointer(feeds[savedAttrib].feedID, feeds[savedAttrib].count, feeds[savedAttrib].type, 0, nullptr);
 
-    glEnableVertexAttribArray(vertices[savedAttrib].feedID);
+    glEnableVertexAttribArray(feeds[savedAttrib].feedID);
     glBindVertexArray(0);
 
-    if(!vertices[savedAttrib].isFed){
-        vertices[savedAttrib].isFed = true;
+    if(!feeds[savedAttrib].isFed){
+        feeds[savedAttrib].isFed = true;
         feedCounter--;
         if(feedCounter == 0) isFed = true;
     }
+}
+
+GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feedsArg){
+    GLint savedAttrib = -1;
+    for(unsigned v = 0; v < feedsArg->size(); v++){
+        if(feedsArg->at(v).feedID == vAttrib){
+            savedAttrib = v;
+            break;
+        }
+    }
+    return savedAttrib;
 }

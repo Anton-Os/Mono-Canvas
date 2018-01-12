@@ -11,7 +11,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Loaders.h"
+#include "loaders/FileIO.hpp"
+#include "loaders/LoadShaders.hpp"
+#include "geometry/GL4_Vertex.hpp"
+#include "geometry/GL4_Vertex_Feeds.hpp"
 #include "geometry/GL4_Mesh.hpp"
 
 namespace UI {
@@ -124,10 +127,10 @@ int main(int argc, char** argv) {
 		0.5f, 0.5f, 0.0f
 	};
 
-	GL4_Mesh_VertexFeed vertexFeed;
-	GL4_Mesh mesh(12);
-	mesh.add_feed(&vertexFeed);
-	mesh.feed(0, &cube[0], 12);
+	GL4_Vertex vertex;
+	GL4_Mesh mesh(4);
+	mesh.add_feed(&vertex);
+	mesh.run_feed(0, &cube[0], 12);
 	mesh.quill.mode = GL_TRIANGLE_STRIP;
 
     while(!glfwWindowShouldClose(window)){
@@ -135,6 +138,7 @@ int main(int argc, char** argv) {
         glClearColor(0.949f, 0.917f, 0.803f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		glPointSize(20.0f);
 		mesh.quill.unordered_draw();
 
 		glfwSwapBuffers(window);

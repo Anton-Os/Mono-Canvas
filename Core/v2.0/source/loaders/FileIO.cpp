@@ -1,6 +1,4 @@
-#ifndef LOADERS_H
-    #include "Loaders.h"
-#endif
+#include "loaders/FileIO.hpp"
 
 const std::string getParentDirectory(const char* path) {
 	const char* ptr = path + strlen(path);
