@@ -1,7 +1,9 @@
 add_executable(Idle
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
+    source/geometry/GL4_Vertex_Factory.cpp
     source/geometry/GL4_Mesh.cpp
+    source/geometry/pseudo/Hedgy.cpp
     main/Demo_Idle.cpp
 )
 
@@ -17,7 +19,7 @@ target_link_libraries(Idle
 
 set(RES_DIR "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/res")
 configure_file("${CMAKE_CURRENT_LIST_DIR}/cmake/GDrive.cmake" "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/GDrive.cmake" @ONLY)
-add_custom_target(Core_GDrive ALL 
+add_custom_target(Core_V2_GDrive ALL 
     ${CMAKE_COMMAND} -P "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/GDrive.cmake"
     DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/GDrive.cmake"
 )
@@ -36,9 +38,9 @@ foreach(current_shader "Idle.vert" "Idle.frag"
     list(APPEND OUTPUT_SHADER_LIST "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/shaders/${current_shader}")
     list(APPEND SRC_SHADER_LIST "${CMAKE_CURRENT_SOURCE_DIR}/shaders/${current_shader}")
 endforeach(current_shader)
-add_custom_target(Core_Shaders
+add_custom_target(Core_V2_Shaders
     SOURCES ${SRC_SHADER_LIST}
     DEPENDS ${OUTPUT_SHADER_LIST}
 )
 
-add_dependencies(Idle Core_Shaders)
+add_dependencies(Idle Core_V2_Shaders)

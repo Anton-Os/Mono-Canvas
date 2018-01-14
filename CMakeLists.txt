@@ -60,5 +60,6 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
     file(GLOB BOOST_LIBS "${BOOST_LIBRARYDIR}/*.lib")
 
     # add_subdirectory("Legacy")
+    add_subdirectory("Core/v1.0")
     add_subdirectory("Core/v2.0")
 endif()

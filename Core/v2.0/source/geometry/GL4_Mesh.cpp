@@ -70,7 +70,7 @@ void GL4_Mesh::run_feed(GLuint vAttrib, const void * data, size_t size){
     if(savedAttrib < 0) logError(__FILE__, __LINE__, error_elemNotFound);
 
     glBindBuffer(feeds[savedAttrib].target, feeds[savedAttrib].buffer);
-    glBufferData(feeds[savedAttrib].target, size * vertexCount, data, feeds[savedAttrib].usage);
+    glBufferData(feeds[savedAttrib].target, size * feeds[savedAttrib].count * vertexCount, data, feeds[savedAttrib].usage);
 
     glBindVertexArray(VAO);
     if(feeds[savedAttrib].vaoPtrMode == vaoPtrModes::Default)
@@ -90,7 +90,7 @@ void GL4_Mesh::run_feed(GLuint vAttrib, const void * data, size_t size){
     }
 }
 
-GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feedsArg){
+static GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feedsArg){
     GLint savedAttrib = -1;
     for(unsigned v = 0; v < feedsArg->size(); v++){
         if(feedsArg->at(v).feedID == vAttrib){
