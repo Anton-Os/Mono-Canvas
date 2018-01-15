@@ -15,7 +15,7 @@
         GL4_Vertex_Factory(){ create(); }
         ~GL4_Vertex_Factory(){ delete[] formats; }
     private:
-        GL4_Vertex* formats = new GL4_Vertex[4];
+        GL4_Vertex_Format* formats = new GL4_Vertex_Format[4];
         // std::array<GL4_Vertex, 5> formats;
         void create();
     };

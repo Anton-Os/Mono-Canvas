@@ -12,6 +12,7 @@
     }
 
     struct GL4_Vertex_Format {
+        GL4_Vertex_Format(){}
         GL4_Vertex_Format(GLuint f, GLint c, GLenum trg, GLenum typ, GLenum u, GLboolean n, GLint v){
             feedID = f;
             count = c;
@@ -33,31 +34,12 @@
     };
 
     // Next commit
-    /* struct GL4_Vertex {
-        GLuint buffer = 0;
-        const GL4_Vertex_Format* format;
-    }; */
-
     struct GL4_Vertex {
-        GL4_Vertex(){};
-        GL4_Vertex(GLuint f, GLint c, GLenum trg, GLenum typ, GLenum u, GLboolean n, GLint v){
-            feedID = f;
-            count = c;
-            target = trg;
-            type = typ;
-            usage = u;
-            normalized = n;
-            vaoPtrMode = v;
+        GL4_Vertex(){
+            glGenBuffers(1, &buffer);
         }
-        GLboolean isFed = false;
-        GLuint buffer;
-        GLint feedID = 0;
-        GLint count = 3;
-        GLenum target = GL_ARRAY_BUFFER;
-        GLenum type = GL_FLOAT;
-        GLenum usage = GL_STATIC_DRAW;
-        GLboolean normalized = GL_FALSE;
-        GLint vaoPtrMode = vaoPtrModes::Default;
+        GLuint buffer = 0;
+        GL4_Vertex_Format format;
     };
 #define GL4_VERTEX_H
 #endif
