@@ -4,7 +4,7 @@ void Hedgy::create(GL4_Mesh* mesh){
     GL4_Vertex_Format pos_format(0, 3, GL_ARRAY_BUFFER, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, vaoPtrModes::Default);
     GL4_Vertex pos;
     pos.format = pos_format;
-    GL4_Vertex_Format color_format(1, 4, GL_ARRAY_BUFFER, GL_UNSIGNED_INT, GL_STATIC_DRAW, GL_TRUE, vaoPtrModes::Default);
+    GL4_Vertex_Format color_format(1, 4, GL_ARRAY_BUFFER, GL_UNSIGNED_BYTE, GL_STATIC_DRAW, GL_TRUE, vaoPtrModes::Default);
     GL4_Vertex color;
     color.format = color_format;
 
@@ -39,4 +39,5 @@ void Hedgy::create(GL4_Mesh* mesh){
     mesh->run_feed(1, &hedgyColor[0], sizeof(float));
 }
 
-// const GL4_Vertex myVertix1 = { 1, 3,};
+/* void Hedgy::create(GL4_Mesh* mesh, GL4_Vertex_Factory* factory){
+} */

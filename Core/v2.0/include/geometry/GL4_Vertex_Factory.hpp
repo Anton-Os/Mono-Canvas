@@ -6,17 +6,21 @@
     #include "geometry/GL4_Vertex.hpp"
 #endif
 
-// #include <new>
+#define VERTEX_FACTORY_ATTRIB_COUNT 4
 
 #ifndef GL4_VERTEX_FACTORY_H
+
+    // Helper functions
+
+    static GLint match_vAttrib(GLuint vAttrib, const GL4_Vertex_Format* formatPtr);
 
     class GL4_Vertex_Factory {
     public:
         GL4_Vertex_Factory(){ create(); }
         ~GL4_Vertex_Factory(){ delete[] formats; }
+        GL4_Vertex_Format* get_format(GLuint vAttrib);
     private:
-        GL4_Vertex_Format* formats = new GL4_Vertex_Format[4];
-        // std::array<GL4_Vertex, 5> formats;
+        GL4_Vertex_Format* formats = new GL4_Vertex_Format[VERTEX_FACTORY_ATTRIB_COUNT];
         void create();
     };
 

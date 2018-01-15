@@ -137,6 +137,7 @@ int main(int argc, char** argv) {
 	mesh.quill.mode = GL_TRIANGLE_STRIP; */
 
 	GL4_Vertex_Factory vertex_factory;
+	GL4_Vertex_Format* vertex_normal = vertex_factory.get_format(2);
 	GL4_Mesh mesh(9);
 	Hedgy hedgy;
 	hedgy.create(&mesh);
