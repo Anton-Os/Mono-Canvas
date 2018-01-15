@@ -128,19 +128,11 @@ int main(int argc, char** argv) {
 		0.5f, 0.5f, 0.0f
 	};
 
-	/* GL4_Vertex vertex;
-    GL4_Vertex_Pos pos;
-    pos.create(&vertex);
-	GL4_Mesh mesh(4);
-	mesh.add_feed(&vertex);
-	mesh.run_feed(0, &cube[0], 12);
-	mesh.quill.mode = GL_TRIANGLE_STRIP; */
-
 	GL4_Vertex_Factory vertex_factory;
 	GL4_Vertex_Format* vertex_normal = vertex_factory.get_format(2);
 	GL4_Mesh mesh(9);
 	Hedgy hedgy;
-	hedgy.create(&mesh);
+	hedgy.create(&mesh, &vertex_factory);
 
     while(!glfwWindowShouldClose(window)){
         glfwPollEvents();

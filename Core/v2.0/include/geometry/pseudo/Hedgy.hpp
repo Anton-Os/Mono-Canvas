@@ -17,6 +17,6 @@
 #ifndef GEOMETRY_HEDGY_HPP
     class Hedgy {
     public:
-        void create(GL4_Mesh* mesh);
+        void create(GL4_Mesh* mesh, GL4_Vertex_Factory* factory);
     };
 #endif

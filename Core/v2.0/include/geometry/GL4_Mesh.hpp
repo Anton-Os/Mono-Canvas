@@ -2,9 +2,9 @@
     #include "Geometry.hpp"
 #endif
 
-/* #ifndef SCENE_ERROR_CODE_H
+#ifndef SCENE_ERROR_CODE_H
     #include "scene/ErrorCode.hpp"
-#endif */
+#endif
 
 #ifndef GL4_VERTEX_H
     #include "geometry/GL4_Vertex.hpp"
@@ -57,6 +57,7 @@
         GL4_Mesh_Quill quill;
         void init();
         void add_feed(GL4_Vertex* vertexFeed);
+        void add_feed(const GL4_Vertex_Format* vertexFeed);
         void del_feed(GLuint vAttrib);
         void run_feed(GLuint vAttrib, const void* data, size_t size);
     private:

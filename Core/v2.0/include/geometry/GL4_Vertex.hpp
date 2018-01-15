@@ -22,8 +22,6 @@
             normalized = n;
             vaoPtrMode = v;
         }
-        GLboolean isFed;
-        GLuint buffer;
         GLint feedID;
         GLint count;
         GLenum target;
@@ -35,11 +33,10 @@
 
     // Next commit
     struct GL4_Vertex {
-        GL4_Vertex(){
-            glGenBuffers(1, &buffer);
-        }
+        // GL4_Vertex(){ glGenBuffers(1, &buffer); }
+        ~GL4_Vertex(){ glDeleteBuffers(1, &buffer); }
         GLuint buffer = 0;
-        GL4_Vertex_Format format;
+        const GL4_Vertex_Format* format;
     };
 #define GL4_VERTEX_H
 #endif

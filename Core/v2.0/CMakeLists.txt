@@ -4,6 +4,7 @@ add_executable(Idle
     source/geometry/GL4_Vertex_Factory.cpp
     source/geometry/GL4_Mesh.cpp
     source/geometry/pseudo/Hedgy.cpp
+    source/scene/ErrorCode.cpp
     main/Demo_Idle.cpp
 )
 
