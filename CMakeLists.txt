@@ -52,14 +52,14 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
     find_package(stb REQUIRED)
 
     find_library(assimp_lib
-        NAMES assimp libassimp
+        NAMES assimp libassimp 
         PATH ${ASSIMP_LIBRARY_DIRS}
     )
 
     set(BOOST_LIBS)
     file(GLOB BOOST_LIBS "${BOOST_LIBRARYDIR}/*.lib")
 
-    # add_subdirectory("Legacy")
     # add_subdirectory("Core/v1.0")
-    add_subdirectory("Core/v2.0")
+    # add_subdirectory("Core/v2.0")
+    add_subdirectory("Core/v2.1")
 endif()
