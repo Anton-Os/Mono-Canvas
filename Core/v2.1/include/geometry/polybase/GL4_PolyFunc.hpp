@@ -34,7 +34,10 @@
         unsigned get_xCount(){ return xVals.size(); }
         unsigned get_yCount(){ return yVals.size() / xVals.size(); }
         unsigned get_zCount(){ return zVals.size() / yVals.size(); }
+        void create();
         void create(GL4_Mesh* mesh, GL4_Vertex_Factory* factory);
+        std::vector<float> vertices;
+        std::vector<GLuint> indices;
     private:
         std::vector<float> xVals;
         std::vector<float> yVals;

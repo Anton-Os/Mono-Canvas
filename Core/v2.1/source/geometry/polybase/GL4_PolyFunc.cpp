@@ -6,55 +6,55 @@ static char error_zValsImmute[] = "Z values are immutable";
 static char error_xyzPresent[] = "X, Y, and Z values must be present to create()";
 
 void GL4_PolyFunc::reset(){
-    GL4_PolyFunc::xVals.clear();
-    GL4_PolyFunc::yVals.clear();
-    GL4_PolyFunc::zVals.clear();
-    GL4_PolyFunc::xyzBits.reset();
-    GL4_PolyFunc::xSequence = nullptr;
-    GL4_PolyFunc::yEquation = nullptr;
-    GL4_PolyFunc::zEquation = nullptr;
+    xVals.clear();
+    yVals.clear();
+    zVals.clear();
+    xyzBits.reset();
+    xSequence = nullptr;
+    yEquation = nullptr;
+    zEquation = nullptr;
 }
 
 void GL4_PolyFunc::gen_x(){
-    if(GL4_PolyFunc::xyzBits[GL4_PolyFunc::Y] == true || GL4_PolyFunc::xyzBits[GL4_PolyFunc::Z] == true) logError(__FILE__, __LINE__, error_xValsImmute);
+    if(xyzBits[Y] == true || xyzBits[Z] == true) logError(__FILE__, __LINE__, error_xValsImmute);
 
-    GL4_PolyFunc::xSequence(&xVals);
-    GL4_PolyFunc::xyzBits.set(GL4_PolyFunc::X);
+    xSequence(&xVals);
+    xyzBits.set(X);
 }
 
 void GL4_PolyFunc::gen_y(){
-    if(GL4_PolyFunc::xyzBits[GL4_PolyFunc::Z] == true) logError(__FILE__, __LINE__, error_yValsImmute);
+    if(xyzBits[Z] == true) logError(__FILE__, __LINE__, error_yValsImmute);
 
-    if(GL4_PolyFunc::yVals.empty())
-        GL4_PolyFunc::yVals.resize(GL4_PolyFunc::xVals.size());
+    if(yVals.empty())
+        yVals.resize(xVals.size());
     else
-        GL4_PolyFunc::yVals.resize(GL4_PolyFunc::yVals.size() + GL4_PolyFunc::xVals.size());
+        yVals.resize(yVals.size() + xVals.size());
 
     unsigned xElem = 0;
-    for(unsigned yElem = GL4_PolyFunc::yVals.size() - GL4_PolyFunc::xVals.size(); yElem < GL4_PolyFunc::yVals.size(); yElem++){
+    for(unsigned yElem = yVals.size() - xVals.size(); yElem < yVals.size(); yElem++){
         xElem++;
-        GL4_PolyFunc::yVals[yElem] = GL4_PolyFunc::yEquation(GL4_PolyFunc::xVals[xElem]);
+        yVals[yElem] = yEquation(xVals[xElem]);
     }
 
-    GL4_PolyFunc::xyzBits.set(GL4_PolyFunc::Y);
+    xyzBits.set(Y);
 }
 
 void GL4_PolyFunc::gen_z(){
-    if(GL4_PolyFunc::zVals.empty())
-        GL4_PolyFunc::zVals.resize(GL4_PolyFunc::yVals.size());
+    if(zVals.empty())
+        zVals.resize(yVals.size());
     else
-        GL4_PolyFunc::zVals.resize(GL4_PolyFunc::zVals.size() + GL4_PolyFunc::yVals.size());
+        zVals.resize(zVals.size() + yVals.size());
 
     unsigned xElem = 0;
     unsigned yElem = 0;
-    for(unsigned zElem = GL4_PolyFunc::zVals.size() - GL4_PolyFunc::yVals.size(); zElem < GL4_PolyFunc::zVals.size(); zElem++){
-        if(xElem == GL4_PolyFunc::xVals.size()) xElem = 0;
-        if(yElem == GL4_PolyFunc::yVals.size()) yElem = 0;
-        GL4_PolyFunc::zVals[zElem] = GL4_PolyFunc::zEquation(GL4_PolyFunc::xVals[xElem], GL4_PolyFunc::yVals[yElem]);
+    for(unsigned zElem = zVals.size() - yVals.size(); zElem < zVals.size(); zElem++){
+        if(xElem == xVals.size()) xElem = 0;
+        if(yElem == yVals.size()) yElem = 0;
+        zVals[zElem] = zEquation(xVals[xElem], yVals[yElem]);
         xElem++; yElem++;
     }
 
-    GL4_PolyFunc::xyzBits.set(GL4_PolyFunc::Z);
+    xyzBits.set(Z);
 }
 
 static unsigned genIndices1D(std::vector<unsigned>* indexAccum, unsigned xCount){
@@ -175,27 +175,48 @@ static unsigned genIndices3D(std::vector<unsigned>* indexAccum, unsigned xCount,
 }
 
 void GL4_PolyFunc::create(GL4_Mesh* mesh, GL4_Vertex_Factory* factory){
-    if(!GL4_PolyFunc::xyzBits.all()) logError(__FILE__, __LINE__, error_xyzPresent);
+    if(!xyzBits.all()) logError(__FILE__, __LINE__, error_xyzPresent);
 
-    std::vector<GLfloat> threePts(GL4_PolyFunc::zVals.size() * 3);
-    for(GLuint vecElem = 0; vecElem < GL4_PolyFunc::zVals.size(); vecElem++){
-        threePts[vecElem * 3] = GL4_PolyFunc::xVals[vecElem % GL4_PolyFunc::xVals.size()];
-        threePts[vecElem * 3 + 1] = GL4_PolyFunc::yVals[vecElem % GL4_PolyFunc::yVals.size()];
-        threePts[vecElem * 3 + 2] = GL4_PolyFunc::zVals[vecElem];
+    std::vector<GLfloat> threePts(zVals.size() * 3);
+    for(GLuint vecElem = 0; vecElem < zVals.size(); vecElem++){
+        threePts[vecElem * 3] = xVals[vecElem % xVals.size()];
+        threePts[vecElem * 3 + 1] = yVals[vecElem % yVals.size()];
+        threePts[vecElem * 3 + 2] = zVals[vecElem];
     }
 
-    std::vector<unsigned> indexAccum;
+    std::vector<unsigned> indices;
 
-    unsigned ySetOfX = GL4_PolyFunc::yVals.size() / GL4_PolyFunc::xVals.size();
-    unsigned zSetOfY = GL4_PolyFunc::zVals.size() / GL4_PolyFunc::yVals.size();
-    unsigned zSetOfX = GL4_PolyFunc::zVals.size() / GL4_PolyFunc::xVals.size();
+    unsigned ySetOfX = yVals.size() / xVals.size();
+    unsigned zSetOfY = zVals.size() / yVals.size();
+    unsigned zSetOfX = zVals.size() / xVals.size();
 
-    if(zSetOfX == 1) mesh->order.indexCount = genIndices1D(&indexAccum, GL4_PolyFunc::xVals.size());
-    else if(ySetOfX > 1 && zSetOfY == 1) mesh->order.indexCount = genIndices2D(&indexAccum, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size());
-    // else if(ySetOfX == 1 && zSetOfY > 1) genIndices2(&indexAccum, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size(), GL4_PolyFunc::zVals.size());
-    else if(ySetOfX > 1 && zSetOfY > 1) mesh->order.indexCount = genIndices3D(&indexAccum, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size(), GL4_PolyFunc::zVals.size());
+    if(zSetOfX == 1) mesh->order.indexCount = genIndices1D(&indices, xVals.size());
+    else if(ySetOfX > 1 && zSetOfY == 1) mesh->order.indexCount = genIndices2D(&indices, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size());
+    // else if(ySetOfX == 1 && zSetOfY > 1) genIndices2(&indices, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size(), GL4_PolyFunc::zVals.size());
+    else if(ySetOfX > 1 && zSetOfY > 1) mesh->order.indexCount = genIndices3D(&indices, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size(), GL4_PolyFunc::zVals.size());
     else std::cerr << "Something went wrong while indexing Grid" << std::endl;
 
     mesh->add_feed(factory->get_format(0));
     mesh->run_feed(0, threePts.data(), sizeof(float));
+}
+
+void GL4_PolyFunc::create(){
+    if(!xyzBits.all()) logError(__FILE__, __LINE__, error_xyzPresent);
+
+    vertices.resize(zVals.size() * 3);
+    for(GLuint vecElem = 0; vecElem < zVals.size(); vecElem++){
+        vertices[vecElem * 3] = xVals[vecElem % xVals.size()];
+        vertices[vecElem * 3 + 1] = yVals[vecElem % yVals.size()];
+        vertices[vecElem * 3 + 2] = zVals[vecElem];
+    }
+
+    unsigned ySetOfX = yVals.size() / xVals.size();
+    unsigned zSetOfY = zVals.size() / yVals.size();
+    unsigned zSetOfX = zVals.size() / xVals.size();
+
+    if(zSetOfX == 1) genIndices1D(&indices, xVals.size());
+    else if(ySetOfX > 1 && zSetOfY == 1) genIndices2D(&indices, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size());
+    // else if(ySetOfX == 1 && zSetOfY > 1) genIndices2(&indices, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size(), GL4_PolyFunc::zVals.size());
+    else if(ySetOfX > 1 && zSetOfY > 1) genIndices3D(&indices, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size(), GL4_PolyFunc::zVals.size());
+    else std::cerr << "Something went wrong while indexing Grid" << std::endl;
 }

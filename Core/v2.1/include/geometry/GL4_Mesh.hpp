@@ -56,7 +56,7 @@
         GL4_Mesh_Order order;
         GL4_Mesh_Quill quill;
         void init();
-        void add_feed(GL4_Vertex* vertexFeed);
+        // void add_feed(GL4_Vertex* vertexFeed);
         void add_feed(const GL4_Vertex_Format* vertexFeed);
         void del_feed(GLuint vAttrib);
         void run_feed(GLuint vAttrib, const void* data, size_t size);

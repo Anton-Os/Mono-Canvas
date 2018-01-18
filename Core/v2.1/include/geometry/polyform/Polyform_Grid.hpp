@@ -25,6 +25,8 @@
             create(polyFunc);
         }
         void create(GL4_PolyFunc* polyFunc);
+        void get_params(std::array<float, 2> dimensions);
+        
     private:
         float width;
         unsigned int xCount;

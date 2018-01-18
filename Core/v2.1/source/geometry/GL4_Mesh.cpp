@@ -50,18 +50,10 @@ void GL4_Mesh::init(){
     initPhase = true;
 }
 
-void GL4_Mesh::add_feed(GL4_Vertex* vertexFeed){
-    if(initPhase) logError(__FILE__, __LINE__, error_initPhase);
-
-    feeds.push_back(*vertexFeed);
-    feedCounter++;
-}
-
 void GL4_Mesh::add_feed(const GL4_Vertex_Format* format){
     if(initPhase) logError(__FILE__, __LINE__, error_initPhase);
 
     GL4_Vertex vertex;
-    // glGenBuffers(1, &vertex.buffer);
     vertex.format = format;
     feeds.push_back(vertex);
     feedCounter++;
