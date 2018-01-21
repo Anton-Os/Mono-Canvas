@@ -18,6 +18,7 @@
 #include "geometry/GL4_Mesh.hpp"
 #include "geometry/polybase/GL4_PolyFunc.hpp"
 #include "geometry/polyform/Grid.hpp"
+#include "scene/KeyManager.hpp"
 #include "scene/ErrorCode.hpp"
 
 static char error_glfw3Init[] = "GLFW failed to initialize";
@@ -118,6 +119,8 @@ int main(int argc, char** argv) {
     std::string parentDir = getParentDirectory(argv[0]);
     GLuint shaderProg = compileShaders(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
     glUseProgram(shaderProg);
+
+    KeyManager keyManager;
 
     GL4_PolyFunc polyFunc;
     Polyform_Grid polyGrid(&polyFunc, 1.0f, 5, 1.0f, 5);

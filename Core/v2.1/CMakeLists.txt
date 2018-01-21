@@ -27,6 +27,7 @@ add_executable(Comeback
     source/geometry/polybase/GL4_PolyFunc.cpp
     source/geometry/polyform/Grid.cpp
     source/scene/ErrorCode.cpp
+    source/scene/KeyManager.cpp
     main/Demo_Comeback.cpp
 )
 
