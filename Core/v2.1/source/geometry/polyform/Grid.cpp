@@ -1,4 +1,4 @@
-#include "geometry/polyform/Polyform_Grid.hpp"
+#include "geometry/polyform/Grid.hpp"
 
 namespace Polyform_Grid_Eq {
     float yOffset;

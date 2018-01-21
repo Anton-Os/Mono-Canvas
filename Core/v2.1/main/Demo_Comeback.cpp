@@ -17,7 +17,12 @@
 #include "geometry/GL4_Vertex_Factory.hpp"
 #include "geometry/GL4_Mesh.hpp"
 #include "geometry/polybase/GL4_PolyFunc.hpp"
-#include "geometry/polyform/Polyform_Grid.hpp"
+#include "geometry/polyform/Grid.hpp"
+#include "scene/ErrorCode.hpp"
+
+static char error_glfw3Init[] = "GLFW failed to initialize";
+static char error_glfw3Window[] = "GLFW failed to create window";
+static char error_glewInit[] = "GLEW failed to initialize";
 
 namespace UI {
     int height = 1080;
@@ -84,10 +89,7 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
 
 int main(int argc, char** argv) {
     if (glfwInit() == GLFW_TRUE)  std::cout << "GLFW initialized successfuly" << std::endl;
-    else {
-        std::cerr << "GLFW failed to initialize" << std::endl;
-        return -1;
-    }
+    else logError(__FILE__, __LINE__, error_glfw3Init);
 
     glfwWindowHint(GLFW_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_VERSION_MINOR, 3);
@@ -96,10 +98,8 @@ int main(int argc, char** argv) {
 
     GLFWwindow* window = glfwCreateWindow(UI::width,  UI::height, argv[0], nullptr, nullptr);
     if (nullptr != window) std::cout << "GLFW window created successfuly" << std::endl;
-    else {
-        std::cerr << "GLFW failed to create window" << std::endl;
-        return -1;
-    }
+    else logError(__FILE__, __LINE__, error_glfw3Window);
+
 
     glfwMakeContextCurrent(window);
     glfwGetFramebufferSize(window, &UI::width, &UI::height);
@@ -107,10 +107,7 @@ int main(int argc, char** argv) {
     glfwSetCursorPosCallback(window, cursorPosCallback);
 
     if (glewInit() == GLEW_OK) std::cout << "GLEW initialized successfuly" << std::endl;
-    else {
-        std::cerr << "GLEW failed to initialize" << std::endl;
-        return -1;
-    }
+    else logError(__FILE__, __LINE__, error_glewInit);
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
@@ -121,13 +118,6 @@ int main(int argc, char** argv) {
     std::string parentDir = getParentDirectory(argv[0]);
     GLuint shaderProg = compileShaders(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
     glUseProgram(shaderProg);
-
-    float cube[] = {
-        -0.5f, -0.5f, 0.0f,
-        -0.5f, 0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.5f, 0.5f, 0.0f
-    };
 
     GL4_PolyFunc polyFunc;
     Polyform_Grid polyGrid(&polyFunc, 1.0f, 5, 1.0f, 5);

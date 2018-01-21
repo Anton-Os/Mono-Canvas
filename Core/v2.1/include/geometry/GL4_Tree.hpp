@@ -8,6 +8,7 @@
 #endif
 
 #ifndef GL4_TREE_H
+
     struct GL4_Tree_Node {
         GL4_Tree_Node* parent;
         GL4_Mesh mesh;
@@ -18,7 +19,7 @@
     public:
         add_node(GL4_Mesh* mesh);
     private:
-        std::vector<GL4_Entity> nodes;
+        std::vector<GL4_Mesh> nodes;
     };
 #define GL4_TREE_H
 #endif

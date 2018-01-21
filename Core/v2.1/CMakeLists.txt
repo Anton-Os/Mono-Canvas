@@ -25,7 +25,7 @@ add_executable(Comeback
     source/geometry/GL4_Vertex_Factory.cpp
     source/geometry/GL4_Mesh.cpp
     source/geometry/polybase/GL4_PolyFunc.cpp
-    source/geometry/polyform/Polyform_Grid.cpp
+    source/geometry/polyform/Grid.cpp
     source/scene/ErrorCode.cpp
     main/Demo_Comeback.cpp
 )
