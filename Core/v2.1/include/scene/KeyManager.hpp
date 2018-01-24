@@ -12,35 +12,27 @@
     typedef enum { swt, btn, ctr } Key_t;
 
     struct Key_Element {
-        Key_Element(unsigned* id){
-            *id++;
-            ID = *id;
-        }
-        unsigned ID;
+        unsigned handle;
     };
 
     struct Key_Switch : public Key_Element {
-        Key_Switch(unsigned * id) : Key_Element(id) { }
         int state;
         unsigned index = 0;
         std::vector<int> states;
         int key;
-        (*callback)(int* s) = nullptr;
+        void(*callback)(int* s) = nullptr;
     };
 
     struct Key_Button : public Key_Element {
-        Key_Button(unsigned * id) : Key_Element(id) { }
         bool val = false;
         int key;
-        (*callback)(bool* v) = nullptr;
+        void(*callback)(bool* b) = nullptr;
     };
 
     struct Key_Counter : public Key_Element {
-        Key_Counter(unsigned * id) : Key_Element(id) { }
         int num;
-        int incKey;
-        int decKey;
-        (*callback)(int* v) = nullptr;
+        int incKey; int decKey;
+        void(*callback)(int* n) = nullptr;
     };
 
     class KeyManager {
@@ -48,14 +40,19 @@
         void add_switch(Key_Switch* keySwitch);
         void add_button(Key_Button* keyButton);
         void add_counter(Key_Counter* keyCounter);
-        void add_callback(unsigned ID);
-        void add_callback(Key_t keyType, unsigned index);
+        void set_current(GLFWwindow* window);
     private:
-        unsigned id_counter;
+        bool ready = false;
+        unsigned id_counter = 0;
         std::vector<Key_Switch> switches;
         std::vector<Key_Button> buttons;
         std::vector<Key_Counter> counters;
         void callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+        static void callback_test(GLFWwindow* window, int key, int scancode, int action, int mods){
+            KeyManager* ptr = static_cast<KeyManager*>(glfwGetWindowUserPointer(window));
+            ptr->callback(window, key, scancode, action, mods);
+        };
     };
+
 #define KEY_MANAGER_H
 #endif

@@ -51,7 +51,7 @@
     public:
         GL4_Mesh(GLuint v){
             vertexCount = v;
-            quill.init(&isFed, &order.isIdx, &VAO, &vertexCount, &order.indexCount);
+            quill.init(&ready, &order.isIdx, &VAO, &vertexCount, &order.indexCount);
         }
         GL4_Mesh_Order order;
         GL4_Mesh_Quill quill;
@@ -61,10 +61,10 @@
         void del_feed(GLuint vAttrib);
         void run_feed(GLuint vAttrib, const void* data, size_t size);
     private:
+        GLushort fin_counter = 0;
+        GLboolean ready = false;
         std::vector<GL4_Vertex> feeds;
         GLuint VAO;
-        GLushort feedCounter = 0;
-        GLboolean isFed = false;
         GLboolean initPhase = false;
         GLuint vertexCount;
     };

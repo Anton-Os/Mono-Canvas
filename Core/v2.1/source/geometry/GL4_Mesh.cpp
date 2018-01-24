@@ -56,7 +56,7 @@ void GL4_Mesh::add_feed(const GL4_Vertex_Format* format){
     GL4_Vertex vertex;
     vertex.format = format;
     feeds.push_back(vertex);
-    feedCounter++;
+    fin_counter++;
 }
 
 void GL4_Mesh::del_feed(GLuint vAttrib){
@@ -90,9 +90,9 @@ void GL4_Mesh::run_feed(GLuint vAttrib, const void * data, size_t size){
     glEnableVertexAttribArray(feeds[savedAttrib].format->feedID);
     glBindVertexArray(0);
 
-    feedCounter--;
-    if(feedCounter == 0) isFed = true;
-    else isFed = false;
+    fin_counter--;
+    if(fin_counter == 0) ready = true;
+    else ready = false;
 }
 
 static GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feedsArg){

@@ -50,32 +50,6 @@ namespace Time {
     std::chrono::duration<double, std::nano> nanoSpan;
 }
 
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
-    // State Switching
-
-    if(key == GLFW_KEY_1 && action == GLFW_PRESS) std::cout << "Key 1 Pressed" << std::endl;
-    if(key == GLFW_KEY_2 && action == GLFW_PRESS) std::cout << "Key 2 Pressed" << std::endl;
-    if(key == GLFW_KEY_3 && action == GLFW_PRESS) std::cout << "Key 3 Pressed" << std::endl;
-
-    // Continuous actions
-
-    if(key == GLFW_KEY_A && action == GLFW_PRESS) Key::A = true;
-    if(key == GLFW_KEY_A && action == GLFW_RELEASE) Key::A = false;
-    if(Key::A) std::cout << "Key A Held..." << std::endl;
-
-    if(key == GLFW_KEY_D && action == GLFW_PRESS) Key::D = true;
-    if(key == GLFW_KEY_D && action == GLFW_RELEASE) Key::D = false;
-    if(Key::D) std::cout << "Key D Held..." << std::endl;
-
-    if(key == GLFW_KEY_W && action == GLFW_PRESS) Key::W = true;
-    if(key == GLFW_KEY_W && action == GLFW_RELEASE) Key::W = false;
-    if(Key::W) std::cout << "Key W Held..." << std::endl;
-
-    if(key == GLFW_KEY_S && action == GLFW_PRESS) Key::S = true;
-    if(key == GLFW_KEY_S && action == GLFW_RELEASE) Key::S = false;
-    if(Key::S) std::cout << "Key S Held..." << std::endl;
-}
-
 void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
     if(Mouse::appears) Mouse::appears = false;
     else {
@@ -87,6 +61,17 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
     Mouse::yInit = ypos;
 }
 
+void keySwitch_callback(int* s){
+    std::cout << "Owch " << *s << " state" << std::endl;
+}
+
+void keyButton_callback(bool* b){
+    std::cout << "Held: " << *b << " amount" << std::endl;
+}
+
+void keyCounter_callback(int* n){
+    std::cout << "Number is now " << *n << std::endl;
+}
 
 int main(int argc, char** argv) {
     if (glfwInit() == GLFW_TRUE)  std::cout << "GLFW initialized successfuly" << std::endl;
@@ -101,10 +86,8 @@ int main(int argc, char** argv) {
     if (nullptr != window) std::cout << "GLFW window created successfuly" << std::endl;
     else logError(__FILE__, __LINE__, error_glfw3Window);
 
-
     glfwMakeContextCurrent(window);
     glfwGetFramebufferSize(window, &UI::width, &UI::height);
-    glfwSetKeyCallback(window, keyCallback);
     glfwSetCursorPosCallback(window, cursorPosCallback);
 
     if (glewInit() == GLEW_OK) std::cout << "GLEW initialized successfuly" << std::endl;
@@ -120,7 +103,28 @@ int main(int argc, char** argv) {
     GLuint shaderProg = compileShaders(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
     glUseProgram(shaderProg);
 
+    Key_Switch keySwitch;
+    keySwitch.states.resize(3);
+    keySwitch.states[0] = 0;
+    keySwitch.states[1] = 1;
+    keySwitch.states[2] = -1;
+    keySwitch.key = GLFW_KEY_H;
+    keySwitch.callback = keySwitch_callback;
+
+    Key_Button keyButton;
+    keyButton.key = GLFW_KEY_P;
+    keyButton.callback = keyButton_callback;
+
+    Key_Counter keyCounter;
+    keyCounter.incKey = GLFW_KEY_Z;
+    keyCounter.decKey = GLFW_KEY_C;
+    keyCounter.callback = keyCounter_callback;
+
     KeyManager keyManager;
+    keyManager.add_switch(&keySwitch);
+    keyManager.add_button(&keyButton);
+    keyManager.add_counter(&keyCounter);
+    keyManager.set_current(window);
 
     GL4_PolyFunc polyFunc;
     Polyform_Grid polyGrid(&polyFunc, 1.0f, 5, 1.0f, 5);
