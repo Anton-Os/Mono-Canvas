@@ -1,15 +1,15 @@
+#ifndef SCENE_H
+    #include "Scene.hpp"
+#endif
+
 #ifndef ERROR_CODE_H
     #include "scene/ErrorCode.hpp"
 #endif
 
 #ifndef KEY_MANAGER_H
-    #include <cstdio>
-    #include <cstdlib>
-    #include <vector>
-
-    #include <GLFW/glfw3.h>
-
-    typedef enum { swt, btn, ctr } Key_t;
+    namespace Key {
+        typedef enum { swt, btn, ctr } Pick;
+    }
 
     struct Key_Element {
         unsigned handle;
@@ -48,7 +48,7 @@
         std::vector<Key_Button> buttons;
         std::vector<Key_Counter> counters;
         void callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-        static void callback_test(GLFWwindow* window, int key, int scancode, int action, int mods){
+        static void callback_setup(GLFWwindow* window, int key, int scancode, int action, int mods){
             KeyManager* ptr = static_cast<KeyManager*>(glfwGetWindowUserPointer(window));
             ptr->callback(window, key, scancode, action, mods);
         };

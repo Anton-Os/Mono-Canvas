@@ -32,7 +32,7 @@ void KeyManager::add_counter(Key_Counter* keyCounter){
 
 void KeyManager::set_current(GLFWwindow* window){
     glfwSetWindowUserPointer(window, static_cast<void*>(this));
-    glfwSetKeyCallback(window, callback_test);
+    glfwSetKeyCallback(window, callback_setup);
 }
 
 void KeyManager::callback(GLFWwindow* window, int key, int scancode, int action, int mods){

@@ -42,6 +42,31 @@ target_link_libraries(Comeback
     glm
 )
 
+add_executable(ShaderWorks
+    source/loaders/FileIO.cpp
+    source/loaders/LoadShaders.cpp
+    source/geometry/GL4_Vertex_Factory.cpp
+    source/geometry/GL4_Mesh.cpp
+    source/geometry/polybase/GL4_PolyFunc.cpp
+    source/geometry/polyform/Grid.cpp
+    source/pipeline/GL4_Shader.cpp
+    source/pipeline/GL4_Shader_Factory.cpp
+    source/scene/ErrorCode.cpp
+    source/scene/KeyManager.cpp
+    main/Demo_ShaderWorks.cpp
+)
+
+target_include_directories(ShaderWorks
+    PUBLIC
+    include
+)
+
+target_link_libraries(ShaderWorks
+    GLEW::glew_s
+    glfw
+    glm
+)
+
 set(RES_DIR "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/res")
 configure_file("${CMAKE_CURRENT_LIST_DIR}/cmake/GDrive.cmake" "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/GDrive.cmake" @ONLY)
 add_custom_target(Core_V2_GDrive ALL 

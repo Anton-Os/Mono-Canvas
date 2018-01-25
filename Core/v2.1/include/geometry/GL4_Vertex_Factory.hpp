@@ -10,8 +10,6 @@
 
 #ifndef GL4_VERTEX_FACTORY_H
 
-    // Helper functions
-
     static GLint match_vAttrib(GLuint vAttrib, const GL4_Vertex_Format* formatPtr);
 
     class GL4_Vertex_Factory {
