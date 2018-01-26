@@ -27,22 +27,28 @@
 
     class GL4_Shader {
     public:
+        GLushort version = 440;
         GL4_Shader(GL4_Shader_Stage::Pick pick){ stage = pick; }
         // std::string name = "Shader";
-        void add_input(GL4_Vertex* vertex);
-        void add_input(GL4_Vertex* vertex, unsigned location);
-        void add_output(GL4_Vertex* vertex);
-        void add_output(GL4_Vertex* vertex, unsigned location);
+        void add_input(GL4_Vertex_Format* vertex);
+        void add_input(GL4_Vertex_Format* vertex, unsigned location);
+        void add_output(GL4_Vertex_Format* vertex);
+        void add_output(GL4_Vertex_Format* vertex, unsigned location);
         // void add_uniform(GL4_Uniform* uniform)
         void create(const std::string& fileName);
         GL4_Shader_Stage::Pick get_stage(){ return stage; }
         GLboolean get_ready(){ return ready; }
     private:
+        void compose_vertex_shader(std::string& shader_source);
         GLboolean ready = false;
         GL4_Shader_Stage::Pick stage;
-        std::vector<GL4_Vertex> inputs;
-        std::vector<GL4_Vertex> outputs;
+        std::vector<GL4_Vertex_Format> inputs;
+        std::vector<GL4_Vertex_Format> outputs;
     };
+
+    // static void compose_vertex_shader(std::string& shader_source);
+    static std::string write_input_entry(GLint location, const std::string& name, const std::string& type);
+    static std::string write_output_entry(GLint location, const std::string& name, const std::string& type);
 
 #define GL4_SHADER_H
 #endif

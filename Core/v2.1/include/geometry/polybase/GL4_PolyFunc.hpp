@@ -16,12 +16,6 @@
 #endif
 
 #ifndef POLY_FUNC_H
-    // Helper Functions
-
-    static unsigned genIndices1D(std::vector<unsigned>* indexAccum, unsigned xCount);
-    static unsigned genIndices2D(std::vector<unsigned>* indexAccum, unsigned xCount, unsigned yCount);
-    static unsigned genIndices3D(std::vector<unsigned>* indexAccum, unsigned xCount, unsigned yCount, unsigned zCount);
-
     class GL4_PolyFunc {
     public:
         void (*xSequence)(std::vector<float>* xVals);
@@ -46,5 +40,8 @@
         std::bitset<3> xyzBits;
     };
 
+    static unsigned genIndices1D(std::vector<unsigned>* indexAccum, unsigned xCount);
+    static unsigned genIndices2D(std::vector<unsigned>* indexAccum, unsigned xCount, unsigned yCount);
+    static unsigned genIndices3D(std::vector<unsigned>* indexAccum, unsigned xCount, unsigned yCount, unsigned zCount);
 #define POLY_FUNC_H
 #endif

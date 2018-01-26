@@ -1,13 +1,13 @@
 #include "geometry/GL4_Vertex_Factory.hpp"
 
 void GL4_Vertex_Factory::create(){
-    const GL4_Vertex_Format vertex_pos(0, 3, GL_ARRAY_BUFFER, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, vaoPtrModes::Default);
+    const GL4_Vertex_Format vertex_pos(0, 3, GL_ARRAY_BUFFER, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, vaoPtrModes::Default, "pos","vec3");
     formats[0] = vertex_pos;
-    const GL4_Vertex_Format vertex_color(1, 4, GL_ARRAY_BUFFER, GL_UNSIGNED_BYTE, GL_STATIC_DRAW, GL_TRUE, vaoPtrModes::Default);
+    const GL4_Vertex_Format vertex_color(1, 4, GL_ARRAY_BUFFER, GL_UNSIGNED_BYTE, GL_STATIC_DRAW, GL_TRUE, vaoPtrModes::Default, "color", "vec4");
     formats[1] = vertex_color;
-    const GL4_Vertex_Format vertex_normal(2, 3, GL_ARRAY_BUFFER, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, vaoPtrModes::Default);
+    const GL4_Vertex_Format vertex_normal(2, 3, GL_ARRAY_BUFFER, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, vaoPtrModes::Default, "normal", "vec3");
     formats[2] = vertex_normal;
-    const GL4_Vertex_Format vertex_texCoord(3, 2, GL_ARRAY_BUFFER, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, vaoPtrModes::Default);
+    const GL4_Vertex_Format vertex_texCoord(3, 2, GL_ARRAY_BUFFER, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, vaoPtrModes::Default, "texCoord", "vec2");
     formats[3] = vertex_texCoord;
 }
 

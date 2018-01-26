@@ -11,12 +11,6 @@
 #endif
 
 #ifndef GL4_MESH_H
-    // Helper functions
-
-    static GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feedsArg);
-
-    // Subset of GL4_Mesh responsible for indexing
-
     struct GL4_Mesh_Order {
         GLboolean isIdx = false;
         GLuint indexCount;
@@ -25,8 +19,6 @@
         GLenum type = GL_UNSIGNED_INT;
         void feed(const void* data, size_t size, GLuint count);
     };
-
-    // Subset of GL4_Mesh responsible for rendering
 
     class GL4_Mesh_Quill {
     public:
@@ -56,7 +48,6 @@
         GL4_Mesh_Order order;
         GL4_Mesh_Quill quill;
         void init();
-        // void add_feed(GL4_Vertex* vertexFeed);
         void add_feed(const GL4_Vertex_Format* vertexFeed);
         void del_feed(GLuint vAttrib);
         void run_feed(GLuint vAttrib, const void* data, size_t size);
@@ -68,5 +59,7 @@
         GLboolean initPhase = false;
         GLuint vertexCount;
     };
+
+    static GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feedsArg);
 #define GL4_MESH_H
 #endif

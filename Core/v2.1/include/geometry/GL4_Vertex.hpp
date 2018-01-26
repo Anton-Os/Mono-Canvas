@@ -13,7 +13,8 @@
 
     struct GL4_Vertex_Format {
         GL4_Vertex_Format(){}
-        GL4_Vertex_Format(GLuint f, GLint c, GLenum trg, GLenum typ, GLenum u, GLboolean n, GLint v){
+        GL4_Vertex_Format(GLuint f, GLint c, GLenum trg, GLenum typ, GLenum u, GLboolean n, GLint v, 
+                          const std::string nm, const std::string& g){
             feedID = f;
             count = c;
             target = trg;
@@ -21,6 +22,8 @@
             usage = u;
             normalized = n;
             vaoPtrMode = v;
+            glsl_name = nm;
+            glsl_type = g;
         }
         GLint feedID;
         GLint count;
@@ -29,11 +32,11 @@
         GLenum usage;
         GLboolean normalized;
         GLint vaoPtrMode;
+        std::string glsl_name;
+        std::string glsl_type;
     };
 
-    // Next commit
     struct GL4_Vertex {
-        // GL4_Vertex(){ glGenBuffers(1, &buffer); }
         ~GL4_Vertex(){ glDeleteBuffers(1, &buffer); }
         GLuint buffer = 0;
         const GL4_Vertex_Format* format;
