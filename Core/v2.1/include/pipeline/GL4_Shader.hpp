@@ -1,7 +1,6 @@
-#include <string>
-#include <vector>
-
-#include <GL/glew.h>
+#ifndef PIPELINE_H
+    #include "Pipeline.hpp"
+#endif
 
 #ifndef SCENE_ERROR_CODE_H
     #include "scene/ErrorCode.hpp"
@@ -20,7 +19,6 @@
 #endif
 
 #ifndef GL4_SHADER_H
-
     namespace GL4_Shader_Stage {
         typedef enum { vert, frag, tesc, tese, geom, comp } Pick;
     }
@@ -42,13 +40,11 @@
         void compose_vertex_shader(std::string& shader_source);
         GLboolean ready = false;
         GL4_Shader_Stage::Pick stage;
-        std::vector<GL4_Vertex_Format> inputs;
-        std::vector<GL4_Vertex_Format> outputs;
+        std::vector<GL4_Vertex_Format*> inputs;
+        std::vector<GL4_Vertex_Format*> outputs;
     };
 
-    // static void compose_vertex_shader(std::string& shader_source);
     static std::string write_input_entry(GLint location, const std::string& name, const std::string& type);
     static std::string write_output_entry(GLint location, const std::string& name, const std::string& type);
-
 #define GL4_SHADER_H
 #endif

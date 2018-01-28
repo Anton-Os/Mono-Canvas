@@ -17,7 +17,7 @@
 #include "geometry/GL4_Vertex_Factory.hpp"
 #include "geometry/GL4_Mesh.hpp"
 #include "geometry/polybase/GL4_PolyFunc.hpp"
-#include "geometry/polyform/Grid.hpp"
+#include "geometry/polyform/GL4_PolyGrid.hpp"
 #include "scene/KeyManager.hpp"
 #include "scene/ErrorCode.hpp"
 

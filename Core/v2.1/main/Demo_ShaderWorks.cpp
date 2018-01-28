@@ -17,8 +17,9 @@
 #include "geometry/GL4_Vertex_Factory.hpp"
 #include "geometry/GL4_Mesh.hpp"
 #include "geometry/polybase/GL4_PolyFunc.hpp"
-#include "geometry/polyform/Grid.hpp"
+#include "geometry/polyform/GL4_PolyGrid.hpp"
 #include "pipeline/GL4_Shader.hpp"
+#include "pipeline/GL4_Shader_Types.hpp"
 #include "pipeline/GL4_Shader_Factory.hpp"
 #include "scene/ErrorCode.hpp"
 
@@ -66,9 +67,6 @@ int main(int argc, char** argv) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    GL4_Shader shaderVert(GL4_Shader_Stage::vert);
-    shaderVert.create("Anton");
-
     std::string parentDir = getParentDirectory(argv[0]);
     GLuint shaderProg = compileShaders(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
     glUseProgram(shaderProg);
@@ -78,6 +76,10 @@ int main(int argc, char** argv) {
     GL4_Vertex_Factory vertex_factory;
     GL4_Mesh mesh(polyFunc.get_xCount() * polyFunc.get_yCount() * polyFunc.get_zCount());
     polyFunc.create(&mesh, &vertex_factory);
+
+    GL4_Shader shaderVert(GL4_Shader_Stage::vert);
+    shaderVert.add_input(vertex_factory.get_format(0));
+    shaderVert.create("Anton");
 
     while(!glfwWindowShouldClose(window)){
         glfwPollEvents();

@@ -2,6 +2,10 @@
     #include "Geometry.hpp"
 #endif
 
+#ifndef GL4_SHADER_TYPES_H
+    #include "pipeline/GL4_Shader_Types.hpp"
+#endif
+
 #ifndef GL4_VERTEX_H
     namespace vaoPtrModes {
         enum Modes {
@@ -14,7 +18,7 @@
     struct GL4_Vertex_Format {
         GL4_Vertex_Format(){}
         GL4_Vertex_Format(GLuint f, GLint c, GLenum trg, GLenum typ, GLenum u, GLboolean n, GLint v, 
-                          const std::string nm, const std::string& g){
+                          const std::string& nm, const std::string& g){
             feedID = f;
             count = c;
             target = trg;
@@ -22,8 +26,7 @@
             usage = u;
             normalized = n;
             vaoPtrMode = v;
-            glsl_name = nm;
-            glsl_type = g;
+            glsl_type.create(nm, g);
         }
         GLint feedID;
         GLint count;
@@ -32,8 +35,8 @@
         GLenum usage;
         GLboolean normalized;
         GLint vaoPtrMode;
-        std::string glsl_name;
-        std::string glsl_type;
+        GL4_Shader_Type glsl_type;
+
     };
 
     struct GL4_Vertex {

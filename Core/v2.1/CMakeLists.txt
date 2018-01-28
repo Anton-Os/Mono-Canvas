@@ -25,7 +25,7 @@ add_executable(Comeback
     source/geometry/GL4_Vertex_Factory.cpp
     source/geometry/GL4_Mesh.cpp
     source/geometry/polybase/GL4_PolyFunc.cpp
-    source/geometry/polyform/Grid.cpp
+    source/geometry/polyform/GL4_PolyGrid.cpp
     source/scene/ErrorCode.cpp
     source/scene/KeyManager.cpp
     main/Demo_Comeback.cpp
@@ -48,7 +48,7 @@ add_executable(ShaderWorks
     source/geometry/GL4_Vertex_Factory.cpp
     source/geometry/GL4_Mesh.cpp
     source/geometry/polybase/GL4_PolyFunc.cpp
-    source/geometry/polyform/Grid.cpp
+    source/geometry/polyform/GL4_PolyGrid.cpp
     source/pipeline/GL4_Shader.cpp
     source/pipeline/GL4_Shader_Factory.cpp
     source/scene/ErrorCode.cpp

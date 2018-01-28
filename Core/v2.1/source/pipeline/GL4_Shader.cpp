@@ -1,5 +1,12 @@
 #include "pipeline/GL4_Shader.hpp"
 
+static char error_glslIncomp[] = "Vertex format is GLSL incompatible";
+
+void GL4_Shader::add_input(GL4_Vertex_Format* vertex){
+    if(vertex->glsl_type.type.empty() || vertex->glsl_type.count == 0 || vertex->glsl_type.size == 0) logError(__FILE__, __LINE__, error_glslIncomp);
+    inputs.push_back(vertex);
+}
+
 void GL4_Shader::create(const std::string& fileName){
     std::string extension;
     std::string shader_source;
@@ -36,10 +43,10 @@ void GL4_Shader::compose_vertex_shader(std::string& shader_source){
     shader_source.append(1, '\n');
     // Inputs section
     for(unsigned inputElem = 0; inputElem < inputs.size(); inputElem++)
-        shader_source.append(write_input_entry(inputs[inputElem].feedID, inputs[inputElem].glsl_name, inputs[inputElem].glsl_type));
+        shader_source.append(write_input_entry(inputs[inputElem]->feedID, inputs[inputElem]->glsl_type.name, inputs[inputElem]->glsl_type.type));
     shader_source.append(1, '\n');
     for(unsigned outputElem = 0; outputElem < outputs.size(); outputElem++)
-        shader_source.append(write_output_entry(outputs[outputElem].feedID, outputs[outputElem].glsl_name, outputs[outputElem].glsl_type));
+        shader_source.append(write_output_entry(outputs[outputElem]->feedID, outputs[outputElem]->glsl_type.name, outputs[outputElem]->glsl_type.type));
     shader_source.append(1, '\n');
     shader_source.append("void main() {\n");
     shader_source.append("\t gl_Position = vec4(0.0, 0.0, 0.0, 1.0); \n");
