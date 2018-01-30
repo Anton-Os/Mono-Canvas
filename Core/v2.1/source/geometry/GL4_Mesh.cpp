@@ -6,6 +6,17 @@ static char error_drawNotFed[] = "Cannot perform draw, vertices haven't been fed
 static char error_drawNotIdx[] = "Cannot perform draw, indices not present";
 static char error_initPhase[] = "Cannot proceed after initialization step";
 
+static GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feedsArg){
+    GLint savedAttrib = -1;
+    for(unsigned v = 0; v < feedsArg->size(); v++){
+        if(feedsArg->at(v).format->feedID == vAttrib){
+            savedAttrib = v;
+            break;
+        }
+    }
+    return savedAttrib;
+}
+
 void GL4_Mesh_Quill::init(const GLboolean* fed, const GLboolean* idx, const GLuint* o, const GLuint* v, const GLuint* i){
     if(initPhase) logError(__FILE__, __LINE__, error_initPhase);
     
@@ -93,15 +104,4 @@ void GL4_Mesh::run_feed(GLuint vAttrib, const void * data, size_t size){
     fin_counter--;
     if(fin_counter == 0) ready = true;
     else ready = false;
-}
-
-static GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feedsArg){
-    GLint savedAttrib = -1;
-    for(unsigned v = 0; v < feedsArg->size(); v++){
-        if(feedsArg->at(v).format->feedID == vAttrib){
-            savedAttrib = v;
-            break;
-        }
-    }
-    return savedAttrib;
 }

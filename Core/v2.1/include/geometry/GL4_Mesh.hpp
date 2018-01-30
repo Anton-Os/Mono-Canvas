@@ -11,7 +11,7 @@
 #endif
 
 #ifndef GL4_MESH_H
-    static GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feedsArg);
+    // static GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feedsArg);
 
     struct GL4_Mesh_Order {
         GLboolean isIdx = false;

@@ -12,9 +12,12 @@
 
 #ifndef GL4_PROGRAM_H
     class GL4_Program {
-        void add_shader(GL4_Shader* shader, const std::string& path);
+        GLuint ID;
+        void add_shader(GL4_Shader* shader_arg, const std::string& path_arg);
+        void create();
     private:
-        GLuint id;
+        GLuint progID;
+        std::bitset<6> stageBits;
         std::vector<GL4_Shader> shaders;
     };
 #define GL4_PROGRAM_H

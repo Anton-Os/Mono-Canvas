@@ -1,6 +1,8 @@
 #ifndef PIPELINE_H
+    #include <cstdio>
     #include <vector>
     #include <string>
+    #include <bitset>
 
     #include <GL/glew.h>
 

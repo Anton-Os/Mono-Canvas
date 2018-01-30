@@ -1,5 +1,16 @@
 #include "geometry/GL4_Vertex_Factory.hpp"
 
+static GLint match_vAttrib(GLuint vAttrib, const GL4_Vertex_Format* formatPtr){
+    GLint savedAttrib = -1;
+    for(unsigned v = 0; v < VERTEX_FACTORY_ATTRIB_COUNT; v++){
+        if(vAttrib == (formatPtr + v)->feedID){
+            savedAttrib = v;
+            break;
+        }
+    }
+    return savedAttrib;
+}
+
 void GL4_Vertex_Factory::create(){
     const GL4_Vertex_Format vertex_pos(0, 3, GL_ARRAY_BUFFER, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, _vaoPtrModes::Default);
     formats[0] = vertex_pos;
@@ -16,15 +27,4 @@ GL4_Vertex_Format* GL4_Vertex_Factory::get_format(GLuint vAttrib){
 
     if(savedAttrib < 0) return nullptr;
     else return &formats[savedAttrib];
-}
-
-static GLint match_vAttrib(GLuint vAttrib, const GL4_Vertex_Format* formatPtr){
-    GLint savedAttrib = -1;
-    for(unsigned v = 0; v < VERTEX_FACTORY_ATTRIB_COUNT; v++){
-        if(vAttrib == (formatPtr + v)->feedID){
-            savedAttrib = v;
-            break;
-        }
-    }
-    return savedAttrib;
 }

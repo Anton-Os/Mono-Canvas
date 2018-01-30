@@ -49,6 +49,7 @@ add_executable(ShaderWorks
     source/geometry/GL4_Mesh.cpp
     source/geometry/polybase/GL4_PolyFunc.cpp
     source/geometry/polyform/GL4_PolyGrid.cpp
+    source/pipeline/GL4_Program.cpp
     source/scene/ErrorCode.cpp
     source/scene/KeyManager.cpp
     main/Demo_ShaderWorks.cpp
