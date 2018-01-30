@@ -61,5 +61,6 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
 
     # add_subdirectory("Core/v1.0")
     # add_subdirectory("Core/v2.0")
-    add_subdirectory("Core/v2.1")
+    # add_subdirectory("Core/v2.1")
+    add_subdirectory("Core/v2.2")
 endif()
