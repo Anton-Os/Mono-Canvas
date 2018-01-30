@@ -8,7 +8,6 @@
 #endif
 
 #ifndef GL4_TREE_H
-
     struct GL4_Tree_Node {
         GL4_Tree_Node* parent;
         GL4_Mesh mesh;

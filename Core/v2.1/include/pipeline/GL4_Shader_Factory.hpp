@@ -14,14 +14,23 @@
     #include "pipeline/GL4_Shader.hpp"
 #endif
 
-#ifndef GL4_SHADER_FACTORY_H
-    class GL4_Shader_Factory {
-    public:
-        void add_shader(GL4_Shader* shader);
-    private:
-        std::vector<GL4_Shader> shaders;
-    };
+#ifndef GL4_PROGRAM_H
+    #include "pipeline/GL4_Program.hpp"
+#endif
 
-    static bool match_stage(GL4_Shader_Stage::Pick stage, std::vector<GL4_Shader>* shadersArg);
+#define SHADER_FACTORY_PROG_COUNT 1
+
+#ifndef GL4_SHADER_FACTORY_H
+    namespace _GL4_Program_ID {
+        typedef enum { idle } Pick;
+    }
+
+    class GL4_Shader_Factory {
+        GL4_Shader_Factory(){ create(); }
+        ~GL4_Shader_Factory(){ delete[] programs; }
+    private:
+        GL4_Program* programs = new GL4_Program[SHADER_FACTORY_PROG_COUNT];
+        void create();
+    };
 #define GL4_SHADER_FACTORY_H
 #endif

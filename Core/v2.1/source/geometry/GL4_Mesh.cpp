@@ -80,11 +80,11 @@ void GL4_Mesh::run_feed(GLuint vAttrib, const void * data, size_t size){
     glBufferData(feeds[savedAttrib].format->target, size * feeds[savedAttrib].format->count * vertexCount, data, feeds[savedAttrib].format->usage);
 
     glBindVertexArray(VAO);
-    if(feeds[savedAttrib].format->vaoPtrMode == vaoPtrModes::Default)
+    if(feeds[savedAttrib].format->vaoPtrMode == _vaoPtrModes::Default)
         glVertexAttribPointer(feeds[savedAttrib].format->feedID, feeds[savedAttrib].format->count, feeds[savedAttrib].format->type, feeds[savedAttrib].format->normalized, 0, nullptr);
-    else if(feeds[savedAttrib].format->vaoPtrMode == vaoPtrModes::Integral)
+    else if(feeds[savedAttrib].format->vaoPtrMode == _vaoPtrModes::Integral)
         glVertexAttribIPointer(feeds[savedAttrib].format->feedID, feeds[savedAttrib].format->count, feeds[savedAttrib].format->type, 0, nullptr);
-    else if(feeds[savedAttrib].format->vaoPtrMode == vaoPtrModes::Integral)
+    else if(feeds[savedAttrib].format->vaoPtrMode == _vaoPtrModes::Integral)
         glVertexAttribIPointer(feeds[savedAttrib].format->feedID, feeds[savedAttrib].format->count, feeds[savedAttrib].format->type, 0, nullptr);
 
     glEnableVertexAttribArray(feeds[savedAttrib].format->feedID);

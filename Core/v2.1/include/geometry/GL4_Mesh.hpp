@@ -11,6 +11,8 @@
 #endif
 
 #ifndef GL4_MESH_H
+    static GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feedsArg);
+
     struct GL4_Mesh_Order {
         GLboolean isIdx = false;
         GLuint indexCount;
@@ -59,7 +61,5 @@
         GLboolean initPhase = false;
         GLuint vertexCount;
     };
-
-    static GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feedsArg);
 #define GL4_MESH_H
 #endif

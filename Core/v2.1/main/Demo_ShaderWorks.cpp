@@ -19,7 +19,6 @@
 #include "geometry/polybase/GL4_PolyFunc.hpp"
 #include "geometry/polyform/GL4_PolyGrid.hpp"
 #include "pipeline/GL4_Shader.hpp"
-#include "pipeline/GL4_Shader_Types.hpp"
 #include "pipeline/GL4_Shader_Factory.hpp"
 #include "scene/ErrorCode.hpp"
 
@@ -77,9 +76,9 @@ int main(int argc, char** argv) {
     GL4_Mesh mesh(polyFunc.get_xCount() * polyFunc.get_yCount() * polyFunc.get_zCount());
     polyFunc.create(&mesh, &vertex_factory);
 
-    GL4_Shader shaderVert(GL4_Shader_Stage::vert);
-    shaderVert.add_input(vertex_factory.get_format(0));
-    shaderVert.create("Anton");
+    // GL4_Shader shaderVert(GL4_Shader_Stage::vert);
+    // shaderVert.add_input(vertex_factory.get_format(0));
+    // shaderVert.create("Anton");
 
     while(!glfwWindowShouldClose(window)){
         glfwPollEvents();
