@@ -30,8 +30,9 @@ static void detect_duplicates(std::bitset<6>* stageBits, std::vector<GL4_Shader>
     }
 }
 
-void GL4_Program::add_shader(GL4_Shader* shader_arg, const std::string& path_arg) {
+void GL4_Program::add_shader(GL4_Shader* shader_arg) {
     if(shaders.size() > 8) logError(__FILE__, __LINE__, error_shadersLots);
+    shaders.push_back(*shader_arg);
     return;
 }
 

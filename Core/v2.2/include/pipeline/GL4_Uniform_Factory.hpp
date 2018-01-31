@@ -29,6 +29,8 @@
 	        delete[] uniforms_b;
 	        delete[] uniforms_m;
         }
+        GL4_Uniform_Basic* get_uniform_b(GLuint uAttrib_arg);
+        GL4_Uniform_Matrix* get_uniform_m(GLuint uAttrib_arg);
     private:
         GL4_Uniform_Basic* uniforms_b = new GL4_Uniform_Basic[SHADER_UNIFORM_BASIC_COUNT];
 	    GL4_Uniform_Matrix* uniforms_m = new GL4_Uniform_Matrix[SHADER_UNIFORM_MATRIX_COUNT];

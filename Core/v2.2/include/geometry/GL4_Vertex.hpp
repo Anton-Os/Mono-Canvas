@@ -38,15 +38,28 @@
     };
 
     // Alternative vertex format capable of overriding shader input and output locations
-    /* class GL4_Vertex_Format_Alt {
+    class GL4_Vertex_Format_Alt {
     public:
-	void set_override(bool override_arg){ override = override_arg; }
-	bool get_override(){ return override }
-	void set_feedID(GLint feedID_arg){ feedID = feedID_arg; }
-	GLint get_feedID(){ return feedID; }
+        GL4_Vertex_Format_Alt(){}
+        GL4_Vertex_Format_Alt(const GL4_Vertex_Format* format_arg){
+            set_format(format_arg);
+        }
+        GL4_Vertex_Format_Alt(GLuint feedID_arg, const GL4_Vertex_Format* format_arg){
+            set_feedID(feedID_arg);
+            set_format(format_arg);
+        }
+        void set_format(const GL4_Vertex_Format* format_arg){
+            format = format_arg;
+        }
+	    void set_feedID(GLint feedID_arg){ 
+            overwrite = true;
+            feedID = feedID_arg; 
+        }
+	    GLint get_feedID(){ return feedID; }
+        bool overwrite = false;
     private:
-	GLint feedID = 0;
-	const GL4_Vertex_Format* format;
-    }; */
+	    GLint feedID = 0;
+	    const GL4_Vertex_Format* format;
+    };
 #define GL4_VERTEX_H
 #endif

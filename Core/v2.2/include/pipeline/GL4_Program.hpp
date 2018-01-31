@@ -18,7 +18,7 @@
     class GL4_Program {
     public:
         GLuint ID;
-        void add_shader(GL4_Shader* shader_arg, const std::string& path_arg);
+        void add_shader(GL4_Shader* shader_arg);
 	    void add_uniform(GL4_Uniform_Basic* basic_arg);
 	    void add_uniform(GL4_Uniform_Matrix* matrix_arg);
         void create();
