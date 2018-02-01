@@ -11,9 +11,23 @@
         };
     }
 
+    namespace _GL4_Shader_Format {
+        enum Type {
+            f,
+            i,
+            ui,
+            vec2,
+            vec3,
+            vec4,
+            dvec2,
+            dvec3,
+            dvec4
+        };
+    }
+
     struct GL4_Vertex_Format {
         GL4_Vertex_Format(){}
-        GL4_Vertex_Format(GLuint f, GLint c, GLenum trg, GLenum typ, GLenum u, GLboolean n, GLint v){ 
+        GL4_Vertex_Format(GLuint f, GLint c, GLenum trg, GLenum typ, GLenum u, GLboolean n, GLint v, _GL4_Shader_Format::Type st){ 
             feedID = f;
             count = c;
             target = trg;
@@ -21,6 +35,7 @@
             usage = u;
             normalized = n;
             vaoPtrMode = v;
+            shader_type = st;
         }
         GLint feedID;
         GLint count;
@@ -29,6 +44,7 @@
         GLenum usage;
         GLboolean normalized;
         GLint vaoPtrMode;
+        _GL4_Shader_Format::Type shader_type;
     };
 
     struct GL4_Vertex {
@@ -38,7 +54,7 @@
     };
 
     // Alternative vertex format capable of overriding shader input and output locations
-    class GL4_Vertex_Format_Alt {
+    /*class GL4_Vertex_Format_Alt {
     public:
         GL4_Vertex_Format_Alt(){}
         GL4_Vertex_Format_Alt(const GL4_Vertex_Format* format_arg){
@@ -60,6 +76,22 @@
     private:
 	    GLint feedID = 0;
 	    const GL4_Vertex_Format* format;
+    }; */
+
+    class GL4_Vertex_Format_Alt {
+    public:
+        GL4_Vertex_Format_Alt(const _GL4_Shader_Format::Type* shader_type_arg){
+            type = shader_type_arg;
+        }
+        GL4_Vertex_Format_Alt(const _GL4_Shader_Format::Type* shader_type_arg, GLint feedID_arg){
+            feedID = feedID_arg;
+            overwrite = true;
+            type = shader_type_arg;
+        }
+        bool overwrite = false;
+    private:
+        GLint feedID;
+        const _GL4_Shader_Format::Type* type;
     };
 #define GL4_VERTEX_H
 #endif

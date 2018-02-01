@@ -17,7 +17,11 @@
 #ifndef GL4_PROGRAM_H
     class GL4_Program {
     public:
-        GLuint ID;
+        GL4_Program(){}
+        GL4_Program(_GL4_Program_ID::Pick ID_arg){
+            ID = ID_arg;
+        }
+        _GL4_Program_ID::Pick ID;
         void add_shader(GL4_Shader* shader_arg);
 	    void add_uniform(GL4_Uniform_Basic* basic_arg);
 	    void add_uniform(GL4_Uniform_Matrix* matrix_arg);

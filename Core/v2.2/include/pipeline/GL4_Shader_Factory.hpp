@@ -25,10 +25,6 @@
 #define SHADER_FACTORY_PROG_COUNT 1
 
 #ifndef GL4_SHADER_FACTORY_H
-    namespace _GL4_Program_ID {
-        typedef enum { idle } Pick;
-    }
-
     class GL4_Shader_Factory {
         GL4_Shader_Factory(const std::string& parentDir_arg, GL4_Vertex_Factory* factory_arg){ 
             create(parentDir_arg, factory_arg); 

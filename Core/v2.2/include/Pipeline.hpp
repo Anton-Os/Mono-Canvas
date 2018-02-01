@@ -9,6 +9,10 @@
     #include <glm/gtc/matrix_transform.hpp>
     #include <glm/gtc/type_ptr.hpp>
 
+    namespace _GL4_Program_ID {
+        typedef enum { Idle } Pick;
+    }
+
     namespace _GL4_Shader_Stage {
         typedef enum { vert, frag, tesc, tese, geom, comp } Pick;
     }
