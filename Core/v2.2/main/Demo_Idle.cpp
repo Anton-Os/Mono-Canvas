@@ -129,7 +129,7 @@ int main(int argc, char** argv) {
 	};
 
 	GL4_Vertex_Factory vertex_factory;
-	GL4_Vertex_Format* vertex_normal = vertex_factory.get_format(2);
+	GL4_Vertex_Format* vertex_normal = vertex_factory.get_format(_GL4_Vertex_Feed::normal_3f);
 	GL4_Mesh mesh(9);
 	Hedgy hedgy;
 	hedgy.create(&mesh, &vertex_factory);

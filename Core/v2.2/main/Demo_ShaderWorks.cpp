@@ -80,6 +80,8 @@ int main(int argc, char** argv) {
     // shaderVert.add_input(vertex_factory.get_format(0));
     // shaderVert.create("Anton");
 
+    GL4_Shader_Factory shader_factory(parentDir, &vertex_factory);
+
     while(!glfwWindowShouldClose(window)){
         glfwPollEvents();
         glClearColor(0.949f, 0.917f, 0.803f, 1.0f);

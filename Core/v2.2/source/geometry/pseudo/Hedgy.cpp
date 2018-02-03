@@ -1,8 +1,8 @@
 #include "geometry/pseudo/Hedgy.hpp"
 
 void Hedgy::create(GL4_Mesh* mesh, GL4_Vertex_Factory* factory){
-    const GL4_Vertex_Format* pos_format = factory->get_format(0);
-    const GL4_Vertex_Format* color_format = factory->get_format(1);
+    const GL4_Vertex_Format* pos_format = factory->get_format(_GL4_Vertex_Feed::pos_3f);
+    const GL4_Vertex_Format* color_format = factory->get_format(_GL4_Vertex_Feed::color_4f);
 
     mesh->add_feed(pos_format);
     mesh->add_feed(color_format);

@@ -13,12 +13,14 @@
     
     class GL4_Vertex_Factory {
     public:
-        GL4_Vertex_Factory(){ create(); }
-        ~GL4_Vertex_Factory(){ delete[] formats; }
-        GL4_Vertex_Format* get_format(GLuint vAttrib);
-        _GL4_Shader_Format::Type* get_shader_format(GLuint vAttrib_arg);
+        //~GL4_Vertex_Factory(){ delete[] formats; }
+        GL4_Vertex_Format* get_format(_GL4_Vertex_Feed::Pick pick_arg) ;
+        _GL4_Shader_Format::Type* get_shader_format(_GL4_Vertex_Feed::Pick pick_arg);
     private:
-        GL4_Vertex_Format* formats = new GL4_Vertex_Format[VERTEX_FACTORY_ATTRIB_COUNT];
+        std::bitset<VERTEX_FACTORY_ATTRIB_COUNT> format_bits;
+        //GL4_Vertex_Format* formats = new GL4_Vertex_Format[VERTEX_FACTORY_ATTRIB_COUNT];
+        std::vector<GL4_Vertex_Format> formats;
+        void append_format(_GL4_Vertex_Feed::Pick pick_arg);
         void create();
     };
 #define GL4_VERTEX_FACTORY_H

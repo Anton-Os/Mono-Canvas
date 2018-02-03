@@ -25,6 +25,7 @@
         void add_shader(GL4_Shader* shader_arg);
 	    void add_uniform(GL4_Uniform_Basic* basic_arg);
 	    void add_uniform(GL4_Uniform_Matrix* matrix_arg);
+        GLuint get_progID(){ return progID; }
         void create();
     private:
         GLuint progID;
