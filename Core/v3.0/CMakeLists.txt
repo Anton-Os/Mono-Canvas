@@ -1,4 +1,4 @@
-add_executable(Singleton
+#[[ add_executable(Singleton
     SingletonTest.cpp
 )
 
@@ -11,4 +11,4 @@ target_link_libraries(Singleton
     GLEW::glew_s
     glfw
     glm
-)
+) #]]
