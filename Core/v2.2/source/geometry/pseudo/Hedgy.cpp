@@ -31,6 +31,6 @@ void Hedgy::create(GL4_Mesh* mesh, GL4_Vertex_Factory* factory){
         122, 80, 50, 255,
     }; // 9 total
 
-    mesh->run_feed(0, &hedgyPos[0], sizeof(float));
-    mesh->run_feed(1, &hedgyColor[0], sizeof(GLubyte));
+    mesh->set_feed(0, &hedgyPos[0], sizeof(float));
+    mesh->set_feed(1, &hedgyColor[0], sizeof(GLubyte));
 }

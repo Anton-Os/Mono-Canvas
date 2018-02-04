@@ -21,7 +21,11 @@
             vec4,
             dvec2,
             dvec3,
-            dvec4
+            dvec4,
+            // Matrix
+            mat2,
+            mat3,
+            mat4
         };
     }
 

@@ -81,7 +81,7 @@ void GL4_Mesh::del_feed(GLuint vAttrib){
     feeds.erase(feeds.begin() + savedAttrib);
 }
 
-void GL4_Mesh::run_feed(GLuint vAttrib, const void * data, size_t size){
+void GL4_Mesh::set_feed(GLuint vAttrib, const void * data, size_t size){
     if(!initPhase) init();
 
     GLint savedAttrib = match_vAttrib(vAttrib, &feeds);

@@ -28,6 +28,7 @@
         GLuint get_progID(){ return progID; }
         void create();
     private:
+        bool immutable = false;
         GLuint progID;
         std::bitset<6> stageBits;
         std::vector<GL4_Shader> shaders;

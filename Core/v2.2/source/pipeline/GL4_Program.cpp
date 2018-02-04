@@ -5,6 +5,7 @@ static char error_shadersLots[] = "You cannot hold over 8 shaders in a single pr
 static char error_stageDuplicates[] = "Duplicates of shader stages detected!";
 static char error_incompleteVF[] = "Incomplete pipeline, vertex and fragment shader necissary";
 static char error_linkage[] = "Shader program failed to link";
+static char error_immutable[] = "Shader program is immutable";
 
 static void detect_duplicates(std::bitset<6>* stageBits, std::vector<GL4_Shader>* shaders_arg){
     for(unsigned shaderElem = 0; shaderElem < shaders_arg->size(); shaderElem++){
@@ -31,12 +32,14 @@ static void detect_duplicates(std::bitset<6>* stageBits, std::vector<GL4_Shader>
 }
 
 void GL4_Program::add_shader(GL4_Shader* shader_arg) {
+    if(immutable) logError(__FILE__, __LINE__, error_immutable);
     if(shaders.size() > 8) logError(__FILE__, __LINE__, error_shadersLots);
     shaders.push_back(*shader_arg);
     return;
 }
 
 void GL4_Program::create(){
+    if(immutable) logError(__FILE__, __LINE__, error_immutable);
     if(shaders.empty()) logError(__FILE__, __LINE__, error_shadersEmpty);
     detect_duplicates(&stageBits, &shaders);
     if(!stageBits.test(_GL4_Shader_Stage::vert) || !stageBits.test(_GL4_Shader_Stage::frag)) logError(__FILE__, __LINE__, error_incompleteVF);
@@ -52,4 +55,6 @@ void GL4_Program::create(){
         puts(infoLog);
         logError(__FILE__, __LINE__, error_linkage);
     } else puts("Shader program linked successfuly");
+
+    immutable = true;
 }

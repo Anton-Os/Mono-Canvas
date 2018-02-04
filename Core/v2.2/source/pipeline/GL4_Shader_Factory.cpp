@@ -47,6 +47,6 @@ static GL4_Program gen_Idle_program(_GL4_Program_ID::Pick progID, const std::str
     return program;
 } */
 
-void GL4_Shader_Factory::create(const std::string& parentDir, GL4_Vertex_Factory* factory) {
-    programs[_GL4_Program_ID::Idle] = gen_Idle_program(_GL4_Program_ID::Idle, parentDir, factory);
+void GL4_Shader_Factory::create() {
+    programs[_GL4_Program_ID::Idle] = gen_Idle_program(_GL4_Program_ID::Idle, parentDir, vertexFactory);
 }

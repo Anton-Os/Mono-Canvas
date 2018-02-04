@@ -6,6 +6,10 @@
     #include "scene/ErrorCode.hpp"
 #endif
 
+#ifndef GL4_VERTEX_H
+    #include "geometry/GL4_Vertex.hpp"
+#endif
+
 #ifndef GL4_UNIFORM_H
     #include "pipeline/GL4_Uniform.hpp"
 #endif

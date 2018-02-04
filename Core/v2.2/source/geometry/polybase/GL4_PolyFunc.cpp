@@ -197,7 +197,7 @@ void GL4_PolyFunc::create(GL4_Mesh* mesh, GL4_Vertex_Factory* factory){
     else std::cerr << "Something went wrong while indexing Grid" << std::endl;
 
     mesh->add_feed(factory->get_format(_GL4_Vertex_Feed::pos_3f));
-    mesh->run_feed(0, threePts.data(), sizeof(float));
+    mesh->set_feed(0, threePts.data(), sizeof(float));
 }
 
 void GL4_PolyFunc::create(){

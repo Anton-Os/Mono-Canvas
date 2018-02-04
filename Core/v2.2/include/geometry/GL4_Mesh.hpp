@@ -52,7 +52,7 @@
         void init();
         void add_feed(const GL4_Vertex_Format* vertexFeed);
         void del_feed(GLuint vAttrib);
-        void run_feed(GLuint vAttrib, const void* data, size_t size);
+        void set_feed(GLuint vAttrib, const void* data, size_t size);
     private:
         GLushort fin_counter = 0;
         GLboolean ready = false;
