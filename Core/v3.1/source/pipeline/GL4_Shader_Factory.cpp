@@ -1,4 +1,4 @@
-#include "GL4/GL4_Shader_Factory.hpp"
+#include "GL4/factory/GL4_Shader_Factory.hpp"
 
 static GL4_Shader gen_Idle_vert(const std::string& parentDir, GL4_Vertex_Factory* factory){
     GL4_Shader shader(parentDir + "//shaders//Idle.vert", _GL4_Shader_Stage::vert);

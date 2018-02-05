@@ -13,15 +13,15 @@
 
 #include "loaders/FileIO.hpp"
 #include "GL4/GL4_LoadShaders.hpp"
-#include "geometry/GL4_Vertex.hpp"
-#include "geometry/GL4_Vertex_Factory.hpp"
-#include "geometry/GL4_Mesh.hpp"
+#include "GL4/GL4_Vertex.hpp"
+#include "GL4/factory/GL4_Vertex_Factory.hpp"
+#include "GL4/geometry/GL4_Mesh.hpp"
 #include "geometry/polybase/GL4_PolyFunc.hpp"
 #include "geometry/polyform/GL4_PolyGrid.hpp"
 #include "GL4/GL4_Shader.hpp"
-#include "GL4/GL4_Shader_Factory.hpp"
+#include "GL4/factory/GL4_Shader_Factory.hpp"
 #include "GL4/GL4_Uniform.hpp"
-#include "GL4/GL4_Uniform_Factory.hpp"
+#include "GL4/factory/GL4_Uniform_Factory.hpp"
 #include "scene/ErrorCode.hpp"
 
 static char error_glfw3Init[] = "GLFW failed to initialize";
@@ -82,8 +82,10 @@ int main(int argc, char** argv) {
     // shaderVert.add_input(vertex_factory.get_format(0));
     // shaderVert.create("Anton");
 
-    GL4_Uniform_Factory uniform_factory();
+    GL4_Uniform_Factory uniform_factory;
+    uniform_factory.create();
     GL4_Shader_Factory shader_factory(parentDir, &vertex_factory);
+    shader_factory.create();
 
     while(!glfwWindowShouldClose(window)){
         glfwPollEvents();

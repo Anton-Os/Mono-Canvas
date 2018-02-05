@@ -7,13 +7,13 @@
 #endif
 
 #ifndef GL4_VERTEX_H
-    #include "geometry/GL4_Vertex.hpp"
+    #include "GL4/GL4_Vertex.hpp"
 #endif
 
 #ifndef GL4_MESH_H
     // static GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feedsArg);
 
-    struct GL4_Mesh_Order {
+    /* struct GL4_Mesh_Order {
         GLboolean isIdx = false;
         GLuint indexCount;
         GLuint buffer;
@@ -39,7 +39,7 @@
         const GLuint* vaoPtr = nullptr;
         const GLuint* vertexCountPtr = nullptr;
         const GLuint* indexCountPtr = nullptr;
-    };
+    }; */
 
     class GL4_Mesh {
     public:
@@ -47,8 +47,32 @@
             vertexCount = v;
             quill.init(&ready, &order.isIdx, &VAO, &vertexCount, &order.indexCount);
         }
-        GL4_Mesh_Order order;
-        GL4_Mesh_Quill quill;
+        struct GL4_Mesh_Order {
+            GLboolean isIdx = false;
+            GLuint indexCount;
+            GLuint buffer;
+            GLenum target = GL_ELEMENT_ARRAY_BUFFER;
+            GLenum type = GL_UNSIGNED_INT;
+            void feed(const void* data, size_t size, GLuint count);
+        } order;
+        class GL4_Mesh_Quill {
+        public:
+            GLenum mode = GL_TRIANGLES;
+            void init(const GLboolean* fed, const GLboolean* idx, const GLuint* o, const GLuint* v, const GLuint* i);
+            void unordered_draw();
+            void unordered_drawFixed(GLuint count);
+            void unordered_drawPart(GLuint part, GLuint whole);
+            void ordered_draw();
+            void ordered_drawFixed(GLuint count);
+            void ordered_drawPart(GLuint part, GLuint whole);
+        private:
+            GLboolean initPhase = false;
+            const GLboolean* isFedPtr = nullptr;
+            const GLboolean* isIdxPtr = nullptr;
+            const GLuint* vaoPtr = nullptr;
+            const GLuint* vertexCountPtr = nullptr;
+            const GLuint* indexCountPtr = nullptr;
+        } quill;
         void init();
         void add_feed(const GL4_Vertex_Format* vertexFeed);
         void del_feed(GLuint vAttrib);

@@ -7,11 +7,11 @@
 #endif
 
 #ifndef GL4_VERTEX_H
-    #include "geometry/GL4_Vertex.hpp"
+    #include "GL4/GL4_Vertex.hpp"
 #endif
 
 #ifndef GL4_VERTEX_FACTORY_H
-    #include "geometry/GL4_Vertex_Factory.hpp"
+    #include "GL4/factory/GL4_Vertex_Factory.hpp"
 #endif
 
 #ifndef GL4_SHADER_H

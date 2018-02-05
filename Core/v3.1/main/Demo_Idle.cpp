@@ -13,9 +13,9 @@
 
 #include "loaders/FileIO.hpp"
 #include "GL4/GL4_LoadShaders.hpp"
-#include "geometry/GL4_Vertex.hpp"
-#include "geometry/GL4_Vertex_Factory.hpp"
-#include "geometry/GL4_Mesh.hpp"
+#include "GL4/GL4_Vertex.hpp"
+#include "GL4/factory/GL4_Vertex_Factory.hpp"
+#include "GL4/geometry/GL4_Mesh.hpp"
 #include "geometry/pseudo/Hedgy.hpp"
 
 namespace UI {

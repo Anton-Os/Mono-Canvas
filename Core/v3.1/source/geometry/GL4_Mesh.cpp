@@ -1,4 +1,4 @@
-#include "geometry/GL4_Mesh.hpp"
+#include "GL4/geometry/GL4_Mesh.hpp"
 
 static char error_elemNotFound[] = "Search for requested element failed";
 static char error_nullPtrArgs[] = "Function invoked with null pointers as arguments";
@@ -17,7 +17,7 @@ static GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feedsArg){
     return savedAttrib;
 }
 
-void GL4_Mesh_Quill::init(const GLboolean* fed, const GLboolean* idx, const GLuint* o, const GLuint* v, const GLuint* i){
+void GL4_Mesh::GL4_Mesh_Quill::init(const GLboolean* fed, const GLboolean* idx, const GLuint* o, const GLuint* v, const GLuint* i){
     if(initPhase) logError(__FILE__, __LINE__, error_initPhase);
     
     if(nullptr == fed || nullptr == idx || nullptr == o || nullptr == v || nullptr == i)
@@ -31,7 +31,7 @@ void GL4_Mesh_Quill::init(const GLboolean* fed, const GLboolean* idx, const GLui
     initPhase = true;
 }
 
-void GL4_Mesh_Quill::unordered_draw(){
+void GL4_Mesh::GL4_Mesh_Quill::unordered_draw(){
     if(! *isFedPtr) logError(__FILE__, __LINE__, error_drawNotFed);
 
     glBindVertexArray(*vaoPtr);
@@ -39,7 +39,7 @@ void GL4_Mesh_Quill::unordered_draw(){
     glBindVertexArray(0);
 }
 
-void GL4_Mesh_Quill::ordered_draw(){
+void GL4_Mesh::GL4_Mesh_Quill::ordered_draw(){
     if(! *isFedPtr) logError(__FILE__, __LINE__, error_drawNotFed);
     if(*isIdxPtr) logError(__FILE__, __LINE__, error_drawNotIdx);
     

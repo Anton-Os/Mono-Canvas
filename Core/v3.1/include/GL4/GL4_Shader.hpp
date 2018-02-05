@@ -11,7 +11,7 @@
 #endif
 
 #ifndef GL4_VERTEX_H
-    #include "geometry/GL4_Vertex.hpp"
+    #include "GL4/GL4_Vertex.hpp"
 #endif
 
 #ifndef GL4_SHADER_H
