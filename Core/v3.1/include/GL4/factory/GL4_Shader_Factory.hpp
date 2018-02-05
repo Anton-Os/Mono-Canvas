@@ -28,16 +28,16 @@
     class GL4_Shader_Factory {
     public:
         GL4_Shader_Factory(const std::string& parentDir_arg, GL4_Vertex_Factory* factory_arg){ 
-            parentDir = parentDir_arg;
-            vertexFactory = factory_arg;
+            mParentDir = parentDir_arg;
+            mVertexFactory = factory_arg;
         }
         GL4_Program get_program(_GL4_Program_ID::Pick progID_arg);
         void create();
     private:
-        std::string parentDir;
-        GL4_Vertex_Factory* vertexFactory;
-        std::vector<GL4_Program> programs;
-        std::bitset<SHADER_FACTORY_PROG_COUNT> program_bits;
+        std::string mParentDir;
+        GL4_Vertex_Factory* mVertexFactory;
+        std::vector<GL4_Program> mPrograms;
+        std::bitset<SHADER_FACTORY_PROG_COUNT> mProgram_bits;
         void append_program(GL4_Program* program_arg);
     };
 #define GL4_SHADER_FACTORY_H

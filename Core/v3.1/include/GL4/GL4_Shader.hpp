@@ -24,8 +24,8 @@
         GLuint shaderID;
         std::string filePath;
         _GL4_Shader_Stage::Pick stage;
-        std::vector<GL4_Vertex_Format_Alt> inputs;
-        std::vector<GL4_Vertex_Format_Alt> outputs;
+        std::vector<GL4_Shader_Vertex_Format> inputs;
+        std::vector<GL4_Shader_Vertex_Format> outputs;
     };
 #define GL4_SHADER_H
 #endif

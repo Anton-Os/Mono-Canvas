@@ -14,26 +14,23 @@
     class GL4_Uniform {
     public:
         GL4_Uniform(){}
-        //GL4_Uniform(const std::string& name_arg){}
         GL4_Uniform(_GL4_Shader_Format::Type shader_type_arg, const std::string& name_arg){
-            shader_type = shader_type_arg;
-            name = name_arg;
+            mShader_type = shader_type_arg;
+            mName = name_arg;
         }
         GL4_Uniform(_GL4_Shader_Format::Type shader_type_arg, const std::string& name_arg, const GLuint* progID_arg){
             init(shader_type_arg, progID_arg, name_arg);
             get_loc();
         }
-        // void init(const GLuint* progID_arg);
-        // void init(const std::string& name_arg);
         void init(const GLuint* progID_arg);
         void get_loc();
     protected:
         void init(_GL4_Shader_Format::Type shader_type_arg, const GLuint* progID_arg, const std::string& name_arg);
-        _GL4_Shader_Format::Type shader_type;
-        bool initPhase = false;
-        std::string name;
-        const GLuint* progID = nullptr;
-        GLint location;
+        _GL4_Shader_Format::Type mShader_type;
+        bool mInitPhase = false;
+        std::string mName;
+        const GLuint* mProgID = nullptr;
+        GLint mLocation;
     };
 
     struct GL4_Uniform_Basic : public GL4_Uniform {
@@ -56,7 +53,7 @@
             GLuint ui3[3];
             GLuint ui4[4];
             GLuint* uiv;
-        } type;
+        } mType;
     };
 
     struct GL4_Uniform_Matrix : public GL4_Uniform {

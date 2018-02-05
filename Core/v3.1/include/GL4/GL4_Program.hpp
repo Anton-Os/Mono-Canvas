@@ -19,21 +19,21 @@
     public:
         GL4_Program(){}
         GL4_Program(_GL4_Program_ID::Pick ID_arg){
-            ID = ID_arg;
+            mID = ID_arg;
         }
-        _GL4_Program_ID::Pick ID;
+        _GL4_Program_ID::Pick mID;
         void add_shader(GL4_Shader* shader_arg);
 	    void add_uniform(GL4_Uniform_Basic* basic_arg);
 	    void add_uniform(GL4_Uniform_Matrix* matrix_arg);
-        GLuint get_progID(){ return progID; }
+        GLuint get_progID(){ return mProgID; }
         void create();
     private:
         bool immutable = false;
-        GLuint progID;
-        std::bitset<6> stageBits;
-        std::vector<GL4_Shader> shaders;
-        std::vector<GL4_Uniform_Basic*> uniforms_b;       
-        std::vector<GL4_Uniform_Matrix*> uniforms_m;
+        GLuint mProgID;
+        std::bitset<6> mStage_bits;
+        std::vector<GL4_Shader> mShaders;
+        std::vector<GL4_Uniform_Basic*> mUniforms_b;       
+        std::vector<GL4_Uniform_Matrix*> mUniforms_m;
     };
 #define GL4_PROGRAM_H
 #endif
