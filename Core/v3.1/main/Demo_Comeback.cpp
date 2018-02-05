@@ -138,8 +138,8 @@ int main(int argc, char** argv) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glPointSize(10.0f);
-        mesh.quill.mode = GL_POINTS;
-        mesh.quill.unordered_draw();
+        mesh.mQuill.mode = GL_POINTS;
+        mesh.mQuill.unordered_draw();
 
         glfwSwapBuffers(window);
     }

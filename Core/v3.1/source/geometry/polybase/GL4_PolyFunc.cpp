@@ -190,10 +190,10 @@ void GL4_PolyFunc::create(GL4_Mesh* mesh, GL4_Vertex_Factory* factory){
     unsigned zSetOfY = zVals.size() / yVals.size();
     unsigned zSetOfX = zVals.size() / xVals.size();
 
-    if(zSetOfX == 1) mesh->order.indexCount = genIndices1D(&indices, xVals.size());
-    else if(ySetOfX > 1 && zSetOfY == 1) mesh->order.indexCount = genIndices2D(&indices, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size());
+    if(zSetOfX == 1) mesh->mOrder.indexCount = genIndices1D(&indices, xVals.size());
+    else if(ySetOfX > 1 && zSetOfY == 1) mesh->mOrder.indexCount = genIndices2D(&indices, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size());
     // else if(ySetOfX == 1 && zSetOfY > 1) genIndices2(&indices, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size(), GL4_PolyFunc::zVals.size());
-    else if(ySetOfX > 1 && zSetOfY > 1) mesh->order.indexCount = genIndices3D(&indices, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size(), GL4_PolyFunc::zVals.size());
+    else if(ySetOfX > 1 && zSetOfY > 1) mesh->mOrder.indexCount = genIndices3D(&indices, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size(), GL4_PolyFunc::zVals.size());
     else std::cerr << "Something went wrong while indexing Grid" << std::endl;
 
     mesh->add_feed(factory->get_format(_GL4_Vertex_Feed::pos_3f));

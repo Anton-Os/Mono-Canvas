@@ -14,8 +14,8 @@
     class GL4_Mesh {
     public:
         GL4_Mesh(GLuint v){
-            vertexCount = v;
-            quill.init(&ready, &order.isIdx, &VAO, &vertexCount, &order.indexCount);
+            mVertexCount = v;
+            mQuill.init(&mReady, &mOrder.isIdx, &mVAO, &mVertexCount, &mOrder.indexCount);
         }
         struct Order {
             GLboolean isIdx = false;
@@ -24,7 +24,7 @@
             GLenum target = GL_ELEMENT_ARRAY_BUFFER;
             GLenum type = GL_UNSIGNED_INT;
             void feed(const void* data, size_t size, GLuint count);
-        } order;
+        } mOrder;
         class Quill {
         public:
             GLenum mode = GL_TRIANGLES;
@@ -36,24 +36,24 @@
             void ordered_drawFixed(GLuint count);
             void ordered_drawPart(GLuint part, GLuint whole);
         private:
-            GLboolean initPhase = false;
+            GLboolean mInit_phase = false;
             const GLboolean* isFedPtr = nullptr;
             const GLboolean* isIdxPtr = nullptr;
             const GLuint* vaoPtr = nullptr;
             const GLuint* vertexCountPtr = nullptr;
             const GLuint* indexCountPtr = nullptr;
-        } quill;
+        } mQuill;
         void init();
         void add_feed(const GL4_Vertex_Format* vertexFeed);
         void del_feed(GLuint vAttrib);
         void set_feed(GLuint vAttrib, const void* data, size_t size);
     private:
-        GLushort fin_counter = 0;
-        GLboolean ready = false;
-        std::vector<GL4_Vertex> feeds;
-        GLuint VAO;
-        GLboolean initPhase = false;
-        GLuint vertexCount;
+        GLushort mFin_counter = 0;
+        GLboolean mReady = false;
+        std::vector<GL4_Vertex> mFeeds;
+        GLuint mVAO;
+        GLboolean mInit_phase = false;
+        GLuint mVertexCount;
     };
 #define GL4_MESH_H
 #endif

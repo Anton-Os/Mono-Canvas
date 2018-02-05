@@ -33,11 +33,21 @@
         GLint mLocation;
     };
 
+    namespace _GL4_Uniform_Basic_Format {
+        enum Pick {
+            f1,
+            i1,
+            ui1
+        };
+    }
+
     struct GL4_Uniform_Basic : public GL4_Uniform {
         GL4_Uniform_Basic(){}
         GL4_Uniform_Basic(_GL4_Shader_Format::Type shader_type_arg, const std::string& name_arg) : GL4_Uniform(shader_type_arg, name_arg){}
         void set(void* data);
+        _GL4_Uniform_Basic_Format::Pick mFormat;
         union Type {
+            Type(){ i1 = 0; }
             GLfloat f1;
             GLfloat f2[2];
             GLfloat f3[3];
@@ -56,15 +66,25 @@
         } mType;
     };
 
+    namespace _GL4_Uniform_Matrix_Format {
+        enum Pick {
+            mat2,
+            mat3,
+            mat4
+        };
+    }
+
     struct GL4_Uniform_Matrix : public GL4_Uniform {
 	    GL4_Uniform_Matrix(){}
         GL4_Uniform_Matrix(_GL4_Shader_Format::Type shader_type_arg, const std::string& name_arg) : GL4_Uniform(shader_type_arg, name_arg){}
         void set(void* data);
+        _GL4_Uniform_Matrix_Format::Pick mFormat;
         union Type {
+            Type(){ m4 = glm::mat4(1); }
             glm::mat2 m2;
             glm::mat3 m3;
             glm::mat4 m4;
-        };
+        } mType;
     };
 #define GL4_UNIFORM_H
 #endif
