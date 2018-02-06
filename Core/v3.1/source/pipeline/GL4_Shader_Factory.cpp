@@ -1,4 +1,4 @@
-#include "GL4/factory/GL4_Shader_Factory.hpp"
+#include "graphics/factory/GL4_Shader_Factory.hpp"
 
 static GL4_Program gen_Idle_program(_GL4_Program_ID::Pick progID, const std::string& parentDir_arg, GL4_Vertex_Factory* factory_arg){
     GL4_Shader_Vertex_Format pos_3f(factory_arg->get_shader_format(_GL4_Vertex_Feed::pos_3f));

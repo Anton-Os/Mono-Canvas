@@ -3,7 +3,7 @@
 #endif
 
 #ifndef GL4_VERTEX_H
-    #include "GL4/GL4_Vertex.hpp"
+    #include "graphics/GL4_Vertex.hpp"
 #endif
 
 #define VERTEX_FACTORY_ATTRIB_COUNT 4

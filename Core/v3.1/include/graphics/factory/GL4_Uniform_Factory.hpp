@@ -7,11 +7,11 @@
 #endif
 
 #ifndef GL4_VERTEX_H
-    #include "GL4/GL4_Vertex.hpp"
+    #include "graphics/GL4_Vertex.hpp"
 #endif
 
 #ifndef GL4_UNIFORM_H
-    #include "GL4/GL4_Uniform.hpp"
+    #include "graphics/GL4_Uniform.hpp"
 #endif
 
 #define SHADER_UNIFORM_BASIC_COUNT 1

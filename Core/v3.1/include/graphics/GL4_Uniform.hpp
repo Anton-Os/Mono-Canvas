@@ -7,27 +7,17 @@
 #endif
 
 #ifndef GL4_VERTEX_H
-    #include "GL4/GL4_Vertex.hpp"
+    #include "graphics/GL4_Vertex.hpp"
 #endif
 
 #ifndef GL4_UNIFORM_H
     class GL4_Uniform {
     public:
         GL4_Uniform(){}
-        GL4_Uniform(_GL4_Shader_Format::Type shader_type_arg, const std::string& name_arg){
-            mShader_type = shader_type_arg;
-            mName = name_arg;
-        }
-        GL4_Uniform(_GL4_Shader_Format::Type shader_type_arg, const std::string& name_arg, const GLuint* progID_arg){
-            init(shader_type_arg, progID_arg, name_arg);
-            get_loc();
-        }
         void init(const GLuint* progID_arg);
         void get_loc();
     protected:
-        void init(_GL4_Shader_Format::Type shader_type_arg, const GLuint* progID_arg, const std::string& name_arg);
-        _GL4_Shader_Format::Type mShader_type;
-        bool mInitPhase = false;
+        bool mReady = false;
         std::string mName;
         const GLuint* mProgID = nullptr;
         GLint mLocation;
@@ -43,7 +33,16 @@
 
     struct GL4_Uniform_Basic : public GL4_Uniform {
         GL4_Uniform_Basic(){}
-        GL4_Uniform_Basic(_GL4_Shader_Format::Type shader_type_arg, const std::string& name_arg) : GL4_Uniform(shader_type_arg, name_arg){}
+        GL4_Uniform_Basic(_GL4_Uniform_Basic_Format::Pick type_arg, const std::string& name_arg){
+            mFormat = type_arg;
+            mName = name_arg;
+        }
+        GL4_Uniform_Basic(_GL4_Uniform_Basic_Format::Pick type_arg, const GLuint* progID_arg, const std::string& name_arg){
+            mFormat = type_arg;
+            mName = name_arg;
+            mProgID = progID_arg;
+            mReady = true;
+        }
         void set(void* data);
         _GL4_Uniform_Basic_Format::Pick mFormat;
         union Type {
@@ -76,7 +75,16 @@
 
     struct GL4_Uniform_Matrix : public GL4_Uniform {
 	    GL4_Uniform_Matrix(){}
-        GL4_Uniform_Matrix(_GL4_Shader_Format::Type shader_type_arg, const std::string& name_arg) : GL4_Uniform(shader_type_arg, name_arg){}
+        GL4_Uniform_Matrix(_GL4_Uniform_Matrix_Format::Pick type_arg, const std::string& name_arg){
+            mFormat = type_arg;
+            mName = name_arg;
+        }
+        GL4_Uniform_Matrix(_GL4_Uniform_Matrix_Format::Pick type_arg, const GLuint* progID_arg, const std::string& name_arg){
+            mFormat = type_arg;
+            mName = name_arg;
+            mProgID = progID_arg;
+            mReady = true;
+        }
         void set(void* data);
         _GL4_Uniform_Matrix_Format::Pick mFormat;
         union Type {

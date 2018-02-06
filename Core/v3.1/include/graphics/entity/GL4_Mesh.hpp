@@ -7,7 +7,7 @@
 #endif
 
 #ifndef GL4_VERTEX_H
-    #include "GL4/GL4_Vertex.hpp"
+    #include "graphics/GL4_Vertex.hpp"
 #endif
 
 #ifndef GL4_MESH_H

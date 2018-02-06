@@ -8,11 +8,11 @@
 #endif
 
 #ifndef GL4_VERTEX_FACTORY_H
-    #include "GL4/factory/GL4_Vertex_Factory.hpp"
+    #include "graphics/factory/GL4_Vertex_Factory.hpp"
 #endif
 
 #ifndef GL4_MESH_H
-    #include "GL4/geometry/GL4_Mesh.hpp"
+    #include "graphics/geometry/GL4_Mesh.hpp"
 #endif
 
 #ifndef POLY_CLONE_H

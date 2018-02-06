@@ -12,10 +12,10 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "loaders/FileIO.hpp"
-#include "GL4/GL4_LoadShaders.hpp"
-#include "GL4/GL4_Vertex.hpp"
-#include "GL4/factory/GL4_Vertex_Factory.hpp"
-#include "GL4/geometry/GL4_Mesh.hpp"
+#include "graphics/GL4_LoadShaders.hpp"
+#include "graphics/GL4_Vertex.hpp"
+#include "graphics/factory/GL4_Vertex_Factory.hpp"
+#include "graphics/entity/GL4_Mesh.hpp"
 #include "geometry/pseudo/Hedgy.hpp"
 
 namespace UI {

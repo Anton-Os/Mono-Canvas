@@ -12,16 +12,16 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "loaders/FileIO.hpp"
-#include "GL4/GL4_LoadShaders.hpp"
-#include "GL4/GL4_Vertex.hpp"
-#include "GL4/factory/GL4_Vertex_Factory.hpp"
-#include "GL4/geometry/GL4_Mesh.hpp"
+#include "graphics/GL4_LoadShaders.hpp"
+#include "graphics/GL4_Vertex.hpp"
+#include "graphics/factory/GL4_Vertex_Factory.hpp"
+#include "graphics/entity/GL4_Mesh.hpp"
 #include "geometry/polybase/GL4_PolyFunc.hpp"
 #include "geometry/polyform/GL4_PolyGrid.hpp"
-#include "GL4/GL4_Shader.hpp"
-#include "GL4/factory/GL4_Shader_Factory.hpp"
-#include "GL4/GL4_Uniform.hpp"
-#include "GL4/factory/GL4_Uniform_Factory.hpp"
+#include "graphics/GL4_Shader.hpp"
+#include "graphics/factory/GL4_Shader_Factory.hpp"
+#include "graphics/GL4_Uniform.hpp"
+#include "graphics/factory/GL4_Uniform_Factory.hpp"
 #include "scene/ErrorCode.hpp"
 
 static char error_glfw3Init[] = "GLFW failed to initialize";

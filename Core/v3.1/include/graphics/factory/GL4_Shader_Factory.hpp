@@ -7,19 +7,19 @@
 #endif
 
 #ifndef GL4_VERTEX_H
-    #include "GL4/GL4_Vertex.hpp"
+    #include "graphics/GL4_Vertex.hpp"
 #endif
 
 #ifndef GL4_VERTEX_FACTORY_H
-    #include "GL4/factory/GL4_Vertex_Factory.hpp"
+    #include "graphics/factory/GL4_Vertex_Factory.hpp"
 #endif
 
 #ifndef GL4_SHADER_H
-    #include "GL4/GL4_Shader.hpp"
+    #include "graphics/GL4_Shader.hpp"
 #endif
 
 #ifndef GL4_PROGRAM_H
-    #include "GL4/GL4_Program.hpp"
+    #include "graphics/GL4_Program.hpp"
 #endif
 
 #define SHADER_FACTORY_PROG_COUNT 1

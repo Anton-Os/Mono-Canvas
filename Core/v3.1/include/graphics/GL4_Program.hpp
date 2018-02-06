@@ -7,11 +7,11 @@
 #endif
 
 #ifndef GL4_UNIFORM_H
-    #include "GL4/GL4_Uniform.hpp"
+    #include "graphics/GL4_Uniform.hpp"
 #endif
 
 #ifndef GL4_SHADER_H
-    #include "GL4/GL4_Shader.hpp"
+    #include "graphics/GL4_Shader.hpp"
 #endif
 
 #ifndef GL4_PROGRAM_H

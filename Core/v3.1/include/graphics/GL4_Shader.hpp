@@ -7,11 +7,11 @@
 #endif
 
 #ifndef GL4_LOAD_SHADERS_H
-    #include "GL4/GL4_LoadShaders.hpp"
+    #include "graphics/GL4_LoadShaders.hpp"
 #endif
 
 #ifndef GL4_VERTEX_H
-    #include "GL4/GL4_Vertex.hpp"
+    #include "graphics/GL4_Vertex.hpp"
 #endif
 
 #ifndef GL4_SHADER_H

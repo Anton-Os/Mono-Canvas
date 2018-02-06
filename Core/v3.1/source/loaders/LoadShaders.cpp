@@ -1,4 +1,4 @@
-#include "GL4/GL4_LoadShaders.hpp"
+#include "graphics/GL4_LoadShaders.hpp"
 
 static char error_glslExtension[] = "Unknown glsl file extension";
 static char error_shaderCompile[] = "Shader failed to compile";

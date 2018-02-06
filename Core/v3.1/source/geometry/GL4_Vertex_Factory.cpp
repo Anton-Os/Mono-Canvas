@@ -1,4 +1,4 @@
-#include "GL4/factory/GL4_Vertex_Factory.hpp"
+#include "graphics/factory/GL4_Vertex_Factory.hpp"
 
 static GLint match_vAttrib(_GL4_Vertex_Feed::Pick pick_arg, std::vector<GL4_Vertex_Format>* mFormats){
     GLint savedAttrib = -1;

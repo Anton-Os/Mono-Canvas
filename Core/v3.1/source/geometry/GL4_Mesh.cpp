@@ -1,4 +1,4 @@
-#include "GL4/geometry/GL4_Mesh.hpp"
+#include "graphics/entity/GL4_Mesh.hpp"
 
 static char error_elemNotFound[] = "Search for requested element failed";
 static char error_nullPtrArgs[] = "Function invoked with null pointers as arguments";

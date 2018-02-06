@@ -1,4 +1,4 @@
-#include "GL4/GL4_Program.hpp"
+#include "graphics/GL4_Program.hpp"
 
 static char error_shadersEmpty[] = "No shaders are attributed to this program";
 static char error_shadersLots[] = "You cannot hold over 8 shaders in a single program";
