@@ -16,5 +16,17 @@
     namespace _GL4_Shader_Stage {
         typedef enum { vert, frag, tesc, tese, geom, comp } Pick;
     }
+
+    namespace _GL4_Uniform_Basic_ID {
+        enum Pick {
+            renderMode
+        };
+    }
+
+    namespace _GL4_Uniform_Matrix_ID {
+        enum Pick {
+            mvpMatrix
+        };
+    }
 #define PIPELINE_H
 #endif

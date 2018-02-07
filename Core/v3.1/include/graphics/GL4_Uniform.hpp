@@ -9,6 +9,7 @@
 #ifndef GL4_UNIFORM_H
     struct GL4_Uniform_Format {
         std::string mName;
+        bool mReady;
     };
 
     namespace _GL4_Uniform_Basic_Format {
@@ -21,11 +22,14 @@
 
     struct GL4_Uniform_Basic_Format : public GL4_Uniform_Format {
         GL4_Uniform_Basic_Format(){}
-        GL4_Uniform_Basic_Format(const std::string& name_arg, _GL4_Uniform_Basic_Format::Pick pick_arg){
+        GL4_Uniform_Basic_Format(const std::string& name_arg, _GL4_Uniform_Basic_Format::Pick pick_arg, _GL4_Uniform_Basic_ID::Pick id_arg){
             mName = name_arg;
             mPick = pick_arg;
+            mID = id_arg;
+            mReady = true;
         }
         _GL4_Uniform_Basic_Format::Pick mPick;
+        _GL4_Uniform_Basic_ID::Pick mID;
     };
     
     namespace _GL4_Uniform_Matrix_Format {
@@ -38,11 +42,13 @@
 
     struct GL4_Uniform_Matrix_Format : public GL4_Uniform_Format {
         GL4_Uniform_Matrix_Format(){}
-        GL4_Uniform_Matrix_Format(const std::string& name_arg, _GL4_Uniform_Matrix_Format::Pick pick_arg){
+        GL4_Uniform_Matrix_Format(const std::string& name_arg, _GL4_Uniform_Matrix_Format::Pick pick_arg, _GL4_Uniform_Matrix_ID::Pick id_arg){
             mName = name_arg;
             mPick = pick_arg;
+            mID = id_arg;
         }
         _GL4_Uniform_Matrix_Format::Pick mPick;
+        _GL4_Uniform_Matrix_ID::Pick mID;
     };
 
     class GL4_Uniform {

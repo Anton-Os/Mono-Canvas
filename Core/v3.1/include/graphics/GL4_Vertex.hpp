@@ -21,17 +21,13 @@
             vec4,
             dvec2,
             dvec3,
-            dvec4,
-            // Matrix
-            mat2,
-            mat3,
-            mat4
+            dvec4
         };
     }
 
     struct GL4_Vertex_Format {
         GL4_Vertex_Format(){}
-        GL4_Vertex_Format(GLuint f, GLint c, GLenum trg, GLenum typ, GLenum u, GLboolean n, GLint v, _GL4_Shader_Format::Type st){ 
+        GL4_Vertex_Format(_GL4_Vertex_Feed_ID::Pick f, GLint c, GLenum trg, GLenum typ, GLenum u, GLboolean n, GLint v, _GL4_Shader_Format::Type st){ 
             mFeedID = f;
             mCount = c;
             mTarget = trg;
@@ -41,14 +37,14 @@
             mVaoPtrMode = v;
             mShader_type = st;
         }
-        GLint mFeedID;
+        _GL4_Vertex_Feed_ID::Pick mFeedID;
+        _GL4_Shader_Format::Type mShader_type;
         GLint mCount;
         GLenum mTarget;
         GLenum mType;
         GLenum mUsage;
         GLboolean mNormalized;
         GLint mVaoPtrMode;
-        _GL4_Shader_Format::Type mShader_type;
     };
 
     struct GL4_Vertex {

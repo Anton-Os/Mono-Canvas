@@ -10,8 +10,13 @@
     #include <glm/gtc/matrix_transform.hpp>
     #include <glm/gtc/type_ptr.hpp>
 
-    namespace _GL4_Vertex_Feed {
-        typedef enum { pos_3f, color_4f, normal_3f, texCoord_2f } Pick;
+    namespace _GL4_Vertex_Feed_ID {
+        enum Pick { 
+            pos_3f, 
+            color_4f, 
+            normal_3f, 
+            texCoord_2f 
+        };
     }
 #define GEOMETRY_H
 #endif

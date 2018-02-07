@@ -1,8 +1,8 @@
 add_executable(Idle
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
-    source/geometry/GL4_Vertex_Factory.cpp
-    source/geometry/GL4_Mesh.cpp
+    source/graphics/factory/GL4_Vertex_Factory.cpp
+    source/graphics/entity/GL4_Mesh.cpp
     source/geometry/pseudo/Hedgy.cpp
     source/scene/ErrorCode.cpp
     main/Demo_Idle.cpp
@@ -22,8 +22,8 @@ target_link_libraries(Idle
 add_executable(Comeback
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
-    source/geometry/GL4_Vertex_Factory.cpp
-    source/geometry/GL4_Mesh.cpp
+    source/graphics/factory/GL4_Vertex_Factory.cpp
+    source/graphics/entity/GL4_Mesh.cpp
     source/geometry/polybase/GL4_PolyFunc.cpp
     source/geometry/polyform/GL4_PolyGrid.cpp
     source/scene/ErrorCode.cpp
@@ -45,14 +45,14 @@ target_link_libraries(Comeback
 add_executable(ShaderWorks
     source/loaders/FileIO.cpp
     source/loaders/LoadShaders.cpp
-    source/geometry/GL4_Vertex_Factory.cpp
-    source/geometry/GL4_Mesh.cpp
+    source/graphics/factory/GL4_Vertex_Factory.cpp
+    source/graphics/entity/GL4_Mesh.cpp
     source/geometry/polybase/GL4_PolyFunc.cpp
     source/geometry/polyform/GL4_PolyGrid.cpp
-    source/pipeline/GL4_Program.cpp
-    source/pipeline/GL4_Uniform.cpp
-    source/pipeline/GL4_Uniform_Factory.cpp
-    source/pipeline/GL4_Shader_Factory.cpp
+    source/graphics/GL4_Program.cpp
+    source/graphics/GL4_Uniform.cpp
+    source/graphics/factory/GL4_Uniform_Factory.cpp
+    source/graphics/factory/GL4_Shader_Factory.cpp
     source/scene/ErrorCode.cpp
     source/scene/KeyManager.cpp
     main/Demo_ShaderWorks.cpp
