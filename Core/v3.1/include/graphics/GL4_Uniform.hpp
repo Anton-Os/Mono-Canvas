@@ -6,21 +6,9 @@
     #include "scene/ErrorCode.hpp"
 #endif
 
-#ifndef GL4_VERTEX_H
-    #include "graphics/GL4_Vertex.hpp"
-#endif
-
 #ifndef GL4_UNIFORM_H
-    class GL4_Uniform {
-    public:
-        GL4_Uniform(){}
-        void init(const GLuint* progID_arg);
-        void get_loc();
-    protected:
-        bool mReady = false;
+    struct GL4_Uniform_Format {
         std::string mName;
-        const GLuint* mProgID = nullptr;
-        GLint mLocation;
     };
 
     namespace _GL4_Uniform_Basic_Format {
@@ -31,22 +19,52 @@
         };
     }
 
-    struct GL4_Uniform_Basic : public GL4_Uniform {
-        GL4_Uniform_Basic(){}
-        GL4_Uniform_Basic(_GL4_Uniform_Basic_Format::Pick type_arg, const std::string& name_arg){
-            mFormat = type_arg;
+    struct GL4_Uniform_Basic_Format : public GL4_Uniform_Format {
+        GL4_Uniform_Basic_Format(){}
+        GL4_Uniform_Basic_Format(const std::string& name_arg, _GL4_Uniform_Basic_Format::Pick pick_arg){
             mName = name_arg;
+            mPick = pick_arg;
         }
-        GL4_Uniform_Basic(_GL4_Uniform_Basic_Format::Pick type_arg, const GLuint* progID_arg, const std::string& name_arg){
-            mFormat = type_arg;
+        _GL4_Uniform_Basic_Format::Pick mPick;
+    };
+    
+    namespace _GL4_Uniform_Matrix_Format {
+        enum Pick {
+            m2,
+            m3,
+            m4
+        };
+    }
+
+    struct GL4_Uniform_Matrix_Format : public GL4_Uniform_Format {
+        GL4_Uniform_Matrix_Format(){}
+        GL4_Uniform_Matrix_Format(const std::string& name_arg, _GL4_Uniform_Matrix_Format::Pick pick_arg){
             mName = name_arg;
+            mPick = pick_arg;
+        }
+        _GL4_Uniform_Matrix_Format::Pick mPick;
+    };
+
+    class GL4_Uniform {
+    public:
+        GL4_Uniform(){}
+        GL4_Uniform(const GLuint* progID_arg){
             mProgID = progID_arg;
-            mReady = true;
         }
-        void set(void* data);
-        _GL4_Uniform_Basic_Format::Pick mFormat;
+        GLint get_loc(const std::string& name_arg);
+    protected:
+        bool mReady;
+        const GLuint* mProgID;
+        GLint mLocation;
+    };
+
+    class GL4_Uniform_Basic : public GL4_Uniform {
+    public:
+        GL4_Uniform_Basic(){}
+        GL4_Uniform_Basic(const GLuint* progID_arg, const GL4_Uniform_Basic_Format* format_arg){
+            init(progID_arg, format_arg);
+        }
         union Type {
-            Type(){ i1 = 0; }
             GLfloat f1;
             GLfloat f2[2];
             GLfloat f3[3];
@@ -63,36 +81,31 @@
             GLuint ui4[4];
             GLuint* uiv;
         } mType;
+        void init(const GLuint* progID_arg, const GL4_Uniform_Basic_Format* format_arg);
+        void get_loc(){ mLocation = GL4_Uniform::get_loc(mFormat->mName); }
+        void set(void* data);
+    private:
+        const GL4_Uniform_Basic_Format* mFormat;
     };
 
-    namespace _GL4_Uniform_Matrix_Format {
-        enum Pick {
-            mat2,
-            mat3,
-            mat4
-        };
-    }
-
-    struct GL4_Uniform_Matrix : public GL4_Uniform {
-	    GL4_Uniform_Matrix(){}
-        GL4_Uniform_Matrix(_GL4_Uniform_Matrix_Format::Pick type_arg, const std::string& name_arg){
-            mFormat = type_arg;
-            mName = name_arg;
-        }
-        GL4_Uniform_Matrix(_GL4_Uniform_Matrix_Format::Pick type_arg, const GLuint* progID_arg, const std::string& name_arg){
-            mFormat = type_arg;
-            mName = name_arg;
+    class GL4_Uniform_Matrix : public GL4_Uniform {
+    public:
+        GL4_Uniform_Matrix(){}
+        GL4_Uniform_Matrix(const GLuint* progID_arg, const GL4_Uniform_Matrix_Format* format_arg){
             mProgID = progID_arg;
+            mFormat = format_arg;
             mReady = true;
         }
-        void set(void* data);
-        _GL4_Uniform_Matrix_Format::Pick mFormat;
         union Type {
-            Type(){ m4 = glm::mat4(1); }
-            glm::mat2 m2;
-            glm::mat3 m3;
-            glm::mat4 m4;
+            GLfloat mat2[4];
+            GLfloat mat3[9];
+            GLfloat mat4[16];
         } mType;
+        void init(const GLuint* progID_arg, const GL4_Uniform_Matrix_Format* format_arg);
+        void get_loc(){ mLocation = GL4_Uniform::get_loc(mFormat->mName); }
+        void set(void* data);
+    private:
+        const GL4_Uniform_Matrix_Format* mFormat;
     };
 #define GL4_UNIFORM_H
 #endif

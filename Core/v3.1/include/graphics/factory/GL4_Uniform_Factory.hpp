@@ -28,16 +28,16 @@
 
     class GL4_Uniform_Factory {
     public:
-        GL4_Uniform_Basic* get_uniform_b(GLuint uAttrib_arg);
-        GL4_Uniform_Matrix* get_uniform_m(GLuint uAttrib_arg);
+        GL4_Uniform_Basic_Format* get_uniform_b(GLuint uAttrib_arg);
+        GL4_Uniform_Matrix_Format* get_uniform_m(GLuint uAttrib_arg);
         void create();
     private:
-        std::vector<GL4_Uniform_Basic> mUniforms_b;
+        std::vector<GL4_Uniform_Basic_Format> mUniforms_b;
         std::bitset<SHADER_UNIFORM_BASIC_COUNT> mUniform_b_bits;
-        void append_uniform_b(GL4_Uniform_Basic* uniform_b_arg);
-        std::vector<GL4_Uniform_Matrix> mUniforms_m;
+        void append_uniform_b(GL4_Uniform_Basic_Format* uniform_b_arg);
+        std::vector<GL4_Uniform_Matrix_Format> mUniforms_m;
         std::bitset<SHADER_UNIFORM_MATRIX_COUNT> mUniform_m_bits;
-        void append_uniform_m(GL4_Uniform_Matrix* uniform_m_arg);
+        void append_uniform_m(GL4_Uniform_Matrix_Format* uniform_m_arg);
     };
 #define GL4_UNIFORM_FACTORY_H
 #endif

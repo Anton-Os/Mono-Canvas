@@ -6,17 +6,18 @@ static char error_unready[] = "uniform hasnt been properly initialized";
 static char error_formatSupport[] = "shader format not supported";
 static char warning_notFound[] = "shader program uniform not found";
 
-void GL4_Uniform::init(const GLuint* progID_arg){
-    if(progID_arg == nullptr) logError(__FILE__, __LINE__, error_progID);
-    if(mName.empty()) logError(__FILE__, __LINE__, error_name);
-    mProgID = progID_arg;
-    mReady = true;
+GLint GL4_Uniform::get_loc(const std::string& name_arg){
+    if(!mReady) logError(__FILE__, __LINE__, error_unready);
+    GLint location = glGetUniformLocation(*mProgID, name_arg.c_str());
+    if(mLocation <= 0) logWarning(__FILE__, __LINE__, warning_notFound);
+    return location;
 }
 
-void GL4_Uniform::get_loc(){
-    if(!mReady) logError(__FILE__, __LINE__, error_unready);
-    mLocation = glGetUniformLocation(*mProgID, mName.c_str());
-    logWarning(__FILE__, __LINE__, warning_notFound);
+void GL4_Uniform_Basic::init(const GLuint* progID_arg, const GL4_Uniform_Basic_Format* format_arg){
+    mProgID = progID_arg;
+    mFormat = format_arg;
+    mReady = true;
+    return;
 }
 
 static void set_uniform_basic(GL4_Uniform_Basic::Type* type_arg, _GL4_Uniform_Basic_Format::Pick format_arg, void* data, GLint location_arg){
@@ -41,7 +42,14 @@ static void set_uniform_basic(GL4_Uniform_Basic::Type* type_arg, _GL4_Uniform_Ba
 
 void GL4_Uniform_Basic::set(void* data_arg){
     if(!mReady) logError(__FILE__, __LINE__, error_unready);
-    set_uniform_basic(&mType, mFormat, data_arg, mLocation);         
+    set_uniform_basic(&mType, mFormat->mPick, data_arg, mLocation);         
+    return;
+}
+
+void GL4_Uniform_Matrix::init(const GLuint* progID_arg, const GL4_Uniform_Matrix_Format* format_arg){
+    mProgID = progID_arg;
+    mFormat = format_arg;
+    mReady = true;
     return;
 }
 
