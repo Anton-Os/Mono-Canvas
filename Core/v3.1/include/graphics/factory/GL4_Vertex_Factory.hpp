@@ -2,6 +2,10 @@
     #include "Geometry.hpp"
 #endif
 
+#ifndef SCENE_ERROR_CODE_H
+    #include "scene/ErrorCode.hpp"
+#endif
+
 #ifndef GL4_VERTEX_H
     #include "graphics/GL4_Vertex.hpp"
 #endif

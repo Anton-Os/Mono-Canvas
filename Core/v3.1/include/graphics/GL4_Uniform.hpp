@@ -9,7 +9,7 @@
 #ifndef GL4_UNIFORM_H
     struct GL4_Uniform_Format {
         std::string mName;
-        bool mReady;
+        bool mReady = false;
     };
 
     namespace _GL4_Uniform_Basic_Format {

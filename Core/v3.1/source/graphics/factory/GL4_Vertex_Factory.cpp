@@ -1,9 +1,11 @@
 #include "graphics/factory/GL4_Vertex_Factory.hpp"
 
-static GLint match_vAttrib(_GL4_Vertex_Feed_ID::Pick pick_arg, std::vector<GL4_Vertex_Format>* mFormats){
+static char error_findFormat[] = "Requested format could not be obtained";
+
+static GLint match_vAttrib(_GL4_Vertex_Feed_ID::Pick pick_arg, std::vector<GL4_Vertex_Format>* formats_arg){
     GLint savedAttrib = -1;
-    for(unsigned v = 0; v < mFormats->size(); v++){
-        if(pick_arg == mFormats->at(v).mFeedID){
+    for(unsigned v = 0; v < formats_arg->size(); v++){
+        if(pick_arg == formats_arg->at(v).mFeedID){
             savedAttrib = v;
             break;
         }
@@ -41,7 +43,6 @@ void GL4_Vertex_Factory::create(){
 }
 
 void GL4_Vertex_Factory::append_format(_GL4_Vertex_Feed_ID::Pick pick_arg){
-    GL4_Vertex_Format vertex;
     switch(pick_arg){
         case _GL4_Vertex_Feed_ID::pos_3f :
             mFormats.push_back(gen_pos_3f_format());
@@ -63,21 +64,25 @@ void GL4_Vertex_Factory::append_format(_GL4_Vertex_Feed_ID::Pick pick_arg){
 }
 
 GL4_Vertex_Format* GL4_Vertex_Factory::get_format(_GL4_Vertex_Feed_ID::Pick pick_arg){
+    /*if(mFormat_bits.all())
+        return &mFormats[pick_arg]; */
     if(!mFormat_bits.test(pick_arg))
         append_format(pick_arg);
 
     GLint savedAttrib = match_vAttrib(pick_arg, &mFormats);
 
-    if(savedAttrib < 0) return nullptr;
+    if(savedAttrib < 0) logError(__FILE__, __LINE__, error_findFormat);
     else return &mFormats[savedAttrib];
 }
 
 _GL4_Shader_Format::Type* GL4_Vertex_Factory::get_shader_format(_GL4_Vertex_Feed_ID::Pick pick_arg){
+    /* if(mFormat_bits.all())
+        return &mFormats[pick_arg].mShader_type; */
     if(!mFormat_bits.test(pick_arg))
         append_format(pick_arg);
 
     GLint savedAttrib = match_vAttrib(pick_arg, &mFormats);
 
-    if(savedAttrib < 0) return nullptr;
+    if(savedAttrib < 0) logError(__FILE__, __LINE__, error_findFormat);
     else return &mFormats[savedAttrib].mShader_type;
 }

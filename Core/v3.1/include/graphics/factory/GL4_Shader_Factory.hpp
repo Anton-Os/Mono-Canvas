@@ -38,7 +38,7 @@
         GL4_Vertex_Factory* mVertexFactory;
         std::vector<GL4_Program> mPrograms;
         std::bitset<SHADER_FACTORY_PROG_COUNT> mProgram_bits;
-        void append_program(GL4_Program* program_arg);
+        void append_program(_GL4_Program_ID::Pick program_arg);
     };
 #define GL4_SHADER_FACTORY_H
 #endif
