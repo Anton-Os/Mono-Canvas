@@ -98,9 +98,11 @@
     public:
         GL4_Uniform_Matrix(){}
         GL4_Uniform_Matrix(const GLuint* progID_arg, const GL4_Uniform_Matrix_Format* format_arg){
-            mProgID = progID_arg;
+            init(progID_arg, format_arg);
+            /* mProgID = progID_arg;
             mFormat = format_arg;
             mReady = true;
+            get_loc(); */
         }
         union Type {
             GLfloat mat2[4];

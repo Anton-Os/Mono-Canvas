@@ -69,8 +69,8 @@ int main(int argc, char** argv) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     std::string parentDir = getParentDirectory(argv[0]);
-    GLuint shaderProg = compileShaders(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
-    glUseProgram(shaderProg);
+    /* GLuint shaderProg = compileShaders(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
+    glUseProgram(shaderProg); */
 
     GL4_PolyFunc polyFunc;
     Polyform_Grid polyGrid(&polyFunc, 1.0f, 5, 1.0f, 5);
@@ -83,6 +83,7 @@ int main(int argc, char** argv) {
     GL4_Shader_Factory shader_factory(parentDir, &vertex_factory, &uniform_factory);
     shader_factory.create();
     GL4_Program Tones = shader_factory.get_program(_GL4_Program_ID::Tones);
+    glUseProgram(Tones.get_progID());
     GLuint data = 1;
     Tones.set_data(_GL4_Uniform_Basic_ID::renderMode, &data);
 

@@ -17,6 +17,7 @@ void GL4_Uniform_Basic::init(const GLuint* progID_arg, const GL4_Uniform_Basic_F
     mProgID = progID_arg;
     mFormat = format_arg;
     mReady = true;
+    get_loc();
     return;
 }
 
@@ -42,7 +43,7 @@ static void set_uniform_basic(GL4_Uniform_Basic::Type* type_arg, _GL4_Uniform_Ba
 
 void GL4_Uniform_Basic::set(void* data_arg){
     if(!mReady) logError(__FILE__, __LINE__, error_unready);
-    set_uniform_basic(&mType, mFormat->mPick, data_arg, mLocation);         
+    set_uniform_basic(&mType, mFormat->mPick, data_arg, mLocation);
     return;
 }
 
@@ -50,6 +51,7 @@ void GL4_Uniform_Matrix::init(const GLuint* progID_arg, const GL4_Uniform_Matrix
     mProgID = progID_arg;
     mFormat = format_arg;
     mReady = true;
+    get_loc();
     return;
 }
 

@@ -62,7 +62,7 @@ void GL4_Program::add_shader(GL4_Shader* shader_arg) {
 }
 
 void GL4_Program::add_uniform(GL4_Uniform_Basic* basic_arg){
-    if(mImmutable) logError(__FILE__, __LINE__, error_immutable);
+    // if(mImmutable) logError(__FILE__, __LINE__, error_immutable);
     mUniforms_b.push_back(*basic_arg);
     return;
 }
@@ -75,7 +75,7 @@ void GL4_Program::set_data(_GL4_Uniform_Basic_ID::Pick id_arg, void* data_arg){
 }
 
 void GL4_Program::add_uniform(GL4_Uniform_Matrix* matrix_arg){
-    if(mImmutable) logError(__FILE__, __LINE__, error_immutable);
+    // if(mImmutable) logError(__FILE__, __LINE__, error_immutable);
     mUniforms_m.push_back(*matrix_arg);
     return;
 }
