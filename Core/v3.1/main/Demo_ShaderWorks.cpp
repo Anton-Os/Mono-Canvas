@@ -82,6 +82,9 @@ int main(int argc, char** argv) {
     uniform_factory.create();
     GL4_Shader_Factory shader_factory(parentDir, &vertex_factory, &uniform_factory);
     shader_factory.create();
+    GL4_Program Tones = shader_factory.get_program(_GL4_Program_ID::Tones);
+    GLuint data = 1;
+    Tones.set_data(_GL4_Uniform_Basic_ID::renderMode, &data);
 
     while(!glfwWindowShouldClose(window)){
         glfwPollEvents();

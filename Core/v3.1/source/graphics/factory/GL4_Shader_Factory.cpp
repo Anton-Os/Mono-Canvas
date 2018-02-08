@@ -45,9 +45,12 @@ static GL4_Program gen_Tones_program(const std::string& parentDir_arg, GL4_Verte
     GL4_Shader fragment_shader(parentDir_arg + "//shaders//Tones.frag", _GL4_Shader_Stage::frag);
     fragment_shader.outputs.push_back(frag_4f);
 
-    GL4_Program program(_GL4_Program_ID::Idle);
+    GL4_Program program(_GL4_Program_ID::Tones);
+    GL4_Uniform_Basic uniform_renderMode(program.get_progID_ptr(), uniform_factory_arg->get_uniform_b(_GL4_Uniform_Basic_ID::renderMode));
+    
     program.add_shader(&vertex_shader);
     program.add_shader(&fragment_shader);
+    program.add_uniform(&uniform_renderMode);
     program.create();
     return program;
 }
@@ -63,6 +66,9 @@ void GL4_Shader_Factory::append_program(_GL4_Program_ID::Pick program_arg){
     switch(program_arg){
         case _GL4_Program_ID::Idle :
             mPrograms.push_back(gen_Idle_program(mParentDir, mVertexFactory));
+            break;
+        case _GL4_Program_ID::Tones :
+            mPrograms.push_back(gen_Tones_program(mParentDir, mVertexFactory, mUniformFactory));
             break;
     }
     mProgram_bits.set(program_arg);

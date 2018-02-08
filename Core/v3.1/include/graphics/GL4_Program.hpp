@@ -28,6 +28,7 @@
         void set_data(_GL4_Uniform_Basic_ID::Pick id_arg, void* data_arg);
         void set_data(_GL4_Uniform_Matrix_ID::Pick id_arg, void* data_arg);
         GLuint get_progID(){ return mProgID; }
+        GLuint* get_progID_ptr(){ return &mProgID; }
         void create();
     private:
         bool mImmutable = false;

@@ -23,7 +23,7 @@ GLuint compileShader(const std::string& filePath_arg){
         glGetShaderInfoLog(shader, 512, NULL, infoLog);
         puts(infoLog);
         logError(__FILE__, __LINE__, error_shaderCompile);
-    } else printf("%s compiled successfuly", filePath_arg.c_str());
+    } else printf("%s compiled successfuly \n", filePath_arg.c_str());
 
     delete[] shader_source;
     return shader;
