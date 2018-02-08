@@ -33,12 +33,18 @@ static GL4_Vertex_Format gen_texCoord_2f_format(){
     return vertex;
 }
 
+static GL4_Vertex_Format gen_frag_4f_format(){
+    GL4_Vertex_Format vertex(_GL4_Vertex_Feed_ID::frag_4f, 4, GL_ARRAY_BUFFER, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, _vaoPtrModes::Default, _GL4_Shader_Format::vec4);
+    return vertex;
+}
+
 void GL4_Vertex_Factory::create(){
     mFormats.resize(VERTEX_FACTORY_ATTRIB_COUNT);
     mFormats[_GL4_Vertex_Feed_ID::pos_3f] = gen_pos_3f_format();
     mFormats[_GL4_Vertex_Feed_ID::color_4f] = gen_color_4f_format();
     mFormats[_GL4_Vertex_Feed_ID::normal_3f] = gen_normal_3f_format();
     mFormats[_GL4_Vertex_Feed_ID::texCoord_2f] = gen_texCoord_2f_format();
+    mFormats[_GL4_Vertex_Feed_ID::frag_4f] = gen_frag_4f_format();
     mFormat_bits.set();
 }
 
@@ -46,21 +52,21 @@ void GL4_Vertex_Factory::append_format(_GL4_Vertex_Feed_ID::Pick pick_arg){
     switch(pick_arg){
         case _GL4_Vertex_Feed_ID::pos_3f :
             mFormats.push_back(gen_pos_3f_format());
-            mFormat_bits.set(_GL4_Vertex_Feed_ID::pos_3f);
             break;
         case _GL4_Vertex_Feed_ID::color_4f :
             mFormats.push_back(gen_color_4f_format());
-            mFormat_bits.set(_GL4_Vertex_Feed_ID::color_4f);
             break;
         case _GL4_Vertex_Feed_ID::normal_3f :
             mFormats.push_back(gen_normal_3f_format());
-            mFormat_bits.set(_GL4_Vertex_Feed_ID::normal_3f);
             break;
         case _GL4_Vertex_Feed_ID::texCoord_2f :
             mFormats.push_back(gen_texCoord_2f_format());
-            mFormat_bits.set(_GL4_Vertex_Feed_ID::texCoord_2f);
+            break;
+        case _GL4_Vertex_Feed_ID::frag_4f :
+            mFormats.push_back(gen_frag_4f_format());
             break;
     }
+    mFormat_bits.set(pick_arg);
 }
 
 GL4_Vertex_Format* GL4_Vertex_Factory::get_format(_GL4_Vertex_Feed_ID::Pick pick_arg){

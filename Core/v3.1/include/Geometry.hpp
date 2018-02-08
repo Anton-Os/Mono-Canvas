@@ -15,7 +15,8 @@
             pos_3f, 
             color_4f, 
             normal_3f, 
-            texCoord_2f 
+            texCoord_2f,
+            frag_4f
         };
     }
 #define GEOMETRY_H

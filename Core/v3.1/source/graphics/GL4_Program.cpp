@@ -6,6 +6,29 @@ static char error_stageDuplicates[] = "Duplicates of shader stages detected!";
 static char error_incompleteVF[] = "Incomplete pipeline, vertex and fragment shader necissary";
 static char error_linkage[] = "Shader program failed to link";
 static char error_immutable[] = "Shader program is immutable";
+static char error_findFormat[] = "Requested format could not be obtained";
+
+static GLint match_vAttrib(_GL4_Uniform_Basic_ID::Pick pick_arg, std::vector<GL4_Uniform_Basic>* uniforms_arg){
+    GLint savedAttrib = -1;
+    for(unsigned v = 0; v < uniforms_arg->size(); v++){
+        if(pick_arg == uniforms_arg->at(v).mFormat->mID){
+            savedAttrib = v;
+            break;
+        }
+    }
+    return savedAttrib;
+}
+
+static GLint match_vAttrib(_GL4_Uniform_Matrix_ID::Pick pick_arg, std::vector<GL4_Uniform_Matrix>* uniforms_arg){
+    GLint savedAttrib = -1;
+    for(unsigned v = 0; v < uniforms_arg->size(); v++){
+        if(pick_arg == uniforms_arg->at(v).mFormat->mID){
+            savedAttrib = v;
+            break;
+        }
+    }
+    return savedAttrib;
+}
 
 static void detect_duplicates(std::bitset<6>* stage_bits_arg, std::vector<GL4_Shader>* shaders_arg){
     for(unsigned shaderElem = 0; shaderElem < shaders_arg->size(); shaderElem++){
@@ -32,14 +55,40 @@ static void detect_duplicates(std::bitset<6>* stage_bits_arg, std::vector<GL4_Sh
 }
 
 void GL4_Program::add_shader(GL4_Shader* shader_arg) {
-    if(immutable) logError(__FILE__, __LINE__, error_immutable);
+    if(mImmutable) logError(__FILE__, __LINE__, error_immutable);
     if(mShaders.size() > 8) logError(__FILE__, __LINE__, error_shadersLots);
     mShaders.push_back(*shader_arg);
     return;
 }
 
+void GL4_Program::add_uniform(GL4_Uniform_Basic* basic_arg){
+    if(mImmutable) logError(__FILE__, __LINE__, error_immutable);
+    mUniforms_b.push_back(*basic_arg);
+    return;
+}
+
+void GL4_Program::set_data(_GL4_Uniform_Basic_ID::Pick id_arg, void* data_arg){
+    GLint savedAttrib = match_vAttrib(id_arg, &mUniforms_b);
+
+    if(savedAttrib < 0) logError(__FILE__, __LINE__, error_findFormat);
+    mUniforms_b[savedAttrib].set(data_arg);
+}
+
+void GL4_Program::add_uniform(GL4_Uniform_Matrix* matrix_arg){
+    if(mImmutable) logError(__FILE__, __LINE__, error_immutable);
+    mUniforms_m.push_back(*matrix_arg);
+    return;
+}
+
+void GL4_Program::set_data(_GL4_Uniform_Matrix_ID::Pick id_arg, void* data_arg){
+    GLint savedAttrib = match_vAttrib(id_arg, &mUniforms_m);
+
+    if(savedAttrib < 0) logError(__FILE__, __LINE__, error_findFormat);
+    mUniforms_m[savedAttrib].set(data_arg);
+}
+
 void GL4_Program::create(){
-    if(immutable) logError(__FILE__, __LINE__, error_immutable);
+    if(mImmutable) logError(__FILE__, __LINE__, error_immutable);
     if(mShaders.empty()) logError(__FILE__, __LINE__, error_shadersEmpty);
     detect_duplicates(&mStage_bits, &mShaders);
     if(!mStage_bits.test(_GL4_Shader_Stage::vert) || !mStage_bits.test(_GL4_Shader_Stage::frag)) logError(__FILE__, __LINE__, error_incompleteVF);
@@ -56,5 +105,5 @@ void GL4_Program::create(){
         logError(__FILE__, __LINE__, error_linkage);
     } else puts("Shader program linked successfuly");
 
-    immutable = true;
+    mImmutable = true;
 }

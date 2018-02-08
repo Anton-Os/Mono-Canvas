@@ -25,15 +25,17 @@
         void add_shader(GL4_Shader* shader_arg);
 	    void add_uniform(GL4_Uniform_Basic* basic_arg);
 	    void add_uniform(GL4_Uniform_Matrix* matrix_arg);
+        void set_data(_GL4_Uniform_Basic_ID::Pick id_arg, void* data_arg);
+        void set_data(_GL4_Uniform_Matrix_ID::Pick id_arg, void* data_arg);
         GLuint get_progID(){ return mProgID; }
         void create();
     private:
-        bool immutable = false;
+        bool mImmutable = false;
         GLuint mProgID;
         std::bitset<6> mStage_bits;
         std::vector<GL4_Shader> mShaders;
-        std::vector<GL4_Uniform_Basic*> mUniforms_b;       
-        std::vector<GL4_Uniform_Matrix*> mUniforms_m;
+        std::vector<GL4_Uniform_Basic> mUniforms_b;       
+        std::vector<GL4_Uniform_Matrix> mUniforms_m;
     };
 #define GL4_PROGRAM_H
 #endif

@@ -13,9 +13,10 @@ static GLint match_vAttrib(_GL4_Program_ID::Pick pick_arg, std::vector<GL4_Progr
     return savedAttrib;
 }
 
-static GL4_Program gen_Idle_program(const std::string& parentDir_arg, GL4_Vertex_Factory* factory_arg){
-    GL4_Shader_Vertex_Format pos_3f(factory_arg->get_shader_format(_GL4_Vertex_Feed_ID::pos_3f));
-    GL4_Shader_Vertex_Format color_4f(factory_arg->get_shader_format(_GL4_Vertex_Feed_ID::color_4f));
+static GL4_Program gen_Idle_program(const std::string& parentDir_arg, GL4_Vertex_Factory* vertex_factory_arg){
+    GL4_Shader_Vertex_Format pos_3f(vertex_factory_arg->get_shader_format(_GL4_Vertex_Feed_ID::pos_3f));
+    GL4_Shader_Vertex_Format color_4f(vertex_factory_arg->get_shader_format(_GL4_Vertex_Feed_ID::color_4f));
+    GL4_Shader_Vertex_Format frag_4f(vertex_factory_arg->get_shader_format(_GL4_Vertex_Feed_ID::frag_4f));
 
     GL4_Shader vertex_shader(parentDir_arg + "//shaders//Idle.vert", _GL4_Shader_Stage::vert);
     vertex_shader.inputs.push_back(pos_3f);
@@ -24,7 +25,25 @@ static GL4_Program gen_Idle_program(const std::string& parentDir_arg, GL4_Vertex
 
     GL4_Shader fragment_shader(parentDir_arg + "//shaders//Idle.frag", _GL4_Shader_Stage::frag);
     fragment_shader.inputs.push_back(color_4f);
-    fragment_shader.outputs.push_back(color_4f);
+    fragment_shader.outputs.push_back(frag_4f);
+
+    GL4_Program program(_GL4_Program_ID::Idle);
+    program.add_shader(&vertex_shader);
+    program.add_shader(&fragment_shader);
+    program.create();
+    return program;
+}
+
+static GL4_Program gen_Tones_program(const std::string& parentDir_arg, GL4_Vertex_Factory* vertex_factory_arg, GL4_Uniform_Factory* uniform_factory_arg){
+    GL4_Shader_Vertex_Format pos_3f(vertex_factory_arg->get_shader_format(_GL4_Vertex_Feed_ID::pos_3f));
+    GL4_Shader_Vertex_Format color_4f(vertex_factory_arg->get_shader_format(_GL4_Vertex_Feed_ID::color_4f));
+    GL4_Shader_Vertex_Format frag_4f(vertex_factory_arg->get_shader_format(_GL4_Vertex_Feed_ID::frag_4f));
+
+    GL4_Shader vertex_shader(parentDir_arg + "//shaders//Tones.vert", _GL4_Shader_Stage::vert);
+    vertex_shader.inputs.push_back(pos_3f);
+
+    GL4_Shader fragment_shader(parentDir_arg + "//shaders//Tones.frag", _GL4_Shader_Stage::frag);
+    fragment_shader.outputs.push_back(frag_4f);
 
     GL4_Program program(_GL4_Program_ID::Idle);
     program.add_shader(&vertex_shader);
@@ -36,6 +55,7 @@ static GL4_Program gen_Idle_program(const std::string& parentDir_arg, GL4_Vertex
 void GL4_Shader_Factory::create() {
     mPrograms.resize(SHADER_FACTORY_PROG_COUNT);
     mPrograms[_GL4_Program_ID::Idle] = gen_Idle_program(mParentDir, mVertexFactory);
+    mPrograms[_GL4_Program_ID::Tones] = gen_Tones_program(mParentDir, mVertexFactory, mUniformFactory);
     mProgram_bits.set();
 }
 

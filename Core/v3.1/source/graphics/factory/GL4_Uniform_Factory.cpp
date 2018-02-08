@@ -26,12 +26,12 @@ static GLint match_vAttrib(_GL4_Uniform_Matrix_ID::Pick pick_arg, std::vector<GL
 }
 
 static GL4_Uniform_Basic_Format gen_uniform_b_renderMode(){
-    GL4_Uniform_Basic_Format basic("renderMode", _GL4_Uniform_Basic_Format::f1, _GL4_Uniform_Basic_ID::renderMode);
+    GL4_Uniform_Basic_Format basic(_GL4_Uniform_Basic_ID::renderMode, "renderMode", _GL4_Uniform_Basic_Format::ui1);
     return basic;
 }
 
 static GL4_Uniform_Matrix_Format gen_uniform_m_mvpMatrix(){
-    GL4_Uniform_Matrix_Format matrix("mvpMatrix", _GL4_Uniform_Matrix_Format::m4, _GL4_Uniform_Matrix_ID::mvpMatrix);
+    GL4_Uniform_Matrix_Format matrix( _GL4_Uniform_Matrix_ID::mvpMatrix, "mvpMatrix", _GL4_Uniform_Matrix_Format::m4);
     return matrix;
 }
 
@@ -72,9 +72,9 @@ void GL4_Uniform_Factory::append_uniform_m(_GL4_Uniform_Matrix_ID::Pick uniform_
     switch(uniform_m_arg){
         case _GL4_Uniform_Matrix_ID::mvpMatrix :
             mUniforms_m.push_back(gen_uniform_m_mvpMatrix());
-            mUniform_m_bits.set(uniform_m_arg);
             break;
     }
+    mUniform_m_bits.set(uniform_m_arg);
 }
 
 GL4_Uniform_Matrix_Format* GL4_Uniform_Factory::get_uniform_m(_GL4_Uniform_Matrix_ID::Pick uniform_m_arg){

@@ -22,7 +22,7 @@
 
     struct GL4_Uniform_Basic_Format : public GL4_Uniform_Format {
         GL4_Uniform_Basic_Format(){}
-        GL4_Uniform_Basic_Format(const std::string& name_arg, _GL4_Uniform_Basic_Format::Pick pick_arg, _GL4_Uniform_Basic_ID::Pick id_arg){
+        GL4_Uniform_Basic_Format(_GL4_Uniform_Basic_ID::Pick id_arg, const std::string& name_arg, _GL4_Uniform_Basic_Format::Pick pick_arg){
             mName = name_arg;
             mPick = pick_arg;
             mID = id_arg;
@@ -42,7 +42,7 @@
 
     struct GL4_Uniform_Matrix_Format : public GL4_Uniform_Format {
         GL4_Uniform_Matrix_Format(){}
-        GL4_Uniform_Matrix_Format(const std::string& name_arg, _GL4_Uniform_Matrix_Format::Pick pick_arg, _GL4_Uniform_Matrix_ID::Pick id_arg){
+        GL4_Uniform_Matrix_Format(_GL4_Uniform_Matrix_ID::Pick id_arg, const std::string& name_arg, _GL4_Uniform_Matrix_Format::Pick pick_arg){
             mName = name_arg;
             mPick = pick_arg;
             mID = id_arg;
@@ -90,7 +90,7 @@
         void init(const GLuint* progID_arg, const GL4_Uniform_Basic_Format* format_arg);
         void get_loc(){ mLocation = GL4_Uniform::get_loc(mFormat->mName); }
         void set(void* data);
-    private:
+    // private:
         const GL4_Uniform_Basic_Format* mFormat;
     };
 
@@ -110,7 +110,7 @@
         void init(const GLuint* progID_arg, const GL4_Uniform_Matrix_Format* format_arg);
         void get_loc(){ mLocation = GL4_Uniform::get_loc(mFormat->mName); }
         void set(void* data);
-    private:
+    // private:
         const GL4_Uniform_Matrix_Format* mFormat;
     };
 #define GL4_UNIFORM_H

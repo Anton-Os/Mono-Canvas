@@ -10,7 +10,7 @@
     #include "graphics/GL4_Vertex.hpp"
 #endif
 
-#define VERTEX_FACTORY_ATTRIB_COUNT 4
+#define VERTEX_FACTORY_ATTRIB_COUNT 5
 
 #ifndef GL4_VERTEX_FACTORY_H
     class GL4_Vertex_Factory {

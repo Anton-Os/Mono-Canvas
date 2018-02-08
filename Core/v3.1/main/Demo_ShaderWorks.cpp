@@ -78,13 +78,9 @@ int main(int argc, char** argv) {
     GL4_Mesh mesh(polyFunc.get_xCount() * polyFunc.get_yCount() * polyFunc.get_zCount());
     polyFunc.create(&mesh, &vertex_factory);
 
-    // GL4_Shader shaderVert(GL4_Shader_Stage::vert);
-    // shaderVert.add_input(vertex_factory.get_format(0));
-    // shaderVert.create("Anton");
-
     GL4_Uniform_Factory uniform_factory;
     uniform_factory.create();
-    GL4_Shader_Factory shader_factory(parentDir, &vertex_factory);
+    GL4_Shader_Factory shader_factory(parentDir, &vertex_factory, &uniform_factory);
     shader_factory.create();
 
     while(!glfwWindowShouldClose(window)){

@@ -10,7 +10,7 @@
     #include <glm/gtc/type_ptr.hpp>
 
     namespace _GL4_Program_ID {
-        typedef enum { Idle } Pick;
+        typedef enum { Idle, Tones } Pick;
     }
 
     namespace _GL4_Shader_Stage {
