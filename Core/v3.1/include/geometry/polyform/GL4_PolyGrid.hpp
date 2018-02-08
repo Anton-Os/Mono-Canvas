@@ -1,6 +1,6 @@
-#ifndef GEOMETRY_H
-    #include "Geometry.hpp"
-    #define GEOMETRY_H
+#define PIPELINE_X
+#ifndef GL4_API_COMMON_H
+    #include "GL4_Api_Common.hpp"
 #endif
 
 #ifndef POLY_FUNC_H

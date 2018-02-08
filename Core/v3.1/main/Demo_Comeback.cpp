@@ -4,12 +4,7 @@
 #include <ctime>
 #include <algorithm>
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include "GL4_Api_Common.hpp"
 
 #include "loaders/FileIO.hpp"
 #include "graphics/GL4_LoadShaders.hpp"

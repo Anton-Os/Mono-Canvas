@@ -1,5 +1,6 @@
-#ifndef GEOMETRY_H
-    #include "Geometry.hpp"
+#define PIPELINE_X
+#ifndef GL4_API_COMMON_H
+    #include "GL4_Api_Common.hpp"
 #endif
 
 #ifndef SCENE_ERROR_CODE_H

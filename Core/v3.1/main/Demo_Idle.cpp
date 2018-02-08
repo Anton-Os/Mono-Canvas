@@ -4,19 +4,14 @@
 #include <ctime>
 #include <algorithm>
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include "GL4_Api_Common.hpp"
 
 #include "loaders/FileIO.hpp"
 #include "graphics/GL4_LoadShaders.hpp"
 #include "graphics/GL4_Vertex.hpp"
 #include "graphics/factory/GL4_Vertex_Factory.hpp"
 #include "graphics/entity/GL4_Mesh.hpp"
-#include "geometry/pseudo/Hedgy.hpp"
+#include "geometry/Hedgy.hpp"
 
 namespace UI {
 	int height = 1080;

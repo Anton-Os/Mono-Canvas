@@ -1,6 +1,9 @@
-#ifndef GEOMETRY_H
-    #include "Geometry.hpp"
-    #define GEOMETRY_H
+#include <iostream>
+#include <array>
+
+#define PIPELINE_X
+#ifndef GL4_API_COMMON_H
+    #include "GL4_Api_Common.hpp"
 #endif
 
 #ifndef ERROR_CODE_H

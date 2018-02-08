@@ -1,4 +1,4 @@
-#include "geometry/pseudo/Hedgy.hpp"
+#include "geometry/Hedgy.hpp"
 
 void Hedgy::create(GL4_Mesh* mesh, GL4_Vertex_Factory* factory){
     const GL4_Vertex_Format* pos_format = factory->get_format(_GL4_Vertex_Feed_ID::pos_3f);

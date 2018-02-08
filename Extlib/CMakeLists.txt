@@ -24,6 +24,16 @@ if (NOT CMAKE_CONFIGURATION_TYPES)
     endif()
 endif()
 
+set(BASE_MODULE TRUE CACHE BOOL "Build the Base Module" FORCE)
+set(SHADERC_MODULE TRUE CACHE BOOL "Build the Google Shaderc Module" FORCE)
+set(BOOST_MODULE FALSE CACHE BOOL "Build the Boost Module" FORCE)
+set(TEXTURE_MODULE FALSE CACHE BOOL "Build the Texturing Module" FORCE)
+set(ASSIMP_MODULE FALSE CACHE BOOL "Build the Assimp Module" FORCE)
+set(GUI_MODULE FALSE CACHE BOOL "Build the GUI Module" FORCE)
+set(DB_MODULE FALSE CACHE BOOL "Build the Database Module" FORCE)
+# set(MATH_MODULE FALSE CACHE BOOL "Build the Mathematics Module" FORCE)
+# set(NET_MODULE FALSE CACHE BOOL "Build the Network Module" FORCE)
+
 set(EXTLIB_PROJECT_DIR "${CMAKE_BINARY_DIR}/Projects")
 set(ASSIMP_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/ASSIMP")
 set(BOOST_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/Boost")
@@ -45,8 +55,6 @@ set(EIGEN_PROJECT_DIR "${EXTLIB_PROJECT_DIR}/Eigen")
 set(UTILITIES_DIR "${CMAKE_BINARY_DIR}/Util")
 set(PYTHON_EMBEDDED_DIR "${UTILITIES_DIR}/python-3.6.1-embed")
 
-set(EXTLIB_TARGETS)
-
 if(NOT EXISTS ${UTILITIES_DIR})
     file(MAKE_DIRECTORY ${UTILITIES_DIR})
 endif()
@@ -58,84 +66,140 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/GDrive.cmake"
 
 add_custom_target(GDrive_Extlib ALL 
     ${CMAKE_COMMAND} -P "${CMAKE_BINARY_DIR}/GDrive.cmake"
-    COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_BINARY_DIR}/Img2KTX.tar" 
     COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_BINARY_DIR}/python-3.6.1-embed.tar"
     DEPENDS "${CMAKE_BINARY_DIR}/GDrive.cmake"
     WORKING_DIRECTORY ${UTILITIES_DIR}
 )
 
-#add_custom_command(TARGET GDrive_Extlib
-#    POST_BUILD
-#    COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_BINARY_DIR}/Img2KTX.tar" 
-#    COMMAND ${CMAKE_COMMAND} -E tar xzf "${CMAKE_BINARY_DIR}/python-3.6.1-embed.tar"
-#    WORKING_DIRECTORY ${UTILITIES_DIR}
-#)
+set(EXTLIB_TARGETS)
 
-ExternalProject_Add(SQLite
-    URL "${CMAKE_BINARY_DIR}/sqlite-amalgamation-3180000.tar"
-    URL_MD5 62e1474d3d834d098c22f51e8208e5a1
+##################### The Base
+if(BASE_MODULE)
+    ExternalProject_Add(GLFW
+        GIT_REPOSITORY "https://github.com/glfw/glfw.git"
+        GIT_TAG "488423236053d988f2b1f4b55e64bccbfce9abcb"
+
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+
+        PREFIX ${GLFW_PROJECT_DIR}
+        BINARY_DIR "${GLFW_PROJECT_DIR}/build"
+        TMP_DIR "${GLFW_PROJECT_DIR}/temp"
+        STAMP_DIR "${GLFW_PROJECT_DIR}/stamp"
+    )
+
+    list(APPEND EXTLIB_TARGETS GLFW)
+
+    ExternalProject_Add(GLEW
+        URL "${CMAKE_BINARY_DIR}/glew-1.13.0.tgz"
+        URL_MD5 7cbada3166d2aadfc4169c4283701066
+
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+
+        PATCH_COMMAND ${CMAKE_COMMAND} -E echo "Patching GLEW..."
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "<SOURCE_DIR>/build/cmake/"
+            "<SOURCE_DIR>"
+        COMMAND ${CMAKE_COMMAND} -E copy
+            "${CMAKE_SOURCE_DIR}/patch/glew/CMakeLists.txt" 
+            "<SOURCE_DIR>/CMakeLists.txt"
+
+        PREFIX "${GLEW_PROJECT_DIR}"
+        BINARY_DIR "${GLEW_PROJECT_DIR}/build"
+        TMP_DIR "${GLEW_PROJECT_DIR}/temp"
+        STAMP_DIR "${GLEW_PROJECT_DIR}/stamp"
+
+        DEPENDS GDrive_Extlib
+    )
+
+    list(APPEND EXTLIB_TARGETS GLEW)
+
+    ExternalProject_Add(GLM
+    GIT_REPOSITORY "https://github.com/g-truc/glm.git"
+    GIT_TAG "40398d67cd3e4f74b08649eda428dc411d801fd5"
 
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
 
-    PREFIX "${SQLITE_PROJECT_DIR}"
-    BINARY_DIR "${SQLITE_PROJECT_DIR}/build"
-    TMP_DIR "${SQLITE_PROJECT_DIR}/temp"
-    STAMP_DIR "${SQLITE_PROJECT_DIR}/stamp"
+    PREFIX ${GLM_PROJECT_DIR}
+    BINARY_DIR "${GLM_PROJECT_DIR}/build"
+    TMP_DIR "${GLM_PROJECT_DIR}/temp"
+    STAMP_DIR "${GLM_PROJECT_DIR}/stamp"
+    )
 
-    DEPENDS GDrive_Extlib
-)
-
-list(APPEND EXTLIB_TARGETS SQLite)
-
-message( "External project - Boost" )
-
-set( Boost_Bootstrap_Command )
-if( UNIX )
-  set( Boost_Bootstrap_Command ./bootstrap.sh )
-  set( Boost_b2_Command ./b2 )
-else()
-  if( WIN32 )
-    set( Boost_Bootstrap_Command bootstrap.bat )
-    set( Boost_b2_Command b2.exe )
-  endif()
+    list(APPEND EXTLIB_TARGETS GLM)
 endif()
 
-ExternalProject_Add(Boost
-  URL "https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz"
-  URL_HASH SHA256=a13de2c8fbad635e6ba9c8f8714a0e6b4264b60a29b964b940a22554705b6b60
-  BUILD_IN_SOURCE 1
-  UPDATE_COMMAND ""
-  PATCH_COMMAND ""
-  CONFIGURE_COMMAND ${Boost_Bootstrap_Command}
-  BUILD_COMMAND  ${Boost_b2_Command} install debug
-    --without-python
-    --without-mpi
-    --disable-icu
-    --prefix=${BOOST_PROJECT_DIR}
-    --threading=single,multi
-    --link=shared
-    --variant=debug
-    --libdir=${BOOST_PROJECT_DIR}/lib
-    --includedir=${BOOST_PROJECT_DIR}/include
-    architecture=x86 
-    address-model=64
-    -j8
-# INSTALL_COMMAND ""
-  INSTALL_COMMAND ${Boost_b2_Command} install debug
-    --without-python
-    --without-mpi
-    --disable-icu
-    --prefix=${CMAKE_INSTALL_PREFIX}
-    --threading=single,multi
-    --link=shared
-    --variant=debug
-    architecture=x86 
-    address-model=64
-    -j8
-# INSTALL_DIR ${CMAKE_BINARY_DIR}/INSTALL
-)
 
-list(APPEND EXTLIB_TARGETS Boost)
+##################### The Database Module
+if(DB_MODULE)
+    ExternalProject_Add(SQLite
+        URL "${CMAKE_BINARY_DIR}/sqlite-amalgamation-3180000.tar"
+        URL_MD5 62e1474d3d834d098c22f51e8208e5a1
+
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+
+        PREFIX "${SQLITE_PROJECT_DIR}"
+        BINARY_DIR "${SQLITE_PROJECT_DIR}/build"
+        TMP_DIR "${SQLITE_PROJECT_DIR}/temp"
+        STAMP_DIR "${SQLITE_PROJECT_DIR}/stamp"
+
+        DEPENDS GDrive_Extlib
+    )
+
+    list(APPEND EXTLIB_TARGETS SQLite)
+endif()
+
+##################### The Boost Module
+if(BOOST_MODULE)
+    message( "External project - Boost" )
+
+    set( Boost_Bootstrap_Command )
+    if( UNIX )
+    set( Boost_Bootstrap_Command ./bootstrap.sh )
+    set( Boost_b2_Command ./b2 )
+    else()
+    if( WIN32 )
+        set( Boost_Bootstrap_Command bootstrap.bat )
+        set( Boost_b2_Command b2.exe )
+    endif()
+    endif()
+
+    ExternalProject_Add(Boost
+    URL "https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz"
+    URL_HASH SHA256=a13de2c8fbad635e6ba9c8f8714a0e6b4264b60a29b964b940a22554705b6b60
+    BUILD_IN_SOURCE 1
+    UPDATE_COMMAND ""
+    PATCH_COMMAND ""
+    CONFIGURE_COMMAND ${Boost_Bootstrap_Command}
+    BUILD_COMMAND  ${Boost_b2_Command} install debug
+        --without-python
+        --without-mpi
+        --disable-icu
+        --prefix=${BOOST_PROJECT_DIR}
+        --threading=single,multi
+        --link=shared
+        --variant=debug
+        --libdir=${BOOST_PROJECT_DIR}/lib
+        --includedir=${BOOST_PROJECT_DIR}/include
+        architecture=x86 
+        address-model=64
+        -j8
+    # INSTALL_COMMAND ""
+    INSTALL_COMMAND ${Boost_b2_Command} install debug
+        --without-python
+        --without-mpi
+        --disable-icu
+        --prefix=${CMAKE_INSTALL_PREFIX}
+        --threading=single,multi
+        --link=shared
+        --variant=debug
+        architecture=x86 
+        address-model=64
+        -j8
+    # INSTALL_DIR ${CMAKE_BINARY_DIR}/INSTALL
+    )
+
+    list(APPEND EXTLIB_TARGETS Boost)
+endif()
 
 #[[ ExternalProject_Add(OpenSSL
     GIT_REPOSITORY "https://github.com/pol51/OpenSSL-CMake.git"
@@ -151,66 +215,46 @@ list(APPEND EXTLIB_TARGETS Boost)
 
 list(APPEND EXTLIB_TARGETS OpenSSL) #]]
 
-ExternalProject_Add(GLEW
-    URL "${CMAKE_BINARY_DIR}/glew-1.13.0.tgz"
-    URL_MD5 7cbada3166d2aadfc4169c4283701066
+##################### The Texture Module
 
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+if(TEXTURE_MODULE)
+    ExternalProject_Add(stb
+        GIT_REPOSITORY "https://github.com/nothings/stb.git"
+        GIT_TAG "9d9f75eb682dd98b34de08bb5c489c6c561c9fa6"
 
-    PATCH_COMMAND ${CMAKE_COMMAND} -E echo "Patching GLEW..."
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-        "<SOURCE_DIR>/build/cmake/"
-        "<SOURCE_DIR>"
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/glew/CMakeLists.txt" 
-        "<SOURCE_DIR>/CMakeLists.txt"
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
 
-    PREFIX "${GLEW_PROJECT_DIR}"
-    BINARY_DIR "${GLEW_PROJECT_DIR}/build"
-    TMP_DIR "${GLEW_PROJECT_DIR}/temp"
-    STAMP_DIR "${GLEW_PROJECT_DIR}/stamp"
+        PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+            "${CMAKE_SOURCE_DIR}/patch/stb/CMakeLists.txt"
+            "<SOURCE_DIR>/CMakeLists.txt"
+        COMMAND ${CMAKE_COMMAND} -E copy
+            "${CMAKE_SOURCE_DIR}/patch/stb/stbConfig.cmake.in"
+            "<SOURCE_DIR>/stbConfig.cmake.in"
+            
+        BUILD_COMMAND ""
 
-    DEPENDS GDrive_Extlib
-)
+        PREFIX ${STB_PROJECT_DIR}
+        BINARY_DIR "${STB_PROJECT_DIR}/build"
+        TMP_DIR "${STB_PROJECT_DIR}/temp"
+        STAMP_DIR "${STB_PROJECT_DIR}/stamp"
+    )
 
-list(APPEND EXTLIB_TARGETS GLEW)
+    list(APPEND EXTLIB_TARGETS stb)
 
-ExternalProject_Add(GLFW
-    GIT_REPOSITORY "https://github.com/glfw/glfw.git"
-    GIT_TAG "488423236053d988f2b1f4b55e64bccbfce9abcb"
+    ExternalProject_Add(GLI
+        GIT_REPOSITORY "https://github.com/g-truc/gli.git"
+        GIT_TAG "7da5f50931225e9819a26d5cb323c5f42da50bcd"
 
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
 
-    PREFIX ${GLFW_PROJECT_DIR}
-    BINARY_DIR "${GLFW_PROJECT_DIR}/build"
-    TMP_DIR "${GLFW_PROJECT_DIR}/temp"
-    STAMP_DIR "${GLFW_PROJECT_DIR}/stamp"
-)
+        PREFIX ${GLI_PROJECT_DIR}
+        BINARY_DIR "${GLI_PROJECT_DIR}/build"
+        TMP_DIR "${GLI_PROJECT_DIR}/temp"
+        STAMP_DIR "${GLI_PROJECT_DIR}/stamp"
+    )
 
-list(APPEND EXTLIB_TARGETS GLFW)
-
-ExternalProject_Add(stb
-    GIT_REPOSITORY "https://github.com/nothings/stb.git"
-    GIT_TAG "9d9f75eb682dd98b34de08bb5c489c6c561c9fa6"
-
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-
-    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/stb/CMakeLists.txt"
-        "<SOURCE_DIR>/CMakeLists.txt"
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/stb/stbConfig.cmake.in"
-        "<SOURCE_DIR>/stbConfig.cmake.in"
-        
-    BUILD_COMMAND ""
-
-    PREFIX ${STB_PROJECT_DIR}
-    BINARY_DIR "${STB_PROJECT_DIR}/build"
-    TMP_DIR "${STB_PROJECT_DIR}/temp"
-    STAMP_DIR "${STB_PROJECT_DIR}/stamp"
-)
-
-list(APPEND EXTLIB_TARGETS stb)
+    list(APPEND EXTLIB_TARGETS GLI)
+endif()
 
 #[[ ExternalProject_Add(Python
     GIT_REPOSITORY "https://github.com/python-cmake-buildsystem/python-cmake-buildsystem.git"
@@ -226,67 +270,47 @@ list(APPEND EXTLIB_TARGETS stb)
 
 list(APPEND EXTLIB_TARGETS Python) #]]
 
-ExternalProject_Add(FLTK
-    URL "${CMAKE_BINARY_DIR}/fltk-1.3.4-1-source.tar.gz"
-    URL_MD5 d7fcd27ab928648e1a1366dd2e273970
+##################### The Gui Module
 
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+if(GUI_MODULE)
+    ExternalProject_Add(FLTK
+        URL "${CMAKE_BINARY_DIR}/fltk-1.3.4-1-source.tar.gz"
+        URL_MD5 d7fcd27ab928648e1a1366dd2e273970
 
-    PREFIX "${FLTK_PROJECT_DIR}"
-    BINARY_DIR "${FLTK_PROJECT_DIR}/build"
-    TMP_DIR "${FLTK_PROJECT_DIR}/temp"
-    STAMP_DIR "${FLTK_PROJECT_DIR}/stamp"
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
 
-    DEPENDS GDrive_Extlib
-)
+        PREFIX "${FLTK_PROJECT_DIR}"
+        BINARY_DIR "${FLTK_PROJECT_DIR}/build"
+        TMP_DIR "${FLTK_PROJECT_DIR}/temp"
+        STAMP_DIR "${FLTK_PROJECT_DIR}/stamp"
 
-list(APPEND EXTLIB_TARGETS FLTK)
+        DEPENDS GDrive_Extlib
+    )
 
-ExternalProject_Add(GLI
-    GIT_REPOSITORY "https://github.com/g-truc/gli.git"
-    GIT_TAG "7da5f50931225e9819a26d5cb323c5f42da50bcd"
+    list(APPEND EXTLIB_TARGETS FLTK)
+endif()
 
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+##################### The Assimp Module
 
-    PREFIX ${GLI_PROJECT_DIR}
-    BINARY_DIR "${GLI_PROJECT_DIR}/build"
-    TMP_DIR "${GLI_PROJECT_DIR}/temp"
-    STAMP_DIR "${GLI_PROJECT_DIR}/stamp"
-)
+if(ASSIMP_MODULE)
+    ExternalProject_Add(ASSIMP
+        GIT_REPOSITORY "https://github.com/assimp/assimp.git"
+        GIT_TAG "b8ab90ae4b37af6dde0c3c3dae05d9daa4594338"
 
-list(APPEND EXTLIB_TARGETS GLI)
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
 
-ExternalProject_Add(GLM
-    GIT_REPOSITORY "https://github.com/g-truc/glm.git"
-    GIT_TAG "40398d67cd3e4f74b08649eda428dc411d801fd5"
+        PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+            "${CMAKE_SOURCE_DIR}/patch/Assimp/revision.h"
+            "<SOURCE_DIR>/revision.h"
+            
+        PREFIX ${ASSIMP_PROJECT_DIR}
+        BINARY_DIR "${ASSIMP_PROJECT_DIR}/build"
+        TMP_DIR "${ASSIMP_PROJECT_DIR}/temp"
+        STAMP_DIR "${ASSIMP_PROJECT_DIR}/stamp"
+    )
 
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-
-    PREFIX ${GLM_PROJECT_DIR}
-    BINARY_DIR "${GLM_PROJECT_DIR}/build"
-    TMP_DIR "${GLM_PROJECT_DIR}/temp"
-    STAMP_DIR "${GLM_PROJECT_DIR}/stamp"
-)
-
-list(APPEND EXTLIB_TARGETS GLM)
-
-ExternalProject_Add(ASSIMP
-    GIT_REPOSITORY "https://github.com/assimp/assimp.git"
-    GIT_TAG "b8ab90ae4b37af6dde0c3c3dae05d9daa4594338"
-
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-
-    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/patch/Assimp/revision.h"
-        "<SOURCE_DIR>/revision.h"
-        
-    PREFIX ${ASSIMP_PROJECT_DIR}
-    BINARY_DIR "${ASSIMP_PROJECT_DIR}/build"
-    TMP_DIR "${ASSIMP_PROJECT_DIR}/temp"
-    STAMP_DIR "${ASSIMP_PROJECT_DIR}/stamp"
-)
-
-list(APPEND EXTLIB_TARGETS ASSIMP)
+    list(APPEND EXTLIB_TARGETS ASSIMP)
+endif()
 
 ExternalProject_Add(GoogleTest
     GIT_REPOSITORY "https://github.com/google/googletest.git"
@@ -430,6 +454,14 @@ ExtlibWriteConfig(
         -DEXTLIB_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
         -DEXTLIB_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
         -DEXTLIB_GENERATOR:STRING=${CMAKE_GENERATOR}
+
+        -DBase_MODULE:BOOL=${BASE_MODULE}
+        -DShaderc_MODULE:BOOL=${SHADERC_MODULE}
+        -DBoost_MODULE:BOOL=${BOOST_MODULE}
+        -DTexture_MODULE:BOOL=${TEXTURE_MODULE}
+        -DAssimp_MODULE:BOOL=${ASSIMP_MODULE}
+        -DGui_MODULE:BOOL=${GUI_MODULE}
+        -DDb_MODULE:BOOL=${DB_MODULE}
 
         -DGLEW_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/glew
         -Dglfw3_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/cmake/glfw3

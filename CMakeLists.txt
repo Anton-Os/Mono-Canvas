@@ -42,22 +42,34 @@ if (EXISTS "${EXTLIB_BUILD_PATH}/ExtlibCache.txt")
         message(STATUS "Vulkan was found")
     endif()
 
-    find_package(GLEW REQUIRED CONFIG)
-    find_package(glfw3 REQUIRED CONFIG)
-    find_package(FLTK REQUIRED CONFIG)
-    find_package(GLI REQUIRED CONFIG)
-    find_package(GLM REQUIRED CONFIG)
-    # find_package(ASSIMP REQUIRED CONFIG)
-    find_package(Boost REQUIRED)
-    find_package(stb REQUIRED)
+    if(Base_MODULE)
+        find_package(GLEW REQUIRED CONFIG)
+        find_package(glfw3 REQUIRED CONFIG)
+        find_package(GLM REQUIRED CONFIG)
+    endif()
+    if(Boost_MODULE)
+        find_package(Boost REQUIRED)
+        
+        set(BOOST_LIBS)
+        file(GLOB BOOST_LIBS "${BOOST_LIBRARYDIR}/*.lib")
+    endif()
+    if(Texture_MODULE)
+        find_package(GLI REQUIRED CONFIG)
+        find_package(stb REQUIRED)
+    endif()
+    if(Assimp_MODULE)
+        find_package(ASSIMP REQUIRED CONFIG)
 
-    find_library(assimp_lib
-        NAMES assimp libassimp 
-        PATH ${ASSIMP_LIBRARY_DIRS}
-    )
+        # find_library(assimp_lib
+        #    NAMES assimp libassimp 
+        #    PATH ${ASSIMP_LIBRARY_DIRS}
+        # )
 
-    set(BOOST_LIBS)
-    file(GLOB BOOST_LIBS "${BOOST_LIBRARYDIR}/*.lib")
+        message(STATUS "${ASSIMP_LIBRARIES}")
+    endif()
+    if(Gui_MODULE)
+        find_package(FLTK REQUIRED CONFIG)
+    endif()
 
     # add_subdirectory("Core/v1.0")
     # add_subdirectory("Core/v2.0")

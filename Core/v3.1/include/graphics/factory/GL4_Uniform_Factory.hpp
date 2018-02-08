@@ -1,13 +1,10 @@
-#ifndef PIPELINE_H
-    #include "Pipeline.hpp"
+#define GEOMETRY_X
+#ifndef GL4_API_COMMON_H
+    #include "GL4_Api_Common.hpp"
 #endif
 
 #ifndef SCENE_ERROR_CODE_H
     #include "scene/ErrorCode.hpp"
-#endif
-
-#ifndef GL4_VERTEX_H
-    #include "graphics/GL4_Vertex.hpp"
 #endif
 
 #ifndef GL4_UNIFORM_H
