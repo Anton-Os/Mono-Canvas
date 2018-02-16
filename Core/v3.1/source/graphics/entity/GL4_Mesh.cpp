@@ -17,14 +17,26 @@ static GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feeds_arg){
     return savedAttrib;
 }
 
-void GL4_Mesh::Order::feed(const void* data_arg, GLuint count_arg, size_t size_arg){
+void GL4_Mesh::Order::feed(GLuint* data_arg, GLuint count_arg){
     indexCount = count_arg;
-    size = size_arg;
+    //size = size_arg;
     glGenBuffers(1, &buffer);
-    glBindBuffer(target, buffer);
-    glBufferData(target, size * indexCount, data_arg, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * indexCount, (void*)data_arg, GL_STATIC_DRAW);
     isIdx = true;
 }
+
+void GL4_Mesh::Order::feed(GLuint VAO_arg, GLuint* data_arg, GLuint count_arg){
+    indexCount = count_arg;
+    //size = size_arg;
+    glBindVertexArray(VAO_arg);
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * indexCount, (void*)data_arg, GL_STATIC_DRAW);
+    glBindVertexArray(0);
+    isIdx = true;
+}
+
 
 void GL4_Mesh::Quill::init(const GLboolean* fed, const GLboolean* idx, const GLuint* o, const GLuint* v, const GLuint* i){
     if(mInit_phase) logError(__FILE__, __LINE__, error_initPhase);
@@ -53,7 +65,7 @@ void GL4_Mesh::Quill::ordered_draw(){
     if(! *isIdxPtr) logError(__FILE__, __LINE__, error_drawNotIdx);
     
     glBindVertexArray(*vaoPtr);
-    glDrawElements(mode, *vertexCountPtr, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(mode, *indexCountPtr, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 

@@ -133,7 +133,7 @@ int main(int argc, char** argv) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glPointSize(10.0f);
-        mesh.mQuill.mode = GL_TRIANGLE_STRIP;
+        mesh.mQuill.mode = GL_POINTS;
         mesh.mQuill.ordered_draw();
 
         glfwSwapBuffers(window);

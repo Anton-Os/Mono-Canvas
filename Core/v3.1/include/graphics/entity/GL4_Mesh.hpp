@@ -22,7 +22,8 @@
         public:
             GLboolean* get_isIdx(){ return &isIdx; }
             GLuint* get_indexCount(){ return &indexCount; }
-            void feed(const void* data_arg, GLuint count_arg, size_t size_arg);
+            void feed(GLuint* data_arg, GLuint count_arg);
+            void feed(GLuint VAO_arg, GLuint* data_arg, GLuint count_arg);
         private:
             GLboolean isIdx = false;
             GLuint indexCount;
@@ -53,6 +54,7 @@
         void add_feed(const GL4_Vertex_Format* vertexFeed);
         void del_feed(_GL4_Vertex_Feed_ID::Pick pick_arg);
         void set_feed(_GL4_Vertex_Feed_ID::Pick pick_arg, const void* data, size_t size);
+        GLuint get_VAO(){ return mVAO; }
     private:
         GLushort mFin_counter = 0;
         GLboolean mReady = false;
