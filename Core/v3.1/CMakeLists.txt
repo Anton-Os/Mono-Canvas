@@ -69,6 +69,34 @@ target_link_libraries(ShaderWorks
     glm
 )
 
+add_executable(Tiles
+    source/loaders/FileIO.cpp
+    source/graphics/GL4_LoadShaders.cpp
+    source/graphics/factory/GL4_Vertex_Factory.cpp
+    source/graphics/entity/GL4_Mesh.cpp
+    source/geometry/polybase/GL4_PolyFunc.cpp
+    source/geometry/polyform/GL4_PolyGrid.cpp
+    source/geometry/Tile.cpp
+    source/graphics/GL4_Program.cpp
+    source/graphics/GL4_Uniform.cpp
+    source/graphics/factory/GL4_Uniform_Factory.cpp
+    source/graphics/factory/GL4_Shader_Factory.cpp
+    source/scene/ErrorCode.cpp
+    source/scene/KeyManager.cpp
+    main/Demo_Tiles.cpp
+)
+
+target_include_directories(Tiles
+    PUBLIC
+    include
+)
+
+target_link_libraries(Tiles
+    GLEW::glew_s
+    glfw
+    glm
+)
+
 set(RES_DIR "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/res")
 configure_file("${CMAKE_CURRENT_LIST_DIR}/cmake/GDrive.cmake" "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/GDrive.cmake" @ONLY)
 add_custom_target(Core_V3_GDrive ALL 
@@ -82,6 +110,7 @@ if(Shaderc_MODULE)
     set(OUTPUT_SHADER_LIST)
     foreach(current_shader "Idle.vert" "Idle.frag"
                 "Tones.vert" "Tones.frag"
+                "Flatland.vert" "Flatland.frag"
     )
         add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/shaders/${current_shader}"
             DEPENDS "${CMAKE_CURRENT_LIST_DIR}/shaders/${current_shader}"

@@ -190,14 +190,21 @@ void GL4_PolyFunc::create(GL4_Mesh* mesh, GL4_Vertex_Factory* factory){
     unsigned zSetOfY = zVals.size() / yVals.size();
     unsigned zSetOfX = zVals.size() / xVals.size();
 
-    if(zSetOfX == 1) mesh->mOrder.indexCount = genIndices1D(&indices, xVals.size());
+    /* if(zSetOfX == 1) mesh->mOrder.indexCount = genIndices1D(&indices, xVals.size());
     else if(ySetOfX > 1 && zSetOfY == 1) mesh->mOrder.indexCount = genIndices2D(&indices, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size());
     // else if(ySetOfX == 1 && zSetOfY > 1) genIndices2(&indices, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size(), GL4_PolyFunc::zVals.size());
     else if(ySetOfX > 1 && zSetOfY > 1) mesh->mOrder.indexCount = genIndices3D(&indices, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size(), GL4_PolyFunc::zVals.size());
-    else std::cerr << "Something went wrong while indexing Grid" << std::endl;
+    else std::cerr << "Something went wrong while indexing Grid" << std::endl; */
+
+    if(zSetOfX == 1) genIndices1D(&indices, xVals.size());
+    else if(ySetOfX > 1 && zSetOfY == 1) genIndices2D(&indices, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size());
+    // else if(ySetOfX == 1 && zSetOfY > 1) genIndices2(&indices, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size(), GL4_PolyFunc::zVals.size());
+    else if(ySetOfX > 1 && zSetOfY > 1) genIndices3D(&indices, GL4_PolyFunc::xVals.size(), GL4_PolyFunc::yVals.size(), GL4_PolyFunc::zVals.size());
+
+    mesh->mOrder.feed(indices.data(), indices.size(), sizeof(unsigned));
 
     mesh->add_feed(factory->get_format(_GL4_Vertex_Feed_ID::pos_3f));
-    mesh->set_feed(0, threePts.data(), sizeof(float));
+    mesh->set_feed(_GL4_Vertex_Feed_ID::pos_3f, threePts.data(), sizeof(float));
 }
 
 void GL4_PolyFunc::create(){

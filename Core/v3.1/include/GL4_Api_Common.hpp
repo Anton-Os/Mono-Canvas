@@ -17,9 +17,15 @@
     // From Geometry.hpp
 
     #ifndef GEOMETRY_X
+        const float GL4_TEXCOORD_S_MIN = 0.0f;
+        const float GL4_TEXCOORD_S_MAX = 1.0f;
+        const float GL4_TEXCOORD_T_MIN = 0.0f;
+        const float GL4_TEXCOORD_T_MAX = 1.0f;
+
         namespace _GL4_Vertex_Feed_ID {
             enum Pick { 
-                pos_3f, 
+                pos_3f,
+                pos_2f,
                 color_4f, 
                 normal_3f, 
                 texCoord_2f,
@@ -32,7 +38,7 @@
 
     #ifndef PIPELINE_X
         namespace _GL4_Program_ID {
-            typedef enum { Idle, Tones } Pick;
+            typedef enum { Idle, Tones, Flatland } Pick;
         }
 
         namespace _GL4_Shader_Stage {

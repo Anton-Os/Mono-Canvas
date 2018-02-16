@@ -30,7 +30,7 @@
     #include "graphics/GL4_Program.hpp"
 #endif
 
-#define SHADER_FACTORY_PROG_COUNT 2
+#define SHADER_FACTORY_PROG_COUNT 3
 
 #ifndef GL4_SHADER_FACTORY_H
     class GL4_Shader_Factory {

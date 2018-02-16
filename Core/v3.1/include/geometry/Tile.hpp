@@ -24,6 +24,7 @@
     private:
         float mHeight;
         float mWidth;
+        bool mInitPhase = false;
         bool mCreatePhase = false;
     };
 #endif

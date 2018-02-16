@@ -17,6 +17,15 @@ static GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feeds_arg){
     return savedAttrib;
 }
 
+void GL4_Mesh::Order::feed(const void* data_arg, GLuint count_arg, size_t size_arg){
+    indexCount = count_arg;
+    size = size_arg;
+    glGenBuffers(1, &buffer);
+    glBindBuffer(target, buffer);
+    glBufferData(target, size * indexCount, data_arg, GL_STATIC_DRAW);
+    isIdx = true;
+}
+
 void GL4_Mesh::Quill::init(const GLboolean* fed, const GLboolean* idx, const GLuint* o, const GLuint* v, const GLuint* i){
     if(mInit_phase) logError(__FILE__, __LINE__, error_initPhase);
     
@@ -41,10 +50,10 @@ void GL4_Mesh::Quill::unordered_draw(){
 
 void GL4_Mesh::Quill::ordered_draw(){
     if(! *isFedPtr) logError(__FILE__, __LINE__, error_drawNotFed);
-    if(*isIdxPtr) logError(__FILE__, __LINE__, error_drawNotIdx);
+    if(! *isIdxPtr) logError(__FILE__, __LINE__, error_drawNotIdx);
     
     glBindVertexArray(*vaoPtr);
-    glDrawArrays(mode, 0, *vertexCountPtr);
+    glDrawElements(mode, *vertexCountPtr, GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
 }
 
@@ -70,21 +79,21 @@ void GL4_Mesh::add_feed(const GL4_Vertex_Format* format){
     mFin_counter++;
 }
 
-void GL4_Mesh::del_feed(GLuint vAttrib){
-    GLint savedAttrib = match_vAttrib(vAttrib, &mFeeds);
+void GL4_Mesh::del_feed(_GL4_Vertex_Feed_ID::Pick pick_arg){
+    GLint savedAttrib = match_vAttrib(pick_arg, &mFeeds);
     if(savedAttrib < 0) logError(__FILE__, __LINE__, error_elemNotFound);
 
     glBindVertexArray(mVAO);
-    glDisableVertexAttribArray(vAttrib);
+    glDisableVertexAttribArray(pick_arg);
     glBindVertexArray(0);
 
     mFeeds.erase(mFeeds.begin() + savedAttrib);
 }
 
-void GL4_Mesh::set_feed(GLuint vAttrib, const void * data, size_t size){
+void GL4_Mesh::set_feed(_GL4_Vertex_Feed_ID::Pick pick_arg, const void * data, size_t size){
     if(!mInit_phase) init();
 
-    GLint savedAttrib = match_vAttrib(vAttrib, &mFeeds);
+    GLint savedAttrib = match_vAttrib(pick_arg, &mFeeds);
     if(savedAttrib < 0) logError(__FILE__, __LINE__, error_elemNotFound);
 
     glBindBuffer(mFeeds[savedAttrib].format->mTarget, mFeeds[savedAttrib].buffer);

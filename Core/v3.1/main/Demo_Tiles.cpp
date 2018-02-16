@@ -13,7 +13,11 @@
 #include "graphics/entity/GL4_Mesh.hpp"
 #include "geometry/polybase/GL4_PolyFunc.hpp"
 #include "geometry/polyform/GL4_PolyGrid.hpp"
-#include "scene/KeyManager.hpp"
+#include "geometry/Tile.hpp"
+#include "graphics/GL4_Shader.hpp"
+#include "graphics/factory/GL4_Shader_Factory.hpp"
+#include "graphics/GL4_Uniform.hpp"
+#include "graphics/factory/GL4_Uniform_Factory.hpp"
 #include "scene/ErrorCode.hpp"
 
 static char error_glfw3Init[] = "GLFW failed to initialize";
@@ -25,16 +29,6 @@ namespace UI {
     int width = 1320;
 }
 
-namespace Key {
-    bool W, A, S, D, Q, E = false;
-}
-
-namespace Mouse {
-    GLboolean appears = true;
-    GLdouble xInit, yInit;
-    GLfloat xOffset, yOffset;
-}
-
 namespace Time {
     std::chrono::steady_clock::time_point setupBegin;
     std::chrono::steady_clock::time_point setupEnd;
@@ -43,29 +37,6 @@ namespace Time {
     std::chrono::duration<double, std::milli> milliSpan;
     std::chrono::duration<double, std::micro> microSpan;
     std::chrono::duration<double, std::nano> nanoSpan;
-}
-
-void cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
-    if(Mouse::appears) Mouse::appears = false;
-    else {
-        if(xpos != Mouse::xInit) Mouse::xOffset -= GLfloat((xpos - Mouse::xInit));
-        if(ypos != Mouse::yInit) Mouse::yOffset -= GLfloat((ypos - Mouse::yInit));
-    }
-
-    Mouse::xInit = xpos;
-    Mouse::yInit = ypos;
-}
-
-void keySwitch_callback(int* s){
-    std::cout << "Owch " << *s << " state" << std::endl;
-}
-
-void keyButton_callback(bool* b){
-    std::cout << "Held: " << *b << " amount" << std::endl;
-}
-
-void keyCounter_callback(int* n){
-    std::cout << "Number is now " << *n << std::endl;
 }
 
 int main(int argc, char** argv) {
@@ -83,7 +54,6 @@ int main(int argc, char** argv) {
 
     glfwMakeContextCurrent(window);
     glfwGetFramebufferSize(window, &UI::width, &UI::height);
-    glfwSetCursorPosCallback(window, cursorPosCallback);
 
     if (glewInit() == GLEW_OK) std::cout << "GLEW initialized successfuly" << std::endl;
     else logError(__FILE__, __LINE__, error_glewInit);
@@ -95,37 +65,22 @@ int main(int argc, char** argv) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     std::string parentDir = getParentDirectory(argv[0]);
-    GLuint shaderProg = compileShaders(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
-    glUseProgram(shaderProg);
+    /* GLuint shaderProg = compileShaders(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
+    glUseProgram(shaderProg); */
 
-    Key_Switch keySwitch;
-    keySwitch.states.resize(3);
-    keySwitch.states[0] = 0;
-    keySwitch.states[1] = 1;
-    keySwitch.states[2] = -1;
-    keySwitch.key = GLFW_KEY_H;
-    keySwitch.callback = keySwitch_callback;
-
-    Key_Button keyButton;
-    keyButton.key = GLFW_KEY_P;
-    keyButton.callback = keyButton_callback;
-
-    Key_Counter keyCounter;
-    keyCounter.incKey = GLFW_KEY_Z;
-    keyCounter.decKey = GLFW_KEY_C;
-    keyCounter.callback = keyCounter_callback;
-
-    KeyManager keyManager;
-    keyManager.add_switch(&keySwitch);
-    keyManager.add_button(&keyButton);
-    keyManager.add_counter(&keyCounter);
-    keyManager.set_current(window);
-
-    GL4_PolyFunc polyFunc;
-    Polyform_Grid polyGrid(&polyFunc, 1.0f, 5, 1.0f, 5);
     GL4_Vertex_Factory vertex_factory;
-    GL4_Mesh mesh(polyFunc.get_xCount() * polyFunc.get_yCount() * polyFunc.get_zCount());
-    polyFunc.create(&mesh, &vertex_factory);
+    GL4_Uniform_Factory uniform_factory;
+    uniform_factory.create();
+    GL4_Shader_Factory shader_factory(parentDir, &vertex_factory, &uniform_factory);
+    shader_factory.create();
+    GL4_Program Flatland = shader_factory.get_program(_GL4_Program_ID::Flatland);
+    glUseProgram(Flatland.get_progID());
+    GLuint data = 1;
+    Flatland.set_data(_GL4_Uniform_Basic_ID::renderMode, &data);
+
+    GL4_Mesh tile_mesh(4);
+    Tile tile(0.5f, 0.5f);
+    tile.create(&tile_mesh, &vertex_factory);
 
     while(!glfwWindowShouldClose(window)){
         glfwPollEvents();
@@ -133,8 +88,10 @@ int main(int argc, char** argv) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glPointSize(10.0f);
-        mesh.mQuill.mode = GL_TRIANGLE_STRIP;
-        mesh.mQuill.ordered_draw();
+        // mesh.mQuill.mode = GL_POINTS;
+        // mesh.mQuill.unordered_draw();
+        tile_mesh.mQuill.mode = GL_POINTS;
+        tile_mesh.mQuill.unordered_draw();
 
         glfwSwapBuffers(window);
     }

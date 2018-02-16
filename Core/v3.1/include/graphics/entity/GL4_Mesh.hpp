@@ -16,15 +16,20 @@
     public:
         GL4_Mesh(GLuint v){
             mVertexCount = v;
-            mQuill.init(&mReady, &mOrder.isIdx, &mVAO, &mVertexCount, &mOrder.indexCount);
+            mQuill.init(&mReady, mOrder.get_isIdx(), &mVAO, &mVertexCount, mOrder.get_indexCount());
         }
-        struct Order {
+        class Order {
+        public:
+            GLboolean* get_isIdx(){ return &isIdx; }
+            GLuint* get_indexCount(){ return &indexCount; }
+            void feed(const void* data_arg, GLuint count_arg, size_t size_arg);
+        private:
             GLboolean isIdx = false;
             GLuint indexCount;
             GLuint buffer;
             GLenum target = GL_ELEMENT_ARRAY_BUFFER;
-            GLenum type = GL_UNSIGNED_INT;
-            void feed(const void* data, size_t size, GLuint count);
+            size_t size;
+            // GLenum type = GL_UNSIGNED_INT;
         } mOrder;
         class Quill {
         public:
@@ -46,8 +51,8 @@
         } mQuill;
         void init();
         void add_feed(const GL4_Vertex_Format* vertexFeed);
-        void del_feed(GLuint vAttrib);
-        void set_feed(GLuint vAttrib, const void* data, size_t size);
+        void del_feed(_GL4_Vertex_Feed_ID::Pick pick_arg);
+        void set_feed(_GL4_Vertex_Feed_ID::Pick pick_arg, const void* data, size_t size);
     private:
         GLushort mFin_counter = 0;
         GLboolean mReady = false;
