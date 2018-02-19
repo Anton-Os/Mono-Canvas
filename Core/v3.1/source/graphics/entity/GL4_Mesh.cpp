@@ -2,9 +2,12 @@
 
 static char error_elemNotFound[] = "Search for requested element failed";
 static char error_nullPtrArgs[] = "Function invoked with null pointers as arguments";
+// static char error_zeroVAO[] = "Vertex array object ";
 static char error_drawNotFed[] = "Cannot perform draw, vertices haven't been fed";
 static char error_drawNotIdx[] = "Cannot perform draw, indices not present";
 static char error_initPhase[] = "Cannot proceed after initialization step";
+static char error_initAddFeed[] = "Cannot add a feed after call to set_feed";
+static char error_noData[] = "Mesh has no data and cannot be initialized";
 
 static GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feeds_arg){
     GLint savedAttrib = -1;
@@ -15,6 +18,12 @@ static GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feeds_arg){
         }
     }
     return savedAttrib;
+}
+
+void GL4_Mesh::Order::init(const GLuint* VAO_arg){
+    if(mInitPhase) logError(__FILE__, __LINE__, error_initPhase);
+
+    mVAO_ptr = VAO_arg;
 }
 
 void GL4_Mesh::Order::feed(GLuint* data_arg, GLuint count_arg){
@@ -37,35 +46,34 @@ void GL4_Mesh::Order::feed(GLuint VAO_arg, GLuint* data_arg, GLuint count_arg){
     isIdx = true;
 }
 
-
-void GL4_Mesh::Quill::init(const GLboolean* fed, const GLboolean* idx, const GLuint* o, const GLuint* v, const GLuint* i){
-    if(mInit_phase) logError(__FILE__, __LINE__, error_initPhase);
+void GL4_Mesh::Quill::init(const GLuint* VAO_arg, const GLboolean* isFed_arg, const GLboolean* isIdx_arg, const GLuint* vertexCount_arg, const GLuint* indexCount_arg){
+    if(mInitPhase) logError(__FILE__, __LINE__, error_initPhase);
     
-    if(nullptr == fed || nullptr == idx || nullptr == o || nullptr == v || nullptr == i)
+    if(nullptr == VAO_arg || nullptr == isFed_arg || nullptr == isIdx_arg || nullptr == vertexCount_arg || nullptr == indexCount_arg)
         logError(__FILE__, __LINE__, error_nullPtrArgs);
 
-    isFedPtr = fed;
-    isIdxPtr = idx;
-    vaoPtr = o;
-    vertexCountPtr = v;
-    indexCountPtr = i;
-    mInit_phase = true;
+    vao_ptr = VAO_arg;
+    isFed_ptr = isFed_arg;
+    isIdx_ptr = isIdx_arg;
+    vertexCount_ptr = vertexCount_arg;
+    indexCount_ptr = indexCount_arg;
+    mInitPhase = true;
 }
 
 void GL4_Mesh::Quill::unordered_draw(){
-    if(! *isFedPtr) logError(__FILE__, __LINE__, error_drawNotFed);
+    if(! *isFed_ptr) logError(__FILE__, __LINE__, error_drawNotFed);
 
-    glBindVertexArray(*vaoPtr);
-    glDrawArrays(mode, 0, *vertexCountPtr);
+    glBindVertexArray(*vao_ptr);
+    glDrawArrays(mode, 0, *vertexCount_ptr);
     glBindVertexArray(0);
 }
 
 void GL4_Mesh::Quill::ordered_draw(){
-    if(! *isFedPtr) logError(__FILE__, __LINE__, error_drawNotFed);
-    if(! *isIdxPtr) logError(__FILE__, __LINE__, error_drawNotIdx);
+    if(! *isFed_ptr) logError(__FILE__, __LINE__, error_drawNotFed);
+    if(! *isIdx_ptr) logError(__FILE__, __LINE__, error_drawNotIdx);
     
-    glBindVertexArray(*vaoPtr);
-    glDrawElements(mode, *indexCountPtr, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(*vao_ptr);
+    glDrawElements(mode, *indexCount_ptr, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 
@@ -79,11 +87,11 @@ void GL4_Mesh::init(){
     for(unsigned v = 0; v < mFeeds.size(); v++) mFeeds[v].buffer = buffers[v];
 
     glGenVertexArrays(1, &mVAO);
-    mInit_phase = true;
+    mInitPhase = true;
 }
 
 void GL4_Mesh::add_feed(const GL4_Vertex_Format* format){
-    if(mInit_phase) logError(__FILE__, __LINE__, error_initPhase);
+    if(mInitPhase) logError(__FILE__, __LINE__, error_initAddFeed);
 
     GL4_Vertex vertex;
     vertex.format = format;
@@ -103,7 +111,7 @@ void GL4_Mesh::del_feed(_GL4_Vertex_Feed_ID::Pick pick_arg){
 }
 
 void GL4_Mesh::set_feed(_GL4_Vertex_Feed_ID::Pick pick_arg, const void * data, size_t size){
-    if(!mInit_phase) init();
+    if(!mInitPhase) init();
 
     GLint savedAttrib = match_vAttrib(pick_arg, &mFeeds);
     if(savedAttrib < 0) logError(__FILE__, __LINE__, error_elemNotFound);
@@ -116,8 +124,8 @@ void GL4_Mesh::set_feed(_GL4_Vertex_Feed_ID::Pick pick_arg, const void * data, s
         glVertexAttribPointer(mFeeds[savedAttrib].format->mFeedID, mFeeds[savedAttrib].format->mCount, mFeeds[savedAttrib].format->mType, mFeeds[savedAttrib].format->mNormalized, 0, nullptr);
     else if(mFeeds[savedAttrib].format->mVaoPtrMode == _vaoPtrModes::Integral)
         glVertexAttribIPointer(mFeeds[savedAttrib].format->mFeedID, mFeeds[savedAttrib].format->mCount, mFeeds[savedAttrib].format->mType, 0, nullptr);
-    else if(mFeeds[savedAttrib].format->mVaoPtrMode == _vaoPtrModes::Integral)
-        glVertexAttribIPointer(mFeeds[savedAttrib].format->mFeedID, mFeeds[savedAttrib].format->mCount, mFeeds[savedAttrib].format->mType, 0, nullptr);
+    else if(mFeeds[savedAttrib].format->mVaoPtrMode == _vaoPtrModes::Double)
+        glVertexAttribLPointer(mFeeds[savedAttrib].format->mFeedID, mFeeds[savedAttrib].format->mCount, mFeeds[savedAttrib].format->mType, 0, nullptr);
 
     glEnableVertexAttribArray(mFeeds[savedAttrib].format->mFeedID);
     glBindVertexArray(0);

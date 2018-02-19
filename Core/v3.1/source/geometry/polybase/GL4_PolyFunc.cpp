@@ -204,7 +204,7 @@ void GL4_PolyFunc::create(GL4_Mesh* mesh, GL4_Vertex_Factory* factory){
     mesh->add_feed(factory->get_format(_GL4_Vertex_Feed_ID::pos_3f));
     mesh->set_feed(_GL4_Vertex_Feed_ID::pos_3f, threePts.data(), sizeof(float));
 
-    mesh->mOrder.feed(mesh->get_VAO(), indices.data(), indices.size());
+    mesh->mOrder.feed(*(mesh->mVAO_ptr), indices.data(), indices.size());
 }
 
 void GL4_PolyFunc::create(){
