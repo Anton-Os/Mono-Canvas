@@ -2,13 +2,13 @@
 
 static char error_elemNotFound[] = "Search for requested element failed";
 static char error_nullPtrArgs[] = "Function invoked with null pointers as arguments";
+// static char error_zeroVAO[] = "Vertex array object ";
 static char error_drawNotFed[] = "Cannot perform draw, vertices haven't been fed";
 static char error_drawNotIdx[] = "Cannot perform draw, indices not present";
 static char error_initPhase[] = "Cannot proceed after initialization step";
 static char error_initAddFeed[] = "Cannot add a feed after call to set_feed";
 static char error_noData[] = "Mesh has no data and cannot be initialized";
-
-static char warning_vCountOff[] = "vertexCount is inconsistent";
+static char error_vertexIssue[] = "Vertex count is inconsistent";
 
 static GLint match_vAttrib(GLuint vAttrib, std::vector<GL4_Vertex>* feeds_arg){
     GLint savedAttrib = -1;
@@ -111,7 +111,7 @@ void GL4_Mesh::del_feed(_GL4_Vertex_Feed_ID::Pick pick_arg){
     mFeeds.erase(mFeeds.begin() + savedAttrib);
 }
 
-void GL4_Mesh::set_feed(_GL4_Vertex_Feed_ID::Pick pick_arg, const void * data, size_t size){
+void GL4_Mesh::set_feed_data(_GL4_Vertex_Feed_ID::Pick pick_arg, const void * data, size_t size){
     if(!mInitPhase) init();
 
     GLint savedAttrib = match_vAttrib(pick_arg, &mFeeds);
