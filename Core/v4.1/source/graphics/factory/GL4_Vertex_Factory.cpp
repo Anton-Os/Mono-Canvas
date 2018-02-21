@@ -1,106 +1,87 @@
 #include "graphics/factory/GL4_Vertex_Factory.hpp"
 
-static char error_findFormat[] = "Requested format could not be obtained";
-static char error_staticCreation[] = "Static creation unsuccessful, mode is dynamic";
-
-static GLint match_vAttrib(_GL4_Vertex_Feed_ID::Pick pick_arg, std::vector<GL4_Vertex_Format>* formats_arg){
-    GLint savedAttrib = -1;
-    for(unsigned v = 0; v < formats_arg->size(); v++){
-        if(pick_arg == formats_arg->at(v).mFeedID){
-            savedAttrib = v;
-            break;
-        }
-    }
-    return savedAttrib;
-}
+static char error_formatSupport[] = "Format not supported";
 
 static GL4_Vertex_Format gen_pos_3f_format(){
-    GL4_Vertex_Format vertex(_GL4_Vertex_Feed_ID::pos_3f, 3, GL_ARRAY_BUFFER, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, _vaoPtrModes::Default, _GL4_Shader_Format::vec3);
+    GL4_Vertex_Format vertex(_GL4_Vertex_Feed_ID::pos_3f, 3, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, _vaoPtrModes::Default, _GL4_Shader_Format_ID::vec3);
     return vertex;
 }
 
 static GL4_Vertex_Format gen_pos_2f_format(){
-    GL4_Vertex_Format vertex(_GL4_Vertex_Feed_ID::pos_2f, 2, GL_ARRAY_BUFFER, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, _vaoPtrModes::Default, _GL4_Shader_Format::vec3);
+    GL4_Vertex_Format vertex(_GL4_Vertex_Feed_ID::pos_2f, 2, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, _vaoPtrModes::Default, _GL4_Shader_Format_ID::vec3);
     return vertex;
 }
 
 static GL4_Vertex_Format gen_color_4f_format(){
-    GL4_Vertex_Format vertex(_GL4_Vertex_Feed_ID::color_4f, 4, GL_ARRAY_BUFFER, GL_UNSIGNED_BYTE, GL_STATIC_DRAW, GL_TRUE, _vaoPtrModes::Default, _GL4_Shader_Format::vec4);
+    GL4_Vertex_Format vertex(_GL4_Vertex_Feed_ID::color_4f, 4, GL_UNSIGNED_BYTE, GL_STATIC_DRAW, GL_TRUE, _vaoPtrModes::Default, _GL4_Shader_Format_ID::vec4);
     return vertex;
 }
 
 static GL4_Vertex_Format gen_normal_3f_format(){
-    GL4_Vertex_Format vertex(_GL4_Vertex_Feed_ID::normal_3f, 3, GL_ARRAY_BUFFER, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, _vaoPtrModes::Default, _GL4_Shader_Format::vec3);
+    GL4_Vertex_Format vertex(_GL4_Vertex_Feed_ID::normal_3f, 3, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, _vaoPtrModes::Default, _GL4_Shader_Format_ID::vec3);
     return vertex;
 }
 
 static GL4_Vertex_Format gen_texCoord_2f_format(){
-    GL4_Vertex_Format vertex(_GL4_Vertex_Feed_ID::texCoord_2f, 2, GL_ARRAY_BUFFER, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, _vaoPtrModes::Default, _GL4_Shader_Format::vec2);
+    GL4_Vertex_Format vertex(_GL4_Vertex_Feed_ID::texCoord_2f, 2, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, _vaoPtrModes::Default, _GL4_Shader_Format_ID::vec2);
     return vertex;
 }
 
 static GL4_Vertex_Format gen_frag_4f_format(){
-    GL4_Vertex_Format vertex(_GL4_Vertex_Feed_ID::frag_4f, 4, GL_ARRAY_BUFFER, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, _vaoPtrModes::Default, _GL4_Shader_Format::vec4);
+    GL4_Vertex_Format vertex(_GL4_Vertex_Feed_ID::frag_4f, 4, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, _vaoPtrModes::Default, _GL4_Shader_Format_ID::vec4);
     return vertex;
 }
 
+static GLuint appendFormat(_GL4_Vertex_Feed_ID::Pick vertexID_arg, std::vector<GL4_Vertex_Format>* feeds_arg){
+    switch(vertexID_arg){
+        case _GL4_Vertex_Feed_ID::pos_3f:
+            feeds_arg->push_back(gen_pos_3f_format());
+            break;
+        case _GL4_Vertex_Feed_ID::pos_2f:
+            feeds_arg->push_back(gen_pos_2f_format());
+            break;
+        case _GL4_Vertex_Feed_ID::color_4f:
+            feeds_arg->push_back(gen_color_4f_format());
+            break;
+        case _GL4_Vertex_Feed_ID::normal_3f:
+            feeds_arg->push_back(gen_normal_3f_format());
+            break;
+        case _GL4_Vertex_Feed_ID::texCoord_2f:
+            feeds_arg->push_back(gen_texCoord_2f_format());
+            break;
+        case _GL4_Vertex_Feed_ID::frag_4f:
+            feeds_arg->push_back(gen_frag_4f_format());
+            break;
+        default:
+            logError(__FILE__, __LINE__, error_formatSupport);
+            break;
+    }
+    return feeds_arg->size() - 1;
+}
+
+GL4_Vertex_Format* GL4_Vertex_Factory::get_format(_GL4_Vertex_Feed_ID::Pick vertexID_arg){
+    if(mStaticMode) return &mFormats[vertexID_arg];
+    else if(! mFormatBits.test(vertexID_arg)){
+        mFormatIndices[vertexID_arg] = appendFormat(vertexID_arg, &mFormats);
+        mFormatBits.set(vertexID_arg);
+    }
+    return &mFormats[mFormatIndices[vertexID_arg]];
+}
+
 void GL4_Vertex_Factory::create(){
-    if(mDynamic_xStatic) logError(__FILE__, __LINE__, error_staticCreation);
-    mFormats.resize(VERTEX_FACTORY_ATTRIB_COUNT);
-    mFormats[_GL4_Vertex_Feed_ID::pos_3f] = gen_pos_3f_format();
+    mFormats.clear();
+    mFormats.push_back(gen_pos_3f_format());
+    mFormats.push_back(gen_pos_2f_format());
+    mFormats.push_back(gen_color_4f_format());
+    mFormats.push_back(gen_normal_3f_format());
+    mFormats.push_back(gen_texCoord_2f_format());
+    mFormats.push_back(gen_frag_4f_format());
+    // mFormats.resize(VERTEX_FACTORY_ENTRY_COUNT);
+    /* mFormats.[_GL4_Vertex_Feed_ID::pos_3f] = gen_pos_3f_format();
     mFormats[_GL4_Vertex_Feed_ID::pos_2f] = gen_pos_2f_format();
     mFormats[_GL4_Vertex_Feed_ID::color_4f] = gen_color_4f_format();
     mFormats[_GL4_Vertex_Feed_ID::normal_3f] = gen_normal_3f_format();
     mFormats[_GL4_Vertex_Feed_ID::texCoord_2f] = gen_texCoord_2f_format();
-    mFormats[_GL4_Vertex_Feed_ID::frag_4f] = gen_frag_4f_format();
-    mFormat_bits.set();
-}
-
-void GL4_Vertex_Factory::append_format(_GL4_Vertex_Feed_ID::Pick pick_arg){
-    switch(pick_arg){
-        case _GL4_Vertex_Feed_ID::pos_3f :
-            mFormats.push_back(gen_pos_3f_format());
-            break;
-        case _GL4_Vertex_Feed_ID::pos_2f :
-            mFormats.push_back(gen_pos_2f_format());
-            break;
-        case _GL4_Vertex_Feed_ID::color_4f :
-            mFormats.push_back(gen_color_4f_format());
-            break;
-        case _GL4_Vertex_Feed_ID::normal_3f :
-            mFormats.push_back(gen_normal_3f_format());
-            break;
-        case _GL4_Vertex_Feed_ID::texCoord_2f :
-            mFormats.push_back(gen_texCoord_2f_format());
-            break;
-        case _GL4_Vertex_Feed_ID::frag_4f :
-            mFormats.push_back(gen_frag_4f_format());
-            break;
-    }
-    mFormat_bits.set(pick_arg);
-    mDynamic_xStatic = true;
-}
-
-GL4_Vertex_Format* GL4_Vertex_Factory::get_format(_GL4_Vertex_Feed_ID::Pick pick_arg){
-    /*if(mFormat_bits.all())
-        return &mFormats[pick_arg]; */
-    if(!mFormat_bits.test(pick_arg))
-        append_format(pick_arg);
-
-    GLint savedAttrib = match_vAttrib(pick_arg, &mFormats);
-
-    if(savedAttrib < 0) logError(__FILE__, __LINE__, error_findFormat);
-    else return &mFormats[savedAttrib];
-}
-
-_GL4_Shader_Format::Type* GL4_Vertex_Factory::get_shader_format(_GL4_Vertex_Feed_ID::Pick pick_arg){
-    /* if(mFormat_bits.all())
-        return &mFormats[pick_arg].mShader_type; */
-    if(!mFormat_bits.test(pick_arg))
-        append_format(pick_arg);
-
-    GLint savedAttrib = match_vAttrib(pick_arg, &mFormats);
-
-    if(savedAttrib < 0) logError(__FILE__, __LINE__, error_findFormat);
-    else return &mFormats[savedAttrib].mShader_type;
+    mFormats[_GL4_Vertex_Feed_ID::frag_4f] = gen_frag_4f_format(); */
+    mStaticMode = true;
 }

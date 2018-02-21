@@ -1,11 +1,7 @@
 add_executable(Tiles
     source/loaders/FileIO.cpp
     source/graphics/GL4_LoadShaders.cpp
-    source/graphics/GL4_Uniform.cpp
-    source/graphics/GL4_Program.cpp
     source/graphics/factory/GL4_Vertex_Factory.cpp
-    source/graphics/factory/GL4_Uniform_Factory.cpp
-    source/graphics/factory/GL4_Shader_Factory.cpp
     source/scene/ErrorCode.cpp
     source/scene/KeyManager.cpp
     main/Demo_Tiles.cpp
@@ -53,4 +49,11 @@ if(Shaderc_MODULE)
     )
 
     add_dependencies(Tiles Core_V4_Shaders)
+else()
+    foreach(current_shader "Idle.vert" "Idle.frag"
+        "Tones.vert" "Tones.frag"
+        "Flatland.vert" "Flatland.frag"
+    )
+    file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/shaders/${current_shader}" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/shaders/${current_shader}")
+    endforeach(current_shader)
 endif()

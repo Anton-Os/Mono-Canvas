@@ -9,11 +9,6 @@
 #include "loaders/FileIO.hpp"
 #include "graphics/GL4_LoadShaders.hpp"
 #include "graphics/GL4_Vertex.hpp"
-#include "graphics/GL4_Uniform.hpp"
-#include "graphics/GL4_Shader.hpp"
-#include "graphics/factory/GL4_Vertex_Factory.hpp"
-#include "graphics/factory/GL4_Uniform_Factory.hpp"
-#include "graphics/factory/GL4_Shader_Factory.hpp"
 #include "scene/ErrorCode.hpp"
 
 static char error_glfw3Init[] = "GLFW failed to initialize";
@@ -61,16 +56,6 @@ int main(int argc, char** argv) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     std::string parentDir = getParentDirectory(argv[0]);
-
-    GL4_Vertex_Factory vertex_factory;
-    GL4_Uniform_Factory uniform_factory;
-    uniform_factory.create();
-    GL4_Shader_Factory shader_factory(parentDir, &vertex_factory, &uniform_factory);
-    shader_factory.create();
-    GL4_Program Flatland = shader_factory.get_program(_GL4_Program_ID::Flatland);
-    glUseProgram(Flatland.get_progID());
-    GLuint data = 1;
-    Flatland.set_data(_GL4_Uniform_Basic_ID::renderMode, &data);
 
     while(!glfwWindowShouldClose(window)){
         glfwPollEvents();
