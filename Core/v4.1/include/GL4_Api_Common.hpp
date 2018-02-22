@@ -41,8 +41,10 @@
             typedef enum { Idle, Tones, Flatland } Pick;
         }
 
+        #define SHADER_STAGE_COUNT 6
+
         namespace _GL4_Shader_Stage {
-            typedef enum { vert, frag, tesc, tese, geom, comp } Pick;
+            typedef enum { vert, tesc, tese, geom, frag, comp } Pick;
         }
 
         namespace _GL4_Uniform_Basic_ID {

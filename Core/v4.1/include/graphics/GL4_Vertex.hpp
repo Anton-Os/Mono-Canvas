@@ -32,6 +32,7 @@
 
     class GL4_Vertex_Format {
     public:
+		GL4_Vertex_Format(){}
         GL4_Vertex_Format(_GL4_Vertex_Feed_ID::Pick feedID_arg, GLint count_arg, GLsizei size_arg, GLenum type_arg, GLboolean normalized_arg, _vaoPtrModes::Pick vaoPtrMode_arg, _GL4_Shader_Format_ID::Type shaderFormat_arg){
 			mFeedID = feedID_arg;
 			mCount = count_arg;

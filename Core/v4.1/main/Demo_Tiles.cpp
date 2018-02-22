@@ -9,6 +9,10 @@
 #include "loaders/FileIO.hpp"
 #include "graphics/GL4_LoadShaders.hpp"
 #include "graphics/GL4_Vertex.hpp"
+#include "graphics/factory/GL4_Vertex_Factory.hpp"
+#include "graphics/GL4_Shader.hpp"
+#include "graphics/GL4_Program.hpp"
+#include "graphics/factory/GL4_Shader_Factory.hpp"
 #include "scene/ErrorCode.hpp"
 
 static char error_glfw3Init[] = "GLFW failed to initialize";
@@ -56,6 +60,9 @@ int main(int argc, char** argv) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     std::string parentDir = getParentDirectory(argv[0]);
+
+    GL4_Vertex_Factory vertexFactory;
+    GL4_Vertex_Format* pos_3f = vertexFactory.get_format(_GL4_Vertex_Feed_ID::pos_3f);
 
     while(!glfwWindowShouldClose(window)){
         glfwPollEvents();

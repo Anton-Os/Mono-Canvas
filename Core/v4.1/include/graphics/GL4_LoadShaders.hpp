@@ -1,4 +1,3 @@
-#define PIPELINE_X
 #define GEOMETRY_X
 #ifndef GL4_API_COMMON_H
     #include "GL4_Api_Common.hpp"
@@ -14,6 +13,6 @@
 
 #ifndef GL4_LOAD_SHADERS_H
     GLuint compileShader(const std::string& filePath_arg);
-    GLuint compileShaders(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath);
+    GLuint compileShader(const std::string& filePath_arg, _GL4_Shader_Stage::Pick* stage_arg);
 #define GL4_LOAD_SHADERS_H
 #endif

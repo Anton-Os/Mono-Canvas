@@ -2,7 +2,6 @@
 
 static char error_elemNotFound[] = "Search for requested element failed";
 static char error_nullPtrArgs[] = "Function invoked with null pointers as arguments";
-// static char error_zeroVAO[] = "Vertex array object ";
 static char error_drawNotFed[] = "Cannot perform draw, vertices haven't been fed";
 static char error_drawNotIdx[] = "Cannot perform draw, indices not present";
 static char error_initPhase[] = "Cannot proceed after initialization step";
