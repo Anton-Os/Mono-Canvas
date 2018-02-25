@@ -10,7 +10,7 @@ void GL4_Program::attach_shader(const GL4_Shader* shader_arg){
     if(mReady) logError(__FILE__, __LINE__, error_afterCreate);
     if(mStageBits.test(*(shader_arg->mStage_ptr))) logError(__FILE__, __LINE__, error_reusedStage);
 
-    mShaders.push_back(shader_arg);
+    mShaders.push_back(*shader_arg);
     mStageBits.set(*(shader_arg->mStage_ptr));
     mShaderIndices[*(shader_arg->mStage_ptr)] = mShaders.size() - 1;
 }
@@ -21,7 +21,7 @@ void GL4_Program::create(){
     if(!mStageBits.test(_GL4_Shader_Stage::vert) || !mStageBits.test(_GL4_Shader_Stage::frag)) logError(__FILE__, __LINE__, error_incompleteVF);
 
     mProgID = glCreateProgram();
-    for(unsigned s = 0; s < mShaders.size(); s++) glAttachShader(mProgID, *(mShaders[s]->mShaderID_ptr));
+    for(unsigned s = 0; s < mShaders.size(); s++) glAttachShader(mProgID, *(mShaders[s].mShaderID_ptr));
     glLinkProgram(mProgID);
     GLint logState;
     glGetProgramiv(mProgID, GL_LINK_STATUS, &logState);

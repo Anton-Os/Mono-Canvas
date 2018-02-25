@@ -15,7 +15,8 @@
 #endif
 
 #ifndef GL4_PROGRAM_H
-    #include "graphics/GL4_Program.hpp"
+    // #include "graphics/GL4_Program.hpp"
+    #include "TEST/GL4_Program.hpp"
 #endif
 
 #define SHADER_FACTORY_ENTRY_COUNT 6
@@ -27,14 +28,22 @@ namespace _GL4_Shader_ID {
 #ifndef GL4_SHADER_FACTORY_H
     class GL4_Shader_Factory {
     public:
+        GL4_Shader_Factory(const std::string& parentDir_arg){
+            mParentDir = parentDir_arg;
+        }
+        ~GL4_Shader_Factory(){
+            delete mVertexFactory;
+            mVertexFactory = nullptr;
+        }
         void create();
         GL4_Program get_program(_GL4_Program_ID::Pick programID_arg);
     private:
+        std::string mParentDir;
         GLboolean mStaticMode = false;
-        std::vector<GL4_Shader> mShaders;
-        std::bitset<SHADER_FACTORY_ENTRY_COUNT> mShaderBits;
-        GLuint mShaderIndices[SHADER_FACTORY_ENTRY_COUNT];
-        GL4_Vertex_Factory mVertexFactory;
+        std::vector<GL4_Program> mPrograms;
+        std::bitset<SHADER_FACTORY_ENTRY_COUNT> mProgramBits;
+        GLuint mProgramIndices[SHADER_FACTORY_ENTRY_COUNT];
+        GL4_Vertex_Factory* mVertexFactory = new GL4_Vertex_Factory;
     };
 #define GL4_SHADER_FACTORY_H
 #endif

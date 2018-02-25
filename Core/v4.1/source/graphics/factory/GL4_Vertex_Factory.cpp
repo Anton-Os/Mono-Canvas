@@ -1,6 +1,7 @@
 #include "graphics/factory/GL4_Vertex_Factory.hpp"
 
 static char error_formatSupport[] = "Format not supported";
+static char error_dynamicMode[] = "Cannot invoke create(), vertex factory is dynamic";
 
 static GL4_Vertex_Format gen_pos_3f_format(){
     GL4_Vertex_Format vertex(_GL4_Vertex_Feed_ID::pos_3f, 3, GL_FLOAT, GL_STATIC_DRAW, GL_FALSE, _vaoPtrModes::Default, _GL4_Shader_Format_ID::vec3);
@@ -69,12 +70,13 @@ GL4_Vertex_Format* GL4_Vertex_Factory::get_format(_GL4_Vertex_Feed_ID::Pick vert
 }
 
 void GL4_Vertex_Factory::create(){
-    mFormats.clear();
+    if(mFormats.empty()) logError(__FILE__, __LINE__, error_dynamicMode);
     mFormats.push_back(gen_pos_3f_format());
     mFormats.push_back(gen_pos_2f_format());
     mFormats.push_back(gen_color_4f_format());
     mFormats.push_back(gen_normal_3f_format());
     mFormats.push_back(gen_texCoord_2f_format());
     mFormats.push_back(gen_frag_4f_format());
+    mFormatBits.set();
     mStaticMode = true;
 }

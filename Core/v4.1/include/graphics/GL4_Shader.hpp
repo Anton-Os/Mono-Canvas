@@ -21,18 +21,14 @@
             mFilePath = filePath_arg;
             mShaderID = compileShader(mFilePath, &mStage);
         }
-        void clear_inputs(){ mInputs.clear(); }
-        void add_input(GL4_Shader_Vertex_Format shaderVertexFormat_arg){ mInputs.push_back(shaderVertexFormat_arg); }
-        void clear_outputs(){ mOutputs.clear(); }
-        void add_output(GL4_Shader_Vertex_Format shaderVertexFormat_arg){ mInputs.push_back(shaderVertexFormat_arg); }
+        std::vector<GL4_Shader_Vertex_Format> mInputs;
+        std::vector<GL4_Shader_Vertex_Format> mOutputs;
         const GLuint *const mShaderID_ptr = &mShaderID;
         const _GL4_Shader_Stage::Pick *const mStage_ptr = &mStage;
     protected:
         GLuint mShaderID;
         _GL4_Shader_Stage::Pick mStage;
         std::string mFilePath;
-        std::vector<GL4_Shader_Vertex_Format> mInputs;
-        std::vector<GL4_Shader_Vertex_Format> mOutputs;
     };
 #define GL4_SHADER_H
 #endif

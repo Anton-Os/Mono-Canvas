@@ -63,6 +63,7 @@ int main(int argc, char** argv) {
 
     GL4_Vertex_Factory vertexFactory;
     GL4_Vertex_Format* pos_3f = vertexFactory.get_format(_GL4_Vertex_Feed_ID::pos_3f);
+    GL4_Shader_Factory shaderFactory(parentDir);
 
     while(!glfwWindowShouldClose(window)){
         glfwPollEvents();
