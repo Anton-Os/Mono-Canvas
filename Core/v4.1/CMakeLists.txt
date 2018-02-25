@@ -2,8 +2,7 @@ add_executable(Tiles
     source/loaders/FileIO.cpp
     source/graphics/GL4_LoadShaders.cpp
     source/graphics/factory/GL4_Vertex_Factory.cpp
-    # source/graphics/GL4_Program.cpp
-    source/TEST/GL4_Program
+    source/graphics/GL4_Program.cpp
     source/graphics/factory/GL4_Shader_Factory.cpp
     source/scene/ErrorCode.cpp
     source/scene/KeyManager.cpp
@@ -23,7 +22,7 @@ target_link_libraries(Tiles
 
 set(RES_DIR "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/res")
 configure_file("${CMAKE_CURRENT_LIST_DIR}/cmake/GDrive.cmake" "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/GDrive.cmake" @ONLY)
-add_custom_target(Core_V3_GDrive ALL 
+add_custom_target(Core_V4_GDrive ALL 
     ${CMAKE_COMMAND} -P "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/GDrive.cmake"
     DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/GDrive.cmake"
 )

@@ -37,11 +37,11 @@
     // From Pipeline.hpp
 
     #ifndef PIPELINE_X
+        #define SHADER_STAGE_COUNT 6
+        
         namespace _GL4_Program_ID {
             typedef enum { Idle, Tones, Flatland } Pick;
         }
-
-        #define SHADER_STAGE_COUNT 6
 
         namespace _GL4_Shader_Stage {
             typedef enum { vert, tesc, tese, geom, frag, comp } Pick;

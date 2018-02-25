@@ -19,7 +19,7 @@
         GLboolean mReady = false;
         GLuint mProgID;
         std::bitset<SHADER_STAGE_COUNT> mStageBits;
-        // std::vector<GL4_Shader> mShaders;
+        std::vector<GL4_Shader> mShaders;
         GLuint mShaderIndices[SHADER_STAGE_COUNT];
     };
 #define GL4_PROGRAM_H

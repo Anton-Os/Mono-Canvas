@@ -15,8 +15,7 @@
 #endif
 
 #ifndef GL4_PROGRAM_H
-    // #include "graphics/GL4_Program.hpp"
-    #include "TEST/GL4_Program.hpp"
+    #include "graphics/GL4_Program.hpp"
 #endif
 
 #define SHADER_FACTORY_ENTRY_COUNT 6

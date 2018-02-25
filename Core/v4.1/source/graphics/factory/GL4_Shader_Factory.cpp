@@ -19,7 +19,7 @@ static GL4_Program gen_Idle_program(std::string parentDir, GL4_Vertex_Factory * 
     vertexShader.mOutputs.push_back(GL4_Shader_Vertex_Format(vertexFactory_arg->get_format(_GL4_Vertex_Feed_ID::color_4f)));
     program.attach_shader(&vertexShader);
 
-    GL4_Shader fragmentShader(parentDir + "//shaders//Idle.vert");
+    GL4_Shader fragmentShader(parentDir + "//shaders//Idle.frag");
     fragmentShader.mInputs.push_back(GL4_Shader_Vertex_Format(vertexFactory_arg->get_format(_GL4_Vertex_Feed_ID::color_4f)));
     fragmentShader.mOutputs.push_back(GL4_Shader_Vertex_Format(vertexFactory_arg->get_format(_GL4_Vertex_Feed_ID::frag_4f)));
     program.attach_shader(&fragmentShader);
@@ -42,7 +42,7 @@ static GLuint appendFormat(_GL4_Program_ID::Pick progID_arg, std::string parentD
 GL4_Program GL4_Shader_Factory::get_program(_GL4_Program_ID::Pick progID_arg){
     GL4_Program program;
     if(mStaticMode) program = mPrograms[progID_arg];
-    /* else {
+    else {
         if(! mProgramBits.test(progID_arg)){
             mProgramIndices[progID_arg] = appendFormat(progID_arg, mParentDir, mVertexFactory, &mPrograms);
             mProgramBits.set(progID_arg);
@@ -50,12 +50,13 @@ GL4_Program GL4_Shader_Factory::get_program(_GL4_Program_ID::Pick progID_arg){
         program = mPrograms[mProgramIndices[progID_arg]];
     }
     program.create();
-    return program; */
+    return program;
 }
 
 void GL4_Shader_Factory::create(){
     if(mPrograms.empty()) logError(__FILE__, __LINE__, error_dynamicMode);
-    mPrograms.push_back(gen_Idle_program(mParentDir, mVertexFactory));
+    mPrograms.resize(SHADER_FACTORY_ENTRY_COUNT);
+    mPrograms[_GL4_Program_ID::Idle] = gen_Idle_program(mParentDir, mVertexFactory);
     mProgramBits.set();
     mStaticMode = true;
 }

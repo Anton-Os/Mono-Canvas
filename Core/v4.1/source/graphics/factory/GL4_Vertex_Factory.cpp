@@ -71,12 +71,13 @@ GL4_Vertex_Format* GL4_Vertex_Factory::get_format(_GL4_Vertex_Feed_ID::Pick vert
 
 void GL4_Vertex_Factory::create(){
     if(mFormats.empty()) logError(__FILE__, __LINE__, error_dynamicMode);
-    mFormats.push_back(gen_pos_3f_format());
-    mFormats.push_back(gen_pos_2f_format());
-    mFormats.push_back(gen_color_4f_format());
-    mFormats.push_back(gen_normal_3f_format());
-    mFormats.push_back(gen_texCoord_2f_format());
-    mFormats.push_back(gen_frag_4f_format());
+    mFormats.resize(VERTEX_FACTORY_ENTRY_COUNT);
+    mFormats[_GL4_Vertex_Feed_ID::pos_3f] = gen_pos_3f_format();
+    mFormats[_GL4_Vertex_Feed_ID::pos_2f] = gen_pos_2f_format();
+    mFormats[_GL4_Vertex_Feed_ID::color_4f] = gen_color_4f_format();
+    mFormats[_GL4_Vertex_Feed_ID::normal_3f] = gen_normal_3f_format();
+    mFormats[_GL4_Vertex_Feed_ID::texCoord_2f] = gen_texCoord_2f_format();
+    mFormats[_GL4_Vertex_Feed_ID::frag_4f] = gen_frag_4f_format();
     mFormatBits.set();
     mStaticMode = true;
 }

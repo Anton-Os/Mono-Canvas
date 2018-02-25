@@ -23,8 +23,10 @@
         }
         std::vector<GL4_Shader_Vertex_Format> mInputs;
         std::vector<GL4_Shader_Vertex_Format> mOutputs;
-        const GLuint *const mShaderID_ptr = &mShaderID;
-        const _GL4_Shader_Stage::Pick *const mStage_ptr = &mStage;
+        const GLuint *const get_shaderID() const { return &mShaderID; }
+        _GL4_Shader_Stage::Pick get_stage() const { return mStage; }
+        /* const GLuint *const mShaderID_ptr = &mShaderID;
+        const _GL4_Shader_Stage::Pick *const mStage_ptr = &mStage; */
     protected:
         GLuint mShaderID;
         _GL4_Shader_Stage::Pick mStage;
