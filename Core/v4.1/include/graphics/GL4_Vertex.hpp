@@ -66,7 +66,6 @@
 			mFormat = vertexFormat_arg;
 		}
 		GLuint get_buffer(){ return *mBuffer; }
-
     private:
 		const GLuint* mBuffer;
 		const GL4_Vertex_Format* mFormat;

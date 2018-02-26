@@ -10,6 +10,8 @@
 #include "graphics/GL4_LoadShaders.hpp"
 #include "graphics/GL4_Vertex.hpp"
 #include "graphics/factory/GL4_Vertex_Factory.hpp"
+#include "graphics/entity/GL4_Mesh.hpp"
+#include "graphics/entity/GL4_Mesh_Manager.hpp"
 #include "graphics/GL4_Shader.hpp"
 #include "graphics/GL4_Program.hpp"
 #include "graphics/factory/GL4_Shader_Factory.hpp"
@@ -65,6 +67,7 @@ int main(int argc, char** argv) {
     GL4_Vertex_Format* pos_3f = vertexFactory.get_format(_GL4_Vertex_Feed_ID::pos_3f);
     GL4_Shader_Factory shaderFactory(parentDir);
     GL4_Program Idle = shaderFactory.get_program(_GL4_Program_ID::Idle);
+    GL4_Mesh_Manager meshManager(5, 30);
 
     while(!glfwWindowShouldClose(window)){
         glfwPollEvents();

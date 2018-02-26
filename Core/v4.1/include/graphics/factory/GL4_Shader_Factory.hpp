@@ -20,10 +20,6 @@
 
 #define SHADER_FACTORY_ENTRY_COUNT 6
 
-namespace _GL4_Shader_ID {
-    typedef enum { Idle_vert, Idle_frag, Tones_vert, Tones_frag, Flatland_vert, Flatland_frag } Pick;
-}
-
 #ifndef GL4_SHADER_FACTORY_H
     class GL4_Shader_Factory {
     public:

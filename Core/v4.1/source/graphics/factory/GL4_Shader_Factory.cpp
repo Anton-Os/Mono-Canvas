@@ -27,7 +27,7 @@ static GL4_Program gen_Idle_program(std::string parentDir, GL4_Vertex_Factory * 
     return program;
 }
 
-static GLuint appendFormat(_GL4_Program_ID::Pick progID_arg, std::string parentDir_arg, GL4_Vertex_Factory * vertexFactory_arg, std::vector<GL4_Program>* programs_arg){
+static GLuint appendProgram(_GL4_Program_ID::Pick progID_arg, std::string parentDir_arg, GL4_Vertex_Factory * vertexFactory_arg, std::vector<GL4_Program>* programs_arg){
     switch(progID_arg){
         case _GL4_Program_ID::Idle:
             programs_arg->push_back(gen_Idle_program(parentDir_arg, vertexFactory_arg));
@@ -44,7 +44,7 @@ GL4_Program GL4_Shader_Factory::get_program(_GL4_Program_ID::Pick progID_arg){
     if(mStaticMode) program = mPrograms[progID_arg];
     else {
         if(! mProgramBits.test(progID_arg)){
-            mProgramIndices[progID_arg] = appendFormat(progID_arg, mParentDir, mVertexFactory, &mPrograms);
+            mProgramIndices[progID_arg] = appendProgram(progID_arg, mParentDir, mVertexFactory, &mPrograms);
             mProgramBits.set(progID_arg);
         }
         program = mPrograms[mProgramIndices[progID_arg]];
