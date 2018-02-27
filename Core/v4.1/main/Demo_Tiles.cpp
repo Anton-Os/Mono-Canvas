@@ -9,7 +9,7 @@
 #include "loaders/FileIO.hpp"
 #include "graphics/GL4_LoadShaders.hpp"
 #include "graphics/GL4_Vertex.hpp"
-#include "graphics/factory/GL4_Vertex_Factory.hpp"
+#include "graphics/factory/GL4_Vertex_Registry.hpp"
 #include "graphics/entity/GL4_Mesh.hpp"
 #include "graphics/entity/GL4_Mesh_Manager.hpp"
 #include "graphics/GL4_Shader.hpp"
@@ -63,8 +63,8 @@ int main(int argc, char** argv) {
 
     std::string parentDir = getParentDirectory(argv[0]);
 
-    GL4_Vertex_Factory vertexFactory;
-    GL4_Vertex_Format* pos_3f = vertexFactory.get_format(_GL4_Vertex_Feed_ID::pos_3f);
+    GL4_Vertex_Registry vertexRegistry;
+    GL4_Vertex_Format* pos_3f = vertexRegistry.get_format(_GL4_Vertex_Feed_ID::pos_3f);
     GL4_Shader_Factory shaderFactory(parentDir);
     GL4_Program Idle = shaderFactory.get_program(_GL4_Program_ID::Idle);
     GL4_Mesh_Manager meshManager(5, 30);

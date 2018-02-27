@@ -1,11 +1,12 @@
 add_executable(Tiles
     source/loaders/FileIO.cpp
     source/graphics/GL4_LoadShaders.cpp
-    source/graphics/factory/GL4_Vertex_Factory.cpp
+    source/graphics/factory/GL4_Vertex_Registry.cpp
     source/graphics/GL4_Program.cpp
     source/graphics/factory/GL4_Shader_Factory.cpp
+    source/graphics/entity/GL4_Mesh.cpp
+    source/graphics/entity/GL4_Mesh_Manager.cpp
     source/scene/ErrorCode.cpp
-    source/scene/KeyManager.cpp
     main/Demo_Tiles.cpp
 )
 

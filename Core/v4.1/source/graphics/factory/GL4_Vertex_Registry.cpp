@@ -1,4 +1,4 @@
-#include "graphics/factory/GL4_Vertex_Factory.hpp"
+#include "graphics/factory/GL4_Vertex_Registry.hpp"
 
 static char error_formatSupport[] = "Format not supported";
 static char error_dynamicMode[] = "Cannot invoke create(), vertex factory is dynamic";
@@ -60,7 +60,7 @@ static GLuint appendFormat(_GL4_Vertex_Feed_ID::Pick vertexID_arg, std::vector<G
     return feeds_arg->size() - 1;
 }
 
-GL4_Vertex_Format* GL4_Vertex_Factory::get_format(_GL4_Vertex_Feed_ID::Pick vertexID_arg){
+GL4_Vertex_Format* GL4_Vertex_Registry::get_format(_GL4_Vertex_Feed_ID::Pick vertexID_arg){
     if(mStaticMode) return &mFormats[vertexID_arg];
     else if(! mFormatBits.test(vertexID_arg)){
         mFormatIndices[vertexID_arg] = appendFormat(vertexID_arg, &mFormats);
@@ -69,9 +69,9 @@ GL4_Vertex_Format* GL4_Vertex_Factory::get_format(_GL4_Vertex_Feed_ID::Pick vert
     return &mFormats[mFormatIndices[vertexID_arg]];
 }
 
-void GL4_Vertex_Factory::create(){
+void GL4_Vertex_Registry::create(){
     if(mFormats.empty()) logError(__FILE__, __LINE__, error_dynamicMode);
-    mFormats.resize(VERTEX_FACTORY_ENTRY_COUNT);
+    mFormats.resize(VERTEX_REGISTRY_ENTRY_COUNT);
     mFormats[_GL4_Vertex_Feed_ID::pos_3f] = gen_pos_3f_format();
     mFormats[_GL4_Vertex_Feed_ID::pos_2f] = gen_pos_2f_format();
     mFormats[_GL4_Vertex_Feed_ID::color_4f] = gen_color_4f_format();

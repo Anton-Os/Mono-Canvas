@@ -11,18 +11,18 @@
     #include "graphics/GL4_Vertex.hpp"
 #endif
 
-#define VERTEX_FACTORY_ENTRY_COUNT 6
+#define VERTEX_REGISTRY_ENTRY_COUNT 6
 
-#ifndef GL4_VERTEX_FACTORY_H
-    class GL4_Vertex_Factory {
+#ifndef GL4_VERTEX_REGISTRY_H
+    class GL4_Vertex_Registry {
     public:
         void create();
         GL4_Vertex_Format* get_format(_GL4_Vertex_Feed_ID::Pick vertexID_arg);
     private:
         GLboolean mStaticMode = false;
         std::vector<GL4_Vertex_Format> mFormats;
-        std::bitset<VERTEX_FACTORY_ENTRY_COUNT> mFormatBits;
-        GLuint mFormatIndices[VERTEX_FACTORY_ENTRY_COUNT];
+        std::bitset<VERTEX_REGISTRY_ENTRY_COUNT> mFormatBits;
+        GLuint mFormatIndices[VERTEX_REGISTRY_ENTRY_COUNT];
     };
-#define GL4_VERTEX_FACTORY_H
+#define GL4_VERTEX_REGISTRY_H
 #endif
