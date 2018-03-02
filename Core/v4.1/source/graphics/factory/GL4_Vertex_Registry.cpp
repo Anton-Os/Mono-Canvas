@@ -70,7 +70,7 @@ GL4_Vertex_Format* GL4_Vertex_Registry::get_format(_GL4_Vertex_Feed_ID::Pick ver
 }
 
 void GL4_Vertex_Registry::create(){
-    if(mFormats.empty()) logError(__FILE__, __LINE__, error_dynamicMode);
+    if(! mFormats.empty()) logError(__FILE__, __LINE__, error_dynamicMode);
     mFormats.resize(VERTEX_REGISTRY_ENTRY_COUNT);
     mFormats[_GL4_Vertex_Feed_ID::pos_3f] = gen_pos_3f_format();
     mFormats[_GL4_Vertex_Feed_ID::pos_2f] = gen_pos_2f_format();

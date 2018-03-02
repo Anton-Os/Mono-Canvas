@@ -4,6 +4,7 @@
     #include <string>
     #include <bitset>
     #include <stack>
+    #include <initializer_list>
     #include <algorithm>
 
     #include <GL/glew.h>

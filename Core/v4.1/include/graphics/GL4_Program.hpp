@@ -15,6 +15,7 @@
     public:
         void attach_shader(const GL4_Shader* shader_arg);
         void create();
+        GLuint get_progID(){ return mProgID; }
     private:
         GLboolean mReady = false;
         GLuint mProgID;

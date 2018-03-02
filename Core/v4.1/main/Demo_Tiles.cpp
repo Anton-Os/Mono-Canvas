@@ -63,11 +63,28 @@ int main(int argc, char** argv) {
 
     std::string parentDir = getParentDirectory(argv[0]);
 
+    GLfloat posData[] = {
+        0.1, 0.6, 0.5,
+        0.2, -0.4, 0.5,
+        -0.1, -0.8, 0.5f
+    };
+
+    GLubyte colorData[] = {
+        122, 122, 255, 255,
+        100, 50, 200, 255,
+        10, 10, 20, 255
+    };
+
     GL4_Vertex_Registry vertexRegistry;
-    GL4_Vertex_Format* pos_3f = vertexRegistry.get_format(_GL4_Vertex_Feed_ID::pos_3f);
+    vertexRegistry.create();
+    // GL4_Vertex_Format* pos_3f = vertexRegistry.get_format(_GL4_Vertex_Feed_ID::pos_3f);
     GL4_Shader_Factory shaderFactory(parentDir);
     GL4_Program Idle = shaderFactory.get_program(_GL4_Program_ID::Idle);
     GL4_Mesh_Manager meshManager(5, 30);
+    glUseProgram(Idle.get_progID());
+    GL4_Mesh* mesh1 = meshManager.add_mesh(20, { vertexRegistry.get_format(_GL4_Vertex_Feed_ID::pos_3f), vertexRegistry.get_format(_GL4_Vertex_Feed_ID::color_4f)});
+    mesh1->set_feed_data(_GL4_Vertex_Feed_ID::pos_3f, &posData[0]);
+    mesh1->set_feed_data(_GL4_Vertex_Feed_ID::color_4f, &colorData[0]);
 
     while(!glfwWindowShouldClose(window)){
         glfwPollEvents();
@@ -75,6 +92,8 @@ int main(int argc, char** argv) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glPointSize(10.0f);
+        
+        mesh1->unordered_draw();
 
         glfwSwapBuffers(window);
     }

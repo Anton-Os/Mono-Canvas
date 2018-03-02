@@ -22,7 +22,8 @@
     class GL4_Mesh_Manager {
     public:
         GL4_Mesh_Manager(GLuint VAO_count_arg, GLuint VBO_count_arg);
-        GL4_Mesh* add_mesh(GLuint vertexCount_arg);
+        GL4_Mesh* add_mesh(GLuint vertexCount_arg, std::initializer_list<const GL4_Vertex_Format*> formats_arg);
+	    //GL4_Mesh* add_mesh(GLuint vertexCount_arg);
     private:
         GLuint mVAO_count;
         GLuint mVAO_used = 0;
