@@ -5,7 +5,6 @@ add_executable(Tiles
     source/graphics/GL4_Program.cpp
     source/graphics/factory/GL4_Shader_Factory.cpp
     source/graphics/entity/GL4_Mesh.cpp
-    source/graphics/entity/GL4_Mesh_Manager.cpp
     source/scene/ErrorCode.cpp
     main/Demo_Tiles.cpp
 )

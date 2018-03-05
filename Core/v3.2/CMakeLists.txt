@@ -1,81 +1,8 @@
-add_executable(Idle
+add_executable(Cleve
     source/loaders/FileIO.cpp
     source/graphics/GL4_LoadShaders.cpp
     source/graphics/factory/GL4_Vertex_Factory.cpp
     source/graphics/entity/GL4_Mesh.cpp
-    source/geometry/Hedgy.cpp
-    source/scene/ErrorCode.cpp
-    main/Demo_Idle.cpp
-)
-
-target_include_directories(Idle
-    PUBLIC
-    include
-)
-
-target_link_libraries(Idle
-    GLEW::glew_s
-    glfw
-    glm
-)
-
-add_executable(Comeback
-    source/loaders/FileIO.cpp
-    source/graphics/GL4_LoadShaders.cpp
-    source/graphics/factory/GL4_Vertex_Factory.cpp
-    source/graphics/entity/GL4_Mesh.cpp
-    source/geometry/polybase/GL4_PolyFunc.cpp
-    source/geometry/polyform/GL4_PolyGrid.cpp
-    source/scene/ErrorCode.cpp
-    source/scene/KeyManager.cpp
-    main/Demo_Comeback.cpp
-)
-
-target_include_directories(Comeback
-    PUBLIC
-    include
-)
-
-target_link_libraries(Comeback
-    GLEW::glew_s
-    glfw
-    glm
-)
-
-add_executable(ShaderWorks
-    source/loaders/FileIO.cpp
-    source/graphics/GL4_LoadShaders.cpp
-    source/graphics/factory/GL4_Vertex_Factory.cpp
-    source/graphics/entity/GL4_Mesh.cpp
-    source/geometry/polybase/GL4_PolyFunc.cpp
-    source/geometry/polyform/GL4_PolyGrid.cpp
-    source/graphics/GL4_Program.cpp
-    source/graphics/GL4_Uniform.cpp
-    source/graphics/factory/GL4_Uniform_Factory.cpp
-    source/graphics/factory/GL4_Shader_Factory.cpp
-    source/scene/ErrorCode.cpp
-    source/scene/KeyManager.cpp
-    main/Demo_ShaderWorks.cpp
-)
-
-target_include_directories(ShaderWorks
-    PUBLIC
-    include
-)
-
-target_link_libraries(ShaderWorks
-    GLEW::glew_s
-    glfw
-    glm
-)
-
-add_executable(Tiles
-    source/loaders/FileIO.cpp
-    source/graphics/GL4_LoadShaders.cpp
-    source/graphics/factory/GL4_Vertex_Factory.cpp
-    source/graphics/entity/GL4_Mesh.cpp
-    source/geometry/polybase/GL4_PolyFunc.cpp
-    source/geometry/polyform/GL4_PolyGrid.cpp
     source/geometry/Tile.cpp
     source/graphics/GL4_Program.cpp
     source/graphics/GL4_Uniform.cpp
@@ -83,15 +10,15 @@ add_executable(Tiles
     source/graphics/factory/GL4_Shader_Factory.cpp
     source/scene/ErrorCode.cpp
     source/scene/KeyManager.cpp
-    main/Demo_Tiles.cpp
+    main/Demo_Cleve.cpp
 )
 
-target_include_directories(Tiles
+target_include_directories(Cleve
     PUBLIC
     include
 )
 
-target_link_libraries(Tiles
+target_link_libraries(Cleve
     GLEW::glew_s
     glfw
     glm
@@ -127,5 +54,5 @@ if(Shaderc_MODULE)
         DEPENDS ${OUTPUT_SHADER_LIST}
     )
 
-    add_dependencies(Idle Core_V3_Shaders)
+    add_dependencies(Tiles Core_V3_Shaders)
 endif()

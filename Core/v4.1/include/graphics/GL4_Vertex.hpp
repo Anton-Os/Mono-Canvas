@@ -61,15 +61,14 @@
 
     class GL4_Vertex_Feed {
     public: 
-		GL4_Vertex_Feed(const GLuint* buffer_arg, const GL4_Vertex_Format* vertexFormat_arg){
-			mBuffer = buffer_arg;
+		GL4_Vertex_Feed(GLuint buffer_arg, const GL4_Vertex_Format* vertexFormat_arg){
+            mBuffer = buffer_arg;
 			mFormat = vertexFormat_arg;
 		}
-		GLuint get_buffer(){ return *mBuffer; }
+		GLuint get_buffer(){ return mBuffer; }
         const GL4_Vertex_Format* mFormat;
     private:
-		const GLuint* mBuffer;
-		GLboolean mActive = false;
+		GLuint mBuffer;
     };
 
     class GL4_Shader_Vertex_Format {

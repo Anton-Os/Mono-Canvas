@@ -9,11 +9,15 @@
 #include "loaders/FileIO.hpp"
 #include "graphics/GL4_LoadShaders.hpp"
 #include "graphics/GL4_Vertex.hpp"
-#include "graphics/factory/GL4_Vertex_Registry.hpp"
+#include "graphics/factory/GL4_Vertex_Factory.hpp"
 #include "graphics/entity/GL4_Mesh.hpp"
+#include "geometry/polybase/GL4_PolyFunc.hpp"
+#include "geometry/polyform/GL4_PolyGrid.hpp"
+#include "geometry/Tile.hpp"
 #include "graphics/GL4_Shader.hpp"
-#include "graphics/GL4_Program.hpp"
 #include "graphics/factory/GL4_Shader_Factory.hpp"
+#include "graphics/GL4_Uniform.hpp"
+#include "graphics/factory/GL4_Uniform_Factory.hpp"
 #include "scene/ErrorCode.hpp"
 
 static char error_glfw3Init[] = "GLFW failed to initialize";
@@ -35,19 +39,6 @@ namespace Time {
     std::chrono::duration<double, std::nano> nanoSpan;
 }
 
-/* void MessageCallback( GLenum source,
-                      GLenum type,
-                      GLuint id,
-                      GLenum severity,
-                      GLsizei length,
-                      const GLchar* message,
-                      const void* userParam )
-{
-    fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-             ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
-              type, severity, message );
-} */
-
 int main(int argc, char** argv) {
     if (glfwInit() == GLFW_TRUE)  std::cout << "GLFW initialized successfuly" << std::endl;
     else logError(__FILE__, __LINE__, error_glfw3Init);
@@ -67,55 +58,29 @@ int main(int argc, char** argv) {
     if (glewInit() == GLEW_OK) std::cout << "GLEW initialized successfuly" << std::endl;
     else logError(__FILE__, __LINE__, error_glewInit);
 
-    /* glEnable              ( GL_DEBUG_OUTPUT );
-    glDebugMessageCallback( (GLDEBUGPROC) MessageCallback, 0 ); */
-
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    GLfloat posData[] = {
-        0.1, 0.6, 0.5,
-        0.2, -0.4, 0.5,
-        -0.1, -0.8, 0.5f
-    };
-
-    GLubyte colorData[] = {
-        122, 122, 255, 255,
-        100, 50, 200, 255,
-        10, 10, 20, 255
-    };
-
-
     std::string parentDir = getParentDirectory(argv[0]);
+    /* GLuint shaderProg = compileShaders(parentDir + "//shaders//Idle.vert", parentDir + "//shaders//Idle.frag");
+    glUseProgram(shaderProg); */
 
-    GL4_Vertex_Registry vertexRegistry;
-    vertexRegistry.create();
-    // GL4_Vertex_Format* pos_3f = vertexRegistry.get_format(_GL4_Vertex_Feed_ID::pos_3f);
-    GL4_Shader_Factory shaderFactory(parentDir);
-    GL4_Program Idle = shaderFactory.get_program(_GL4_Program_ID::Idle);
-    glUseProgram(Idle.get_progID());
-    GL4_Mesh mesh1(3, {vertexRegistry.get_format(_GL4_Vertex_Feed_ID::pos_3f), vertexRegistry.get_format(_GL4_Vertex_Feed_ID::color_4f)});
-    mesh1.set_feed_data(_GL4_Vertex_Feed_ID::pos_3f, &posData[0]);
-    mesh1.set_feed_data(_GL4_Vertex_Feed_ID::color_4f, &colorData[0]);
+    GL4_Vertex_Factory vertex_factory;
+    GL4_Uniform_Factory uniform_factory;
+    uniform_factory.create();
+    GL4_Shader_Factory shader_factory(parentDir, &vertex_factory, &uniform_factory);
+    shader_factory.create();
+    GL4_Program Flatland = shader_factory.get_program(_GL4_Program_ID::Flatland);
+    glUseProgram(Flatland.get_progID());
+    GLuint data = 1;
+    Flatland.set_data(_GL4_Uniform_Basic_ID::renderMode, &data);
 
-    /* GLuint VAO;
-    GLuint VBOs[2];
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-    glGenBuffers(2, &VBOs[0]);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * 3, &posData[0], GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-    glEnableVertexAttribArray(0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLubyte) * 3 * 3, &posData[0], GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-    glEnableVertexAttribArray(0); */
+    GL4_Mesh tile_mesh(4);
+    Tile tile(0.5f, 0.5f);
+    tile.create(&tile_mesh, &vertex_factory);
 
     while(!glfwWindowShouldClose(window)){
         glfwPollEvents();
@@ -123,8 +88,10 @@ int main(int argc, char** argv) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glPointSize(10.0f);
-
-        mesh1.unordered_draw();
+        // mesh.mQuill.mode = GL_POINTS;
+        // mesh.mQuill.unordered_draw();
+        tile_mesh.mQuill.mode = GL_POINTS;
+        tile_mesh.mQuill.unordered_draw();
 
         glfwSwapBuffers(window);
     }

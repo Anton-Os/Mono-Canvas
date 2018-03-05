@@ -11,17 +11,14 @@
 #endif
 
 #ifndef GL4_MESH_H
+    struct GL4_Mesh_Transform {
+        GLfloat* mData;
+        GLuint mCount;
+    };
+
     class GL4_Mesh {
     public:
-        GL4_Mesh(const GLuint* VAO_arg, const GLuint* indexBuffer_arg, GLuint vertexCount_arg, std::vector<GL4_Vertex_Feed>* feeds_arg){
-            mVAO = VAO_arg;
-            mVertexCount = vertexCount_arg;
-            mFeeds.swap(*feeds_arg);
-            mFeedBits.assign(mFeeds.size(), false);
-            mFeedCount = mFeeds.size();
-        }
-        // void add_feed(const GLuint* buffer_arg, const GL4_Vertex_Format* vertexFormat_arg, const void* data);
-        // void del_feed(_GL4_Vertex_Feed_ID::Pick vertexFeed_arg);
+        GL4_Mesh(GLuint vertexCount_arg, std::initializer_list<GL4_Vertex_Format*> formats_arg);
         void set_feed_data(_GL4_Vertex_Feed_ID::Pick vertexFeed_arg, const void* data);
         void set_index_data(GLuint indexCount_arg, const void* data_arg);
         void unordered_draw();
@@ -31,9 +28,9 @@
         // void ordered_drawFixed(GLuint count);
         // void ordered_drawPart(GLuint part, GLuint whole);
     private:
-	GLfloat* mTransform = nullptr;
-        const GLuint* mVAO = nullptr;
-        const GLuint* mIndexBuffer = nullptr;
+	    GL4_Mesh_Transform transform;
+        GLuint mVAO;
+        GLuint mIndexBuffer;
         GLboolean mFed = false;
         GLboolean mIdx = false;
         GLuint mFeedCount;
